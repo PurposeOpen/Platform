@@ -1,0 +1,45 @@
+<%= page_header "Join Emails" %>
+
+<%= form_for('admin_movement_join_emails') do |f| %>
+  <div id="language_tabs">
+    <ul>
+      <% @movement.movement_locales.map(&:language).each do |language| %>
+        <li>
+          <%= link_to language.name, "#page-#{language.iso_code}",
+              :id => "page_#{language.iso_code}_link" %>
+        </li>
+      <% end %>
+    </ul>
+
+    <% @movement.movement_locales.map(&:join_email).each do |join_email| %>
+      <div id="page-<%= join_email.language.iso_code %>" class="tab_content">
+        <div class="container">
+          <div>
+            <%= fields_for :join_emails, join_email, :index => join_email.id do |f| %>
+              <div class="module_body">
+                <%= f.label :from %>
+                <%= f.text_field :from %>
+
+                <%= f.label :reply_to %>
+                <%= f.text_field :reply_to %>
+
+                <%= f.label :subject %>
+                <%= f.text_field :subject %>
+
+                <%= f.label :body %>
+                <% data_options = {:image_upload_url => admin_movement_images_path(@movement)}%>
+                <%= f.text_area :body, :rows => 8, :class => 'html-full-editor', :data => (data_options if @movement)  %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <%= render :partial => '/admin/shared/history', :locals => {:entity => join_email} %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="buttonbar">
+    <%= f.submit "Save", :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movement_path(@movement), :class => 'button inline' %>
+  </div>
+<% end %>

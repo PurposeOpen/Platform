@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <% AskStatsTable.columns.each do |column| %>
+      <th><%= column %></th>
+    <% end %>
+  </tr>
+  <% AskStatsTable.new(stats).rows.each do |row| %>
+    <tr>
+      <% row.each do |column| %>
+        <td><%= column %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

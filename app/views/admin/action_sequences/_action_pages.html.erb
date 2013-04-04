@@ -1,0 +1,27 @@
+<div id="pages_list" class="list_group_item">
+  <h3>Pages</h3>
+
+  <ul>
+    <% action_pages.each do |page| %>
+        <li id="page_<%= page.id %>" class="page big-link">
+          <div class="handle disabled left"></div>
+          <%= link_to page.name, edit_admin_movement_action_page_path(@movement, page), class: "left" %>
+          <div class="actions">
+            <%= link_to icon("edit") + "Edit", edit_admin_movement_action_page_path(@movement, page) %>
+          </div>
+          <div class="clear"></div>
+        </li>
+    <% end %>
+  </ul>
+
+  <div class="button-links">
+    <div class="left">
+      <%= link_to "Unlock Sorting", "#unlock-sorting", "class" => "unlock-sorting", "data-unlock" => "pages_list", "data-unlock-url" => sort_pages_admin_movement_action_sequence_path(@movement, @action_sequence)  %>
+    </div>
+    <div class="right">
+      <%= link_to "Add a page", new_admin_movement_action_page_path(@movement, :action_sequence_id => @action_sequence), :class => 'button' %>
+      <%= link_to "Preview", preview_admin_movement_action_sequence_path(@movement, @action_sequence, :iso_code => @movement.default_iso_code), class: "button" %>
+    </div>
+    <div class="clear"></div>
+  </div>
+</div>

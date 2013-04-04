@@ -1,0 +1,70 @@
+<div id="create-event">
+
+      <form accept-charset="UTF-8" action="/events" class="new_event" id="new_event" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="mCnruFLPmf07uJiSliZt3tYeYg7QsqkClTLcpMJdnlE=" /></div>
+      <fieldset class="event-location">
+        <ul>
+          <li>
+            <label for="event_address">Address</label>
+            <textarea cols="40" id="event_address" name="event[address]" rows="20"></textarea>
+          </li>
+          <li class="hidden-field">
+
+           <input id="event_suburb_latitude" name="event[suburb_latitude]" type="hidden" />
+          </li>
+          <li class="hidden-field">
+
+           <input id="event_suburb_longitude" name="event[suburb_longitude]" type="hidden" />
+          </li>
+          <li class="hidden-field">
+           <input id="event_address_latitude" name="event[address_latitude]" type="hidden" />
+          </li>
+          <li class="hidden-field">
+           <input id="event_address_longitude" name="event[address_longitude]" type="hidden" />
+          </li>
+          <li class="hidden-field">
+           <input id="event_street" name="event[street]" type="hidden" />
+          </li>
+          <li class="hidden-field">
+           <input id="event_suburb" name="event[suburb]" type="hidden" />
+          </li>
+           <li class="hidden-field">
+           <input id="event_postcode" name="event[postcode]" type="hidden" />
+          </li>
+        </ul>
+      </fieldset>
+      <fieldset class="event-details">
+        <ul>
+
+          <li>
+            <label for="event_name">Name</label>
+            <input id="event_name" name="event[name]" size="30" type="text" />
+          </li>
+          <li>
+            <label for="event_date">Date</label>
+            <input id="event_date" name="event[date]" size="30" type="text" />
+          </li>
+
+          <li>
+            <label for="event_time">Time</label>
+            <input id="event_time" name="event[time]" size="30" type="text" />
+          </li>
+          <li>
+            <label for="event_phone">Phone</label>
+            <input id="event_phone" name="event[phone]" size="30" type="text" />
+          </li>
+
+          <li>
+            <label for="event_capacity">Capacity</label>
+            <input id="event_capacity" name="event[capacity]" size="30" type="text" />
+          </li>
+          <li>
+            <label for="event_host_notes">Host notes</label>
+            <textarea cols="40" id="event_host_notes" name="event[host_notes]" rows="20"></textarea>
+
+          </li>    
+        </ul>  
+      </fieldset>  
+      <input id="event_submit" name="commit" type="submit" value="Create Event" />
+</form>
+</div>
+

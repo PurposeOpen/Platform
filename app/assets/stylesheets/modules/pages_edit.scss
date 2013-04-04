@@ -1,0 +1,340 @@
+body#featured_content_collections_edit #language_tabs,
+body#featured_content_collections_update #language_tabs {
+  .container {
+    width: 100%;
+  }
+  .hidden_fields {
+    display: none;
+  }
+}
+
+#action_pages_edit,
+#action_pages_update,
+#content_pages_edit,
+#featured_content_collections_edit,
+#featured_content_collections_update {
+
+  #currencies, #recurring_currencies {
+    details {
+      padding: 10px 10px initial;
+    }
+    summary {
+      background-image: linear-gradient(color-stops(
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(200, 200, 200, 0.5) 50%,
+        rgba(180, 180, 180, 0.5) 51%,
+        rgba(255, 255, 255, 0.5) 100%)
+      );
+      margin: -10px -10px initial;
+      padding: 5px;
+      font-size: 12px;
+      font-weight: bold;
+      outline: none;
+      cursor: pointer;
+    }
+
+    details:hover {
+      background-color: $DARK-BLUE;
+    }
+
+    details[open] {
+      summary {
+        background-color: $DARK-BLUE;
+        color: white;
+      }
+      background-color: lighten($DARK-BLUE, 45%);
+    }
+  }
+
+  textarea {
+    height: 150px;
+    resize: vertical;
+    font-family: monospace;
+    font-size: 10px;
+  }
+
+  input[type="text"] {
+    font-size: 10px;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  }
+
+  .header_content {
+    width: 100%;
+  }
+
+  #required-user-details {
+    .user-detail {
+      width: 100px;
+      float: left;
+      margin-right: 10px;
+      label {
+        display: inline;
+        float: none;
+      }
+      select {
+        margin-top: 3px;
+        width: 100%;
+        font-size: 0.8em;
+      }
+    }
+  }
+  .module_errors {
+    margin: 10px 0 0 24px;
+    li {
+      list-style-type: disc;
+      display: list-item;
+      font-size: 12px;
+    }
+  }
+
+  .row {
+    float: left;
+    clear: both;
+    border-bottom: 1px solid #EEE;
+    width: 100%;
+    padding-bottom: $DEFAULT-PADDING;
+  }
+
+  .container {
+    // width: 334px; // TODO Find out what this magic number is derived from.
+    padding: $DEFAULT-PADDING;
+    float: left;
+    background: $highlight;
+    margin-top: $DEFAULT-MARGIN;
+    background: none;
+    padding: 0;
+    margin-right: $DEFAULT-MARGIN;
+
+    &.droppable {
+      background-color: lighten($BLUE, 40%);
+    }
+
+    &.container-full {
+      width: 737px;
+    }
+
+    &.container-half {
+      width: 364px;
+      &:last-child { margin-right: 0; }
+    }
+
+    .add_module_buttons {
+      font-size: 10px;
+      a {
+        color: white;
+      }
+      li {
+        float: left;
+        position: relative;
+        margin-top: 3px;
+        margin-right: 3px;
+
+        & > ul {
+          @include box-shadow(1px 1px 1px rgba(black, 0.3));
+          background-color: $BLUE;
+          min-width: 150px;
+          visibility: hidden;
+          position: absolute;
+          z-index: 999;
+          & > li {
+            float: none;
+            margin: 0;
+            font-size: 12px;
+            a {
+              display: block;
+              padding: 5px;
+            }
+          }
+        }
+        &:hover > ul {
+          visibility: visible;
+        }
+
+      }
+    }
+
+    .ui-icon {
+      width: 17px;
+      height: 17px;
+      background-color: lighten($GRAY, 10%);
+      @include rounded-corners(4px);
+
+      &:hover { background-color: lighten($BLUE, 30%); }
+
+      &.disabled {
+        opacity: 0.2;
+        cursor: inherit;
+        &:hover { background-color: lighten($GRAY, 10%); }
+      }
+    }
+
+    .modules_container {
+      min-height: 20px;
+      padding-top: 20px;
+
+      .ui-sortable-placeholder {
+        visibility: visible !important;
+        background: #666 image-url("jquery-ui/ui-bg_diagonals-thick_20_666666_40x40.png") 50% 50% repeat;
+        border: 1px solid #666;
+        opacity: 0.1;
+      }
+
+      .ui-sortable-placeholder-invalid {
+        height: 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+      }
+    }
+  }
+
+  .module_body {
+    padding: $DEFAULT-PADDING;
+
+    legend {
+      background-color: #F7F7F7;
+      padding: 3px 10px 0px 10px;
+      font-size: 12px;
+      font-weight: bold;
+      @include rounded-corners(5px);
+    }
+
+    .error {
+      font-size: 10px;
+    }
+  }
+
+  .content_module {
+    position: relative;
+    background-color: $GRAY;
+    margin-bottom: $DEFAULT-MARGIN;
+    border: 1px solid $DARK-GRAY;
+    border-radius: 2px;
+
+    & > .warning {
+      display: block;
+      background-color: $DARK_RED;
+      color: white;
+      text-transform: uppercase;
+      font-size: 11px;
+      padding: 5px;
+    }
+
+    .module_header {
+      padding: $DEFAULT-PADDING / 2;
+      background-color: rgba(0, 0, 0, .1);
+      cursor: move;
+      &:hover { background-color: rgba(0, 0, 0, .2); }
+
+      h5 {
+        display: inline;
+        font-size: 12px;
+        margin: 0;
+        line-height: 12px;
+      }
+    }
+
+    .module_actions {
+      float: right;
+      li {
+        float: left;
+        margin-left: 4px;
+      }
+    }
+
+    .action_page_counter {
+      float: left;
+      margin-right: 10px;
+      label {
+        display: inline;
+        float: none;
+      }
+      select {
+        margin-top: 3px;
+        width: 100%;
+        font-size: 0.8em;
+      }
+    }
+  }
+}
+
+#action_pages_edit, #action_pages_update {
+
+  input.crowdring_campaign_name {
+    width: 68%;
+  }
+
+  button.crowdring_count {
+    height: 34px;
+    width: 79px;
+    float: right;
+    padding: 0 12px;
+  }
+
+  input[data-sync-across-languages] {
+    background-color: #FAFFBD;
+  }
+
+  fieldset.twitter,
+  .comment_details {
+    textarea {
+      height: 83px;
+    }
+    .counter {
+      font-size: 10px;
+    }
+  }
+
+  .disabled_content_toggle_wrapper {
+    display: inline-block;
+    text-align: initial;
+    input[type="checkbox"] {
+      @include toggle-switch("Enabled", "Disabled");
+    }
+  }
+  
+  .help {
+    padding: 5px 15px;
+    font-size: 12px;
+    summary {
+      margin-left: -5px;
+      outline: none;
+      cursor: pointer;
+    }
+    h1 {
+      margin-top: 15px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    dl {
+      color: #777;
+      font-size: 11px;
+      line-height: 1.6em;
+    }
+    dt {
+      display: inline;
+      font-family: monospace;
+      &:after {
+        content: " - ";
+      }
+    }
+    dd {
+      display: inline;
+      font-style: italic;
+      &:after {
+        content: "\A";
+        white-space: pre;
+      }
+    }
+
+  }
+}
+input[type=submit]:disabled,
+a.button[disabled=disabled]{
+  background-color: $DARK-GRAY;
+}

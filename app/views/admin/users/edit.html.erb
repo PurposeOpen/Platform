@@ -1,0 +1,4 @@
+<% title "#{@user.full_name} (##{@user.id})" %>
+
+<%= render :partial => "form" %>
+<%= render :partial => 'admin/shared/history', :locals => {:entity => @user } %>

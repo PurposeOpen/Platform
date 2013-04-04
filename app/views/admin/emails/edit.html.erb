@@ -1,0 +1,4 @@
+<% title "#{@email.name} (Edit)" %>
+<% content_for :breadcrumb_links %>
+<%= link_to "Delete email", admin_movement_email_path(@movement, @email), :method => :delete, :confirm => "Delete '#{@email.name}'?" %>
+<%= render :partial => "form" %>

@@ -1,0 +1,19 @@
+<h4>Images (<%= @images.size %>)</h4>
+<% if @images.size > 0 %>
+    <ul class="image-gallery">
+      <% for image in @images %>
+        <li>
+            <% if image && image.attachment? %>
+              <figure>
+                <%= link_to image_tag(image_url(image, :thumbnail), {:title => image.image_description}), admin_movement_image_path(@movement, image) %>
+                <figcaption><%= image.image_file_name %></figcaption>
+              </figure>
+            <% elsif image %>
+                [Image missing]
+            <% end %>
+        </li>
+      <% end %>
+    </ul>
+<% else %>
+    <p>No images were found.</p>
+<% end %>

@@ -1,0 +1,6 @@
+<div class="disabled-options">
+  <div class="disabled_content_toggle_wrapper">
+    <%= f.check_box 'active', {id: "disabled_content_toggle_#{content_module.language.iso_code}", class:"disable_content_toggle", fields:"disabled_content_fields_#{content_module.language.iso_code}"}, 'true', 'false' %>
+    <%= f.label 'active', 'Active', for: "disabled_content_toggle_#{content_module.language.iso_code}" %>
+  </div>
+</div>

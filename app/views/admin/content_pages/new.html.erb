@@ -1,0 +1,14 @@
+<%= form_for([:admin, @movement, @content_page]) do |f| %>
+  <%= form_errors(@content_page) %>
+
+  <input type="hidden" name="content_page_collection_id" value="<%= @content_page.content_page_collection_id %>"/>
+  <%= f.label :name, "Content Page Title", :class => "req" %>
+  <%= f.text_field :name %>
+
+  <span class="info">Page title will be displayed to the public and will be used in the URL.</span>
+
+  <div class="buttonbar">
+    <%= f.submit "Create page", :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movement_content_pages_path(@movement) %>
+  </div>
+<% end %>

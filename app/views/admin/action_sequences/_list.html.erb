@@ -1,0 +1,30 @@
+<div class="action_sequences">
+  <table>
+    <thead>
+      <tr>
+        <th class="name">Sequence</th>
+        <th class="action_pages">Pages</th>
+        <th class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% list.each do |sequence| %>
+        <tr class="action_sequence" id="action-sequence-<%= sequence.id %>">
+          <td class="name">
+            <%= link_to sequence.name, admin_movement_action_sequence_path(:movement_id => @movement, :id => sequence) %>
+          </td>
+          <td class="action_pages">
+            <% sequence.action_pages.each do |action_page| %>
+              <span class="action_page">
+                <%= link_to action_page.name, edit_admin_movement_action_page_path(:movement_id => @movement, :id => action_page) %>
+              </span>
+            <% end %>
+          </td>
+          <td class="actions">
+            <%= link_to "Duplicate", duplicate_admin_movement_action_sequence_path(@movement, sequence), method: :post %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

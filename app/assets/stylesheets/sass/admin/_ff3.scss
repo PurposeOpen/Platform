@@ -1,0 +1,7 @@
+/* Firefox 3.0 Hacks */
+ul.as-list,  x:-moz-any-link, x:default { 
+	border: 1px solid #888;
+}
+BODY:first-of-type ul.as-list, x:-moz-any-link, x:default { /* Target FF 3.5+ */
+	border: none;
+}

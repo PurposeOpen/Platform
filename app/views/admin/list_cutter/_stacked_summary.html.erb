@@ -1,0 +1,49 @@
+<% if summary.present? %>
+<% data = summary.try(:[], :number_of_selected_users_by_language) %>
+<% if data.present? %>
+  <% id = UUID.new.generate %>
+    <table class="has-chart"
+      title="Breakdown by Language"
+      data-attc-type="bar"
+      data-attc-location="<%= id %>"
+      data-attc-colDescription="<%= id %>-members-per-language-description"
+      data-attc-googleOptions='{
+        "isStacked": true,
+        "legend": {
+          "position": "bottom",
+          "alignment": "start"
+        },
+        "chartArea": {
+          "left": 0,
+          "width": "100%",
+          "top": 0
+        },
+        "hAxis": {
+          "textPosition":"none",
+          "gridlines": {"color": "transparent"},
+          "baselineColor": "transparent",
+          "viewWindowMode": "maximized"
+        },
+        "vAxis": {"textPosition":"none"}
+      }'
+      data-attc-colValues='<%= data.map {|k,_| "#{id}-members-per-language-values-#{k}"}.join(",") %>'>
+      <thead>
+        <tr>
+          <th id="<%= id %>-members-per-language-description">#</th>
+          <% data.each do |l, number_of_members| %>
+            <th id="<%= id %>-members-per-language-values-<%= l %>"><%= "#{l} (#{number_of_members})" %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Number of members</td>
+          <% data.each do |_, number_of_members| %>
+            <td><%= number_of_members %></td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+    <div id="<%= id %>" class="chart stacked"></div>
+  <% end %>
+<% end %>

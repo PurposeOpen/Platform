@@ -1,0 +1,22 @@
+<div id="action_sequences_list" class="list_group_item">
+  <h3 class="tooltip" data-tip="action-sequences-tip">Action Sequences</h3>
+  <%= render :partial => "admin/action_sequences/list", :object => @sequences %>
+  <!--
+  <% @sequences.each do |action_sequence| %>
+    <div class="action_sequence" id="action-sequence-<%=action_sequence.id%>">
+      <%= link_to action_sequence.name, admin_movement_action_sequence_path(@movement, action_sequence) %>
+      <div class="actions">
+        <%= link_to "Duplicate", duplicate_admin_movement_action_sequence_path(@movement, action_sequence), method: :post %>
+      </div>
+      <div class="pages">
+        <%= action_sequence.action_pages.map(&:name).join(" › ") %>
+      </div>
+    </div>
+  <% end %>
+  -->
+  <div class="right_buttons">
+    <%= page_entries_info @sequences %>
+    <%= link_to "Add an action sequence", new_admin_movement_action_sequence_path(@movement, :campaign_id => @campaign), :class => 'button' %>
+  </div>
+  <%= will_paginate @sequences %>
+</div>

@@ -1,0 +1,489 @@
+@charset "UTF-8";
+
+/*
+*= require_self
+*/
+@import "compass/reset";
+@import "compass/layout";
+@import "compass/css3";
+@import "960/grid";
+@import "colorbox";
+@import "libs/jquery-ui";
+@import "libs/ui.multiselect";
+@import "libs/jquery.qtip";
+@import "libs/jquery.tagsinput.purposecampaigns";
+@import "libs/jquery.timepicker";
+@import "libs/jquery.selectBox";
+@import "libs/jquery.multiselect";
+@import "libs/jquery.multiselect.filter";
+@import "libs/jquery.jstree.default.theme";
+@import "gritter";
+@import "base";
+@import "modules/*";
+@import "modules/synopsis_text";
+@import "font-awesome";
+
+// Main Elements
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  @include default-font;
+  background: $WHITE image-url('body-bg.png') top left repeat;
+  color: $VERY-DARK-GRAY;
+}
+
+p {
+  margin: 10px 0 10px 0;
+}
+
+#container {
+  box-sizing: content-box;
+  @include grid-container;
+  position: relative;
+  height: 100%;
+  background-color: $VERY-LIGHT-GRAY;
+
+  border-right: 1px solid lighten($GRAY, 10%);
+  border-left: 1px solid lighten($GRAY, 10%);
+
+  #container_footer {
+    clear: both;
+  }
+}
+
+#header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  color: $HEADER-FOREGROUND;
+  background-color: $HEADER-BACKGROUND;
+  border-bottom: $HEADER-FOOTER-BORDER;
+  height: $HEADER-HEIGHT + $DEFAULT-PADDING;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+
+  .content {
+    @include grid-container;
+  }
+
+  .title {
+    @include grid(8);
+    height: $HEADER-HEIGHT + $DEFAULT-PADDING - $HEADER-FOOTER-BORDER-WIDTH;
+
+    a {
+      font-size: 28px;
+      font-weight: 300;
+    }
+
+    > a {
+      text-decoration: none;
+      color: white;
+      float: left;
+      display: block;
+      padding-top: 4px;
+      height: $HEADER-HEIGHT + $DEFAULT-PADDING - $HEADER-FOOTER-BORDER-WIDTH
+    }
+
+    > a.brand {
+      background: transparent image-url("purpose_logo_white.png") 0px 5px no-repeat;
+      background-size: 70px auto;
+      padding-left: 80px;
+    }
+
+    > a.movement {
+      color: white;
+      position: relative;
+    }
+
+    > a.movement.menu {
+      &:hover, &.active { color: $DARK-BLUE; }
+      > i { padding: 10px; font-size: 14px; }
+    }
+
+    > ul.movements {
+      position: absolute;
+      left: 0;
+      border-radius: 0;
+      background-color: $VERY-LIGHT-GRAY;
+
+      .ui-menu-item {
+        a {
+          color: $VERY-DARK-GRAY;
+          border: none;
+          border-radius: 0;
+          margin: 0;
+        }
+
+        a.ui-state-hover {
+          background: none;
+          background-color: $DARK-BLUE;
+          color: white;
+          border: none;
+        }
+        
+      }
+    }
+
+  }
+
+  .navigation {
+    text-align: right;
+    float: right;
+    line-height: 50px;
+    a { color: white; }
+    span {
+      font-weight: 500;
+      padding-right: 10px;
+      margin-right: 4px;
+      border-right: 1px solid white;
+    }
+  }
+
+  .topbar-right{
+    float: right;
+  }
+}
+
+.new-movement-link{
+  border:0 !important;margin:0 !important;padding:0 !important;margin-bottom:0px !important;
+}
+
+.movement-header, .movement-header-right{
+  float:left;border:0;margin:0;padding:0;
+  padding-top: 2px;
+}
+
+.movement-header-right{
+  padding-top: 0px;
+  float:right;
+}
+
+#content {
+  padding-top: $HEADER-HEIGHT + $HEADER-FOOTER-BORDER-WIDTH + $DEFAULT-PADDING * 2;
+}
+
+#footer {
+  color: $FOOTER-FOREGROUND;
+  background-color: $FOOTER-BACKGROUND;
+  border-top: $HEADER-FOOTER-BORDER;
+
+  .content {
+    @include grid-container;
+  }
+
+  .main {
+    @include grid(13);
+    .version_info {
+      .env {
+        font-size: 36px;
+        display: block;
+      }
+      .version {
+        display: block;
+      }
+    }
+  }
+
+  .logo {
+    @include grid(3);
+  }
+}
+
+a {
+  text-decoration: none;
+  color: $DARK-BLUE;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.ui-tabs {
+  .ui-state-active, .ui-state-default {
+    a.error {
+      color: $error;
+    }
+  }
+}
+
+.clearfix {
+  @include clearfix;
+}
+
+.error {
+  color: $error;
+}
+
+.create, .right_buttons {
+  @include clearfix;
+  margin-top: 15px;
+
+  .button {
+    float: right;
+    margin-left: 5px;
+  }
+}
+
+table {
+  width: 100%;
+
+  th, td {
+    padding: 4px;
+  }
+
+  thead {
+    background-color: rgba(0, 0, 0, 0.07);
+    text-align: left;
+    border: none;
+  }
+
+  tr {
+    line-height: 1.5em;
+  }
+
+  th, td {
+    padding: 4px 10px;
+  }
+
+  th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  td {
+    background-color: white;
+    border-right: 1px solid rgba(0, 0, 0, 0.07);
+    padding: 4px 10px;
+  }
+
+  tbody {
+    tr:hover {
+      background-color: rgba(0, 0, 0, 0.1)
+    }
+  }
+}
+
+#sign_in, #change_password {
+  @include grid(8);
+  @include grid-push(4);
+  @include alpha;
+  @include omega;
+  @include white_box;
+}
+
+#application {
+  .left_column {
+    @include grid(11);
+  }
+
+  .right_column {
+    @include grid(5);
+  }
+}
+
+.result {
+  @include white_box;
+  @include rounded-corners;
+
+  padding: 0;
+  margin-bottom: 25px;
+
+  .result_header {
+    background-color: rgba(0, 0, 0, .1);
+    padding: $DEFAULT-PADDING
+  }
+
+  .result_divider {
+    color: darken($GRAY, 40%);
+    background-color: rgba(0, 0, 0, .07);
+    padding: $DEFAULT-PADDING
+  }
+
+  .result_body {
+    padding: $DEFAULT-PADDING
+  }
+
+  h2 {
+    font-size: 2em;
+    margin: 0;
+    line-height: .7em;
+  }
+
+  a[rel="edit"] {
+    float: right;
+  }
+}
+
+#users {
+  @include white_box;
+}
+
+.new_movement,
+.new_user,
+.edit_user {
+  @include white-box;
+  @include grid(16);
+}
+
+.show_movement {
+  width: 100%;
+}
+
+.crud_links {
+  float: right;
+}
+
+#admin_movements {
+  .breadcrumbs {
+    color: $DARK-GRAY;
+    padding: 4px 0 $DEFAULT-PADDING 0;
+    font-weight: 400;
+    font-size: 90%;
+    float: left;
+
+    a {
+      font-weight: 400;
+    }
+  }
+
+  .top-bar {
+    border-bottom: 1px solid $GRAY;
+    margin-bottom: $DEFAULT-MARGIN;
+  }
+
+  .left_column {
+    @include grid(3);
+  }
+
+  .right_column {
+    @include grid(13);
+    background-color: $VERY-LIGHT-GRAY;
+  }
+
+  #navbar {
+    > li {
+      border: 0;
+      display: inline-block;
+      width: 100%;
+
+      &.active {
+        a, a:hover {
+          background-color: $DARK-BLUE;
+          color: white;
+        }
+      }
+
+      &.header {
+        padding: 7px 7px 7px 10px;
+        text-transform: uppercase;
+        font-size: 90%;
+        color: darken($DARK-GRAY, 10%);
+        border-bottom: 1px solid $GRAY;
+        font-weight: 700;
+      }
+
+      a {
+        padding: 7px;
+        display: block;
+        color: darken($DARK-GRAY, 10%);
+        text-decoration: none;
+        width: 100%;
+
+        &:hover {
+          background-color: lighten($GRAY, 15%);
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+h2 {
+  color: darken($GRAY, 40%);
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+h3 {
+  color: darken($GRAY, 40%);
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+@import "sass/admin/_movements";
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.hide {
+  display: none;
+}
+
+span.deleteicon {
+  position: relative;
+}
+
+span.deleteicon span {
+  position: absolute;
+  display: block;
+  top: 0px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  background: url('/assets/purposeimagemanager/image_upload.png');
+  cursor: pointer;
+}
+
+span.deleteicon input {
+  padding-right: 16px;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  vertical-align: text-top;
+  background-position: 14px 14px;
+  background-repeat: no-repeat;
+  margin-top: 1px;
+}
+
+.action {  
+  padding: 3px 1px 2px 4px;
+  @include rounded-corners;
+  display: inline-block;
+
+  &:hover {
+    color: white;
+    background-color: $BLUE;
+    text-decoration: none;
+  }
+}
+
+div.page_header {
+  clear: both;
+  padding-bottom: $DEFAULT-MARGIN;
+
+  h1 { 
+    font-size: 38px; 
+    display: inline-block; 
+    font-weight: 100;
+  }
+
+  > form { float: right; margin-top: 10px; }
+
+  > .actions { 
+    display: block;
+    margin-top: 10px;
+  }
+}

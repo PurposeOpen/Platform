@@ -1,0 +1,12 @@
+<%= form_for([:admin, @movement, @blast]) do |f| %>
+  <input type="hidden" name="push_id" value="<%= @push.id %>"/>
+  <%= form_errors(@blast) %> 
+
+  <%= f.label :name, :class => "req" %>
+  <%= f.text_field :name %>
+
+  <div class="buttonbar">
+    <%= f.submit @blast.new_record? ? "Create blast" : "Save blast",  :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movement_push_path(@movement, @blast.push) %>
+  </div>
+<% end %>

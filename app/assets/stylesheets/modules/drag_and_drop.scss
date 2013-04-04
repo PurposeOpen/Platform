@@ -1,0 +1,45 @@
+/* =DRAG & DROP */
+
+.handle {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+  float: left;
+  background-image: image-url("drag_handle.png");
+  opacity: 0.4;
+}
+
+.handle.disabled:hover {
+  cursor: default;
+}
+
+.handle:hover {
+  cursor: move;
+}
+
+.button-links {
+  a.unlock-sorting,
+  a.unlock-editing,
+  a.unlink-module {
+    border: none;
+    background: none;
+    padding: 0 0 0 20px;
+    height: 16px;
+    line-height:16px;
+    background-position: left 50%;
+    background-repeat: no-repeat;
+    margin-right: 10px;    
+  }
+
+  a.unlock-sorting {
+    background-image: image-url('lock.png');
+  }
+
+  a.unlock-editing {
+    background-image: image-url('lock.png');
+  }
+
+  a.unlink-module {
+    background-image: image-url('unlink.png');
+  }
+}

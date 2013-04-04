@@ -1,0 +1,11 @@
+<%# Explicit label text for helper options to avoid overriding index set by fields_for when using HTML attributes %> 
+<%= f.label :title, 'Title', :class => "req" %>
+<%= f.text_field :title %>
+
+<%= f.label :content, 'Blurb' %>
+<%= f.text_area :content, :rows => 4 %>
+<div class="info">
+  This field is HTML enabled.
+</div>
+
+

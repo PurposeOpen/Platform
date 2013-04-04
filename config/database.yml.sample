@@ -1,0 +1,27 @@
+development:
+   adapter: mysql2
+   encoding: utf8
+   database: platform_development
+   pool: 5
+   username: root
+   password:
+
+test: &test
+   adapter: mysql2
+   encoding: utf8
+   database: platform_test<%= ENV['TEST_ENV_NUMBER'] %>
+   pool: 5
+   username: root
+   password:
+
+vagrant:
+   adapter: mysql2
+   encoding: utf8
+   database: platform_vagrant
+   pool: 5
+   username: root
+   password:
+
+# leave this line in, regardless of which version
+cucumber:
+  <<: *test

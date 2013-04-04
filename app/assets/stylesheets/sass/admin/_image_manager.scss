@@ -1,0 +1,73 @@
+/* =IMAGE MANAGER */
+#image-library, #upload-image-form {
+  @include rounded-corners(5px);
+  border: solid 1px $subtle;
+  background: $highlight;
+  padding: 10px;
+  margin-bottom: 20px;
+  input {
+    margin-top: 10px;
+  }
+  .custom-size {
+    input {
+      width: 50px !important;
+      display: inline;
+    }
+    label {
+      width: auto !important;
+      float: none !important;
+    }
+  }
+}
+#image-url {
+  display: none;
+  visibility: hidden;
+}
+.image-gallery {
+  li {
+    height: 140px;
+    width: 140px;
+    padding: 10px;
+    margin: 10px;
+    display: inline-block;
+    text-align: center;
+    img {
+      border: 1px solid $subtle;
+      @include drop-shadow($shadow);
+    }
+    figure {
+      width: 100%;
+      margin: 0;
+      display: inline-block;
+      figcaption {
+        color: gray;
+        text-align: center;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+
+div.image-preview {
+  width: 100%;
+  img {
+    margin: 10px auto 10px auto;
+  }
+  blockquote {
+    margin: 10px;
+    padding: 10px;
+    font-family: Courier New, Courier, Monotype;
+    @include rounded-corners(5px);
+    border: solid 1px $subtle;
+    background-color: $highlight;
+  }
+  table {
+    margin: 10px 0;
+    th {
+      padding-right: 10px;
+    }
+  }
+}

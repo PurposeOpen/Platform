@@ -1,0 +1,67 @@
+<%# Explicit label text for helper options to avoid overriding index set by fields_for when using HTML attributes %> 
+<fieldset>
+  <legend>General</legend>
+  <%= render :partial => 'admin/content_modules/content_module_types/disabled_content_toggle', :locals => {:f => f, :content_module => content_module}%>
+
+  <%= f.label :title, 'Title', :class => "req" %>
+  <%= f.text_field :title %>
+
+  <%= f.label :content, 'Form Statement' %>
+  <%= f.text_area :content, :rows => 4 %>
+
+  <%= render :partial => 'admin/content_modules/content_module_types/disabled_content_fields', :locals => {:f => f, :content_module => content_module}%>
+</fieldset>
+
+<fieldset>
+  <legend>Target List</legend>
+  <%= f.label :targets, 'Send To', :class => "req" %>
+  <%= f.text_area :targets, :rows =>  2,
+      :placeholder => "Enter comma separated emails with names e.g.  'bob' <bob@example.com>, 'joe' <joe@example.com>" %>
+</fieldset>
+
+<fieldset>
+  <legend>Email</legend>
+  <%= f.check_box :allow_editing %>
+  <%= f.label :allow_editing, "Allow Email Editing?" %>
+
+  <%= f.label :default_subject, 'Subject', :class => "req" %>
+  <%= f.text_field :default_subject %>
+
+  <%= f.label :default_body , 'Body', :class => "req" %>
+  <%= f.text_area :default_body, :rows => 8 %>
+</fieldset>
+
+<fieldset>
+  <legend>Goals</legend>
+  <%= f.label :emails_goal, 'Emails sent goal', :class => "req" %>
+  <%= f.text_field :emails_goal, :type => "number", :min => 0,
+      :title => "This value is the same across all languages.",
+      'data-sync-across-languages' => true  %>
+
+  <%= f.label :thermometer_threshold, 'Show progress at', :class => "req" %>
+  <%= f.text_field :thermometer_threshold, :type => "number", :min => 0,
+      :title => "This value is the same across all languages.",
+      'data-sync-across-languages' => true  %>
+</fieldset>
+
+<fieldset>
+  <legend>Send Email</legend>
+  <%= render :partial => "admin/content_modules/content_module_types/activity_stream_templates", :locals => {:f => f} %>
+
+  <%= f.label :button_text, 'Button text', :class => "req" %>
+  <%= f.text_field :button_text %>
+</fieldset>
+
+<%= javascript_tag do %>
+  $(function() {
+    $.datepicker.setDefaults({dateFormat: 'dd-mm-yy'});
+
+    $('#content_modules_<%= content_module.id %>_delayed_end_date').datepicker({minDate:0});
+    $('#content_modules_<%= content_module.id %>_delayed_end_date').keydown(function(event) {
+      event.preventDefault();
+    });
+    $('#content_modules_<%= content_module.id %>_delayed_end_date_clear').click(function() {
+      $('#content_modules_<%= content_module.id %>_delayed_end_date').val('');
+    });
+  });
+<% end %>

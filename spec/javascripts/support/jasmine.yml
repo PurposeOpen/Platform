@@ -1,0 +1,97 @@
+# src_files
+#
+# Return an array of filepaths relative to src_dir to include before jasmine specs.
+# Default: []
+#
+# EXAMPLE:
+#
+# src_files:
+#   - lib/source1.js
+#   - lib/source2.js
+#   - dist/**/*.js
+#
+src_files:
+
+  - app/assets/javascripts/a-jquery.min.js
+  - app/assets/javascripts/b-jquery-ui.min.js
+  - app/assets/javascripts/extensions.js
+  - public/javascripts/gritter/jquery.gritter.min.js
+  - app/assets/javascripts/admin/**/*.js
+  - app/assets/javascripts/public/lib/ui.multiselect.js
+  - app/assets/javascripts/public/lib/jquery.livequery.js
+  - app/assets/javascripts/public/maps.event.js
+  - app/assets/javascripts/public/maps.event_viewer.js
+  - app/assets/javascripts/public/maps.event_builder.js
+  - app/assets/javascripts/public/geo.js
+  - app/assets/javascripts/public/lib/jquery.toggleedit.min.js
+  - app/assets/javascripts/public/lib/jquery.autoSuggest.js
+  - app/assets/javascripts/public/lib/jquery.validate.js
+  - app/assets/javascripts/public/dashboard.js
+  - app/assets/javascripts/public/dashboard_campaign.js
+  - app/assets/javascripts/public/dashboard_donations.js
+  - app/assets/javascripts/public/dashboard_donation_history.js
+  - app/assets/javascripts/public/mp_module.js
+  - app/assets/javascripts/public/lookupradio.js
+  - app/assets/javascripts/public/**/*.js
+  - app/assets/javascripts/modules/*
+# stylesheets
+#
+# Return an array of stylesheet filepaths relative to src_dir to include before jasmine specs.
+# Default: []
+#
+# EXAMPLE:
+#
+# stylesheets:
+#   - css/jquery.jstree.default.theme.css
+#   - stylesheets/*.css
+#
+stylesheets:
+  - 'stylesheets/**/*.css'
+
+# helpers
+#
+# Return an array of filepaths relative to spec_dir to include before jasmine specs.
+# Default: ["helpers/**/*.js"]
+#
+# EXAMPLE:
+#
+# helpers:
+#   - helpers/**/*.js
+#
+helpers:
+  - 'helpers/**/*.js'
+
+# spec_files
+#
+# Return an array of filepaths relative to spec_dir to include.
+# Default: ["**/*[sS]pec.js"]
+#
+# EXAMPLE:
+#
+# spec_files:
+#   - **/*[sS]pec.js
+#
+spec_files:
+  - '**/*[sS]pec.js'
+
+# src_dir
+#
+# Source directory path. Your src_files must be returned relative to this path. Will use root if left blank.
+# Default: project root
+#
+# EXAMPLE:
+#
+# src_dir: public
+#
+src_dir:
+
+# spec_dir
+#
+# Spec directory path. Your spec_files must be returned relative to this path.
+# Default: spec/javascripts
+#
+# EXAMPLE:
+#
+# spec_dir: spec/javascripts
+#
+spec_dir: spec/javascripts

@@ -1,0 +1,13 @@
+<div id='clone_email' data-url="<%= admin_movement_path(@movement.id) %>">
+  <div class="clone_email_container">
+    <div id="campaigns" class="clone_email_sub_container">
+      <%= select_tag "campaign", options_from_collection_for_select(@campaigns, "id", "name"), {:prompt => "Select Campaign"} %>
+      <div id="pushes" class="clone_email_sub_container" action-name="/campaigns/id/pushes_for_combo">
+        <%= select_tag "push", '<option></option>', {:prompt => "Select Push", :disabled => true} %>
+        <div id="emails" class="clone_email_sub_container" action-name="/pushes/id/emails_for_combo">
+          <%= select_tag "email", '<option></option>', {:prompt => "Select Email to clone", :disabled => true} %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

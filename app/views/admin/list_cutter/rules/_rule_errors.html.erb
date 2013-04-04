@@ -1,0 +1,5 @@
+<% if list.errors && list.errors[key] %>
+  <% list.errors[key].each do |msg_hash| %>
+    <span class="error"><%= msg_hash.values.first.first %><br></span>
+  <% end %>
+<% end %>

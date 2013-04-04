@@ -1,0 +1,60 @@
+<% if autofire_email = page.autofire_email_for_language(language) %>
+  <h5>Autofire Email After Ask</h5>
+  <ul class="module_errors error">
+    <% unless autofire_email.valid_with_warnings? %>
+      <% autofire_email.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    <% end %>
+  </ul>
+  <% iso_code = language.iso_code %>
+
+  <%= hidden_field_tag "autofire_emails[#{iso_code}][id]", autofire_email.id %>
+  <%= hidden_field_tag "autofire_emails[#{iso_code}][enabled]", false, :id => 'hidden_autofire_emails_en_enabled' %>
+
+  <%= check_box_tag "autofire_emails[#{iso_code}][enabled]", true, autofire_email.try(:enabled), :class => 'autofire_email_enabled' %>
+  <%= label_tag "autofire_emails[#{iso_code}][enabled]", "Send Email"%>
+
+  <div class="autofire_email_details">
+    <%= label_tag "autofire_emails[#{iso_code}][from]", "Email Sender", :class => "tooltip #{error_class_if_invalid(autofire_email, :from)}", 'data-tip' => "autofire-email-from-tip" %>
+    <%= text_field_tag "autofire_emails[#{iso_code}][from]", autofire_email.try(:from) %>
+
+    <%= label_tag "autofire_emails[#{iso_code}][from]", "Reply To", :class => "tooltip #{error_class_if_invalid(autofire_email, :reply_to)}", 'data-tip' => "autofire-email-from-tip" %>
+    <%= text_field_tag "autofire_emails[#{iso_code}][reply_to]", autofire_email.try(:reply_to) %>
+
+    <%= label_tag "autofire_emails[#{iso_code}][subject]", "Email Subject", :class => "tooltip #{error_class_if_invalid(autofire_email, :subject)}", 'data-tip' => "autofire-email-subject-tip" %>
+    <%= text_field_tag "autofire_emails[#{iso_code}][subject]", autofire_email.try(:subject) %>
+
+    <%= label_tag "autofire_emails[#{iso_code}][body]", "Email Text", :class => "tooltip #{error_class_if_invalid(autofire_email, :body)}", 'data-tip' => "autofire-email-body-tip"%>
+    <% data_options = {:image_upload_url => admin_movement_images_path(@movement)}%>
+    <%= text_area_tag "autofire_emails[#{iso_code}][body]", autofire_email.try(:body), :rows => 8, :class => 'html-full-editor', :data => (data_options if @action_page) %>
+    <details class="help">
+      <summary>Help</summary>
+      <ul>
+        <li><h1>Global tokens</h1>
+          <dl>
+            <dt>{MOVEMENT_NAME}</dt><dd>The movement name set up during its creation.</dd>
+          </dl>
+        </li>
+        <li><h1>Member information tokens</h1>
+          <dl>
+            <dt>{NAME}</dt><dd>First name.</dd>
+            <dt>{FULLNAME}</dt><dd>First name and last name. E.g. John Smith</dd>
+            <dt>{EMAIL}</dt><dd>Email address.</dd>
+            <dt>{POSTCODE}</dt><dd>Post code.</dd>
+            <dt>{COUNTRY}</dt><dd>Country name in English.</dd>
+          </dl>
+        </li>
+        <li><h1>Donation related tokens</h1>
+          <dl>
+            <dt>{DONATION_AMOUNT}</dt><dd>Total amount donated in local currency. E.g. $500.00, ¥360.</dd>
+            <dt>{DONATION_DATE}</dt><dd>Donation date in the format YYYY-MM-DD. E.g. 2012-01-25.</dd>
+            <dt>{DONATION_TRANSACTION_ID|}</dt><dd>Transaction identifier for further reference.</dd>
+            <dt>{DONATION_FREQUENCY|}</dt><dd>The frequency of the donation: one-time or monthly at the moment but in the corresponding user language.</dd>
+            <dt>{DONATION_CANCELLATION|}</dt><dd>Localized message telling the recurrent donor how to cancel his recurrent donation.</dd>
+          </dl>
+        </li>
+      </ul>
+    </details>
+  </div>
+<% end %>

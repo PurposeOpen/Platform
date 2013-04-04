@@ -1,0 +1,39 @@
+# Enter your per-environment constants below
+
+development: &default
+  host_uri: "localhost:3000"
+  blast_job_delay: <%= 5.seconds %>
+  financial_contact_name: Kieran
+  google_maps_api_key: "ABQIAAAAS4yKZ0mlLvTN_AlxEvS4jRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxQP6iHc_vKLvOe72fj8l67aIehk0Q"
+  default_cache_timeout: <%= 0.minutes %>
+  default_page_title: "Action for Australia"
+  default_page_description: "An independent movement to build a progressive Australia and bring participation back into our democracy."
+  umbrella_user_email_address: "offlinedonations@yourdomain.org"
+  facebook_admin_id: 520340587 #Kelsey's facebook profile id
+  send_grid_health_check_uri: "http://sendgrid.com/api/stats.get.json?api_user=<%= ENV["SENDGRID_USERNAME"] %>&api_key=<%= ENV["SENDGRID_PASSWORD"] %>&days=1"
+  s3_bucket_uri: "//<%= ENV['S3_BUCKET_NAME'] %>.s3.amazonaws.com"
+  enable_unfiltered_blasting: <%= ENV['ENABLE_UNFILTERED_BLASTING'] || false %>
+  authenticate_api_calls: <%= ENV["AUTHENTICATE_API_CALLS"] || false %>
+  readonly_database_url: <%= ENV["READONLY_DATABASE_URL"] %>
+
+production:
+  <<: *default
+  default_cache_timeout: <%= 5.minutes %>
+  blast_job_delay: <%= 5.minutes %>
+
+test:
+  <<: *default
+  host_uri: "localhost:3000"
+  default_cache_timeout: <%= 5.minutes %>
+  blast_job_delay: <%= 0 %>
+  google_maps_api_key: "AIzaSyD5j7OTcBwQFT1M_brBeVvI8pSFN2K7-7k"
+  send_grid_health_check_uri: ""
+  s3_bucket_uri: "//xyz.s3.amazonaws.com"
+
+showcase:
+  <<: *default
+
+staging:
+  <<: *default
+  default_cache_timeout: <%= 5.minutes %>
+  blast_job_delay: <%= 1.minute %>

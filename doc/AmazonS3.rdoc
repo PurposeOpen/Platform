@@ -1,0 +1,33 @@
+= Amazon S3 Configuration
+
+Heroku has a readonly filesystem, so files cannot be uploaded.
+Amazon S3/cloudfront are used for image storage.
+
+== Heroku
+
+In Heroku, define the following environment variables:
+
+ S3_KEY
+ S3_SECRET
+ S3_BUCKET
+
+== Development
+
+In local development, you can either ignore these values
+(and fall back to filesystem storage) or define them in
+either .bashrc or config/s3.yml.
+
+Option 1
+
+Define config variables in .bashrc:
+
+ export S3_KEY="1234..."
+
+Option 2
+
+Add this file in config/s3.yml:
+
+  development:
+    bucket: xyz...
+    access_key_id: 123...
+    secret_access_key: 123...

@@ -1,0 +1,71 @@
+<%= form_for([:admin, @movement]) do |f| %>
+  <%= form_errors(@movement) %>
+
+  <p>
+    <%= f.label :name, :class => "req" %>
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <%= f.label :url %>
+    <%= f.text_field :url %>
+  </p>
+
+  <p>
+    <%= f.label :crowdring_url %>
+    <%= f.text_field :crowdring_url %>
+  </p>
+
+  <p>
+    <%= f.label :languages, :class => "req"%>
+    <div id="languages-container">
+      <%= select_tag 'movement[languages]', options_from_collection_for_select(Language.all, :id, :name, @movement.languages.map(&:id)), :multiple => true, :class => "multiselect" %>
+    </div>
+  </p>
+
+  <p>
+    <%= f.label :default_language, :class => "req"%>
+    <%= select_tag 'movement[default_language]', options_from_collection_for_select(@movement.languages, :id, :name, @movement.default_language ? @movement.default_language.id : nil)%>
+    <div class="info">
+      Name is used for the URL and will be visible to the public. Description is for internal use only. URLs are for
+      information only at this point.
+    </div>
+  </p>
+
+  <p>
+    <%= f.check_box :subscription_feed_enabled %>
+    <%= f.label :subscription_feed_enabled, 'Show joins on the activity feed' %>
+  </p>
+
+  <fieldset id='image_settings'>
+    <legend>Image Settings</legend>
+    <%= f.fields_for :image_settings, @movement.image_settings || ImageSettings.new do |image_setting_form| %>
+      <% [:carousel, :action_page, :featured_action, :facebook].each do |image_type|%>
+        <label><%= image_type.to_s.titleize %></label>
+        <%= image_setting_form.text_field "#{image_type}_image_height", :title => 'Height', :placeholder => 'Height' %> px
+        <%= image_setting_form.text_field "#{image_type}_image_width", :title => 'Width', :placeholder => 'Width' %> px
+        <%= image_setting_form.text_field "#{image_type}_image_dpi", :title => 'DPI', :placeholder => 'DPI' %> pixels/inch
+      <% end %>
+    <% end %>
+  </fieldset>
+
+  <div class="buttonbar">
+    <%= f.submit @movement.new_record? ? "Create Movement" : "Save Movement", :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movements_path, :class => 'button inline' %>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+  $(function () {
+    Purpose.movements.initLanguagesMultiselectList({
+      selectSelector:".multiselect",
+      enableSelectedList: <%= @movement.new_record? %>
+    });
+
+    Purpose.movements.updateDefaultLanguages({
+      element: '#movement_default_language',
+      sourceElement: '#movement_languages',
+      targetElements: '#languages-container ul.selected a, #languages-container ul.available a'
+    });
+  });
+</script>

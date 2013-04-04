@@ -1,0 +1,1 @@
+<%= select_tag 'rules[member_source_rule][$index][sources][]', options_for_select(@movement.existing_sources(true), rule.sources), {:multiple => true, :class => 'required multiselectcheckbox'} %>

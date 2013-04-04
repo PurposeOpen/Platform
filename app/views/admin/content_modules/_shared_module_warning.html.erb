@@ -1,0 +1,5 @@
+<% if content_module.linked? %>
+  <span class='warning'>This module is shared with other pages. Any updates here will be reflected on:
+    <%= (content_module.pages - [page]).map { |p| link_to(p.name, edit_admin_movement_action_page_path(@movement, p), :target => '_blank') }.join(', ').html_safe %>
+  </span>
+<% end %>

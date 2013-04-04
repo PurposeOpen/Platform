@@ -1,0 +1,47 @@
+@import "base";
+
+#content_pages_index,
+#featured_content_collections_index {
+
+  $HEADING-HEIGHT: 34px;
+  $COLLECTION-WIDTH: 175px;
+  $COLLECTION-HEIGHT: 200px;
+
+  .collections > li {
+    position: relative;
+    @include white_box();
+    display: inline-block;
+    min-height: $COLLECTION-HEIGHT;
+    width: $COLLECTION-WIDTH;
+    padding: 0;
+    float: left;
+    margin-right: $DEFAULT-MARGIN;
+
+    h3 {
+      background-color: rgba(0, 0, 0, .1);
+      padding: $DEFAULT-PADDING;
+      height: $HEADING-HEIGHT;
+    }
+
+    [rel='new_content_page'] {
+      font-size: 9px;
+      position: absolute;
+      bottom: $DEFAULT-PADDING / 2;
+      right: $DEFAULT-PADDING / 2;
+    }
+  }
+
+  .pages > li {
+    font-size: 12px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    a {
+      padding: $DEFAULT-PADDING/4 $DEFAULT-PADDING $DEFAULT-PADDING/4 $DEFAULT-PADDING;
+      text-decoration: none;
+      display: block;
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<%= page_header "Featured Contents" %>
+
+<ul class="collections">
+  <% @featured_pages.each_key do |page| %>
+    <li data-name="<%= page.name %>">
+      <h3><%= page.name %></h3>
+
+      <ul class="pages">
+        <% @featured_pages[page].each do |featured_collection| %>
+          <li>
+            <%= link_to featured_collection.name, edit_admin_movement_featured_content_collection_path(@movement, featured_collection), :rel => 'edit_featured_content_collection' %>
+          </li>
+        <% end %>
+      </ul>
+    </li>
+  <% end %>
+</ul>

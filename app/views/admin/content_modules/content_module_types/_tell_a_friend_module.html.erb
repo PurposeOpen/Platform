@@ -1,0 +1,62 @@
+<%# Explicit label text for helper options to avoid overriding index set by fields_for when using HTML attributes %>
+
+<%= f.label :share_url, 'Share Landing Page URL', :class => "req" %>
+<%= f.text_field :share_url %>
+
+<fieldset>
+	<legend>General</legend>
+	<%= f.label :headline, 'Headline' %>
+	<%= f.text_field :headline %>
+	<%= f.label :message, 'Message' %>
+	<%= f.text_area :message %>
+</fieldset>
+<fieldset>
+  <% action_counter_present = !@action_page.action_sequence.action_pages_with_counter.empty? %>
+  <legend>Action Counter</legend>
+  <%= f.check_box :include_action_counter, {:class => 'include_action_counter'}, 'true', 'false' %>
+  <%= f.label :include_action_counter, 'Enable Action Counter?' %>
+  <div class="action_page_counter">
+    <%= f.label :action_counter_page_id, "Action Counter" %>
+    <%= f.select :action_counter_page_id, options_for_pages_with_counter(@action_page.action_sequence), {}, {disabled: !action_counter_present} %>
+    <% if action_counter_present %>
+      <div class='info'>
+        Select an action whose counter you would like to appear on this TAF page. Only actions from this action sequence will be available for selection.
+      </div>
+    <% else %>
+      <div class='info'>
+        Valid actions are not available as counter for TAF page.
+      </div>
+    <% end %>
+  </div>
+</fieldset>
+
+<fieldset>
+	<legend>Facebook</legend>
+	<%= f.label :facebook_title, 'Title' %>
+	<%= f.text_field :facebook_title %>
+	<%= f.label :facebook_description, 'Description' %>
+	<%= f.text_area :facebook_description %>
+	<%= f.label :facebook_image_url, 'Image URL' %>
+	<%= f.text_field :facebook_image_url, :class => 'uploader'%>
+	<%= f.check_box :facebook_enabled %>
+	<%= f.label :facebook_enabled, 'Enabled' %>
+</fieldset>
+
+<fieldset class='twitter'>
+	<legend>Twitter</legend>
+	<%= f.label :tweet, 'Tweet' %>
+  <%= f.text_area :tweet, 'data-soft-maxlength' => TellAFriendModule::TWITTER_MAXIMUM %>
+  <span class='counter'>Character(s) left</span></br>
+	<%= f.check_box :twitter_enabled %>
+	<%= f.label :twitter_enabled , 'Enabled' %>
+</fieldset>
+
+<fieldset>
+	<legend>Email</legend>
+	<%= f.label :email_subject, 'Subject' %>
+	<%= f.text_field :email_subject %>
+	<%= f.label :email_body, 'Message' %>
+	<%= f.text_area :email_body %>
+	<%= f.check_box :email_enabled %>
+	<%= f.label :email_enabled, 'Enabled' %>
+</fieldset>

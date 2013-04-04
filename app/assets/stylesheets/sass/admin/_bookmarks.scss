@@ -1,0 +1,33 @@
+/* =BOOKMARKS */
+.bookmark-form {
+  width: 255px;
+  padding: 10px;
+  position: absolute;
+  top: 20px;
+  right: 18px;
+  @include rounded-corners(5px);
+  @include drop-shadow($shadow);
+  background: $highlight-dark;
+  border: solid 1px $subtle;
+  input[type=text] {
+    width: 240px;
+  }
+  a.cancel {
+    color: $subtle;
+  }
+}
+
+#add-from-bookmarks {
+  a.add-from-bookmark {
+    display: block;
+    background-color: $highlight;
+    background-position: 3px 3px;
+    background-repeat: no-repeat;
+    height: 16px;
+    padding-left: 20px;
+    padding: 3px 3px 3px 24px;
+    border: solid 1px $subtle;
+    margin-bottom: 5px;
+    @include rounded-corners(3px);
+  }
+}

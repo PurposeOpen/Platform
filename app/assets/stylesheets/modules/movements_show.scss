@@ -1,0 +1,22 @@
+#movements_show {
+	> .header {
+		margin-bottom: 10px;
+	}
+	> .campaign {
+		@include white_box;
+	}
+
+  .stats {
+    clear: both;
+    .desc {
+      @include grid(4);
+      font-size: 18px;
+      color: #999;
+      .number {
+        font-size: 32px;
+        color: $DARK-BLUE;
+        display: block;
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+<script type="text/javascript">
+  var campaignTreeJson = <%= raw action_pages_tree_json(@movement, @featured_content_collection) %>;
+</script>
+<%= image_settings_div(@movement, (@featured_content_collection.name == 'Carousel' ? :carousel : :featured_action)) %>
+<%= form_for([:admin, @movement, @featured_content_collection]) do |f| %>
+  <%= form_errors(@featured_content_collection) %>
+
+  <div id="language_tabs">
+    <ul>
+      <% @featured_content_collection.possible_languages.each do |language| %>
+        <li>
+          <%= link_to language.name, "#content-#{language.iso_code}",
+              :id => "content_collection_#{language.iso_code}",
+              :class => @featured_content_collection.all_modules_valid?(language) ? "" : "error" %>
+        </li>
+      <% end %>
+    </ul>
+
+    <% @featured_content_collection.possible_languages.each do |language| %>
+      <div id="content-<%= language.iso_code %>" class="tab_content all_module_containers" data-lang="<%= language.iso_code %>">
+
+        <div class="container">
+          <h5><%= @featured_content_collection.featurable.name %> - <%= @featured_content_collection.name %></h5>
+          <div class="modules_container">
+            <%= render :partial => 'admin/featured_content_collections/featured_content_module', :collection => @featured_content_collection.modules_for_language(language), :locals => { :movement => @movement, :featured_content_collection => @featured_content_collection } %>
+          </div>
+          <div class="add_module_buttons">
+            <%= link_to "+ Featured Content", admin_movement_featured_content_modules_path(@movement, :featured_content_collection_id => @featured_content_collection.id),
+                        :method => :post, :remote => true, :class => "button add-module-link" %>
+            <%= link_to "+ Feature Existing Action", "#", :method => :post, :remote => true, :class => "button add-module-link-with-content" %>
+          </div>
+        </div>
+        <div class="clear"></div>
+
+      </div>
+    <% end %>
+  </div>
+
+  <div class="buttonbar">
+    <%= f.submit "Save", :disable_with => "Saving…", class: "inline" %>
+    <%= link_to_if(@featured_content_collection.featurable_type == Homepage.to_s, "Preview", create_preview_admin_movement_homepages_path(@movement), :id => "preview", :class => "button inline"){} %>
+    <%= link_to "Cancel", admin_movement_featured_content_collections_path(@movement), class: "button inline" %>
+  </div>
+<% end %>
+
+<%= form_tag sort_admin_movement_featured_content_module_path(@movement,
+    :featured_content_collection_id => @featured_content_collection.id),
+    :method => :put,
+    :remote => true,
+    :id => "sort_featured_content_modules" do %>
+  <%= hidden_field_tag "featured_content_module[id]", "" %>
+  <%= hidden_field_tag "featured_content_module[new_position]", "" %>
+<% end %>
+
+<div id="jstree-container"></div>

@@ -1,0 +1,15 @@
+<div id="sign_in">
+  <h2>Forgot your password?</h2>
+	<p>Enter your email, and we'll send you a reset link.</p>
+
+  <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f| %>
+    <%= devise_error_messages! %>
+
+    <%= f.label :email %>
+    <%= f.text_field :email, :autofocus => true %>
+
+    <%= f.submit "Reset my password" %>
+  <% end %>
+
+  <%= render :partial => "devise/shared/links" %>
+</div>

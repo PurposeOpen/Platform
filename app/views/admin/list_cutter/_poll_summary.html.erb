@@ -1,0 +1,30 @@
+<% if summary %>
+  <% if summary[:error_message] %>
+    <p class="error">
+      Sorry. The query failed. (Error Message: <%= summary[:error_message] %>)
+    </p>
+  <% elsif summary[:number_of_selected_users] %>
+    <p>
+      Found <%= summary[:number_of_selected_users] %> members 
+      in <%= summary[:total_time] || "%.4f" % [ summary[:results_table].sum(&:last) ] %> 
+      seconds.
+    </p>
+  <% end %>
+
+  <% if summary[:results_table] %>
+    <table>
+      <thead>
+        <tr><th>Query</th><th>Elapsed Time</th><th>Query</th></tr>
+      </thead>
+      <% summary[:results_table].each do |(description, query, time)| %>
+        <tr>
+          <td><%= description %></td>
+          <td><%= "%.4f" % [ time ] %></td>
+          <td><code style="font-family: Monaco, Courier New, monospace; font-size: x-small;"><%= query %><code></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+<% end %>
+
+<%= render :partial => 'admin/list_cutter/chart', :locals => { :summary => summary } %>

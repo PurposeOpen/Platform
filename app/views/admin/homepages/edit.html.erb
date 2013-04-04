@@ -1,0 +1,89 @@
+<div id="homepage_edit">
+  <%= page_header "Homepage" %>
+  <%= image_settings_div(@movement, :carousel) %>
+  <%= form_for("admin_movement_homepage_content", :url => admin_movement_homepages_path, :method => :put) do |f| %>
+    <div id="tabs">
+      <ul>
+        <% @homepage_contents.each do |hpc| %>
+          <li><%= link_to hpc.language.name, "#homepage-#{hpc.iso_code}", :class => hpc.valid? ? "" : "error", :id => "homepage_#{hpc.iso_code}_link" %></li>
+        <% end %>
+      </ul>
+
+      <% @homepage_contents.each do |hpc| %>
+        <div id="homepage-<%= hpc.iso_code %>">
+          <%= fields_for "homepage_content[#{hpc.iso_code}]", hpc do |fh| %>
+            <%= form_errors hpc %>
+
+            <fieldset class="homepage">
+              <legend>Homepage Attributes</legend>
+              <% [:banner_image, :join_headline, :join_message].each do |field| %>
+                <p>
+                  <%= fh.label field, HomepageContent::LABELS[field], :class => "req", :id => nil %>
+                  <%= fh.text_field field, :class => "#{field == :banner_image ? 'uploader' : ''}" %>
+                </p>
+              <% end %>
+
+              <p>
+                <%= fh.label :banner_text, HomepageContent::LABELS[:banner_text], :class => "req" %>
+                <%= fh.text_field :banner_text %>
+
+                <%= render :layout => "admin/shared/token_replacement_help" do %>
+                  {MEMBERCOUNT} = the current number of subscribed members
+                <% end %>
+              </p>
+            </fieldset>
+
+            <fieldset class="navigation">
+              <legend>Navigation</legend>
+              <p>
+                <%= fh.label :header_navbar, 'Header' %>
+                <%= fh.text_area :header_navbar, :class => 'html-minimal-editor' %>
+              </p>
+
+              <p>
+                <%= fh.label :footer_navbar, 'Footer' %>
+                <%= fh.text_area :footer_navbar, :class => 'html-minimal-editor' %>
+              </p>
+            </fieldset>
+
+            <fieldset class="follow_links">
+              <legend>Social Accounts</legend>
+              <%= fh.fields_for :follow_links do |fl| %>
+                <%= fl.label :facebook, 'Facebook' %>
+                <%= fl.text_field :facebook, :value => hpc.follow_links[:facebook] %>
+
+                <%= fl.label :flickr, 'Flickr' %>
+                <%= fl.text_field :flickr, :value => hpc.follow_links[:flickr] %>
+
+                <%= fl.label :orkut, 'Orkut' %>
+                <%= fl.text_field :orkut, :value => hpc.follow_links[:orkut] %>
+
+                <%= fl.label :tumblr, 'Tumblr' %>
+                <%= fl.text_field :tumblr, :value => hpc.follow_links[:tumblr] %>
+
+                <%= fl.label :twitter, 'Twitter' %>
+                <%= fl.text_field :twitter, :value => hpc.follow_links[:twitter] %>
+
+                <%= fl.label :youtube, 'YouTube' %>
+                <%= fl.text_field :youtube, :value => hpc.follow_links[:youtube] %>
+              <% end %>
+            </fieldset>
+
+          <% end %>
+          <%= render :partial => '/admin/shared/history', :locals => {:entity => hpc} %>
+        </div>
+      <% end %>
+    </div>
+    <div class="buttonbar">
+      <%= f.submit "Save page", :disable_with => "Saving…"  %>
+      <%= link_to "Preview", create_preview_admin_movement_homepages_path(@movement), :id => "preview", :class => "button inline" %>
+      <%= link_to "Cancel", admin_movement_path(@movement), :class => 'button inline' %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  $(function() {
+    $( "#tabs" ).tabs();
+  });
+</script>

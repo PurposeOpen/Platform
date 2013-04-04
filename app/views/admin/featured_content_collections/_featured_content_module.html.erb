@@ -1,0 +1,76 @@
+<%= fields_for :featured_content_modules, featured_content_module, :index => featured_content_module.id do |f| %>
+  <div class="content_module <% if !featured_content_module.valid? %>error<% end %>" id="#content_module_<%= featured_content_module.id %>" data-id="<%= featured_content_module.id %>" data-lang="<%= featured_content_module.language.iso_code %>">
+    <div class="module_header">
+      <h5>Featured Module</h5>
+      <ul class="module_actions">
+        <li>
+          <%= remove_featured_content_module_link(@movement, featured_content_module) %>
+        </li>
+      </ul>
+    </div>
+
+    <div class="module_body">
+      <%= f.label :title %>
+      <%= f.text_field :title %>
+
+      <a class="ui-icon ui-icon-triangle-1-e expand_collapse_module_fields"></a>
+
+      <div class="hidden_fields">
+        <%= f.label :image %>
+        <%= f.text_field :image, :class => "uploader"%>
+
+        <%= f.label :description %>
+        <%= f.text_area :description, :rows => 8 %>
+
+        <%= f.label :url %>
+        <%= f.text_field :url %>
+
+        <%= f.label :button_text %>
+        <%= f.text_field :button_text %>
+
+        <%= f.label :date %>
+        <%= f.text_field :date %>
+      </div>
+    </div>
+  </div>
+
+      <!-- <div class="header">
+        <div class="handle"></div>
+        <div class="truncated_title">
+          <%= featured_content_module.title %>
+        </div>
+        <a class="edit_link">Edit</a>
+      </div> -->
+
+      <!-- <div class="content" style="display: none;">
+        <fieldset>
+          <legend>Featured Module</legend>
+          <div class="module_header">
+            <ul class="module_actions">
+              <li>
+                <%= remove_featured_content_module_link(@movement, featured_content_module) %>
+              </li>
+            </ul>
+          </div>
+          <div class="module_body">
+            <%= f.label :title %>
+            <%= f.text_field :title %>
+
+            <%= f.label :image %>
+            <%= f.text_field :image %>
+
+            <%= f.label :description %>
+            <%= f.text_area :description, :rows => 8 %>
+
+            <%= f.label :url %>
+            <%= f.text_field :url %>
+
+            <%= f.label :button_text %>
+            <%= f.text_field :button_text %>
+
+            <%= f.label :date %>
+            <%= f.text_field :date %>
+          </div>
+        </fieldset>
+      </div> -->
+<% end %>

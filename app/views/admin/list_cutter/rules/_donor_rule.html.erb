@@ -1,0 +1,6 @@
+<div class="tooltip" data-tip="donation-frequency-tip">
+
+  <%= select_tag 'rules[donor_rule][$index][frequencies][]', options_for_select(DonationModule.frequency_select_options, rule.frequencies),
+                 {:multiple => true, :class => "required multiselectcheckbox"} %>
+
+</div>

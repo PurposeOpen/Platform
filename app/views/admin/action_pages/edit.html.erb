@@ -1,0 +1,55 @@
+<%= page_header @action_page.name do %>
+  <%= link_to icon("trash") + "Delete", admin_movement_action_page_path(@movement, @action_page), :method => :delete, :confirm => "Delete '#{@action_page.name}'?" %>
+<% end %>
+
+<%= render :partial => 'admin/content_modules/modules_drag_n_drop_form', :locals => { :page_id => @action_page, :page_type => @action_page.class.name } %>
+
+<%= image_settings_div(@movement, :facebook) %>
+
+<%= form_for([:admin, @movement, @action_page], html: {class: "edit_page_form"}) do |f| %>
+
+  <%= form_errors(@action_page) %>
+  <input type="hidden" name="action_sequence_id" value="<%= @action_page.action_sequence.id %>"/>
+
+  <fieldset>
+    <legend>Name</legend>
+
+    <%= f.label :name, :class => "req" %>
+    <%= f.text_field :name %>
+
+    <div class="info">
+      Page title will be used in the URL. Spaces are replaced with hyphens.
+    </div>
+
+    <p><%= link_to @action_page.default_url, @action_page.default_url %></p>
+
+    <% if Feature[:action_pages][:show_no_wrapper] %>
+      <%= f.check_box :no_wrapper %>
+      <%= f.label :no_wrapper, "No wrapper", :class => "checkbox" %>
+
+      <div class="info">
+        Disables header and footer on page, if enabled for this movement.
+      </div>
+    <% end %>
+  </fieldset>
+
+  <% if @action_page.requires_user_details? %>
+    <fieldset id="required-user-details">
+      <legend>Required User Details for Asks</legend>
+      <%= f.fields_for :required_user_details do |user_details_fields| %>
+        <%= render :partial => "user_detail", :collection => ActionPage::DEFAULT_REQUIRED_USER_DETAILS, :locals => {:f => user_details_fields} %>
+      <% end %>
+    </fieldset>
+  <% end %>
+
+  <%= render :partial => 'admin/content_modules/modules_by_language', :locals => { :f => f, :page => @action_page } %>
+
+  <div class="buttonbar">
+    <%= f.submit "Save page", :disable_with => "Saving…" %>
+    <%= link_to "Preview", create_preview_admin_movement_action_page_path(@movement, @action_page), :id => "preview", :class => "button inline" %>
+    <%= link_to "Cancel", admin_movement_action_sequence_path(@movement, @action_sequence), :class => 'button inline' %>
+  </div>
+
+  <%= render :partial => '/admin/action_pages/tooltips' %>
+  <%= render :partial => '/admin/shared/history', :locals => {:entity => @action_page} %>
+<% end %>

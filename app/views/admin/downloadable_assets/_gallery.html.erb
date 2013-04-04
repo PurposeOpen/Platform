@@ -1,0 +1,17 @@
+<h4>Files (<%= @assets.size %>)</h4>
+<% if @assets.size > 0 %>
+<ul id="asset-gallery">
+  <% for asset in @assets %>
+    <li>
+      <% if asset && asset.attachment? %>
+       <%= link_to asset.link_text, admin_movement_downloadable_asset_path(@movement, asset) %>
+       <i><%= "(#{asset.asset_file_name}, #{asset.kilobytes} kilobytes)" %></i>
+      <% elsif asset %>
+        [File missing]
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+<% else %>
+<p>No files were found.</p>
+<% end %>

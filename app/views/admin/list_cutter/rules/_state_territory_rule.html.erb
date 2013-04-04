@@ -1,0 +1,3 @@
+<div class = "tooltip" data-tip = "state-territory-tip">
+  <%= f.select :states_territories, options_for_select(Jurisdiction.select_options_for_states, rule.states_territories), {}, {:multiple => true, :class => "multiselectcheckbox required"} %>
+</div>

@@ -1,0 +1,3 @@
+<%= f.label :content %>
+<% data_options = {:image_upload_url => admin_movement_images_path(@movement)}.merge(@movement.image_settings_for(:action_page)) %>
+<%= f.text_area(:content, {:rows => 8, :class => 'html-editor', :data => (data_options if page.is_a?(Page))}) %>

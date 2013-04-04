@@ -1,0 +1,31 @@
+<%= page_header @push.name %>
+<div class="blasts">
+  <div class="list-group">
+    <h3>Blasts</h3>
+    <div class="actions">
+      <%= link_to icon("file") + "Add a blast", new_admin_movement_blast_path(:movement_id => @movement, :push_id => @push), :class => 'add-blast button' %>
+    </div>
+
+    <% if @push.blasts.empty? %>
+      <p class="notice">There are no blasts in this push.</p>
+    <% else %>
+      <ul id="blasts-list">
+          <%= render :partial => 'admin/pushes/blast', :collection => @push.blasts %>
+      </ul>
+    <% end %>
+  </div><!-- // .list-group -->
+</div>
+
+<div id="email-stats" class="stats-table">
+  <h3 class="tooltip" tip="stats-tip">Email Statistics
+    <span class="info">(<%= last_updated_at_msg(@stats_table.load_stats[:last_updated_at]) %>)</span>
+  </H3>
+  <%= render :partial => "email_stats", :locals => {:stats_table => @stats_table} %>
+  <% if can? :export, EmailStatsTable %>
+    <div class="right_buttons">
+      <%= link_to icon("download") + "Download CSV", email_stats_report_admin_movement_push_path(@movement, @push), :class=>'download-csv button' %>
+    </div>
+  <% end %>
+</div>
+<%= render :partial => "clone_email"%>
+<%= render "tooltips" %>

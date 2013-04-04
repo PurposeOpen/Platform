@@ -1,0 +1,30 @@
+<%= form_for([:admin, @movement, @campaign]) do |f| %>
+    <input type="hidden" name="movement_id" value="<%= @movement.id %>"/>
+    <%= form_errors(@campaign) %>
+
+    <%= f.label :name, :class => "req" %>
+    <%= f.text_field :name %>
+
+    <%= f.label :description %>
+    <%= f.text_area :description, :rows => 3 %>
+
+    <div class="info">
+      Name and description are for internal use and will not be visible to the public.
+    </div>
+
+    <div style='display:none;'>
+      <%= f.label :opt_out %>
+      <%= f.check_box :opt_out %>
+    </div>
+
+<!--
+    <div class="info">
+    Checking this option means that the campaign will show up allowing the users to opt out of getting emails for it
+    </div>
+-->
+
+    <div class="buttonbar">
+      <%= f.submit @campaign.new_record? ? "Create campaign" : "Save campaign",  :disable_with => "Saving…" %>
+      <%= link_to "Cancel", admin_movement_campaigns_path(@movement), :class => 'button inline' %>
+    </div>
+<% end %>

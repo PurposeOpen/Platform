@@ -1,0 +1,17 @@
+<% @campaigns.each do |campaign| %>
+  <div class="result campaign">
+    <div class="result_header">
+      <h2><%= link_to campaign.name, admin_movement_campaign_path(@movement, campaign) %></h2>
+    </div>
+    <div class="result_body description">
+      <%= campaign.description || content_tag(:span, :class => "no_description") { "No description" } %>
+    </div>
+    <%= render :partial => "admin/action_sequences/list", :object => campaign.action_sequences %>
+  </div>
+<% end %>
+<div class="right_buttons">
+  <span><%= page_entries_info @campaigns %></span>
+  <%= link_to("Create new campaign", new_admin_movement_campaign_path(@movement), :class => 'create button') %>
+</div>
+
+<%= will_paginate @campaigns %>

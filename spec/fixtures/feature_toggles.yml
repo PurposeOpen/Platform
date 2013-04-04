@@ -1,0 +1,14 @@
+features_1:
+  features_1_1:
+    feature_A_enabled: true
+    feature_B_enabled: false
+  features_1_2:
+    feature_C_enabled: true
+
+features_2:
+  feature_D_enabled: true
+  features_2_1:
+    features_2_1_1:
+      feature_E_enabled: false
+
+feature_F_enabled: true

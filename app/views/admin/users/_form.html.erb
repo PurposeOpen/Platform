@@ -1,0 +1,66 @@
+<%
+   #TODO #223 - Refactor after the member/platform user split is done
+   if @user.new_record?
+      url = admin_movement_users_path(@movement)
+   else
+      url = admin_movement_user_path(@movement, @user)
+   end %>
+
+<%= form_for(@user, :url => url, :as => :user) do |f| %>
+  <%= form_errors(@user) %>
+
+  <h2>User Details</h2>
+  <%= f.label :email, "Email Address", :class => "req" %>
+  <%= f.text_field :email %>
+
+  <%= f.label :first_name, "First Name", :class => "req" %>
+  <%= f.text_field :first_name %>
+
+  <%= f.label :last_name, "Last Name", :class => "req" %>
+  <%= f.text_field :last_name %>
+
+  <%= f.label :home_number, "Home Number" %>
+  <%= f.text_field :home_number %>
+
+  <%= f.label :mobile_number, "Mobile Number" %>
+  <%= f.text_field :mobile_number %>
+
+  <span class="checkbox-group">
+    <% if cannot?(:toggle_platform_admin_role, PlatformUser) %>
+      <%= f.check_box :is_admin, :class => "user-checkbox tooltip", 'data-tip' => "is-admin-tip", :disabled => "disabled" %>
+    <% else %>
+      <%= f.check_box :is_admin, :class => "user-checkbox tooltip", 'data-tip' => "is-admin-tip" %>
+    <% end %>
+    <%= f.label :is_admin, "Platform Administrator" %>
+  </span>
+
+
+
+  <div id="movements-container">
+    <h2>Movements</h2>
+    <% current_platform_user.movements_administered.each_with_index do |movement, idx| %>
+      <div>
+        <% user_affiliation_for_movement = @user.user_affiliation_for_movement(movement) %>
+        <%= label_tag "user[user_affiliations_attributes][#{idx}][role]", movement.name %>
+        <%= select_tag "user[user_affiliations_attributes][#{idx}][role]", options_for_select(UserAffiliation.roles_options_for_select, user_affiliation_for_movement.try(:role)), :prompt => "None" %>
+        <%= hidden_field_tag "user[user_affiliations_attributes][#{idx}][movement_id]", movement.id %>
+        <%= hidden_field_tag "user[user_affiliations_attributes][#{idx}][id]", user_affiliation_for_movement.try(:id) %>
+      </div>
+    <% end %>
+  </div>
+
+
+  <div class="buttonbar">
+    <%= f.submit @user.new_record? ? "Create" : "Save", :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movement_users_path(@movement), :class => 'button inline' %>
+  </div>
+<% end %>
+<%= render :partial => 'tooltips' %>
+
+<script type="text/javascript">
+  $(function(){
+    <% if current_platform_user == @user %>
+      $('#edit_user').find('input, select, checkbox').attr("disabled", "disabled");
+    <% end %>
+  });
+</script>

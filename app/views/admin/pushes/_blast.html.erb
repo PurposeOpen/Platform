@@ -1,0 +1,84 @@
+<li id="blast_<%= blast.id %>" class="blast result">
+<div class="result_header">
+  <%= link_to "Rename", edit_admin_movement_blast_path(@movement, blast), :rel => "edit" %>
+  <h3 class="blast-name"><%= blast.name %> <%= member_count(blast) %></h3>
+</div>
+
+<div class="send-details">
+  <%= render :partial => 'admin/list_cutter/stacked_summary', :locals => { :summary => blast.try(:list).try(:summary) } %>
+  <ul class='actions'>
+    <li><%= link_to_create_or_update blast, :class => 'button' %></li>
+    <li>
+      <span class='button'>Add an Email... ▼</span>
+      <ul>
+        <li><%= link_to "New Email", new_admin_movement_email_path(:movement_id => @movement.id, :blast_id => blast.id)%></li>
+        <li><%= link_to "Clone Existing", '#', :id => "clone_email_button", :class => 'clone_email_button', :blast_id => blast.id %></li>
+      </ul>
+  </ul>
+</div>
+
+<% if blast.emails.any? %>
+  <table class="emails">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Email</th>
+        <th>Proofed</th>
+        <th>Sent</th>
+        <th>Opened</th>
+      </tr>
+    </thead>
+    <% for email in blast.emails %>
+      <tr>
+        <td class="is_proofed"><div class="<%= 'proofed' if email.proofed? %>"></div></td>
+        <td class="email-name"><%= link_to email.display_name, edit_admin_movement_email_path(@movement, email) %></td>
+        <td class="proof-sent">
+          <span class="proof-sent">
+            <% if flash[:proofed] && flash[:proofed][:email] == email.id %>
+              <%= flash[:proofed][:status] %>
+            <% else %>
+              <%= time_since_sent("proofed", email.test_sent_at) %>
+            <% end %>
+          </span>
+        </td>
+        <td class="emails-sent"><%= @stats_table.load_stats[email.id][:email_sent][:as_value] %></td>
+        <td class="emails-opened"><%= @stats_table.load_stats[email.id][:email_viewed][:as_value] %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>
+
+<% if blast.proofed_emails.any? && can?(:send, blast) %>
+  <div class="result_divider">Send Blast</div>
+  <% if blast.proofed_emails.schedulable_emails.any? %>
+    <%= render 'admin/pushes/blast_send_form', {:blast => blast} %>
+  <% end %>
+    <% if blast.has_failed_jobs? %>
+      <strong class="has-failures">
+        Some emails may not have been delivered.
+      </strong>
+    <% end %>
+    <% if blast.proofed_emails.pending_emails.any? do %>
+      <table class="emails">
+        <thead>
+          <tr>
+            <th>Emails Scheduled</th>
+            <th>Time Scheduled</th>
+            <th>Time Remaining</th>
+          </tr>
+        </thead>
+        <% blast.proofed_emails.pending_emails.each do |email| %>
+          <tr>
+            <td class="email-name"><%= link_to email.display_name, edit_admin_movement_email_path(@movement, email) %></td>
+            <td><%= email.delayed_job.run_at.to_s(:schedule_time)%></td>
+            <td class='in-progress'>
+              <span class='countdown'><%= email.remaining_time_to_send %></span>
+              <%= link_to "CANCEL", admin_movement_email_cancel_schedule_path(@movement, email, :blast_id => blast.id), :method => 'POST', :class => "button abort" %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+      <% end %>
+    <% end %>
+<% end %>
+</li>

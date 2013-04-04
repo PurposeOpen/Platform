@@ -1,0 +1,38 @@
+<%= page_header "Email Footers" %>
+
+<%= form_for('admin_movement_email_footers') do |f| %>
+  <div id="language_tabs">
+    <ul>
+      <% @movement.movement_locales.map(&:language).each do |language| %>
+        <li>
+          <%= link_to language.name, "#page-#{language.iso_code}",
+              :id => "page_#{language.iso_code}_link" %>
+        </li>
+      <% end %>
+    </ul>
+
+    <% @movement.movement_locales.map(&:email_footer).each do |email_footer| %>
+      <div id="page-<%= email_footer.language.iso_code %>" class="tab_content">
+        <div class="container">
+          <div>
+            <%= fields_for :email_footer, email_footer, :index => email_footer.id do |f| %>
+              <div class="module_body">
+                <%= f.label :html %>
+                <% data_options = {:image_upload_url => admin_movement_images_path(@movement)}%>
+                <%= f.text_area :html, :rows => 8, :class => 'html-full-editor', :data => (data_options if @movement) %>
+                <%= f.label :text %>
+                <%= f.text_area :text, :rows => 8 %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <%= render :partial => '/admin/shared/history', :locals => {:entity => email_footer} %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="buttonbar">
+    <%= f.submit "Save", :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movement_path(@movement), :class => 'button inline' %>
+  </div>
+<% end %>

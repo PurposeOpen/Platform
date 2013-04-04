@@ -1,0 +1,13 @@
+@import "base";
+
+#assets_index {
+  @include horizontal_tabs();
+}
+
+#downloadable_asset_show {
+		@include white_box();
+}
+
+#image_show {
+		@include white_box();
+}

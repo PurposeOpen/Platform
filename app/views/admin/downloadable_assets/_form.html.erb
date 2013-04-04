@@ -1,0 +1,20 @@
+<h4>Upload a New File</h4>
+<%= form_for(@asset, :as => :asset, :url => admin_movement_downloadable_assets_path(@movement),
+                      :class => 'new-asset',
+                      :html => { :multipart => true }) do |f| %>
+  <%= form_errors(@asset) %> 
+  
+  <p>  
+    <%= f.label :asset, "File:" %>
+    <%= f.file_field :asset %>
+  </p>
+  
+  <p>
+    <%= f.label :link_text, "Link text:", :class => "req" %>
+    <%= f.text_field :link_text, :placeholder => 'e.g. Wikileaks article PDF.' %>
+  </p>
+
+  <div class="buttonbar">
+    <%= f.submit "Upload File", :disable_with => "Uploading…" %>
+  </div>
+<% end %>

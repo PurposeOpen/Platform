@@ -1,0 +1,412 @@
+common: &default
+  en:
+    donation_module:
+      subject: Thank you
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+       subject: Thank you
+       body: |
+         Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+         Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+         <br>
+         Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+         Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+       subject: Thank you
+       body: |
+         Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+         Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+         <br>
+         Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+         Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action!
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action!
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  fr:
+    donation_module:
+      subject: Thank you
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  de:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  hi:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  id:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  pt:
+    donation_module:
+      subject: Obrigado.
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Obrigado.
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Obrigado.
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  ru:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  es:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  sw:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  tl:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  vi:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+  it:
+    donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    non_tax_deductible_donation_module:
+      subject: Thank you. 
+      body: |
+        Please note that this donation will appear on your credit card statement as {MOVEMENT_NAME}.<br>
+        Your contribution is tax-deductible to the extent allowed by law. You may save or print this receipt for your records. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return. This receipt may be useful to you when completing your tax return.<br>
+        <br>
+        Name: {FULLNAME}{( Zip/Postal Code: )POSTCODE|} Country: {COUNTRY} E-mail: {EMAIL}<br>
+        Amount: {DONATION_AMOUNT} Date: {DONATION_DATE} Transaction #: {DONATION_TRANSACTION_ID}
+    petition_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    email_targets_module:
+      subject: Thanks for taking action! 
+      body: "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+    join_module:
+      subject:
+      body:
+
+yourname:
+  <<: *default

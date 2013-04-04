@@ -1,0 +1,9 @@
+<div>
+  <%= select_tag 'rules[originating_action_rule][$index][page_ids][]',
+                 select_options_action_pages(@movement.id, rule.page_ids),
+                 {:multiple => true,
+                  :id => "rules_originating_action_rule_$index_page_ids_",
+                  :class => "required multiselectcheckbox originating_action_select",
+                  "data-placeholder" => "Choose a Page..."} %>
+  <%= hidden_field_tag 'rules[originating_action_rule][$index][movement_id]', @movement.id %>
+</div>

@@ -1,0 +1,21 @@
+development: &default
+  action_caching_expiration: <%= 5.minutes %>
+  google_tracking_id: <%= ENV["GOOGLE_TRACKING_ID"] %>
+  homepage_error_url: "A homepage error url"
+  error_url: "An error url"
+  page_not_found_url: "A page not found url"
+  web_timeout: 200
+production:
+  <<: *default
+  web_timeout: 90
+
+staging:
+  <<: *default
+  web_timeout: 90
+
+test:
+  <<: *default
+  platform_base_uri:  "http://example.com/api/"
+  movement_id: "testmovement"
+  auth_password: "testmovement"
+  web_timeout: 90

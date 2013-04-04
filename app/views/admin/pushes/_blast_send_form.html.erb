@@ -1,0 +1,38 @@
+<%= form_tag deliver_admin_movement_blast_path(@movement, blast), :class => 'deliver_blast' do |f| %>
+    <div class="send-actions">
+      <div class='deliver-email-members-count'>
+        <span class="connector">Deliver</span> <select class="send-options" name="email_id">
+        <option value="all">each proofed email</option>
+        <%= options_from_collection_for_select(blast.proofed_emails.schedulable_emails, :id, :display_name) %>
+      </select>
+        to
+        <label class="all-members">
+          <input type="radio" name="member_count_select" value="<%= Blast::ALL_MEMBERS %>" checked="checked">
+          all unsent members
+        </label>
+        or
+        <div class="some-members disabled tooltip" data-tip="push-deliver-to-some-members-tip">
+          <input type="radio" name="member_count_select" value="<%= Blast::LIMIT_MEMBERS %>">
+          limit to
+          <input class="send-number" type="number" value="" name="limit" placeholder="500" disabled="disabled">
+          members
+        </div>
+      </div>
+      <div class='run_at_container'>
+        <label for='run_at_utc' class='left'>Send at</label>
+        <input class="run_at_utc" type="text" name="run_at_utc">
+        <%= select_tag :run_at_hour, '', {:class => 'hide run_at_time'} %>
+        <label class='utc_notice'>
+          All times are in UTC.
+          <%= link_to "Click here for help with UTC", "http://www.worldtimeserver.com/current_time_in_UTC.aspx", :target => "_blank" %>
+        </label>
+      </div>
+      <div>
+        <input class="send-submit" type="submit" value="Send">
+      </div>
+      <p class="stats">
+        <% if not blast_has_unsent_users(blast) %><strong class="blast-completed">Blast completed.</strong>
+        <% end %> Sent to <%= blast_sent_count(blast) %> members at last count.
+        <a class="view-statistics" href="#email-stats">View statistics ⬇</a></p>
+    </div>
+<% end %>

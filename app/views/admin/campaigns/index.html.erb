@@ -1,0 +1,6 @@
+<div id="campaigns_index">
+  <%= page_header "Campaigns", search: admin_movement_campaigns_path(@movement) do %>
+    <%= link_to icon("file") + "New", new_admin_movement_campaign_path(@movement) %>
+  <% end %>
+  <%= render :partial => "campaigns", :object => @campaigns %>
+</div>

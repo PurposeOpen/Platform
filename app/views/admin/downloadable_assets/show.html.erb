@@ -1,0 +1,19 @@
+<% title @asset.link_text %>
+<div id='downloadable_asset_show'>
+	<p>
+	  Type: <%= @asset.asset_content_type %>
+	  <br/>
+	  Size: <%= @asset.kilobytes %> kilobytes
+	  <br/>
+	  Download: <%= download_asset_link(@asset) %>  
+	</p>
+	<p>
+	  Use the following HTML code to embed a download link in a page:
+	  <div class="section">
+	    <%=h("#{download_asset_link(@asset)}") %>
+	  </div>
+	</p>
+</div>
+<%= link_to 'Back', admin_movement_downloadable_assets_path, :class => 'button' %>
+
+<%= render :partial => 'admin/shared/history', :locals => {:entity => @asset} %>

@@ -1,0 +1,4 @@
+<div class = "tooltip" data-tip = "campaign-tip">
+  <%= select_tag 'rules[campaign_rule][$index][campaigns][]', options_for_select(Campaign.select_options(@movement), rule.campaigns),
+                 {:multiple => true, :class => "required multiselectcheckbox"} %>
+</div>

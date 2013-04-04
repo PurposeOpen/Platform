@@ -1,0 +1,1 @@
+AutoFireEmailDefaults = YAML.load_file("#{Rails.root}/config/autofire-email-defaults.yml").with_indifferent_access

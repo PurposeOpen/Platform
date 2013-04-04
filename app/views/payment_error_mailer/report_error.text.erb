@@ -1,0 +1,16 @@
+Data from Payment Gateway: 
+<% if !@donation_error.error_code.empty? %>
+ - Code: <%= @donation_error.error_code %>
+<% end %>
+ - Message: <%= @donation_error.message %>
+
+Member data:
+ - Name: <%= "#{@donation_error.member_first_name} #{@donation_error.member_last_name}" %>
+ - Email: <%= @donation_error.member_email %>
+ - Country: <%= @donation_error.member_country_iso %>
+
+Donation data:
+ - Page: <%= @donation_error.action_page.name %>
+ - Payment method: <%= @donation_error.donation_payment_method %>
+ - Amount in cents: <%= @donation_error.donation_amount_in_cents %>
+ - Currency: <%= @donation_error.donation_currency %>

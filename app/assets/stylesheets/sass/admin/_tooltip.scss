@@ -1,0 +1,65 @@
+.customised-tooltip {
+  .ui-tooltip-content {
+  	padding: 8px 15px;
+  	font-size: 12px;
+  	color: #6E5232;
+  	
+  	h3 {
+    	margin-top: 8px;
+    	clear: both;
+    	display: block;
+    	color: #6E5232;  	
+      /*	line-height: 15px;*/
+  	}
+  
+  }
+}
+
+.tooltip {
+	background: url(image_path('tooltip_icon.png')) no-repeat;
+	cursor :help;
+	background-position: right center; 
+	padding-right: 18px;
+}
+
+
+
+label.tooltip {
+   padding-right: 16px;
+   width: 9.5em;
+   background-position: right 15px; 
+}
+
+.checkbox-group {
+  .tooltip{
+    width: 10em;
+    padding-right: 16px;
+    background-position-y:  4px;
+  }
+}
+
+#listForm {
+  .tooltip{
+    overflow:hidden;
+  }
+}
+
+.choose-email_action_rule {
+  dd{
+    width:300px;
+  }
+  #rules_email_action_rule_action, span, .tooltip{
+    float: left
+  }
+}
+
+.choose-state_territory_rule, .choose-email_domain_rule, .choose-action_taken_rule, .choose-campaign_rule, .choose-donor_rule, .choose-tagged_users_rule {
+  dd {
+    width:470px;
+  }
+}
+
+#blasts .send-actions{
+  padding-right: 18px;
+  margin-right: 10px;
+}

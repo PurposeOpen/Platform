@@ -1,0 +1,31 @@
+<%= render :layout => 'layouts/base' do %>
+  <div id="admin_movements">
+    <div class="left_column">
+      <ul id="navbar">
+        <%= navbar_header_movement "Movement", can?(:create, Movement.new)  %>
+        <%= navbar_item :campaigns,                    "Campaigns",         path: admin_movement_campaigns_path(@movement), icon: "globe" if can?(:read, @movement) %>
+        <%= navbar_item :settings,                     "Settings",          path: edit_admin_movement_path(@movement), icon: "cog" if can?(:edit, @movement) %>
+        <%= navbar_item :users,                        "Users",             path: admin_movement_users_path(@movement), icon: "user" if can? :read, PlatformUser %>
+        <%= navbar_header "Content" %>
+        <%= navbar_item :featured_content_collections, "Featured Items",    path: admin_movement_featured_content_collections_path(@movement), icon: "list-alt" if can?(:read, @movement) %>
+        <%= navbar_item :content_pages,                "Content Pages",     path: admin_movement_content_pages_path(@movement), icon: "columns" if can?(:read, @movement) %>
+        <%= navbar_item :homepage,                     "Homepage",          path: admin_movement_homepages_path(@movement), icon: "home" if can?(:manage, @movement.homepage) %>
+        <%= navbar_item :images,                       "Images",            path: admin_movement_images_path(@movement), icon: "picture" if can?(:read, @movement) %>
+        <%= navbar_item :assets,                       "Assets",            path: admin_movement_downloadable_assets_path(@movement), icon: "book" if can?(:read, @movement) %>
+        <%= navbar_header "Statistics" %>
+        <%= navbar_item :home,                         "Snapshot",          path: admin_movement_path(@movement), icon: "bar-chart" if can?(:read, @movement) %>
+        <%= navbar_item :analytics,                    "Site Activity",     path: 'http://www.google.com/analytics/', icon: "external-link" %>
+      </ul>
+    </div>
+
+    <div class="right_column">
+      <div class="top-bar">
+        <div class="breadcrumbs">
+          <%= breadcrumbs %>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <%= yield %>
+    </div>
+  </div>
+<% end %>

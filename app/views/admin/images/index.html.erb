@@ -1,0 +1,15 @@
+<% title "Image Manager" %>
+<%= page_header "Image Manager", search: admin_movement_images_path %>
+
+<div id="upload-image-form">
+  <%= render :partial => 'admin/images/form' %>
+</div>
+
+<div id="image-library">
+  <%= render :partial => 'gallery' %>
+  <%= will_paginate @images %>
+</div>
+
+<%= javascript_tag do %>
+  $(imagesPage);
+<% end %>

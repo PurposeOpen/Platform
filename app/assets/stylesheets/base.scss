@@ -1,0 +1,279 @@
+$ninesixty-columns: 16;
+
+// Colors
+$WHITE: white;
+$BLUE: #2CC2EC;
+$DARK-BLUE: #1CA0C5;
+$GRAY: rgb(200, 200, 200);
+$LIGHT-GRAY: lighten($GRAY, 10%);
+$DARK-GRAY: darken($GRAY, 20%);
+$VERY-DARK-GRAY: darken($GRAY, 40%);
+$VERY-LIGHT-GRAY: #fbfbfb;
+$RED: #D84A38;
+$DARK_RED: #C6322A;
+$TAG-BORDER-COLOR: #A5D24A;
+$TAG-COLOR: #638421;
+$TAG-BACKGROUND-COLOR: #CDE69C;
+
+// Defalts
+$BODY-FONT-FAMILY: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$BODY-BACKGROUND: $LIGHT-GRAY;
+$HEADER-BACKGROUND: $BLUE;
+$HEADER-FOREGROUND: $WHITE;
+$FOOTER-BACKGROUND: $GRAY;
+$FOOTER-FOREGROUND: $DARK-GRAY;
+$HEADER-FOOTER-BORDER-WIDTH: 4px;
+$HEADER-FOOTER-BORDER: $HEADER-FOOTER-BORDER-WIDTH solid $DARK-GRAY;
+$DEFAULT-PADDING: 10px;
+$DEFAULT-MARGIN: 10px;
+$DEFAULT-RADIUS: 2px;
+
+$HEADER-HEIGHT: 36px;
+$FOOTER-HEIGHT: 100px;
+
+// 'Admin'
+$highlight: #f7f7f7;
+$highlight-dark: #e6e6e6;
+$flash: #0a0;
+$link: #5d96cd;
+$error: #c00;
+$subtle: #ccc;
+$less-subtle: #999;
+$page-width: 960px;
+$shadow: #666;
+$working: #feffbd;
+
+@include sticky-footer($FOOTER-HEIGHT, "#container", "#container_footer", "#footer");
+
+@mixin rounded-corners($radius: $DEFAULT-RADIUS) {
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  -o-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -khtml-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin white_box {
+  @include rounded-corners;
+  background-color: white;
+  border: 1px solid $GRAY;
+  margin-bottom: 10px;
+  padding: 15px;
+}
+
+@mixin content-module-icon($class_selector, $bg_image) {
+  .add-module-link.#{$class_selector},
+  h4.#{$class_selector},
+  .add-from-bookmark.#{$class_selector} {
+    background-image: image-url('#{$bg_image}');
+  }
+}
+
+@mixin add-series() {
+  cursor:pointer;
+  display:block;
+  float:left;
+  text-indent:20px;
+  text-decoration:none;
+  width:16px;
+  height:16px;
+  background:transparent image-url("add.png") 0 50% no-repeat;
+  &:hover {
+    text-decoration:underline;
+  }
+}
+
+@mixin stats-table() {
+  .stats-table {
+    @include rounded-corners;
+    padding: 10px;
+    margin-top: 10px;
+    border: solid 1px $subtle;
+    th {
+      background:#f7f7f7;
+    }
+    .percentage {
+      color: $less-subtle;
+    }
+    th.percentage {
+      text-indent:-9999em;
+    }
+  }
+}
+
+@mixin remove-series() {
+  cursor:pointer;
+  display:block;
+  float:left;
+  text-indent:20px;
+  text-decoration:underline;
+  width:16px;
+  height:16px;
+  margin: 0 6px 0 0;
+  text-indent:-9999px;
+  background:transparent image-url('delete.png') 0 50% no-repeat;
+}
+
+@mixin drop-shadow($color) {
+  box-shadow: $color 1px 1px 4px;
+  -webkit-box-shadow: $color 1px 1px 4px;
+  -moz-box-shadow: $color 1px 1px 4px;
+}
+
+@mixin link_icon($image) {
+  background: transparent image-url(#{$image}) 5px 50% no-repeat;
+  padding: 5px 5px 5px 28px;
+}
+
+@mixin rounded-highlight-box-with-bg($color) {
+  @include rounded-corners;
+  background: #{$color};
+  padding: 10px;
+  margin-top: 10px;
+  border: solid 1px $subtle;
+  .description {
+    font-size: 0.8em;
+    margin-top: 5px;
+    color: $subtle;
+  }
+}
+
+@mixin listing($plural, $singular) {
+  ##{$plural}-list {
+    @include rounded-corners;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    padding: 10px;
+  }
+  h3 { text-transform: uppercase; }
+  .big-link.#{$singular}:hover {
+    background: $highlight;
+  }
+  .#{$singular} {
+    @include rounded-highlight-box-with-bg('white')
+  }
+  .new-#{$singular} {
+  }
+  a.add-#{$singular} {
+  }
+}
+
+
+@mixin horizontal_tabs() {
+  .tab_content {
+    @include white_box;
+    clear: both;
+  }
+
+  .horizontal_tabs {
+    margin-left: 10px;
+
+    li {
+      float: left;
+      @include white_box;
+      padding: 2px 10px 2px 10px;
+      margin: 0 2px -1px 0;
+      box-shadow: inset 0 -2px 1px #ccc;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+
+    }
+
+    .active {
+      border-bottom: 1px solid white;
+      box-shadow: none;
+    }
+  }
+}
+
+@mixin clearfix() {
+  &:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+}
+
+@mixin default-font() {
+  font-family: $BODY-FONT-FAMILY;
+  font-size: 14px;
+  font-weight: 400;
+  color: black;
+}
+
+@mixin toggle-switch($on-label, $off-label, $width: 130px) {
+    $button-width: $width;
+    $button-height: 20px;
+    $switch-width: $button-height;
+    $switch-height: $button-height;
+    
+    display: none;
+    @include box-sizing(border-box);
+
+    &+label {
+      display: inline-block;
+      font-size: 0;
+      line-height: 0;
+      position: relative;
+      background-image: linear-gradient(right, rgb(50, 125, 225) 50%, rgb(220, 69, 57) 50%);
+      background-size: 200% 100%;
+      background-position: ($switch-width / 2) 0;
+      border-radius: $button-height / 2;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25),
+                  inset 0 0 1px rgba(0, 0, 0, 0.25),
+                  0 0 0 1px rgba(0, 0, 0, 0.1),
+                  0 -1px 1px 0 rgba(0, 0, 0, 0.25),
+                  0 1px 1px 1px rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      height: $button-height;
+  
+      width: $button-width;
+      @include transition-duration(35ms);
+      
+      &:after {
+        content: "";
+        display: inline-block;
+        height: $switch-height;
+        width: $switch-width;
+        border-radius: $switch-height / 2;
+        background-color: #eee;
+        background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.1), rgba(0, 0, 0 , 0.1));
+        box-shadow: inset 0 1px 1px 1px rgba(255, 255, 255, 0.5),
+                    inset 0 -1px 1px 1px rgba(0, 0, 0, 0.25),
+                    0 1px 1px 1px rgba(0, 0, 0, 0.25);
+        position: relative;
+        left: 0;
+        top: 0;
+      }
+      
+      &:before {
+        content: $off-label;
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        left: 5px;
+        height: $button-height;
+        width: $button-width;
+        color: rgba(255, 255, 255, 0.8);
+        font: 10px sans-serif;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-align: center;
+        line-height: $button-height;
+        text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.8);
+      }
+  }
+
+  &:checked+label {
+    background-position: $button-width - ($switch-width / 2) 0;
+    padding-left: $button-width - $switch-width;
+    padding-right: 0;
+    &:before {
+      content: $on-label;
+      left: -2px;
+    }
+  }
+}

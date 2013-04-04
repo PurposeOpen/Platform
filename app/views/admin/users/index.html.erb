@@ -1,0 +1,24 @@
+<%= page_header "Users", search: admin_movement_users_path(@movement) do %>
+  <%= link_to icon("file") + "New User", new_admin_movement_user_path(@movement) %>
+<% end %>
+
+<div id="users">
+  <table>
+    <thead>
+      <tr> <th>ID</th> <th>Name</th> <th>Email</th> <th>⚙</th> </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= link_to user.id,                       edit_admin_movement_user_path(@movement, user) %></td>
+          <td><%= link_to user.name,                     edit_admin_movement_user_path(@movement, user) %></td>
+          <td><%= link_to user.email,                    edit_admin_movement_user_path(@movement, user) %></td>
+          <td><%= link_to "#{user.is_admin ? '✓' : ''}", edit_admin_movement_user_path(@movement, user) %></td>
+         </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<span><%= page_entries_info @users, :entry_name => 'user', :plural_name => 'users', :model => 'user' %></span>
+<%= will_paginate @users %>

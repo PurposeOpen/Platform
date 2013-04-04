@@ -1,0 +1,75 @@
+<%= form_for([:admin, @movement, @email]) do |f| %>
+
+  <% if @blast.has_pending_jobs? && !@email.delayed_job_id.blank? %>
+    <p class="warning full top">This email is scheduled for delivery. Changes made will not apply to blasts already scheduled.</p>
+  <% end %>
+
+  <%= form_errors(@email) %>
+  <input type="hidden" name="blast_id" value="<%= @blast.id %>"/>
+  <div id="email-info" class="layout-container">
+    <%= f.label :name, :class => "req" %>
+    <%= f.text_field :name %>
+    <div class="info">
+      Name is for internal reference only and will not be visible to the public.
+    </div>
+
+    <%= f.label :language_id, :class => "req" %>
+    <%= f.collection_select :language_id, @movement.languages, :id, :name %>
+  </div>
+
+  <div id="email-details-group" class="layout-container">
+    <h3>Email Details</h3>
+    <div class="module">
+      <%= f.label :from, :class => "req" %>
+      <%= f.text_field :from, :value => @email.from%>
+
+      <%= f.label :reply_to, :class => "req" %>
+      <%= f.text_field :reply_to, :value => @email.reply_to %>
+
+      <%= f.label :subject, :class => "req" %>
+      <%= f.text_field :subject, :value => @email.subject %>
+
+      <%= f.label :body, :class => "req" %>
+      <% data_options = {:image_upload_url => admin_movement_images_path(@movement)}%>
+      <%= f.text_area :body, :value => @email.body, :size => 6, :class => 'html-full-editor', :data => (data_options if @movement) %>
+    </div>
+    <div class="buttonbar">
+      <span class="status"></span> <%= f.submit "Save", :name => "save" %>
+    </div>
+  </div>
+  <% if @blast.has_pending_jobs? && !@email.delayed_job_id.blank? %>
+    <p class="warning full bottom">This email is scheduled for delivery. Changes made will not apply to blasts already scheduled.</p>
+  <% end %>
+
+  <div id="email-test-group" class="layout-container">
+    <h3>Send Proof</h3>
+    <div class="module">
+      <label class="req" for="test_recipients">Recipients</label>
+      <input type="text" id="test_recipients" name="test_recipients">
+    </div>
+    <div class="buttonbar">
+      <span class="status"></span>
+      <%= f.submit "Save & Send proof", :name => "save_send" %>
+      <%= link_to "Cancel", admin_movement_push_path(@movement, @blast.push), :class => 'button inline' %>
+    </div>
+  </div>
+<% end %>
+<script>
+$("#main form #email-details-group").dirty_form({
+  notify: {
+    selector: ".buttonbar .status",
+    message: "You have unsaved changes",
+ },
+  unless: {
+    action: "click",
+    selector: ".buttonbar input[type=submit]"
+  },
+  callback: function (is_dirty) {
+    if (is_dirty) {
+      $("#send-test").val("ave email and send test");
+    } else {
+      $("#send-test").val("Send test");
+    }
+  }
+});
+</script>

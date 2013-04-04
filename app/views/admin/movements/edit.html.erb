@@ -1,0 +1,9 @@
+<div id="edit_movement">
+  <%= page_header "Settings" do %>
+    <%= link_to icon("envelope") + "New User Emails", admin_movement_join_emails_path(@movement)   if can?(:edit, JoinEmail) %>
+    &nbsp;
+    <%= link_to icon("envelope") + "Email Footers",   admin_movement_email_footers_path(@movement) if can?(:edit, EmailFooter) %>
+  <% end %>
+
+  <%= render :partial => "form" %>
+</div>

@@ -1,0 +1,52 @@
+@import "base";
+@import "admin/generic";
+@import "admin/header";
+@import "admin/pages";
+@import "admin/blasts";
+@import "admin/bookmarks";
+@import "admin/image_manager";
+@import "admin/drag_and_drop";
+
+/* EDIT HOMEPAGE */
+#edit-homepage {
+  #legend {
+    @include rounded-corners(5px);
+    background: $highlight;
+    border: solid 1px $subtle;
+    margin-bottom: 10px; 
+    padding: 10px;
+    text-align: center;
+  } 
+}
+
+
+/* DOWNLOADABLE ASSETS */
+#asset-gallery {
+  li {
+    margin-top: 10px; 
+  } 
+}
+
+
+/* REDIRECTS INDEX */
+#main {
+  #redirects-list {
+    .new-redirect {
+      @include link_icon('redirect.png');
+    }
+  }
+}
+
+@import "admin/list_cutter";
+@import "admin/get_together";
+@import "admin/autosuggest";
+@import "admin/webkit";
+@import "admin/opera";
+@import "admin/ie";
+@import "admin/ff3";
+@import "admin/tooltip";
+@import "admin/content_modules";
+@import "admin/transactions";
+@import "admin/flagged_donations";
+@import "admin/movements";
+@import "admin/users";

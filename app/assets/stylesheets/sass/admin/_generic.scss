@@ -1,0 +1,244 @@
+/* =generic */
+body.admin-section {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: Helvetica, Arial;
+    font-weight:bold;
+    color:#333;
+  }
+  #main {
+    font-size:12px;
+    width:960px;
+  }
+}
+
+table {
+  width: 100%;
+  margin-top: 10px;
+  td, th {
+    border: solid 1px $subtle;
+    border-collapse: collapse;
+    padding: 5px;
+  }
+  th {
+    background: $highlight;
+    text-align: left;
+  }
+  td {
+    background: #fff;
+  }
+}
+
+span.connector {
+  padding:0 1em;
+}
+
+hr.clear {
+  height:0;
+  border:0;
+  background:none;
+  color:transparent;
+}
+
+.section {
+  @include rounded-corners(5px);
+  background: $highlight;
+  border: solid 1px $subtle;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+label.submit-button {
+  clear:left;
+  float:left;
+  margin:0 0 20px 0;
+  width:auto;
+  input {
+    float:right;
+  }
+}
+
+#admin-banner {
+  height: 120px;
+}
+
+a {
+  color: $link;
+  text-decoration: none;
+}
+a.subtle {
+  font-size: 0.8em;
+}
+span.subtle {
+  font-size: 0.8em;
+  color: $subtle;
+}
+
+.actions {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
+span.status {
+  color:$shadow;
+  padding:0 0.5em 0 0;
+}
+
+h1 {
+  display: inline;
+  font-size: 1.6em;
+}
+
+h2 {
+  font-size: 1.2em;
+}
+
+h3 {
+  display: inline;
+}
+
+p {
+  margin: 10px 0;
+  clear: both;
+}
+
+.error {
+  color: $error;
+}
+
+.flash.error {
+  color: $error;
+}
+
+form {
+  overflow:hidden;
+  input[type=text], select, textarea {
+    width: $page-width - 170px;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+  label {
+    float: left;
+    width: 120px;
+    padding-top: 15px;
+    margin-right: 10px;
+    text-align: right;
+    font-size: 0.9em;
+  }
+  p.checkbox-option {
+    margin-left: 11em;
+    label {
+      float:none;
+    }
+  }
+
+  label.req:after {
+    content: "*";
+  }
+  .info {
+    clear: both;
+    margin-left: 130px;
+    font-size: 0.8em;
+    color: $subtle;
+    margin-bottom: 10px;
+  }
+  .search-info {
+    clear: both;
+    margin-left: 5px;
+    font-size: 0.8em;
+    color: $subtle;
+    margin-bottom: 10px;
+  }
+  .buttonbar {
+    text-align: right;
+    input {
+      width: auto;
+    }
+    a {
+      color: $subtle;
+    }
+  }
+  .field_with_errors {
+    label {
+      color: $error;
+    }
+    input, textarea {
+      border: solid 1px $error;
+    }
+  }
+  .checkbox-group {
+    display:block;
+    float:left;
+    padding:6px 0 0 0;
+    label {
+      padding: 4px 0 0 0;
+    }
+  }
+}
+.searchbar {
+  form {
+    display: inline;
+    input {
+      width: auto;
+    }
+    input.query {
+      width: 400px;
+    }
+    label {
+      float: none;
+    }
+  }
+}
+
+.pagination {
+  margin-top: 10px;
+  text-align: center;
+  a, em, span {
+    padding: 0 5px;
+  }
+}
+
+.historybar {
+  @include rounded-corners(3px);
+  color: $subtle;
+  margin-top: 10px;
+  text-align: right;
+  font-size: 0.8em;
+  span.time {
+    border-bottom: 1px dashed $subtle;
+    cursor: default;
+  }
+}
+
+.button-links {
+  margin-top: 15px;
+  height: 15px;
+  text-align: right;
+  .left {
+    float: left;
+    text-align: left;
+  }
+  .info {
+    margin: 5px 0 0;
+  }
+  a {
+    @include rounded-corners(3px);
+    padding: 3px 5px;
+    border: solid 1px $subtle;
+    background: #FFF;
+  }
+  a:hover {
+    background-color: $highlight;
+  }
+
+  a.send-email {
+    @include link_icon('email_go.png');
+  }
+}
+
+.button-links.top {
+  float: right;
+  margin-top: 5px;
+}

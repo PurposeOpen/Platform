@@ -1,0 +1,29 @@
+<div class="action_sequence_preview">
+  <h1 class="preview_header"><%= @action_sequence.name %> Preview </h1>
+
+  <p class="warning_text">
+    WARNING: This is only a preview of the action sequence.
+  </p>
+  <div class="clear"></div>
+  <div id="action-pages-languages-tab">
+    <ul>
+      <% @movement.languages.each do |language| %>
+          <li><%= link_to language.name, "#page-#{language.iso_code}" %></li>
+      <% end %>
+    </ul>
+
+    <% @movement.languages.each do |language| %>
+        <div id="page-<%= language.iso_code %>" class="tab_content">
+          <ul class="action_sequence_breadcrumb">
+            <% @action_pages.each_with_index do |action_page, index| %>
+                <% Rails.logger.info "Action Page #{action_page.id} Controller: #{@action_page.id}"   %>
+                <li><%= link_to action_page.name, preview_url_for_action_sequence(language.iso_code, @movement, action_page), class: (action_page.id == @action_page.id ? "current" : "") %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+  </div>
+
+</div>
+
+<div id="preview_window"></div>

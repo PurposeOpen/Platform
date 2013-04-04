@@ -1,0 +1,36 @@
+  <h4>Upload a New Image</h4>
+  <%= form_for(@new_image, :as => :image, :url => admin_movement_images_path(@movement),
+                        :class => 'new-image',
+                        :html => { :multipart => true }) do |form| %>
+  <%= form_errors(@new_image) %> 
+  <ul>
+    <li>
+      <%= form.label :image, "Image file:" %>
+      <%= form.file_field :image %>
+    </li>
+    <li>
+      <%= form.label :image_description, "Brief description:" %>
+      <%= form.text_area :image_description, :rows => 3, :cols => 20, :placeholder => 'e.g. Climate campaign banner image.' %>
+    </li>
+    <% if Feature[:assets][:show_resize_image] %>
+      <li class="resize-option">
+          <%= form.label :image_resize, 'Resize image:' %>
+          <%= form.check_box :image_resize, :class => 'image-resize' %>
+      </li>
+      <li class="image-dimensions">
+        <div class="default-size">
+          <%= form.label :dimensions, 'Preset dimensions:' %>
+          <%= form.select :dimensions, Image::SIZES %>
+        </div>
+        <div class="custom-size">
+          <%= form.label :image_height,  'Custom dimensions:' %>
+          <%= form.text_field :image_width, :class => 'width' %>
+          x
+          <%= form.text_field :image_height, :class => 'height' %>
+          (width x height)
+        </div>
+      </li>
+    <% end %>
+  </ul>
+  <%= form.submit 'Upload', :disable_with => "Uploading…" %>
+  <% end %>

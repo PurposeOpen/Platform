@@ -1,0 +1,25 @@
+<div class="content_page_preview">
+
+  <p class="warning_text">
+    WARNING: This is only a preview of the content page.
+  </p>
+  <div class="clear"></div>
+  <div id="action-pages-languages-tab">
+    <ul>
+      <% @movement.languages.each do |language| %>
+          <li><%= link_to language.name, "#page-#{language.iso_code}" %></li>
+      <% end %>
+    </ul>
+
+    <% @movement.languages.each do |language| %>
+        <div id="page-<%= language.iso_code %>" class="tab_content">
+          <ul class="action_sequence_breadcrumb">
+              <li><%= link_to @content_page.name, preview_url_for_action_sequence(language.iso_code, @movement, @content_page), class: "current" %></li>
+          </ul>
+        </div>
+    <% end %>
+  </div>
+
+</div>
+
+<div id="preview_window"></div>

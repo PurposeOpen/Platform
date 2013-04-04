@@ -1,0 +1,23 @@
+<div class="action_sequence_preview">
+  <h1 class="preview_header"> Preview </h1>
+
+  <p class="warning_text">
+    WARNING: This is only a preview of the homepage.
+  </p>
+
+  <div class="clear"></div>
+  <div id="homepage-preview-languages-tab">
+    <ul>
+      <% @movement.languages.each do |language| %>
+          <li><%= link_to language.name, "#page-#{language.iso_code}" %></li>
+      <% end %>
+    </ul>
+    <% @movement.languages.each do |language| %>
+        <div id="page-<%= language.iso_code %>" class="tab_content">
+          <li class="homepage_preview" style="display: none;"><%= link_to language.name, "#{@movement.url}/#{language.iso_code}/preview/?draft_homepage_id=#{params[:draft_homepage_id]}"%></li>
+        </div>
+    <% end %>
+  </div>
+</div>
+
+<div id="preview_window"></div>

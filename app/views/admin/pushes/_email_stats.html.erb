@@ -1,0 +1,32 @@
+<table class="email-statistics">
+  <thead>
+    <tr>
+      <th>Sent At</th>
+      <th>Blast</th>
+      <th>Email</th>
+      <th>Sent to</th>
+      <th>Opens</th>
+      <th>Clicks</th>
+      <th>Actions Taken</th>
+      <th>New Members</th>
+      <th>Unsubscribed</th>
+      <th>Spam</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% stats_table.full_rows.each do |row| %>
+      <tr>
+        <td><%= row['Sent At'] %></td>
+        <td><%= row['Blast'] %></td>
+        <td><%= row['Email'] %></td>
+        <td class='numerical'><%= row['Sent to'] %></td>
+        <%= numerical_table_value row, "Opens" %>
+        <%= numerical_table_value row, "Clicks" %>
+        <%= numerical_table_value row, "Actions Taken" %>
+        <%= numerical_table_value row, "New Members" %>
+        <%= numerical_table_value row, "Unsubscribed" %>
+        <%= numerical_table_value row, "Spam" %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

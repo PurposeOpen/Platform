@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+		<style type="text/css">
+					
+			p {
+				margin: 1em 0;
+			}
+
+			@media only screen and (max-device-width: 480px) {
+				
+				[class="body"] {
+					font-size: 16px !important;
+					line-height: 19px !important;
+				}	 
+					
+				img[class="header"] {
+					width: 320px !important;
+					height: 48px !important;
+				}		
+							
+				table[class="sidebox"] {
+					width: 150px !important;
+				} 
+
+				img[class="sidebox"] {
+					width: 120px !important;
+					height: 79px !important;
+				}
+
+				img[class="sidebox-button"] {
+					width: 120px !important;
+					height: 22px !important;
+				} 
+
+				table[class="table-footer"] {
+					width: 320px !important;
+					padding: 5px !important;
+				}		
+			}
+		</style>
+  </head>
+<body>
+  <%=raw @body_text[:html].gsub(/<br[\s]*>|<br[\s]*\/>/,  "<br/>\r\n") %>
+  <br>
+  <%=raw @footer[:html] if @footer.present? %>
+</body>
+</html>

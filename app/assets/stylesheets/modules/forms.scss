@@ -1,0 +1,120 @@
+form {
+  fieldset {
+    margin-bottom: $DEFAULT-MARGIN;
+    overflow: visible;
+
+    legend {
+      font-size: 24px;
+      font-weight: 100;
+      border-bottom: 1px solid $GRAY;
+      width: 100%;
+      padding-bottom: $DEFAULT-PADDING;
+    }
+  }
+
+  input {
+    margin-bottom: 10px;
+  }
+
+  .info {
+    color: #777;
+    font-style: italic;
+    font-size: 11px;
+    color: $GRAY;
+
+    em {
+      font-family: monospace;
+      font-style: normal;
+    }
+  }
+
+  input[type=search] {
+    -webkit-appearance: none;
+  }
+
+  input[type=text], input[type=password], input[type=number], input[type=search], textarea, select {
+    width: 100%;
+    border: 1px solid $LIGHT-GRAY;
+    color: $VERY-DARK-GRAY;
+    @include rounded-corners;
+    background-color: white;
+    padding: 4px;
+    font-size: 14px;
+    font-family: $BODY-FONT-FAMILY;
+
+    &.wide { width: 500px; }
+    &.x-wide { width: 700px; }
+    &:focus { border: 1px solid $DARK-GRAY; outline-width: 0; transition: border 0.2s ease; }
+  }
+
+  input[type=radio], input[type=checkbox] {
+    display: inline;
+    width: auto;
+    margin: 10px 0 3px;
+  }
+
+  label {
+    display: block;
+    margin: 5px 0px 2px 0px;
+    color: $VERY-DARK-GRAY;
+    font-weight: 300;
+    font-size: 14px;
+
+    &.radio, &.checkbox {
+      display: inline;
+    }
+  }
+
+  > p {
+    margin-bottom: $DEFAULT-MARGIN;
+  }
+
+  div.form_row {
+    clear: both;
+    width: 100%;
+  }
+
+  > p.form_inputs {
+    float: left;
+  }
+
+  input[type=checkbox] + label {
+    display: inline;
+  }
+
+  form > div > p {
+    margin-bottom: $DEFAULT-MARGIN;
+  }
+
+  input.query {
+    margin-right: 4px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 200px;
+
+    + button[type=submit] {
+      margin-left: -5px;
+      padding-bottom: 4px;
+      line-height: 18px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}
+
+input[type=submit], .button {
+  @include rounded-corners;
+  padding: 4px 10px 4px 10px;
+  border: 0;
+  color: white !important;
+  cursor: pointer;
+  background-color: $DARK-BLUE;
+  display: inline-block;
+  font-weight: 600;
+
+  &:hover {
+    background-color: darken($DARK-BLUE, 10%);
+    text-decoration: none;
+  }
+  font-size: 14px;
+}

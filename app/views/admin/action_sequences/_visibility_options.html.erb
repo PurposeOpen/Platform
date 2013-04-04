@@ -1,0 +1,34 @@
+<div id="visibility_and_languages">
+  <div id="visibility_options">
+    <h3>Visibility</h3>
+    <%= form_tag toggle_published_status_admin_movement_action_sequence_path(movement, action_sequence), :id => "toggle_published_status_form", :method => :put, :remote => true do %>
+      <%= hidden_field_tag "published", "" %>
+    <% end %>
+
+    <div class="toggle_wrapper">
+      <%= check_box_tag 'published', 'published', action_sequence.published, :id => "published_toggle" %>
+      <%= label_tag 'published_toggle', 'Published' %>
+    </div>
+
+    <p class="published_message" <%= visible_if action_sequence.published %>>This action sequence is available for public view in the selected languages.</p>
+    <p class="unpublished_message" <%= visible_if !action_sequence.published %>>This action sequence is hidden from public view for all movement languages.</p>
+  </div>
+
+  <div id="enabled_languages_options">
+    <h3>Enabled languages</h3>
+    <%= form_tag toggle_enabled_language_admin_movement_action_sequence_path(movement, action_sequence), :id => "toggle_enabled_language_form", :method => :put, :remote => true do %>
+      <%= hidden_field_tag "iso_code", "" %>
+      <%= hidden_field_tag "enabled", "" %>
+    <% end %>
+
+    <div class="language_toggles">
+      <% movement.languages.each do |language| %>
+        <div class="language_wrapper" data-lang="<%= language.iso_code %>">
+          <p><%= language.name %></p>
+          <%= check_box_tag "action_sequence[enabled_languages][]", language.iso_code, action_sequence.language_enabled?(language), :id => "enabled_languages_#{language.iso_code}", :class => "language_toggle" %>
+          <%= label_tag "enabled_languages_#{language.iso_code}", language.name %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

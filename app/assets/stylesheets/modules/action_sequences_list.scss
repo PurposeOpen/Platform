@@ -1,0 +1,35 @@
+.action_sequences {
+  table {
+    thead { 
+      th { padding: 4px 10px; color: rgba(0, 0, 0, 0.7); }
+      background-color: rgba(0, 0, 0, 0.07); 
+      border: none;
+    }
+
+    tbody {
+      tr.action_sequence { border: none; }
+      tr:hover { background-color: white; }
+      a { display: inline; }
+      td { 
+        padding: 4px 10px; 
+      }
+    }
+  }
+
+  .name {
+    width: 20%;
+  }
+
+  .action_sequence {
+    .name { 
+      font-weight: bold;
+      border-right: 1px solid rgba(0, 0, 0, 0.07);
+    }
+
+    .action_page { display: inline-block; }
+
+    .action_page + .action_page:before {
+      content: "»";
+    }
+  }
+}  

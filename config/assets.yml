@@ -1,0 +1,7 @@
+gzip_assets: off
+
+javascripts:
+  public:
+    - public/javascripts/public/**/*.js
+  admin:
+    - public/javascripts/admin/**/*.js

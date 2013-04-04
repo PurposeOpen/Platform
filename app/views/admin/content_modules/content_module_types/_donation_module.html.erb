@@ -1,0 +1,127 @@
+<%# Explicit label text for helper options to avoid overriding index set by fields_for when using HTML attributes %>
+<fieldset>
+  <legend>General</legend>
+  <%= render :partial => 'admin/content_modules/content_module_types/disabled_content_toggle', :locals => {:f => f, :content_module => content_module}%>
+
+  <%= f.label :title, 'Title', :class => "req" %>
+  <%= f.text_field :title %>
+
+  <%= f.label :content, 'Blurb' %>
+  <%= f.text_area :content, :rows => 4, :class => 'html-compact-editor' %>
+
+  <%= render :partial => 'admin/content_modules/content_module_types/disabled_content_fields', :locals => {:f => f, :content_module => content_module}%>
+</fieldset>
+<fieldset>
+  <legend>Goals</legend>
+  <%= f.label :donations_goal, 'Goal: Number of donors', :class => "req" %>
+  <%= f.text_field :donations_goal, :type => "number", :min => 0,
+                   :title => "This value is the same across all languages.",
+                   'data-sync-across-languages' => true %>
+
+  <%= f.label :thermometer_threshold, 'Show progress at', :class => "req" %>
+  <%= f.text_field :thermometer_threshold, :type => "number", :min => 0, 'data-sync-across-languages' => true %>
+</fieldset>
+
+<fieldset>
+  <legend>Frequency</legend>
+  <%= f.label :default_frequency %>
+  <%= f.select :default_frequency, options_for_select(content_module.available_frequencies_for_select, content_module.default_frequency) %>
+</fieldset>
+
+<fieldset>
+  <legend>Donation Amounts</legend>
+
+  <%= f.label :default_currency, :class => "req" %>
+  <%= f.select :default_currency, default_currency_options %>
+
+  <fieldset id="currencies">
+    <% DonationModule::AVAILABLE_CURRENCIES.each do |iso_code, currency| %>
+      <%= f.fields_for :suggested_amounts do |suggested_amounts_builder| %>
+        <%= f.fields_for :default_amount do |default_amount_builder| %>
+          <% suggested_amounts = f.object.suggested_amounts[iso_code.to_s] %>
+          <details <%= "#{suggested_amounts && !suggested_amounts.empty? ? 'open' : ''}" %>>
+            <summary><%= currency_summary(currency) %></summary>
+            <%= suggested_amounts_builder.label iso_code, 'Suggested amounts', :class => "req" %>
+            <%= suggested_amounts_builder.text_field iso_code, :value => suggested_amounts,
+                :class => 'suggested_amounts',
+                'data-module-id' => "#{f.object.id}",
+                'data-currency' => "#{iso_code.to_s}" %>
+
+            <label>Default amount</label>
+            <div id=<%= "default_amount_option_#{f.object.id}_#{iso_code.to_s}" %>>
+              <% default_amount_options(suggested_amounts).each do |amount| %>
+                <div class='default_amount_option' id=<%= "default_amount_option_#{f.object.id}_#{iso_code.to_s}_#{amount}" %>>
+                  <%= default_amount_builder.radio_button iso_code, amount, preselect_default_amount(f.object.default_amount[iso_code.to_s], amount) %>
+                  <%= default_amount_builder.label "#{iso_code}_#{amount}", amount %>
+                </div>
+              <% end %>
+            </div>
+
+            <div class='clear'></div>
+          </details>
+        <% end %>
+      <% end %>
+    <% end %>
+  </fieldset>
+</fieldset>
+
+<fieldset>
+  <legend>Monthly Donation Amounts</legend>
+
+  <%= f.label 'recurring_default_currency[monthly]', 'Monthly default currency' %>
+  <%= select_tag "content_modules[#{f.object.id}][recurring_default_currency][monthly]", options_for_select(default_currency_options, content_module.try(:recurring_default_currency).try(:[], 'monthly')) %>
+
+  <fieldset id="recurring_currencies">
+    <% DonationModule::AVAILABLE_CURRENCIES.each do |iso_code, currency| %>
+      <% suggested_amounts = f.object.try(:recurring_suggested_amounts).try(:[], 'monthly').try(:[], iso_code.to_s) %>
+
+      <details <%= "#{suggested_amounts && !suggested_amounts.empty? ? 'open' : ''}" %>>
+        <summary><%= currency_summary(currency) %></summary>
+        <%= label_tag "content_modules[#{f.object.id}][recurring_suggested_amounts][monthly][#{iso_code.to_s}]", 'Monthly suggested amounts' %>
+        <%= text_field_tag "content_modules[#{f.object.id}][recurring_suggested_amounts][monthly][#{iso_code.to_s}]",
+            suggested_amounts,
+            :class => 'suggested_amounts',
+            'data-module-id' => "#{f.object.id}",
+            'data-frequency' => "monthly",
+            'data-currency' => "#{iso_code.to_s}" %>
+
+        <label>Monthly default amount</label>
+        <div id=<%= "recurring_default_amount_option_#{f.object.id}_monthly_#{iso_code.to_s}" %>>
+          <% default_amount_options(suggested_amounts).each do |amount| %>
+            <div class='default_amount_option' id=<%= "recurring_default_amount_option_#{f.object.id}_monthly_#{iso_code.to_s}_#{amount}" %>>
+              <% selected = f.object.try(:recurring_default_amount).try(:[], 'monthly').try(:[], iso_code.to_s) == amount %>
+              <%= radio_button_tag "content_modules[#{f.object.id}][recurring_default_amount][monthly][#{iso_code.to_s}]", amount, selected %>
+              <%= label_tag "content_modules[#{f.object.id}][recurring_default_amount][monthly][#{iso_code.to_s}][#{amount}]", amount %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class='clear'></div>
+      </details>
+    <% end %>
+  </fieldset>
+</fieldset>
+
+<fieldset>
+  <legend>Donations</legend>
+  <%= render :partial => "admin/content_modules/content_module_types/activity_stream_templates", :locals => {:f => f} %>
+
+  <%= f.label :button_text, 'Button text', :class => "req" %>
+  <%= f.text_field :button_text %>
+</fieldset>
+
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    $.datepicker.setDefaults({dateFormat: 'dd-mm-yy'});
+
+    $('#content_modules_<%= content_module.id %>_commence_donation_at').datepicker({minDate:1});
+
+    $('#content_modules_<%= content_module.id %>_commence_donation_at').keydown(function(event) {
+      event.preventDefault();
+    });
+
+    $('#content_modules_<%= content_module.id %>_commence_donation_at_clear').click(function() {
+      $('#content_modules_<%= content_module.id %>_commence_donation_at').val('');
+    });
+  });
+<% end %>

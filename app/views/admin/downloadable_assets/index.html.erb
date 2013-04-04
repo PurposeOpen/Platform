@@ -1,0 +1,11 @@
+<% title "File Manager" %>
+<%= page_header "File Manager", search: admin_movement_downloadable_assets_path %>
+
+<div id="upload-asset-form" class="section">
+  <%= render :partial => 'admin/downloadable_assets/form' %>
+</div>
+
+<div id="asset-library" class="section">
+  <%= render :partial => 'admin/downloadable_assets/gallery' %>
+  <%=  will_paginate @assets %>
+</div>

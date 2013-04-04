@@ -1,0 +1,6 @@
+.ui-multiselectcheckbox-hasfilter ul { position:relative; top:2px }
+.ui-multiselectcheckbox-filter { float:left; margin-right:10px; font-size:11px }
+.ui-multiselectcheckbox-filter input { width:100px; font-size:10px; margin-left:5px; height:15px; padding:2px; border:1px solid #292929; -webkit-appearance:textfield; -webkit-box-sizing:content-box; }
+
+/* custom changes*/
+.ui-multiselectcheckbox-filter input {width:150px; height:20px}

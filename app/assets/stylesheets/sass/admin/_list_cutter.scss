@@ -1,0 +1,128 @@
+dl#list-cutter-name {
+  dt {
+    label {	
+      font-size:1em;
+      width:75px;
+      text-align:left;
+      padding: 1em 1em 1em 12px;
+    }
+  }
+  label.error {
+    float:left;
+    text-align:left;
+    display:block;
+    clear:left;
+    margin-left:108px;
+    width: 300px;
+  }
+}
+
+fieldset.list-cutter {
+  clear:left;
+  margin: 0 0 1em;
+}
+
+div.filter-values {
+  visibility:hidden;
+  overflow:hidden;
+  height:0;
+  width:0;
+}
+
+ul.list-cutter-filters {
+	margin-top: 1em;
+  li {
+    padding:1em 1em 0.8em 1em;
+    overflow:hidden;
+    span.list-cutter-filter-type {
+      display:block;
+      clear:left;
+      float:left;
+      select {
+       margin:0 2em 0 0.5em;
+       width:20em;
+       }    
+    }
+    ul.list-cutter-filter-value {
+      float:left;
+        display:block;
+    	input, select {
+      	width:40em;
+    	}
+    	select.filter-negate {
+     	 width:8em;
+	 margin:0 2em 0 0;
+        }
+        li {
+	  padding: 0;
+	  dl {
+	    dt {
+	      float:left;
+	      display:none;
+	    }
+	    select {
+	      float:left;
+ 	    }
+	    dd {
+	      float:left;
+	      input#rules_postcode_within_rule_postcode, input#rules_postcode_within_rule_within {
+	        width:8em;
+	      }
+	      select#rules_email_action_rule_action {
+	        width:8em;
+	      }
+              input#rules_email_action_rule_email_id {
+	        width:4em;
+              }
+	    }
+	    label.error {
+	      display:block;
+              clear:left;
+	      width:400px;
+	      margin-left:109px;
+	      text-align:left;
+              padding:0;
+            }
+ 	  }
+	}
+        li.enabled {
+	  display:block;
+	}
+      }
+        
+   }
+}
+
+
+ul.list-cutter-filters, .filter-actions {
+  .add-filter {
+    @include add-series();
+    float: none;
+  }
+  .remove-filter {
+    @include remove-series();
+  }
+}
+
+#list-cutter-results {
+  display:none;
+  margin: 0 0 10px 0;
+  h3.processing {
+    padding:0 0 0 10px;
+    height:36px;
+    line-height:36px;
+  }
+  img.loading {
+    float:left;
+  }
+}
+
+label.button {
+    clear:left;
+    float:left;
+    margin:0 0 20px 0;
+    width:auto;
+    input {
+	float:right;
+    }
+}

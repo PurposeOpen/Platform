@@ -1,0 +1,24 @@
+#action_pages_edit,
+#action_pages_update {
+  details {
+    .default_amount_option {
+      float: left;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      padding: 0px 5px 0px 3px;
+      border: 1px solid $TAG-BORDER-COLOR;
+      background-color: $TAG-BACKGROUND-COLOR;
+      @include rounded-corners;
+
+      input, label { float: left; }
+      input { margin-right: 5px; }
+      label { color: $TAG-COLOR; }
+    }
+    .clear {
+      clear: both;
+    }
+  }
+  details[open="open"] > .suggested_amounts {
+    display: none !important;
+  }
+}

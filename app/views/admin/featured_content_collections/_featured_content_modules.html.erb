@@ -1,0 +1,3 @@
+<% featured_content_modules.each do |_, featured_content_module| %>
+  <%= render :partial => 'admin/featured_content_collections/featured_content_module', :locals => { featured_content_module: featured_content_module } %>
+<% end %>

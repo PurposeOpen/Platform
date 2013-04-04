@@ -1,0 +1,295 @@
+.lvl2 {
+  text-align: left !important;
+  border-bottom: none !important;
+  margin-left: 15px;
+  font-size: 0.8em !important;
+}
+
+.lvl1{
+  margin-left: 0px;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 0.9em !important;
+}
+
+.lvl3{
+  margin-left: 25px;
+  font-size: small;
+}
+
+#list_cutter_new,
+#list_cutter_edit {
+  #list-cutter-name {
+    dt {
+      label {
+        font-size: 10px;
+        width: 75px;
+        text-align: left;
+        padding: 10px 10px 10px 12px;
+      }
+    }
+
+    label.error {
+      float: left;
+      text-align: left;
+      display: block;
+      clear: left;
+      margin-left:108px;
+      width: 300px;
+    }
+  }
+
+  .list-cutter {
+    clear: left;
+    margin: 0 0 10px;
+  }
+
+  .filter-values {
+    visibility: hidden;
+    overflow: hidden;
+    height: 0;
+    width: 0;
+  }
+
+  .list-cutter-filters {
+    margin-top: 10px;
+
+    .list-filter {
+      &:first-child {
+        .and-connector {
+          display: none;
+        }
+      };
+    }
+
+    .and-connector {
+      padding: 0 0 10px;
+    }
+
+    .list-cutter-filter {
+      @include white-box;
+
+      .list-cutter-filter-type {
+        display: block;
+        clear: left;
+        float: left;
+        select {
+          margin: 0 20px 0 5px;
+        }
+      }
+
+      .list-cutter-filter-value {
+        float: left;
+        display: block;
+
+        select.filter-negate {
+          width: 80px;
+          margin: 0 20px 0 0;
+        }
+
+        .rule-choice {
+          padding: 0;
+
+          .rule-active {
+            float: left;
+            display: none;
+          }
+
+          .rule-negate {
+            float: left;
+          }
+
+          .rule-details { float: left; }
+
+          label.error {
+            display: block;
+            clear: left;
+            text-align: left;
+            padding: 0;
+          }
+
+          .tooltip {
+            display: inline-block;
+          }
+
+          &.choose-country_rule {
+            .rule-details {
+              select {
+                width: 300px;
+              }
+              select.selected_by {
+                width: 125px;
+                float: left;
+              }
+              select.filter-negate {
+                width: 65px;
+                float: left;
+                margin-left: 10px;
+              }
+              select.country_rule_values {
+                width: 220px;
+              }
+            }
+          }
+
+          &.choose-zone_rule {
+            .rule-details {
+              select {
+                width: 100px;
+              }
+            }
+          }
+
+          &.choose-action_taken_rule {
+            .rule-details {
+              input {
+                width: 90px;
+              }
+            }
+          }
+
+          &.choose-postcode_within_rule,
+          &.choose-join_date_rule{
+            .rule-details {
+              select, input {
+                width: 90px;
+              }
+            }
+          }
+        }
+
+        li.enabled {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .list-cutter-filters, .filter-actions {
+    margin-bottom: 7px;
+    .add-filter {
+      @include add-series;
+      float: none;
+    }
+    .remove-filter {
+      @include remove-series;
+    }
+  }
+
+  form {
+    select, input {
+      width: auto;
+      margin: 0;
+      padding: 3px 7px;
+    }
+    input[type='text'] { padding: 3px; margin-top: 1px; }
+  }
+
+  .loading {
+    display: none;
+    img.loading {
+      float: left;
+    }
+  }
+
+  .list-cutter-result {
+    margin: 0 0 10px 0;
+  }
+
+  label.button {
+    clear: left;
+    float: left;
+    margin: 0 0 20px 0;
+    width: auto;
+    input { float: right; }
+  }
+
+  .choose-member_email_activity_rule, .choose-member_activity_rule, .choose-email_action_rule, .choose-campaign_rule {
+    width: 400px;
+
+    div.rule-details {
+      width: 240px;
+
+      select.range_operator {
+        width: 105px;
+        float: left;
+        margin: 0 10px;
+      }
+
+      .second_line {
+        margin-left: -277px;
+        margin-top: 30px;
+
+        select, input, label {
+          margin-right: 5px;
+          display: inline;
+        }
+
+        .activity_count {
+          width: 50px;
+        }
+
+        .since_date {
+          width: 100px;
+        }
+      }
+    }
+  }
+
+  .choose-action_taken_rule{
+    div.rule-details {
+      .ui-multiselectcheckbox {
+        width: 250px !important;
+        float: right;
+      }
+    }
+  }
+
+  .choose-email_action_rule {
+    .connector {
+      margin: 0 5px;
+      line-height: 22px;
+    }
+
+    div.rule-details {
+      .second_line {
+        margin-top: 30px;
+
+        .ui-multiselectcheckbox {
+          width: 300px !important;
+          float: right;
+        }
+
+
+      }
+    }
+  }
+  .choose-campaign_rule{
+    div.rule-details {
+      .ui-multiselectcheckbox{
+        width: 300px !important;
+        float: right;
+      }
+    }
+  }
+}
+
+form#listForm .list_cutter_error {
+  border: 2px solid red;
+}
+
+.show-rule {
+  border: 1px solid #C8C8C8;
+  border-radius: 2px;
+  padding: 15px;
+  margin: 5px 0 10px 0;
+  background: white;
+}
+
+.field-set {
+  border: 2px solid #C8C8C8;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+

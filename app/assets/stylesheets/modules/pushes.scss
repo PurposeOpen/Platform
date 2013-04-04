@@ -1,0 +1,96 @@
+
+
+#pushes_show {
+  .blasts .blast .send-actions .send-number{
+    width: 60px;
+    height: 30px;
+  }
+
+  .run_at_container {
+    margin-top: 10px;
+  }
+
+  #email-stats:target .email-statistics {
+    animation: background-blink 2s;
+  }
+  .email-statistics {
+    @include rounded-corners;
+    border: 1px solid $GRAY;
+
+    tbody tr {
+      border-bottom: 1px dotted $GRAY;
+    }
+
+    td {
+      vertical-align: bottom;
+      font-size: 12px;
+
+      p { margin: 0; }
+
+      &.numerical { text-align: right; }
+      &:last-child { border: none; }
+    }
+  }
+  
+  .send-number{
+    padding: 5px;
+  }
+
+  .in-progress {
+    text-align: center;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .countdown.sent {
+    color: green;
+    font-weight: 900;
+  }
+
+  .timer {
+    color: $DARK_RED;
+    font-weight: 900;
+  }
+  .button.abort {
+    background-color: $RED;
+    border: 1px solid $DARK_RED;
+    margin-left: 10px;
+    &:hover {
+      background-color: $DARK_RED;
+    }
+  }
+}
+.clone_email_container {
+  div{
+    margin-left: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-right: 10px;
+  }
+  select{
+    width: 300px;
+  }
+  .clone_email_sub_container {
+    div{
+      margin-left: 0px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    label{
+      width: 200px;
+    }
+    select{
+      width: 200px;
+    }
+  }
+
+}
+
+@keyframes background-blink {
+  from {
+    background: orange;
+  }
+  to {
+    background: initial;
+  }
+}

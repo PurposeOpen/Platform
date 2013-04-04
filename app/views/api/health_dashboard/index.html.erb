@@ -1,0 +1,13 @@
+<div id="service-statuses">
+  <ul>
+    <% platform_status = @service_statuses[:services].delete(:platform) %>
+    <li class="platform <%= class_for_status(platform_status) %>">
+      <span>platform: <%= platform_status %></span>
+    </li>
+    <% @service_statuses[:services].each do |service_status| %>
+      <li class="<%= service_status[0] %> <%= class_for_status(service_status[1]) %>">
+        <span><%= service_status[0] %>: <%= service_status[1] %></span>
+      </li>
+    <% end %>
+  </ul>
+</div>

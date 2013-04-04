@@ -1,0 +1,35 @@
+#quick_go{
+
+  float: right;
+  margin: 10px;
+
+  #quick_go_query {
+    width: 200px;
+    margin: 0;
+    font-size: 14px;
+  }
+
+}
+
+.ui-autocomplete-loading {
+    background: white url('loading.gif') right center no-repeat;
+}
+
+.ui-autocomplete{
+
+  max-width: 206px;
+  overflow-x: hidden;
+
+  .suggesion-type{
+    color: $GRAY;
+    font-style: italic;
+    font-size: 12px;
+  }
+  .suggestion{
+    color: $VERY-DARK-GRAY;
+  }
+}
+
+.ui-menu .ui-menu-item a.suggestion-link {
+  line-height: 1.2;
+}

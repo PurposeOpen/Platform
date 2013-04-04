@@ -1,0 +1,29 @@
+<table class="taf-statistics" >
+  <thead>
+    <tr>
+      <th></th>
+      <th>Facebook Shares</th>
+      <th>Twitter Shares</th>
+      <th>Email Shares</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% stats.each do |stat|%>
+      <tr>
+        <td><%=stat.page.slug%></td>
+        <td class='numerical'>
+          <p><%= stat.facebook_shares.to_i %></p>
+          <p><%= stat.facebook_shares_percentage %></p>
+        </td>
+        <td class='numerical'>
+          <p><%= stat.twitter_shares.to_i %></p>
+          <p><%= stat.twitter_shares_percentage %></p>
+        </td>
+        <td class='numerical'>
+          <p><%= stat.email_shares.to_i %></p>
+          <p><%= stat.email_shares_percentage %></p>
+        </td>
+      </tr>
+    <% end %>
+    <tbody>
+    </table>

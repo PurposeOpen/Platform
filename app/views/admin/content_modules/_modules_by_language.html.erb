@@ -1,0 +1,74 @@
+<div id="language_tabs">
+  <ul>
+    <% page.possible_languages.each do |language| %>
+      <li><%= link_to language.name, "#page-#{language.iso_code}", :id => "page_#{language.iso_code}_link", :class => page.all_modules_valid?(language) ? "" : "error" %></li>
+    <% end %>
+  </ul>
+
+  <% page.possible_languages.each do |language| %>
+    <div id="page-<%= language.iso_code %>" class="tab_content all_module_containers" data-lang="<%= language.iso_code %>">
+
+      <div class="row">
+        <div class="container container-full" data-layout-type="<%= ContentModule::HEADER %>">
+          <h5>Header Content</h5>
+          <div class="modules_container">
+            <%= render :partial => 'admin/content_modules/content_module', :collection => page.modules_for_container_and_language(ContentModule::HEADER, language), :locals => { :movement => @movement, :page => page } %>
+          </div>
+          <ul class="add_module_buttons">
+            <li><%= add_content_module_link page, HtmlModule, ContentModule::HEADER, "+ HTML" %></li>
+            <li><%= render :partial => 'admin/content_modules/link_to_existing_content_modules', :locals => { :page => page, :container => ContentModule::HEADER } %></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="container container-half" data-layout-type="<%= ContentModule::MAIN %>">
+          <h5>Main Content</h5>
+          <div class="modules_container">
+            <%= render :partial => 'admin/content_modules/content_module', :collection => page.modules_for_container_and_language(ContentModule::MAIN, language), :locals => { :content_page_form => f, :page => page } %>
+          </div>
+          <ul class="add_module_buttons">
+            <li><%= add_content_module_link page, HtmlModule, ContentModule::MAIN, "+ HTML" %></li>
+            <% if Feature[:action_pages][:show_add_accordion_module] %>
+              <li><%= add_content_module_link page, AccordionModule, ContentModule::MAIN, "+ Accordion" %></li>
+            <% end %>
+            <li><%= render :partial => 'admin/content_modules/link_to_existing_content_modules', :locals => { :page => page, :container => ContentModule::MAIN } %></li>
+          </ul>
+        </div>
+
+        <div class="container container-half" data-layout-type="<%= ContentModule::SIDEBAR %>">
+          <h5>Sidebar Content</h5>
+          <div class="modules_container">
+            <%= render :partial => 'admin/content_modules/content_module', :collection => page.modules_for_container_and_language(ContentModule::SIDEBAR, language), :locals => { :content_page_form => f, :page => page } %>
+          </div>
+          <ul class="add_module_buttons">
+            <li><%= add_content_module_link page, HtmlModule, ContentModule::SIDEBAR, "+ HTML" %></li>
+            <% if Feature[:action_pages][:show_add_accordion_module] %>
+              <li><%= add_content_module_link page, AccordionModule, ContentModule::SIDEBAR, "+ Accordion" %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container container-full" data-layout-type="<%= ContentModule::FOOTER %>">
+          <h5>Footer Content</h5>
+          <div class="modules_container">
+            <%= render :partial => 'admin/content_modules/content_module', :collection => page.modules_for_container_and_language(ContentModule::FOOTER, language), :locals => { :movement => @movement, :page => page } %>
+          </div>
+          <ul class="add_module_buttons">
+            <li><%= add_content_module_link page, HtmlModule, ContentModule::FOOTER, "+ HTML" %></li>
+            <li><%= render :partial => 'admin/content_modules/link_to_existing_content_modules', :locals => { :page => page, :container => ContentModule::FOOTER } %></li>
+          </ul>
+        </div>
+      </div>
+      <% if page.should_have_autofire_emails? %>
+        <div class="row">
+          <div class='container container-full <%= "#{error_class_if_invalid(page.autofire_email_for_language(language))}" %>' id="autofire-email">
+            <%= render :partial => 'admin/action_pages/autofire_email', :locals => { :page => page, :language => language } %>
+          </div>
+        </div>
+      <% end %>
+      <div class="clear"></div>
+    </div>
+  <% end %>
+</div>

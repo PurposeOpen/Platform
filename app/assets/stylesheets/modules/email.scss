@@ -1,0 +1,12 @@
+#emails_edit, #emails_new {
+  #email-info {
+    margin-top: 10px;
+  }
+  
+  #email_body {
+    margin-bottom: 10px;
+  }
+  .layout-container {
+    @include white-box;
+  }
+}

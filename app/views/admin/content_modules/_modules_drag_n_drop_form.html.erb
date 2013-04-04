@@ -1,0 +1,5 @@
+<%= form_tag sort_admin_movement_content_module_path(@movement, :page_id => page_id, :page_type => page_type), :id => "sort_content_modules", :method => :put, :remote => true do %>
+  <%= hidden_field_tag "content_module[content_module_id]", "" %>
+  <%= hidden_field_tag "content_module[new_container]", "" %>
+  <%= hidden_field_tag "content_module[new_position]", "" %>
+<% end %>

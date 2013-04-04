@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Your Name Platform</title>
+    <% javascript_external_dependencies.each do |jquery_lib| %>
+      <%= javascript_include_tag jquery_lib %>
+    <% end %>
+    <%= javascript_include_tag 'application' %>
+    <%= stylesheet_link_tag 'application' %>
+    <%= csrf_meta_tag %>
+    <!-- ToDo: Find a better solution for the following javascript snippet. -->
+    <%= javascript_tag do %>
+        var ajaxWaitImagePath = '<%= image_path("throbber.gif") %>',
+        minimumBlastScheduleTime = new Date('<%= minimum_blast_schedule_time %>');
+    <% end %>
+  </head>
+
+  <body id="<%= controller_name %>_<%= controller.action_name %>">
+  <header id="header">
+    <div class="content">
+      <div class="title">
+        <%= link_to "", root_url, :class => "brand" %>
+        <% if current_platform_user %>
+          <% if current_platform_user.movements_allowed.size == 1 %>
+          <%= link_to current_platform_user.primary_movement.name, root_url, :class => "movement" %>
+      <% else %>
+          <%= link_to raw(@movement.name) + icon("chevron-down"), '#', :class => "movement menu" %>
+        <ul id="movements-container" class="movements">
+          <% ( current_platform_user.movements_allowed - [ @movement ] ).each do |m| %>
+            <li><%= link_to m.name, admin_movement_path(m) %></li>
+        <% end %>
+        </ul>
+
+      <% end %>
+      <% else %>
+          <%= link_to "Platform", root_path, :class => "movement" %>
+      <% end %>
+      </div>
+      <% if current_platform_user %>
+        <div class="navigation">
+          <span>Welcome, <%= current_platform_user.first_name %></span>
+          <%= link_to icon("signout") + "Log Out", destroy_platform_user_session_path %>
+        </div>
+        <% if ENV["DISABLE_QUICK_GO"].to_s.upcase != 'TRUE' && @movement.id!=nil%>
+          <div id='quick_go'>
+            <form>
+              <%= text_field_tag 'quick_go_query', nil, :placeholder => 'Quick go...', :data => {:path => admin_movement_quick_go_path(@movement)} %>
+            </form>
+          </div>
+        <% end %>
+      <% end %>
+    <div class='clear'></div>
+  </header>
+
+    <div id="container">
+
+
+      <div id="content">
+        <%= yield %>
+      </div>
+
+      <footer id="container_footer"></footer>
+    </div>
+
+    <footer id="footer">
+      <div class="content">
+
+        <div class="main">
+          <p class="version_info">
+            <span class="env"><%= Rails.env.titleize %></span>
+            <span class="version"><%= version_string %></span>
+          </p>
+        </div>
+
+        <div class="logo">
+          <%= image_tag "PurposeLogo_small.png" %>
+        </div>
+      </div>
+    </footer>
+
+    <%= render :partial => "common/flash_notifications" %>
+  </body>
+
+</html>

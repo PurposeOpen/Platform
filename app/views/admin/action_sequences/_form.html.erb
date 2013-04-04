@@ -1,0 +1,16 @@
+<%= form_for([:admin, @movement, @action_sequence]) do |f| %>
+  <%= form_errors(@action_sequence) %>
+  <input type="hidden" name="campaign_id" value="<%= @campaign.id %>"/>
+
+  <%= f.label :name, :class => "req" %>
+  <%= f.text_field :name %>
+
+  <div class="info">
+    Name is for internal use and will not be visible to the public.
+  </div>
+
+  <div class="buttonbar">
+    <%= f.submit @action_sequence.new_record? ? "Create action sequence" : "Save action sequence", :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movement_campaign_path(@movement, @campaign), :class => 'button inline' %>
+  </div>
+<% end %>

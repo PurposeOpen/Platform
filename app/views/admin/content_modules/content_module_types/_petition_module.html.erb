@@ -1,0 +1,59 @@
+<%# Explicit label text for helper options to avoid overriding index set by fields_for when using HTML attributes %>
+
+<fieldset>
+  <legend>General</legend>
+  <%= render :partial => 'admin/content_modules/content_module_types/disabled_content_toggle', :locals => {:f => f, :content_module => content_module}%>
+  <%= f.label :title, 'Title', :class => "req" %>
+  <%= f.text_field :title %>
+
+  <%= f.label :petition_statement, 'Petition statement', :class => "req" %>
+  <%= f.text_area :petition_statement, :rows => 4, :class => 'html-compact-editor' %>
+
+  <%= f.label :content, 'Explanatory text' %>
+  <%= f.text_area :content, :rows => 4, :class => 'html-compact-editor' %>
+
+  <%= render :partial => 'admin/content_modules/content_module_types/disabled_content_fields', :locals => {:f => f, :content_module => content_module}%>
+</fieldset>
+
+<fieldset>
+  <legend>Goals</legend>
+  <% if @movement.crowdring_url.present? %>
+    <%= label(:action_page, :crowdring_campaign_name)%>
+    <%= text_field(:action_page, :crowdring_campaign_name, :value => @action_page.crowdring_campaign_name, :class => 'crowdring_campaign_name', :title => "This value is the same across all languages.", 'data-sync-across-languages' => true) %>
+    <button class='button crowdring_count' data-url=<%="#{@movement.crowdring_url}"%>>Test</button>
+  <% end %>
+
+  <%= f.label :signatures_goal, 'Signatures goal', :class => "req" %>
+  <%= f.text_field :signatures_goal, :type => "number", :min => 0,
+      :title => "This value is the same across all languages.",
+      'data-sync-across-languages' => true %>
+
+  <%= f.label :thermometer_threshold, 'Show progress at', :class => "req" %>
+  <%= f.text_field :thermometer_threshold, :type => "number", :min => 0,
+      :title => "This value is the same across all languages.",
+      'data-sync-across-languages' => true  %>
+</fieldset>
+
+<fieldset>
+  <legend>Comments</legend>
+  <%= f.check_box :comments_enabled, :class => 'comments_enabled' %>
+  <%= f.label :comments_enabled, 'Allow Comments?' %>
+
+
+  <div class='comment_details'>
+    <%= f.label :comment_label, 'Label' %>
+    <%= f.text_field :comment_label %>
+
+    <%= f.label :comment_text, 'Text' %>
+    <%= f.text_area :comment_text, :maxlength => '200' %>
+    <span class='counter'>Character(s) left</span>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Signing Petition</legend>
+  <%= render :partial => "admin/content_modules/content_module_types/activity_stream_templates", :locals => {:f => f} %>
+
+  <%= f.label :button_text, 'Button text', :class => "req" %>
+  <%= f.text_field :button_text %>
+</fieldset>

@@ -1,0 +1,34 @@
+<% title "New Page" %>
+
+<%= form_for([:admin, @movement, @action_page]) do |f| %>
+  <%= form_errors(@action_page) %>
+  <input type="hidden" name="action_sequence_id" value="<%= @action_sequence.id %>"/>
+
+  <%= f.label :name, "Page Title", :class => "req" %>
+  <%= f.text_field :name %>
+  <%= f.hidden_field :movement_id, value: @movement.id %>
+
+  <div class="info">
+    Page title will be used in the URL. Spaces are replaced with hyphens.
+  </div>
+
+  <%= action_page_type_radio f, PetitionModule %>
+  <%= action_page_type_radio f, TellAFriendModule %>
+    <% if ENV['ENABLE_DONATION_TYPES'] %>
+        <% if ENV['ENABLE_501C3_DONATIONS'] == "true" %>
+            <%= action_page_type_radio f, TaxDeductibleDonationModule %>
+        <% end %>
+        <%= action_page_type_radio f, NonTaxDeductibleDonationModule %>
+    <% else %>
+    <%= action_page_type_radio f, DonationModule %>
+  <% end %>
+  <%= action_page_type_radio f, EmailTargetsModule %>
+  <%= action_page_type_radio f, JoinModule %>
+  <%= action_page_type_radio f, UnsubscribeModule %>
+  <%= action_page_type_radio f %>
+
+  <div class="buttonbar">
+    <%= f.submit "Create page", :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movement_action_sequence_path(@movement, @action_sequence) %>
+  </div>
+<% end %>

@@ -1,0 +1,28 @@
+<% title "Image Details" %>
+<div id='image_show'>
+	<div class="image-preview">
+	  <h2>Image Preview</h2>
+	  <%= hosted_image_tag @image %>
+
+	 <% if Feature[:assets][:show_full_asset_details] %>
+		<p>
+		  Use the following HTML code to embed the image in a page:
+		  <blockquote>
+		    <%= h("#{hosted_image_tag(@image)}") %>
+		  </blockquote>
+		</p>
+	<% end %>
+	<h4>Image File Summary</h4>
+
+	<table>
+	<% image_info(@image).each do |key,value| %>
+	<tr>
+	  <th><%= key %></th>
+	  <td><%= value %></td>
+	</tr>
+	<% end %>
+	</table>
+	</div>
+</div>
+<%= link_to 'Back', admin_movement_images_path, :class => 'button' %>
+<%= render :partial => 'admin/shared/history', :locals => {:entity => @image} %>

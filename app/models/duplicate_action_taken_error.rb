@@ -1,0 +1,2 @@
+class DuplicateActionTakenError < StandardError
+end

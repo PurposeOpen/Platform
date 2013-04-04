@@ -1,0 +1,19 @@
+.truncate {
+  .actual_text {
+    display: none;
+  }
+
+  .truncated_text {
+    display: block;
+  }
+}
+
+.truncate.truncated_version {
+  .actual_text {
+    display: block;
+  }
+
+  .truncated_text {
+    display: none;
+  }
+}

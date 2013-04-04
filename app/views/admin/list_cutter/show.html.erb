@@ -1,0 +1,31 @@
+<% summary = @list.summary %>
+<% if summary && summary[:number_of_selected_users] && summary[:number_of_selected_users_by_language] %>
+    <div class="field-set">
+      <h3>Summary</h3>
+
+      <p><%= pluralize summary[:number_of_selected_users], "member" %> in the Recipient List match the below
+        criteria</p>
+
+      <% @list.rules.each_with_index do |rule, index| %>
+          <div class="show-rule">
+            <% human_sql = "Where #{rule.to_human_sql}" %>
+            <% truncated_human_sql = truncate(human_sql, length: 100) %>
+            <% if human_sql == truncated_human_sql %>
+                <%= human_sql %>
+            <% else %>
+                <div class="truncate">
+                  <div class="truncated_text"><%= truncated_human_sql %></div>
+                  <div class="actual_text"><%= human_sql %></div>
+                </div>
+            <% end %>
+          </div>
+          <% if index != @list.rules.size - 1 %>
+              <div class="and-connector">AND</div>
+          <% end %>
+      <% end %>
+
+      <div class="list-cutter-saved-result">
+        <%= render :partial => 'admin/list_cutter/chart', :locals => {:summary => summary} %>
+      </div>
+    </div>
+<% end %>

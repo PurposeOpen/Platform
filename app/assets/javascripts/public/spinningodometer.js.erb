@@ -1,0 +1,18 @@
+function spinningOdometer(selector, counterEnd) {
+  var target = parseInt(counterEnd, 10);
+
+  var container = $(selector);
+  container.empty();
+  container.odometer({
+    counterStart: "0000000",
+    counterEnd: counterEnd,
+    numbersImage: '<%= image_path("odometer_numbers_swiss721.png") %>',
+    backgroundImage: '<%= image_path("odometer_background_swiss721.png") %>',
+    increment: target,
+    speed: 3000,
+    heightNumber: 45,
+    widthNumber: 26,
+    offsetRight: -3
+  });
+  container.trigger('advanceCounter');
+}

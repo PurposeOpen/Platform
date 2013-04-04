@@ -1,0 +1,23 @@
+<%= f.label :title, 'Campaign Name', :class => "req" %>
+<%= f.text_field :title %>
+
+<%= f.label :content, 'Campaign Blurb', :class => "req" %>
+<%= f.text_area :content, :rows => 4 %>
+
+<h3 class="expandable" id="edit-past-actions-<%= f.object.id %>">Edit past actions</h3>
+<br/>
+<div id="past-actions-<%= f.object.id %>">
+  <% for i in (1..PastCampaignModule::MAX_PAST_ACTIONS) %>
+    <%= f.label "action#{i}", "Action #{i}" %>
+    <%= f.text_field "action#{i}" %>
+  
+    <%= f.label "action#{i}_link", "Action #{i} Link" %>
+    <%= f.text_area "action#{i}_link", :rows => 4 %>
+  <% end %>
+</div>
+
+<%= javascript_tag do %>
+$(function() {
+  expandingContent("#edit-past-actions-<%= f.object.id %>", "#past-actions-<%= f.object.id %>");
+});
+<% end %>

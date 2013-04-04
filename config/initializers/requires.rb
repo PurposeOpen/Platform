@@ -1,0 +1,1 @@
+require 'copy_attribute_with_next_version'

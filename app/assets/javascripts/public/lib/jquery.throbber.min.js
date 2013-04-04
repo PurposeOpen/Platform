@@ -1,0 +1,8 @@
+
+(function($){var defaultOptions={ajax:true,delay:0,image:"throbber.gif",parent:"",wrap:""};$().ajaxStop(function(){_throbberHide($(".throbber_ajax"));});_throbberShow=function(options,jelement){var jparent;if(options.parent){jelement=null;jparent=$(options.parent);}else{jparent=(jelement?jelement.parent():$("body"));}
+if(jparent.find(".throbber").length==0){window.clearTimeout(jparent.data("throbber_timeout"));jparent.data("throbber_timeout",window.setTimeout(function(){var throbber=$('<img src="'+options.image+'" class="throbber" />');if(options.ajax){throbber.addClass("throbber_ajax");}
+if(jelement){throbber.data("throbber_element",jelement);jelement.hide().after(throbber);}else{jparent.children().hide().end().append(throbber);}
+if(options.wrap!=""){throbber.wrap(options.wrap);}},options.delay));}};_throbberHide=function(throbbers){throbbers.each(function(){var throbber=$(this);var jelement=throbber.data("throbber_element");if(jelement){jelement.show();}else{throbber.siblings().show();}
+window.clearTimeout(throbber.parent().data("throbber_timeout"));throbber.remove();});}
+$.fn.throbber=function(event,options){if(typeof event=="undefined"){event="click";options={};}else if(typeof event=="object"){options=event;event="click";}else if(typeof options=="undefined"){options={};}
+options=$.extend({},defaultOptions,options);$(this).each(function(){var jtarget=$(this);jtarget.bind(event,function(){_throbberShow(options,jtarget);});});return $(this);};$.throbberShow=function(options){options=$.extend({},defaultOptions,options);_throbberShow(options,null);return $;};$.throbberHide=function(){_throbberHide($(".throbber"));return $;};})(jQuery);

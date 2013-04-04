@@ -1,0 +1,13 @@
+<% convert = {
+  :notice => :success,
+  :info => :success,
+  :alert => :error,
+  :warning => :warning,
+  :success => :success,
+  :error => :error
+} %>
+<div id="flash" >
+  <% flash.reject{|k, v| k == "proofed".to_sym }.each do |key, message| %>
+    <%= js add_gritter(message, :image=>convert[key], :sticky=>false, :title=>convert[key].to_s.capitalize) %>
+  <% end %>
+</div>

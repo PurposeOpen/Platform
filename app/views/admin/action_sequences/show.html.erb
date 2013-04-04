@@ -1,0 +1,12 @@
+<%= page_header @action_sequence.name do %>
+  <% unless @action_sequence.static? %>
+    <%= link_to icon("edit") + "Edit", edit_admin_movement_action_sequence_path(@movement, @action_sequence) %>
+    <%= link_to icon("trash") + "Delete", admin_movement_action_sequence_path(@movement, @action_sequence), :method => :delete, :confirm => "Delete '#{@action_sequence.name}'?" %>
+  <% end %>
+<% end %>
+
+<br clear='all' />
+<%= render :partial => 'admin/action_sequences/action_pages', :locals => {:action_pages => @action_sequence.action_pages} %>
+<%= render :partial => 'admin/action_sequences/visibility_options', :locals => {:movement => @action_sequence.campaign.movement, :action_sequence => @action_sequence} %>
+<%= link_to "Download User Activity", admin_movement_action_sequence_user_activity_events_path(:movement_id => @movement, :action_sequence_id => @action_sequence), :class => 'button download_user_activity_btn' %>
+<%= render :partial => 'admin/shared/history', :locals => {:entity => @action_sequence} %>

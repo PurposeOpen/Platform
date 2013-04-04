@@ -1,0 +1,37 @@
+#service-statuses {
+  width: 10em;
+  margin:auto;
+  width:100%;
+  font-family: Arial,Verdana,Tahoma,sans-serif;
+  ul {
+    margin: 0px;
+    padding: 0px;
+    li {
+      list-style: none;
+      border-radius: 10px;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      border: 1px solid;
+      height: 10em;
+      text-align: center;
+      margin-bottom: 0.5em;
+      span {
+        line-height: 3.5em;
+        font-size: 3em;
+      }
+    }
+  }
+  .green {
+    background-color: #5CFA67;
+    border-color: #308536;
+  }
+  .red {
+    background-color: #FA5C5C;
+    border-color: #A12222;
+  }
+  .yellow {
+    background-color: #F2FF7A;
+    border-color: #D6C400;
+  }
+
+}

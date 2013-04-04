@@ -1,0 +1,8 @@
+<%= f.label :public_activity_stream_template, 'Public activity stream', :class => "req" %>
+<%= f.text_field :public_activity_stream_template %>
+<div class="info">
+  <p><em>{NAME|Someone}</em> will be replaced with the user's first name or 'Someone' if the name is unknown.</p>
+  <p><em>{( from )COUNTRY|}</em> will be replaced with the user's country, prefixed by some text, i.e. "from China". If the country is not known, this statement is not shown.</p>
+  <p><em>{HEADER}</em> will be replaced with text present in the first header html content language specific</p>
+  <p><em>[a petition]</em> text in brackets become a link back to this page.</p>
+</div>

@@ -1,0 +1,6 @@
+<div id=<%= "disabled_content_fields_#{content_module.language.iso_code}"%> style=<%="display:none;" if (content_module.active == "true") %>>
+  <%= f.label :disabled_title, 'Disabled Title', :class => "req" %>
+  <%= f.text_field :disabled_title %>
+  <%= f.label :disabled_content, 'Disabled content' %>
+  <%= f.text_area :disabled_content, :rows => 4, :class => 'html-compact-editor' %>
+</div>

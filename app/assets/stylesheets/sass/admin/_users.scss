@@ -1,0 +1,37 @@
+/* =USERS INDEX */
+#main {
+  @include listing('users', 'user')
+}
+
+/* =SHOW/EDIT USERS */
+#main {
+  #user-form {
+    margin-top: 10px;
+    #user_country_iso {
+      clear: both;
+      margin-top: 10px;
+    }
+    #user-checkbox {
+      margin-top: 12px;
+      float: left;
+      clear: right;
+    }
+  }
+  #user-activity {
+    clear:left;
+    margin-top: 10px;
+  }
+  #user-activity-list {
+    margin-top: 5px;
+  }
+}
+
+div#movements-container {
+  float:right;
+  width:80em;
+  margin-top:2em;
+  select {
+  	margin-top: 1em;
+    width: 10em;
+  }
+}

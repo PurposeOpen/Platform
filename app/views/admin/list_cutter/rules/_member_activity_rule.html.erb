@@ -1,0 +1,13 @@
+<%= f.fields_for rule.class.code, :index => "$index" do |r| %>
+    <%= f.select :activity_count_operator, ::ListCutter::ActivityCountRule::OPERATORS, {:selected => rule.activity_count_operator}, {class: "range_operator"} %>
+    <div class='second_line'>
+      <%= f.text_field :activity_count, :value => rule.activity_count, class: "activity_count required digits" %>
+      <label for="rules_member_activity_rule_$index_activity_types">actions</label>
+      <%= select_tag "rules[member_activity_rule][$index][activity_module_types][]",
+                     options_for_select(rule.all_activity_module_types, rule.activity_module_types),
+                     {:multiple => true, id: "rules_member_activity_rule_$index_activity_types", class: "required multiselectcheckbox"} %>
+      <label for="rules_member_activity_rule_$index_activity_since_date">since</label>
+      <%= f.text_field :activity_since_date, value: rule.activity_since_date, class: "since_date required datepicker platformDate", maxDate: minimum_blast_schedule_time %>
+    </div>
+    <div class="clear"></div>
+<% end %>

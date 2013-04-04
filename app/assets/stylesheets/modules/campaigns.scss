@@ -1,0 +1,66 @@
+#campaigns_index {
+  .campaign {
+    .description .no_description {
+      color: $GRAY;
+      font-style: italic;
+    }
+  }  
+
+  .top_right_button{
+    @include clearfix;
+    margin-bottom: 17px;
+     a {
+       float: right;
+     }
+  }
+}
+
+#campaigns_show {
+  .right_column {
+    h2 {
+      float: left;
+    }
+
+    .description {
+      clear: left;
+      margin: 24px 20px 12px 20px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .list_group_item {
+      @include white_box;
+
+      &#action_sequences_list, &#emails_list, &#get_togethers_list {
+        .push {
+          @include white_box;
+          margin-top: 10px;
+          padding: 10px;
+        }
+        .actions {
+          float: right;
+        }
+      }
+    }
+
+    .taf-statistics {
+    @include rounded-corners;
+    border: 1px solid $GRAY;
+
+    tbody tr {
+      border-bottom: 1px dotted $GRAY;
+    }
+
+    td {
+      vertical-align: bottom;
+      font-size: 14px;
+
+      p { margin: 0; }
+
+      &.numerical { text-align: right; }
+      &:last-child { border: none; }
+    }
+  }
+
+  }
+}

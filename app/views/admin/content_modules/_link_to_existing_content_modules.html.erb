@@ -1,0 +1,6 @@
+<% if page.kind_of? ActionPage %>
+  <span class='button'>Link to... ▼</span>
+  <ul><% page.sibling_pages.each do |sibling| %>
+    <li><%= link_to(sibling.name, create_links_to_existing_modules_admin_movement_content_module_path(@movement, :page_type => sibling.class.to_s, :movement_id => sibling.movement_id, :page_id => sibling.id, :target_page_type => page.class.to_s, :target_page_id => page.id, :container => container), :method => :post, :remote => true) %></li>
+  <% end %></ul>
+<% end %>

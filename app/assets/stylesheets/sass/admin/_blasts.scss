@@ -1,0 +1,121 @@
+       
+#main {
+  @include listing('blasts', 'blast');
+
+  #blasts {
+    @include stats-table;
+    .edit_blast {
+      margin: 0 -10px -10px -10px;
+      padding:12px 0 35px 0;
+      overflow:hidden;
+      background:$highlight;
+      .send-details {
+        float:left;
+        padding:0 0 0 10px;
+      }
+      .send-actions {
+        float:right;
+        width:443px;
+        select, input {
+          padding:0;
+        }
+        select.send-options {
+          width:12em;
+        }
+        input.send-number {
+          width:5em;
+        }
+      }
+      p {
+        margin:0 10px 5px 0;
+        float:right;
+        display:block;
+      }
+      .all-members {
+        position:absolute;
+        margin:2.6em 0 0 -5.1em;
+        padding:0;
+        font-size:1em;
+        width:auto;
+      }
+    }
+    table.emails {
+      margin:1em -10px 0 -10px;
+      border-collapse:collapse;
+      border:0;
+      width:$page-width - 24; /* 24 = gutter & borders on list */
+      thead { display:none; }
+      tfoot {
+        th {
+          display:none;
+        }
+      }
+      tr {
+        border:0;
+        clear:left;
+        line-height:2.2;
+        .remove {
+          @include remove-series();
+        }
+        td, th {
+          text-align:left;
+          overflow:hidden;
+          width:20px;
+          border:1px solid $highlight-dark;
+          border-width:1px 0;
+          padding:3px 10px;
+        }
+        td.email-name {
+          width:12em;
+        }
+        td.proof-sent {
+          width:18em;
+        }
+        td.emails-sent {
+          width:10em;
+          &:after {
+            content: " sent";
+            color: $less-subtle;
+          }
+        }
+        td.emails-opened {
+          width:10em;
+          &:after { 
+            content: " opened";
+            color: $less-subtle;
+          }
+        }
+        td.emails-clicked {
+          width:5em;
+        }
+        td.actions-taken {
+          width:5em;
+        }
+        td.other {
+          width:auto;
+        }
+      }
+    }
+    a.add-email {
+      @include link_icon('email_add.png');
+      width:auto;
+      padding:0 0 0 28px;
+      margin:0;
+      float:right;
+    }
+    strong.in-progress, strong.has-failures, strong.blocked {
+      background:$working url(image_path('hourglass.png')) 4px 5px no-repeat;
+      margin: 0 10px 5px 10px;
+      padding: 5px 5px 5px 25px;
+      float:right;
+      clear: both;
+    }
+    strong.has-failures {
+      background:$working url(image_path('error.png')) 4px 5px no-repeat;
+    }
+
+    strong.blocked {
+      background:$working url(image_path('delete.png')) 4px 5px no-repeat;
+    }
+  }
+}

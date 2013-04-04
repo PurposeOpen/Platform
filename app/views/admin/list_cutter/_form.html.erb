@@ -1,0 +1,62 @@
+<div id="saved-recipients">
+  <%= render :template => "admin/list_cutter/show" %>
+</div>
+
+<%= form_tag(admin_movement_list_cutter_count_path, :id => "listForm", :movement_id => @movement.id) do %>
+  <%= raw error_for(@list, :rules) %>
+  <%= hidden_field_tag :list_id, @list.id %>
+  <%= hidden_field_tag :blast_id, @list.blast_id %>
+
+  <script type="text/template" data-name="filter">
+    <%= render :partial => "admin/list_cutter/filter_template", :locals => {:chosen_rule => nil} %>
+  </script>
+
+  <%= fields_for :rules do |f| %>
+    <% rules_for_form.each do |rule| %>
+      <script type="text/template" data-name="filter-<%= rule[:class].code %>" data-rule="✔">
+        <li class="rule-choice choose-<%= rule[:class].code %>">
+          <%= render :partial => "admin/list_cutter/rule_template", :locals => {:list => @list, :rule => rule[:class].new, :f => f} %>
+        </li>
+      </script>
+    <% end %>
+  <% end %>
+
+  <div class="list-cutter">
+    <%= raw error_for(@list, :rules) %>
+    <ul class="list-cutter-filters">
+      <!-- FILTERS PLACEHOLDER -->
+      <%= fields_for :rules do |f| %>
+          <% @list.rules.each do |rule| %>
+              <%= render :partial => "admin/list_cutter/filter_template", :locals => {:list => @list, :chosen_rule => rule, :f => f} %>
+          <% end %>
+      <% end %>
+    </ul>
+
+    <div class="filter-actions">
+      <span class="add-filter">Add</span>
+    </div>
+
+    <%= submit_tag "Show count", :id => "show-count", :class => "button",
+                   "data-url" => admin_movement_list_cutter_count_path(@movement),
+                   "data-poll-url" => admin_movement_list_cutter_poll_path(@movement) %>
+
+    <%= submit_tag "Save List", :id => "save-count", :class => "button",
+                   "data-url" => admin_movement_list_cutter_save_path(@movement),
+                   "data-poll-url" => admin_movement_list_cutter_poll_path(@movement),
+                   "data-show-url" => admin_movement_list_cutter_show_path(@movement)  if @list.list_cuttable? %>
+
+    <%= link_to "Back", admin_movement_push_path(@movement, @list.blast.push) %>
+
+    <div class="loading">
+      <%= image_tag "loading.gif", :alt => "Loading...", :class => "loading" %>
+      <h3 class="processing">Processing results...</h3>
+    </div>
+
+    <div class="list-cutter-result">
+      <%= render :partial => 'admin/list_cutter/poll_summary', :locals => {:summary => @list.summary} %>
+    </div>
+  </div>
+<% end %>
+
+<div id="list-cutter-results" class="section"></div>
+<%= render :partial => "admin/list_cutter/tooltips" %>

@@ -1,0 +1,20 @@
+/* =CONTENT MODULE ICONS */
+@include content-module-icon('bookmark', 'star.png');
+@include content-module-icon('html_module', 'tag.png');
+@include content-module-icon('petition_module', 'page_white_edit.png');
+@include content-module-icon('email_targets_module', 'email.png');
+@include content-module-icon('email_mp_module', 'email_mp.png');
+@include content-module-icon('donation_module', 'money.png');
+@include content-module-icon('tell_a_friend_module', 'share-balloon.png');
+@include content-module-icon('past_campaign_module', 'campaign_add.png');
+@include content-module-icon('accordion_module', 'accordion.png');
+@include content-module-icon('radio_module', 'radio.png');
+
+#sidebar {
+  .button-links {
+    height: 3.25em;
+  }
+  .add-ask-buttons {
+    height: 2em;
+  }
+}

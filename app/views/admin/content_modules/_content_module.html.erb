@@ -1,0 +1,26 @@
+<%= fields_for :content_modules, content_module, :index => content_module.id do |f| %>
+  <div class="content_module <% unless content_module.valid_with_warnings? %>error<% end %>" id="#content_module_<%= content_module.id %>" data-id="<%= content_module.id %>" data-lang="<%= content_module.language.iso_code %>" data-valid-containers="<%= content_module.valid_containers.join(' ') %>">
+    <div class="module_header">
+      <h5><%= content_module.class.label %></h5>
+      <ul class="module_actions">
+        <li>
+          <%= link_to "", "#add_to_favorites", :class => "add_to_favorites ui-icon ui-icon-heart disabled" %>
+        </li>
+        <li>
+          <%= link_to "", delete_admin_movement_content_module_path(@movement, :content_module_id => content_module.id, :page_id => page), :remote => true, :method => :delete, :confirm => "Remove #{content_module.class.name.titlecase}?\n\nThis cannot be undone.", :class => "remove_module ui-icon ui-icon-closethick #{disabled_class(content_module)}", :title => "Remove" %>
+        </li>
+      </ul>
+    </div>
+
+    <%= render :partial => 'admin/content_modules/shared_module_warning', :locals => {:content_module => content_module, :page => page} %>
+
+    <ul class="module_errors error">
+      <% content_module.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+    <div class="module_body">
+      <%= render :partial => edit_content_module_partial(content_module), :locals => {:f => f, :content_module => content_module, :page => page} %>
+    </div>
+  </div>
+<% end %>

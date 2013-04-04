@@ -1,0 +1,31 @@
+<div class="layout-container">
+  <h3>Social</h3>
+  <%= f.label :email_subject, 'Email subject', :class => "req tooltip", 'data-tip' => "email-subject-tip" %>
+  <%= f.text_field :email_subject %>
+
+  <%= f.label :email_body, 'Email body', :class => "req tooltip", 'data-tip' => "email-body-tip" %>
+  <%= f.text_area :email_body, :rows => 8 %>
+  <div class="info">
+    This field is plain text. Strip HTML tags as they will be visible when sent.
+  </div>
+
+  <%= f.label :tweet_text, 'Tweet Text', :class => "req tooltip", 'data-tip' => "tweet-text-tip" %>
+  <%= f.text_area :tweet_text, :rows => 2 %>
+  <div class="info">
+    This field is limited to <%= TellAFriendModule::TWITTER_MAXIMUM %> characters. The URL will be auto-inserted on
+    the end of the tweet.
+  </div>
+
+  <%= f.label :html_meta_description, 'Facebook Description' %>
+  <%= f.text_field :html_meta_description %>
+  <div class="info">
+    This field will be used as a description in the Facebook share.
+  </div>
+
+  <%= f.label :facebook_image, 'Facebook Image URL' %>
+  <%= f.text_field :facebook_image %>
+  <div class="info">
+    This field will be used as the image in the Facebook share.
+  </div>
+<%= render :partial => "admin/common/tooltips" %>
+</div>

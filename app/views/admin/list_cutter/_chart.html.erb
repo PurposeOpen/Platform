@@ -1,0 +1,25 @@
+<% if summary && summary[:number_of_selected_users] && summary[:number_of_selected_users_by_language] %>
+  <% id = UUID.new.generate %>
+  <table class="has-chart"
+    title="Breakdown by Language"
+    data-attc-type="pie"
+    data-attc-location="<%= id %>"
+    data-attc-colDescription="members-per-language-description"
+    data-attc-colValues="members-per-language-values"
+    data-attc-hideChart="<%= summary[:number_of_selected_users_by_language].empty? %>"
+  >
+    <thead>
+      <tr>
+        <th id="members-per-language-description">Language</th>
+        <th id="members-per-language-values">Members</th>
+      </tr>
+    </thead>
+    <tbody><% summary[:number_of_selected_users_by_language].each do |language, number_of_members| %>
+      <tr>
+        <td><%= "#{language} (#{number_of_members})" %></td>
+        <td><%= number_of_members %></td>
+      </tr>
+    <% end %></tbody>
+  </table>
+  <div id=<%= id %>></div>
+<% end %>

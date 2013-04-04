@@ -1,0 +1,12 @@
+<%= form_for([:admin, @movement, @push]) do |f| %>
+  <input type="hidden" name="campaign_id" value="<%= @campaign.id %>"/>
+  <%= form_errors(@push) %> 
+
+  <%= f.label :name, :class => "req" %>
+  <%= f.text_field :name %>
+
+  <div class="buttonbar">
+    <%= f.submit @push.new_record? ? "Create push" : "Save push",  :disable_with => "Saving…" %>
+    <%= link_to "Cancel", admin_movement_campaign_path(@movement, @push.campaign) %>
+  </div>
+<% end %>

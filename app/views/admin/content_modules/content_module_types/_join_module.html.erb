@@ -1,0 +1,50 @@
+<%# Explicit label text for helper options to avoid overriding index set by fields_for when using HTML attributes %>
+<fieldset>
+  <legend>New users</legend>
+  <%= render :partial => 'admin/content_modules/content_module_types/disabled_content_toggle', :locals => {:f => f, :content_module => content_module}%>
+
+  <%= f.label :title, 'Title', :class => "req" %>
+  <%= f.text_field :title %>
+
+  <%= f.label :join_statement, 'Join statement', :class => "req" %>
+  <%= f.text_area :join_statement, :rows => 4, :class => 'html-compact-editor' %>
+
+  <%= f.label :content, 'Explanatory text' %>
+  <%= f.text_area :content, :rows => 4, :class => 'html-compact-editor' %>
+
+  <%= f.label :button_text, 'Button text', :class => "req" %>
+  <%= f.text_field :button_text %>
+
+  <%= render :partial => 'admin/content_modules/content_module_types/disabled_content_fields', :locals => {:f => f, :content_module => content_module}%>
+</fieldset>
+
+<fieldset>
+  <legend>Existing users</legend>
+  <%= f.label :post_join_title, 'Title', :class => "req" %>
+  <%= f.text_field :post_join_title %>
+
+  <%= f.label :post_join_join_statement, 'Join statement', :class => "req" %>
+  <%= f.text_area :post_join_join_statement, :rows => 4 %>
+
+  <%= f.label :post_join_content, 'Explanatory text' %>
+  <%= f.text_area :post_join_content, :rows => 4 %>
+
+  <legend>Comments</legend>
+  <%= f.check_box :comments_enabled, :class => 'comments_enabled' %>
+  <%= f.label :comments_enabled, 'Allow Comments?' %>
+
+
+  <div class='comment_details'>
+    <%= f.label :comment_label, 'Label' %>
+    <%= f.text_field :comment_label %>
+
+    <%= f.label :comment_text, 'Text' %>
+    <%= f.text_area :comment_text, :maxlength => '200' %>
+    <span class='counter'>Character(s) left</span>
+  </div>
+
+  <%= f.label :post_join_button_text, 'Button text', :class => "req" %>
+  <%= f.text_field :post_join_button_text %>
+</fieldset>
+
+<%= render :partial => "admin/content_modules/content_module_types/activity_stream_templates", :locals => {:f => f} %>

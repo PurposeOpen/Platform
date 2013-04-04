@@ -1,0 +1,57 @@
+/* TRANSACTIONS */
+table.transactions {
+  margin-bottom: 1em;
+  .failed td {
+    background: #FEE;
+  }
+  .successful td {
+    background: #EFE;
+  }
+}
+
+form#refund-form {
+  input#amount_in_dollars {
+    width: 5em;
+  }
+}
+
+#excel-transactions-export {
+  margin-top: 1em;
+  label, input {
+    width: auto;
+    float: left;
+    margin-top: 10px;
+  }
+  input {
+    margin-right: 10px;
+  }
+}
+
+.countdown {
+  display:inline;
+}
+
+.info {
+  text-transform: none;
+  font-weight: normal;
+}
+
+.searchbar {
+  label {
+    width: 9em;
+    display: inline-block;
+    margin-right:1em;
+  }
+  .filter-payment-options {
+    width: 37.7em;
+
+  }
+  input[type=text] {
+    width:36.4em;
+  }
+
+  input.date-picker {
+    width:auto;
+  }
+}
+

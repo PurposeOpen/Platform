@@ -1,0 +1,50 @@
+/* HEADER*/
+#admin-header, #admin-breadcrumbs {
+  margin-left: auto;
+  margin-right: auto;
+  width: $page-width;
+  padding: 10px 0;
+  font-size: 1em;
+}
+
+#admin-header {
+  background-color: $purpose-blue;
+  padding: 5px 0 5px 5px;
+  #top_bar {
+    background-color: #2e72b3;
+    margin: -5px 0 5px -5px;
+    padding: 5px 0 5px 10px;
+    a {
+      color: #ffffff;
+    }
+  }
+  li {
+    @include rounded-corners(5px);
+    float: left;
+    margin-right: 5px;
+    padding: 5px 10px 5px 10px;
+    border: solid 1px $subtle;
+    background: #fff;
+  }
+  li:hover {
+    background: $highlight;
+  }
+  #admin_navigation_tabs {
+  }
+}
+
+#admin-breadcrumbs {
+  padding: 10px;
+  width: $page-width - 18px;
+  background: #FFF;
+  border: solid 1px $subtle;
+  h1 {
+    display: inline;
+    font-size: 1em;
+  }
+  #extra-links {
+    margin-top: 2px;
+    float: right;
+    font-size: 0.8em;
+  }
+}

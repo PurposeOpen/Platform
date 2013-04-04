@@ -1,0 +1,5 @@
+<div class="user-detail">
+  <%= f.label user_detail[:field], user_detail[:label] %>
+  <%  options = [["Required", :required], ["Optional", :optional], ["Hidden", :hidden], ["Refresh", :refresh]] %>
+  <%= f.select user_detail[:field], options, {:selected => @action_page.required_user_details[user_detail[:field]] || user_detail[:default]} %>
+</div>

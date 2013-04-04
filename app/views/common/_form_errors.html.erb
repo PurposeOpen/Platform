@@ -1,0 +1,4 @@
+<% subject.errors.each do |field| %>
+  <% next if field.to_s.include?(".") # Active record copies errors on nested_attributes to their parent - e.g. "content_modules.name" %>
+  <p class="error"><%= "#{field.to_s.humanize} #{subject.errors[field].first}" %></p>
+<% end %>

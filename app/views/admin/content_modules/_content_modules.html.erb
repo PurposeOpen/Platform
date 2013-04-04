@@ -1,0 +1,3 @@
+<% content_modules.each do |content_module| %>
+  <%= render :partial => 'admin/content_modules/content_module', :locals => { content_module: content_module, page: page } %>
+<% end %>

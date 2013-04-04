@@ -1,0 +1,61 @@
+/* =DRAG & DROP */
+#main {
+  .handle {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    float: left;
+    background-image: url(image_path("drag_handle.png"));
+  }
+  .handle:hover {
+    cursor: move;
+  }
+}
+
+.button-links a, .button-links a:hover {
+  border: none;
+  background: none;
+  padding: 0 0 0 20px;
+  height: 16px;
+  line-height:16px;
+  background-position: left 50%;
+  background-repeat: no-repeat;
+  margin-right: 10px;
+}
+
+.button-links a.unlock-sorting {
+  background-image: url(image_path('lock.png'));
+}
+
+.button-links a.unlock-editing {
+  background-image: url(image_path('lock.png'));
+}
+
+.button-links a.unlink-module {
+  background-image: url(image_path('unlink.png'));
+}
+
+#static-sequences {
+  h2 {
+    font-weight: normal;
+  }
+  .static-sequence {
+    @include rounded-corners(3px);
+    background: #fff;
+    border: solid 1px $subtle;
+    padding: 10px;
+    float: left;
+    width: 120px;
+    margin-right: 10px;
+    overflow: hidden;
+    ol.static-pages {
+      height: 240px;
+      margin-top: 5px;
+      li a {
+        margin-top: 3px;
+        font-size: 0.8em;
+        color: $subtle;
+      }
+    }
+  }
+}

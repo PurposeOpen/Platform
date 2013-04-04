@@ -1,0 +1,4 @@
+<%= f.select :operator, [["Before", "before"], ["After", "after"], ["On", "on"]], :selected => rule.operator %>
+<div style="margin-left: 10px; display: inline-block;" data-tip="join-date-tip">
+  <%= f.text_field "join_date", :value => rule.join_date, :class => "required datepicker", maxDate: minimum_blast_schedule_time %>
+</div>

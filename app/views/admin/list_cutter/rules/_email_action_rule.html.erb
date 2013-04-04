@@ -1,0 +1,11 @@
+<%= f.select :action, [["Sent", "email_sent"], ["Viewed", "email_viewed"], ["Clicked", "email_clicked"]],
+             {:selected => rule.action}, {class: "left"} %>
+<span class="connector left">for email with name</span>
+<div class="second_line">
+  <%= select_tag 'rules[email_action_rule][$index][email_ids][]',
+                 grouped_select_options_emails(@movement.id, rule.email_ids),
+                 {:multiple => true,
+                  :id => "rules_email_action_rule_$index_page_ids_",
+                  :class => "required multiselectcheckbox email_action_select left",
+                  "data-placeholder" => "Choose an Email.."} %>
+</div>

@@ -1,0 +1,54 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  hello: "Hello world"
+  failed_payment_email_subject: "Error: Your monthly gift to {MOVEMENT_NAME} did not process"
+  date:
+    formats:
+      default: "%d-%m-%Y"
+      short: "%b %d"
+      long: "%B %d, %Y"
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one:   "1 hour ago"
+        other: "%{count} hours ago"
+      about_x_months:
+        one:   "about 1 month ago"
+        other: "about %{count} months ago"
+      about_x_years:
+        one:   "about 1 year ago"
+        other: "about %{count} years ago"
+      almost_x_years:
+        one:   "almost 1 year ago"
+        other: "almost %{count} years ago"
+      half_a_minute: "half a minute ago"
+      less_than_x_minutes:
+        one:   "less than a minute ago"
+        other: "less than %{count} minutes ago"
+      less_than_x_seconds:
+        one:   "less than 1 second ago"
+        other: "less than %{count} seconds ago"
+      over_x_years:
+        one:   "over 1 year ago"
+        other: "over %{count} years ago"
+      x_days:
+        one:   "1 day ago"
+        other: "%{count} days ago"
+      x_minutes:
+        one:   "1 minute ago"
+        other: "%{count} minutes ago"
+      x_months:
+        one:   "1 month ago"
+        other: "%{count} months ago"
+      x_seconds:
+        one:   "1 second ago"
+        other: "%{count} seconds ago"
+  models:
+    donation_module:
+      default_donate_text: "Donate!"
+  one_off: ''
+  monthly: "monthly"
+  donation_cancellation_message: "To cancel or modify your recurring donation, email us at donate@allout.org"
+  transaction_id: "Transaction ID:"

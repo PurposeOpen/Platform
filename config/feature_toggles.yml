@@ -1,0 +1,7 @@
+action_pages:
+  show_no_wrapper: false
+  show_add_accordion_module: false
+
+assets:
+  show_resize_image: false
+  show_full_asset_details: false

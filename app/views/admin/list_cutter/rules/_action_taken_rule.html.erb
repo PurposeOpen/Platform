@@ -1,0 +1,9 @@
+<div class="tooltip" data-tip="page-id-tip">
+  <%= select_tag 'rules[action_taken_rule][$index][page_ids][]',
+                 grouped_select_options_pages(@movement.id, rule.page_ids),
+                 {:multiple => true,
+                  :id => "rules_action_taken_rule_$index_page_ids_",
+                  :class => "required multiselectcheckbox action_taken_select",
+                  "data-placeholder" => "Choose a Page..."} %>
+</div>
+

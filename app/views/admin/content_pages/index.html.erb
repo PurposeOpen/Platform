@@ -1,0 +1,18 @@
+<%= page_header "Content Pages" %>
+
+<ul class="collections">
+  <% @content_page_collections.each do |collection| %>
+    <li data-name="<%= collection.name %>">
+      <h3><%= collection.name %></h3>
+
+      <ul class="pages">
+        <% collection.content_pages.each do |content_page| %>
+          <li>
+            <%= link_to content_page.name, edit_admin_movement_content_page_path(@movement, content_page), :rel => 'edit_content_page' %>
+          </li>
+        <% end %>
+      </ul>
+      <%= link_to '+ Page', new_admin_movement_content_page_path(@movement, :content_page_collection_id => collection), :rel => 'new_content_page', :class => 'button' %>
+    </li>
+  <% end %>
+</ul>
