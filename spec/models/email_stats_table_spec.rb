@@ -59,7 +59,6 @@ describe EmailStatsTable do
   end
 
   it "should not count the same activity on the same object twice for a given user" do
-    pending "This breaks under Ubuntu."
 
     email = FactoryGirl.create(:email)
     user  = FactoryGirl.create(:user)
