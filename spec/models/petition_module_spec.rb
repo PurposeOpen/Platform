@@ -44,6 +44,11 @@ describe PetitionModule do
     end
   end
 
+  it "should return a url-encoded crowdring url" do
+    petition = validated_petition_module(:title => 'A very popular action!')
+    petition.send(:crowdring_campaign_endpoint, 'http://crowdring.org', 'Land India').to_s.should == "http://crowdring.org/campaign/Land%20India/campaign-member-count"
+  end
+
   describe "if crowdring_url is set for movement" do
     let(:petition) {validated_petition_module(:title => 'A very popular action!')}
 
@@ -105,6 +110,7 @@ describe PetitionModule do
         petition.signatures.should == 12
       end
     end
+
   end
 
   describe "serializing to json" do
