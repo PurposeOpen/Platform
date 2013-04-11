@@ -48,6 +48,7 @@ class Api::DonationsController < Api::BaseController
     donation_error.member_first_name = member.first_name
     donation_error.member_last_name = member.last_name
     donation_error.member_language_iso = member.language.iso_code
+    donation_error.member_country_iso = member.country_iso
 
     donation = Donation.find_by_subscription_id(params['subscription_id'])
     donation_error.donation_payment_method = donation.payment_method

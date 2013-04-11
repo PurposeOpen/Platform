@@ -78,10 +78,10 @@ describe Api::DonationsController do
       member.last_name = 'Doe'
       member.language = OpenStruct.new
       member.language.iso = 'en'
+      member.country_iso = 'us'
 
       members = mock()
       members.should_receive(:find_by_email).with(params[:member_email]).and_return(member)
-
 
       @movement.should_receive(:members).and_return(members)
       @movement.should_receive(:find_published_page).with("#{params[:action_page]}").and_return(mock())
@@ -103,7 +103,6 @@ describe Api::DonationsController do
       json = response.body
       data = ActiveSupport::JSON.decode(json)
       data['success'].should be_true
-
     end
 
   end
