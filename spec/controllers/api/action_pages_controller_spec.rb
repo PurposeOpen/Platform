@@ -476,6 +476,26 @@ describe Api::ActionPagesController do
       UserActivityEvent.includes(:user).where('users.email = ?', email).count.should eql 0
     end
 
+    it "should not allow users to be unsubscribed via a non-unsubscribe module" do
+      user = create(:user, :movement => @movement, :language => @english)
+
+      post :take_action, :movement_id => @movement.friendly_id, :id => @page.id,
+          :member_info => { :first_name => user.first_name, :last_name => user.last_name, :email => user.email, :is_member => false },
+          :locale => @english.iso_code
+
+      User.find_by_email(user.email).is_member.should be_true
+    end
+
+    it "should not allow users to be permanently unsubscribed via a non-unsubscribe module" do
+      user = create(:user, :movement => @movement, :language => @english)
+
+      post :take_action, :movement_id => @movement.friendly_id, :id => @page.id,
+          :member_info => { :first_name => user.first_name, :last_name => user.last_name, :email => user.email, :permanently_unsubscribed => true },
+          :locale => @english.iso_code
+
+      User.find_by_email(user.email).permanently_unsubscribed.should be_nil
+    end
+
     it "should record an 'action taken' user activity event with email id" do
       email = create(:email)
       user = create(:user, :movement => @movement, :language => @english)
