@@ -99,6 +99,18 @@ describe Donation do
     donation_events.first.page.should eql page
   end
 
+  it "should allow multiple action_taken user activity events for the same user and donation module" do
+    user = FactoryGirl.create(:user)
+    content_module = FactoryGirl.create(:donation_module)
+    page = FactoryGirl.create(:action_page)
+    
+    first_donation = FactoryGirl.create(:donation, :user => user, :action_page => page, :content_module => content_module)
+    second_donation = FactoryGirl.create(:donation, :user => user, :action_page => page, :content_module => content_module)
+
+    UserActivityEvent.where(:user_id => user.id, :page_id => page.id, :activity => 'action_taken',
+                            :content_module_id => content_module.id, :user_response_type => 'Donation').all.count.should == 2
+  end
+
   describe "amounts" do
     it "converts user's currency cents into US dollars" do
       donation = FactoryGirl.create(:donation, :currency => :brl, :amount_in_cents => 235)
