@@ -83,10 +83,10 @@ end
 bash "configure_platform" do
   code <<-EOH
   cd /platform
-  RAILS_ENV=development rake db:create
-  RAILS_ENV=development rake db:schema:load
-  RAILS_ENV=development rake db:migrate
-  RAILS_ENV=development rake db:seed_fu
+  RAILS_ENV=development bundle exec rake db:create
+  RAILS_ENV=development bundle exec rake db:schema:load
+  RAILS_ENV=development bundle exec rake db:migrate
+  RAILS_ENV=development bundle exec rake db:seed_fu
   EOH
 end
 
@@ -94,6 +94,18 @@ end
 template "/platform/.env" do
   source "env.erb"
   mode 0755
+end
+
+# Merge in env.local if it exists
+ruby_block "install_env.local" do
+  block do
+    if File.exists?("/platform/env.local")
+      content = File.read("/platform/env.local")
+      open('/platform/.env', 'a') do |f|
+        f.puts(content)
+      end
+    end
+  end
 end
 
 # Go go go!

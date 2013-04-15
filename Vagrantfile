@@ -12,6 +12,10 @@
 #   foreman start -f Platform.dev
 #   Visit localhost:5000 in your web browser.
 #
+# If you want custom configuration in your .env, create a file called
+# env.local with that configuration. It will be merged into the
+# default configuration.
+#
 # Troubleshooting:
 # Sometimes the gem / bundler steps fail to run. If this happens just
 # run them manually. The trace will tell you which line failed. In
