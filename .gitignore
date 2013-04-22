@@ -24,3 +24,4 @@ vendor/bundle
 .tags*
 tags
 zeus.json
+/env.local
