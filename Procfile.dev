@@ -1,6 +1,5 @@
 web: bundle exec rails server puma -p $PORT -e ${RACK_ENV-development}
 log:    tail -f -n 0 log/development.log
-#oinklog:    tail -f -n 0 log/oink.log
 solr:   bundle exec rake sunspot:solr:run
 worker: bundle exec rake jobs:work QUEUES=${DEFAULT_QUEUE-default},${LIST_CUTTER_BLASTER_QUEUE-list_cutter_blaster}
 clock: bundle exec clockwork lib/tasks/clock.rb
