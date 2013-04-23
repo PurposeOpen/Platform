@@ -10,9 +10,7 @@ test: &test
    adapter: mysql2
    encoding: utf8
    database: platform_test<%= ENV['TEST_ENV_NUMBER'] %>
-   pool: 5
    username: root
-   password:
 
 vagrant:
    adapter: mysql2
