@@ -19,7 +19,7 @@ module SendgridTokenReplacement
     end
   end
 
-  def generate_replacement_tokens(email, users, recipients = nil, isTest = false)
+  def generate_replacement_tokens(email, users, recipients = nil, is_test = false)
     sub = {}
     text_to_scan = %{
     #{email.subject}
@@ -51,7 +51,7 @@ module SendgridTokenReplacement
       end
     end
     set_tokens(sub, "NOT_AVAILABLE", "TRACKING_HASH", users, recipients) do |u|
-      u.persisted? && !isTest ? EmailTrackingHash.new(email, u).encode : "NOT_AVAILABLE"
+      u.persisted? && !is_test ? EmailTrackingHash.new(email, u).encode : "NOT_AVAILABLE"
     end
     sub
   end
