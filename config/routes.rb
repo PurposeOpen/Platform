@@ -124,15 +124,13 @@ PurposePlatform::Application.routes.draw do
           post 'take_action'
           post 'donation_payment_error'
           get 'preview'
+          get 'share_counts'
         end
       end
       #VERSION remove after #626 is deployed to all movements
       resources :activity, :only => [:show]
-      resources :shares, :only => [:create] do
-        member do
-          get 'share_counts'
-        end
-      end
+      resources :shares, :only => [:create]
+
       get 'email_tracking/email_opened' => "email_tracking#email_opened"
       post 'email_tracking/email_clicked' => "email_tracking#email_clicked"
 

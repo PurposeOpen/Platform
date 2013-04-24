@@ -75,6 +75,14 @@ class Api::ActionPagesController < Api::BaseController
     render :status => :not_found, :text => "Can't find page/action with id #{params[:id]}"
   end
 
+  def share_counts
+    page_id = params[:id]
+    
+    return 400 if page_id.blank?
+
+    render :json => Share.counts(page_id)
+  end
+
   private
 
   def should_delete_postcode(params, member)
