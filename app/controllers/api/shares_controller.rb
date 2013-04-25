@@ -6,7 +6,7 @@ class Api::SharesController < Api::BaseController
 
     if valid?(share)
       share.save!
-      head :ok
+      head :created
     else
       head 400
     end

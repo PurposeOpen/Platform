@@ -21,7 +21,7 @@ describe Api::SharesController do
                       :user_id            => @user.id,
                       :share_type         => share_type
 
-        response.should be_success
+        response.status.should == 201
 
         Share.count.should == 1
         share = Share.first
@@ -48,7 +48,7 @@ describe Api::SharesController do
                     :user_id            => nil,
                     :share_type         => Share::FACEBOOK
 
-      response.should be_success
+      response.status.should == 201
     end
 
     it 'should not create a share when the page passed is not a tell a friend' do
