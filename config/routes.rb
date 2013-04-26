@@ -135,7 +135,7 @@ PurposePlatform::Application.routes.draw do
       post 'email_tracking/email_clicked' => "email_tracking#email_clicked"
 
       get 'members/member_info' => "members#member_info"
-      resources :donations, :only => [:show]
+      get 'donations' => 'donations#show'
       post 'donations/confirm_payment' => "donations#confirm_payment"
       post 'donations/add_payment' => "donations#add_payment"
       post 'donations/handle_failed_payment' => "donations#handle_failed_payment"
