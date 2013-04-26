@@ -107,6 +107,7 @@ PurposePlatform::Application.routes.draw do
       get "awesomeness(.:format)" => "health_dashboard#index", :as => 'awesomeness_dashboard'
       post 'sendgrid_event_handler' => 'sendgrid#event_handler'
       resources :members, :only => [:create]
+      get 'members' => 'members#show'
       resources :content_pages, :only => [:show] do
         member do
           get 'preview'
@@ -129,7 +130,6 @@ PurposePlatform::Application.routes.draw do
       get 'email_tracking/email_opened' => "email_tracking#email_opened"
       post 'email_tracking/email_clicked' => "email_tracking#email_clicked"
 
-      get 'members/member_info' => "members#member_info"
       get 'donations' => 'donations#show'
       post 'donations/confirm_payment' => "donations#confirm_payment"
       post 'donations/add_payment' => "donations#add_payment"

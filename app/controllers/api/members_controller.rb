@@ -2,12 +2,20 @@ class Api::MembersController < Api::BaseController
 
   respond_to :json
 
-  def member_info
-    @member = movement.members.find_by_email(params[:email])
-    response = @member.as_json.merge({
-      :success => true,
-    })  
-    render :json => response, :status => response_status_for(response)
+  def show
+    @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
+
+    if @member
+      response = @member.as_json.merge({
+        :success => true
+      })
+      status_response = :ok
+    else
+      response = { :success => false }
+      status_response = params[:email].blank? ? :bad_request : :not_found
+    end
+
+    render :json => response, :status => status_response
   end
 
   def create
@@ -23,21 +31,19 @@ class Api::MembersController < Api::BaseController
         :next_page_identifier => join_page_slug,
         :member_id => @member.id
       })
+      status_response = :created
     else
       response = {
         :success => false,
         :errors => @member.errors.messages
       }
+      status_response = 422
     end
 
-    render :json => response, :status => response_status_for(response)
+    render :json => response, :status => status_response
   end
 
   private
-
-  def response_status_for(response)
-    response[:success] ? 201 : 422
-  end
 
   def join_page_slug
     movement.find_page('join').try(:slug)
