@@ -1,8 +1,0 @@
-language: ruby
-rvm:
-  - 1.9.3
-script:
-  - RAILS_ENV=test bundle exec rake --trace db:migrate test
-  - RAILS_ENV=test bundle exec rake spec
-before_script:
-  - mysql -e 'create database platform_test'
