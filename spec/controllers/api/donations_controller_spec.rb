@@ -11,22 +11,21 @@ describe Api::DonationsController do
 
   describe 'show' do
     it "should return donation by subscription id in json format" do
-      get :show, :movement_id => @movement.friendly_id, :subscription_id => '2222222', :id=>'2222222'
+      get :show, :movement_id => @movement.friendly_id, :subscription_id => '2222222'
 
       data = ActiveSupport::JSON.decode(response.body)
-      data["id"].should eql @monthly_donation.id
+      data["subscription_id"].should eql @monthly_donation.subscription_id
       data["user"]["email"].should eql @monthly_donation.user.email
       data["action_page"]["id"].should eql @monthly_donation.action_page.id
     end
 
     it "should return 404 when donation is not found" do
-      get :show, :movement_id => @movement.friendly_id, :subscription_id => 'Inexistent Donation', :id=>'nil'
+      get :show, :movement_id => @movement.friendly_id, :subscription_id => 'Inexistent Donation'
       response.response_code.should eql 404
     end
   end
 
 	describe 'confirm_payment' do
-
 		it "should make one off donation active" do
 			post :confirm_payment, :movement_id => @movement.friendly_id, :transaction_id => '1234567'
 
