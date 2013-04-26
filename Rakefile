@@ -33,13 +33,17 @@ begin
     end
   end
 
-task :travis do
-  ["cucumber features"].each do |cmd|
-    puts "Starting to run #{cmd}..."
-    system("export DISPLAY=:99.0 && bundle exec #{cmd}")
-    raise "#{cmd} failed!" unless $?.exitstatus == 0
+
+  task :travis do
+    if ENV['TRAVIS_ENV'] == 'cucumber'
+      ["cucumber features"].each do |cmd|
+        puts "Starting to run #{cmd}..."
+        system("export DISPLAY=:99.0 && bundle exec #{cmd}")
+        raise "#{cmd} failed!" unless $?.exitstatus == 0
+    else
+      task :[:spec, :cuke, "jasmine:ci", :jslint]
+    end
   end
-end
 
 rescue LoadError
 end
