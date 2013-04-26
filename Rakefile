@@ -33,6 +33,14 @@ begin
     end
   end
 
+task :travis do
+  ["cucumber features/smoke_test.feature --line 9"].each do |cmd|
+    puts "Starting to run #{cmd}..."
+    system("export DISPLAY=:99.0 && bundle exec #{cmd}")
+    raise "#{cmd} failed!" unless $?.exitstatus == 0
+  end
+end
+
 rescue LoadError
 end
 

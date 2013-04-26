@@ -4,7 +4,7 @@ rvm:
 script:
   - RAILS_ENV=test bundle exec rake --trace db:migrate test
   - RAILS_ENV=test bundle exec rake --trace db:test:prepare
-  - RAILS_ENV=test bundle exec cucumber features/smoke_test.feature --line 9
+  - RAILS_ENV=test bundle exec rake travis
 
 before_script:
   - mysql -e 'create database platform_test'
