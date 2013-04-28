@@ -35,15 +35,16 @@ begin
 
 
   task :travis do
-    if ENV['TRAVIS_ENV'] == 'cucumber'
-      ["cucumber features"].each do |cmd|
+    if ENV['TRAVIS_ENV'] == 'specs'
+      ["jasmine:ci",:jslint, :spec].each do | t |
+        Rake::Task[t].invoke
+      end
+    else
+      group = ENV['TRAVIS_ENV']
+      ["cucumber features -p #{group}"].each do |cmd|
         puts "Starting to run #{cmd}..."
         system("export DISPLAY=:99.0 && bundle exec #{cmd}")
         raise "#{cmd} failed!" unless $?.exitstatus == 0
-      end
-    else
-      ["jasmine:ci",:jslint, :spec].each do | t |
-        Rake::Task[t].invoke
       end
     end
   end

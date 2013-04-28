@@ -11,5 +11,6 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
 
 env:
-  - TRAVIS_ENV=cucumber
+  - TRAVIS_ENV=group1
+  - TRAVIS_ENV=group2
   - TRAVIS_ENV=specs

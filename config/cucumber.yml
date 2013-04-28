@@ -6,6 +6,11 @@ std_opts = "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} --format junit --out 
 #default: <%= std_opts %> features --tags ~@paypal --tags ~@securepay --tags ~@javascript --tags @admin
 #default: <%= std_opts %> features --tags ~@wip
 default: <%= std_opts %> features
+group1:  <%= std_opts %> features --tags @group1
+group2:  <%= std_opts %> features --tags @group2
+group3:  <%= std_opts %> features --tags @group3
+group4:  <%= std_opts %> features --tags @group4
+group5:  <%= std_opts %> features --tags @group5
 wip: --tags @wip:3 --wip features
 rerun: <%= rerun_opts %> --format rerun --out rerun.txt --strict --tags ~@wip
 full: <%= std_opts %> features --tags ~@securepay --tags ~@paypal --tags @javascript --tags @admin
