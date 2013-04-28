@@ -9,3 +9,7 @@ script:
 before_script:
   - mysql -e 'create database platform_test'
   - "sh -e /etc/init.d/xvfb start"
+
+env:
+  - TRAVIS_ENV=cucumber
+  - TRAVIS_ENV=specs
