@@ -41,7 +41,7 @@ begin
       end
     else
       group = ENV['TRAVIS_ENV']
-      ["cucumber features -p #{group}"].each do |cmd|
+      ["cucumber -p #{group}"].each do |cmd|
         puts "Starting to run #{cmd}..."
         system("export DISPLAY=:99.0 && bundle exec #{cmd}")
         raise "#{cmd} failed!" unless $?.exitstatus == 0
