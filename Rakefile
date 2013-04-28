@@ -40,8 +40,11 @@ begin
         puts "Starting to run #{cmd}..."
         system("export DISPLAY=:99.0 && bundle exec #{cmd}")
         raise "#{cmd} failed!" unless $?.exitstatus == 0
+      end
     else
-      task :[:spec, :cuke, "jasmine:ci", :jslint]
+      ["jasmine:ci",:jslint, :spec].each do | t |
+        Rake::Task[t].invoke
+      end
     end
   end
 
