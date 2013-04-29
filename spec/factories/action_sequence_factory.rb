@@ -26,7 +26,7 @@ FactoryGirl.define do
 
   factory :published_action_sequence, :parent => :action_sequence do
     published true
-    after_build do |as|
+    after(:build) do |as|
       as.enabled_languages = as.campaign.movement.languages.collect(&:iso_code)
     end
   end

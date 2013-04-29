@@ -98,7 +98,7 @@ group :development, :test do
   gem 'cucumber-rails', '1.2.0', :require => false
   gem 'cucumber', '1.1.2'
   gem 'launchy'
-  gem 'factory_girl_rails', "~> 3.2.0"
+  gem 'factory_girl_rails', "~> 4.2.0"
   gem 'email_spec'
   gem 'jasmine' #, '~> 1.1.2'
   gem 'rack-test'
