@@ -321,6 +321,18 @@ describe List do
 
       list.count_by_rules_excluding_users_from_push.should == { 'English' => 2 }
     end
+
+    it "should use given rules instead of saved ones if available" do
+      spanish = create(:spanish)
+      user4 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'AR', :language => spanish)
+
+      list = List.create!(:blast => @blast)
+      list.add_rule(:country_rule, :selected_by => 'name', :values => ['UNITED STATES'])
+      
+      new_country_rule = ListCutter::CountryRule.new(:movement => @movement, :selected_by => 'name', :values => ['ARGENTINA'])
+
+      list.count_by_rules_excluding_users_from_push([new_country_rule]).should == { 'Spanish' => 1}
+    end
   end
 
   describe "excluding specific users" do

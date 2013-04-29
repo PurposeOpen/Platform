@@ -82,7 +82,7 @@ class List < ActiveRecord::Base
     rules_with_excluded_users = []
     begin
       exclude_users_rule = ListCutter::ExcludeUsersRule.new push_id: self.blast.push.id, movement: movement
-      rules_with_excluded_users = self.rules + [ exclude_users_rule ]
+      rules_with_excluded_users = rules + [ exclude_users_rule ]
 
       create_tables! rules_with_excluded_users, &block
 
