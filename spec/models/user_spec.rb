@@ -396,35 +396,6 @@ describe User do
     end
   end
 
-  describe "transactions" do
-    before(:each) do
-      @user = FactoryGirl.create(:user)
-      FactoryGirl.create(:transaction, :donation => FactoryGirl.create(:donation, :user => @user), :successful => true)
-      FactoryGirl.create(:transaction, :donation => FactoryGirl.create(:donation, :user => @user), :successful => false)
-    end
-
-    it "should return all transactions for this user" do
-      @user.should have(2).transactions
-    end
-
-    it "should return only successful transactions for this user" do
-      @user.should have(1).successful_transactions
-    end
-  end
-
-  describe "donations" do
-    before(:each) do
-      @user = FactoryGirl.create(:user)
-      FactoryGirl.create(:donation, :user => @user, :frequency => "one_off")
-      FactoryGirl.create(:donation, :user => @user, :frequency => "weekly", :subscription_id => '111111')
-      FactoryGirl.create(:donation, :user => @user, :frequency => "monthly", :subscription_id => '222222')
-    end
-
-    it "should return all recurring donations " do
-      @user.should have(2).recurring_donations
-    end
-  end
-
   describe "After creation" do
     it "should update its random column" do
       u = FactoryGirl.create(:user)
@@ -454,31 +425,6 @@ describe User do
       User.create(:first_name => "Umbrella", :last_name => "User", :email => 'offlinedonations@yourdomain.org', :movement => movement)
 
       "offlinedonations@yourdomain.org".should eql User.umbrella_user.email
-    end
-  end
-
-  describe "#transaction_history" do
-    before(:each) do
-      # @user = FactoryGirl.create(:user)
-      # @donation = FactoryGirl.create(:donation, :frequency => "monthly", :user => @user)
-      # Transaction.create!(:donation => @donation, :successful => true)
-      # Transaction.create!(:donation => @donation, :successful => true)
-      # Transaction.create!(:donation => @donation, :successful => false)
-    end
-
-    xit "should return a list of successful transactions" do
-      @user.transaction_history.size.should eql 2
-    end
-
-    xit "should allow the list of transactions to be filtered by date, in ascending order" do
-      one_month_from_now = 1.month.from_now
-      next_month_transaction = Transaction.create!(:donation => @donation, :successful => true, :created_at => one_month_from_now)
-      next_month_transaction_1 = Transaction.create!(:donation => @donation, :successful => true, :created_at => one_month_from_now + 1.day)
-
-      transactions = @user.transaction_history(:from => one_month_from_now - 3.days, :to => one_month_from_now + 3.days)
-      transactions.size.should eql 2
-      transactions[0].id.should eql next_month_transaction.id
-      transactions[1].id.should eql next_month_transaction_1.id
     end
   end
 

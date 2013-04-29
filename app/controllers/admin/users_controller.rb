@@ -73,13 +73,6 @@ module Admin
       redirect_to admin_movement_users_path(@movement), :notice => "'#{@user.name}' has been deleted."
     end
 
-    def transaction_report
-      authorize! :export, ExcelTransactionsReport
-      @user = PlatformUser.find(params[:id])
-      report = ExcelTransactionsReport.new(Transaction.filter_by(:user_id => @user.id))
-      send_data(report.to_csv, :type => 'text/csv', :filename => "Transactions for #{@user.full_name}(#{@user.id}) (#{Date.today}).csv")
-    end
-
     def cannot_update_yourself
       # We tried specifying this in CanCan directly and it proved to be tricky.
       raise CanCan::AccessDenied.new('Cannot update yourself') if @user.id == current_platform_user.id

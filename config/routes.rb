@@ -83,12 +83,7 @@ PurposePlatform::Application.routes.draw do
         post :cancel_schedule
       end
 
-      resources :users do
-        member do
-          get :transactions
-          get :transaction_report
-        end
-      end
+      resources :users
       
       resources :join_emails, :only => [:index]
       post "join_emails" => "join_emails#update"

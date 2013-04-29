@@ -190,14 +190,6 @@ class User < ActiveRecord::Base
     !self.permanently_unsubscribed
   end
 
-  def recurring_donations
-    Donation.where(:user_id => self.id).where(:frequency => ["weekly", "monthly", "annual"])
-  end
-
-  def transactions
-    Transaction.includes(:donation => [:user, :action_page => [:action_sequence => [:campaign]]]).where("donations.user_id" => self.id)
-  end
-
   def successful_transactions
     self.transactions.where("transactions.successful" => true)
   end
@@ -208,12 +200,6 @@ class User < ActiveRecord::Base
 
   def self.umbrella_user
     find_by_email(AppConstants.umbrella_user_email_address)
-  end
-
-  def transaction_history(options={})
-    relation = Transaction.successful.joins(:donation).where(:donations => {:user_id => self.id}).order("created_at")
-    relation = relation.where(:transactions => {:created_at => (options[:from]..options[:to])}) unless options[:from].blank?
-    relation
   end
 
   def member?;

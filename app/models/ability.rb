@@ -52,7 +52,7 @@ class Ability
     end
     #TODO need to scope this within movement too and need to write specs
     if user.is_campaigner? || user.is_senior_campaigner?
-      can :export, [AskStatsTable, EmailStatsTable, ExcelTransactionsReport, TransactionsTable]
+      can :export, [AskStatsTable, EmailStatsTable]
     end
   end
 

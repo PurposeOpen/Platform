@@ -26,41 +26,6 @@ class Transaction < ActiveRecord::Base
     self.amount_in_cents.to_f / 100
   end
 
-  def self.filter_by(options={})
-    options = cleanup(options)
-    projections = unless options[:group_by].blank?
-      projections_for_group_by(options[:group_by])
-    else
-      default_projections
-    end
-
-    transactions = Transaction.select(projections).
-        joins(:donation => :user).
-        joins("LEFT OUTER JOIN pages ON pages.id = donations.page_id").
-        joins("LEFT OUTER JOIN action_sequences ON action_sequences.id = pages.action_sequence_id").
-        joins("LEFT OUTER JOIN campaigns ON campaigns.id = action_sequences.campaign_id")
-
-
-    if options.blank?
-      transactions = transactions.where(:transactions => {:created_at => 1.week.ago..Time.now})
-    elsif !(options[:from_date].blank? || options[:to_date].blank?)
-      from_date = options[:from_date].is_a?(String) ? DateTime.parse(options[:from_date]) : options[:from_date]
-      to_date = options[:to_date].is_a?(String) ? DateTime.parse(options[:to_date]) : options[:to_date]
-      transactions = transactions.where(:transactions => {:created_at => from_date..to_date})
-    end
-
-    
-    transactions = transactions.where(:transactions => {:id => options[:id]}) unless options[:id].blank?
-    transactions = transactions.where(:users => {:id => options[:user_id]}) unless options[:user_id].blank?
-
-    transactions = transactions.where(donations: {payment_method: options[:payment_methods]}) unless options[:payment_methods].blank?
-    transactions = transactions.where(successful: options[:status] == "successful" ? true : false) unless options[:status].blank?
-    transactions = transactions.where(donations: {users: {email: options[:user_email]}}) unless options[:user_email].blank?
-
-    transactions = append_group_by(transactions, options[:group_by]) unless options[:group_by].blank?
-    transactions.order(:transactions => :created_at)
-  end
-
   private
 
   def self.cleanup(options)
