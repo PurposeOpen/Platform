@@ -50,11 +50,10 @@ class List < ActiveRecord::Base
 
   def filter_by_rules_excluding_users_from_push(email, options={}, &block)
     options[:no_jobs]         ||= 1
-    options[:ignore_language] ||= false
 
     relation = self.list_relation
     relation = partition_users_by_job_id(relation, options[:no_jobs], options[:current_job_id]) if options[:no_jobs] > 1
-    relation = filter_users_by_language(relation, email) unless options[:ignore_language]
+    relation = filter_users_by_language(relation, email)
 
     if options[:limit].is_a? Fixnum
       relation = relation.order(:random).limit(options[:limit])
