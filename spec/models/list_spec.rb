@@ -32,46 +32,6 @@ describe List do
 
   let(:default_relation) { User.where(:is_member => true).where(:movement_id => movement.id) }
 
-  xit "should output the sql of multiple rules" do
-    email_rule = ListCutter::EmailDomainRule.new(:domain => "@gmail.com")
-    country_rule = ListCutter::CountryRule.new(:country_isos => ["BR"])
-    combined_rules = default_relation.merge(email_rule.to_relation.merge(country_rule.to_relation))
-
-    list.add_rule(:email_domain_rule, :domain => "@gmail.com")
-    list.add_rule(:country_rule, :selected_by => 'name', :country_isos => ["BRAZIL"])
-    list.save
-
-    list.combine_relations.to_sql.should == combined_rules.to_sql
-  end
-
-  xit "should generate sql for multiple uses of the same rule" do
-    list.add_rule(:email_domain_rule, :domain => "@gmail.com")
-    list.add_rule(:email_domain_rule, :domain => "@yahoo.com", :not => true)
-    list.save
-
-    list.combine_relations.to_sql.should == default_relation.where("email like '%@gmail.com'").where("email not like '%@yahoo.com'").to_sql
-  end
-
-  xit "should output the sql of a single rule" do
-    email_rule = default_relation.merge ListCutter::EmailDomainRule.new(:domain => "@gmail.com").to_relation
-
-    list.add_rule(:email_domain_rule, :domain => "@gmail.com")
-    list.save
-
-    list.combine_relations.to_sql.should == email_rule.to_sql
-  end
-
-  xit "should be able to parse the saved rules yaml" do
-    email_rule = ListCutter::EmailDomainRule.new(:domain => "@gmail.com")
-    country_rule = ListCutter::CountryRule.new(:selected_by => 'name', :values => ["BRAZIL"])
-    combined_rules = default_relation.merge(email_rule.to_relation.merge(country_rule.to_relation))
-
-    list.add_rule(:email_domain_rule, :domain => "@gmail.com")
-    list.add_rule(:country_rule, :selected_by => 'name', :values => ["BRAZIL"])
-
-    list.combine_relations.to_sql.should == combined_rules.to_sql
-  end
-
   it "should return users whose email belong to gmail" do
     user = create(:user, :email => "foo@borges.com", :movement => movement, :language => movement.default_language)
     activity = create(:activity, :user => user)
@@ -153,18 +113,6 @@ describe List do
       }]
     }
     list.errors.messages.should == expected_errors
-  end
-
-  xit "should return users belonging to the specified electorate" do
-    create(:aussie_in_edgewater)
-    sydney_aussie = create(:aussie)
-
-    list.add_rule(:electorate_rule, :electorate_ids => [sydney_aussie.postcode.electorates[0].id])
-    list.add_rule(:country_rule, :selected_by => 'name', :values => ["AUSTRALIA"])
-
-    users = list.filter_by_rules_excluding_users_from_push(email, :no_jobs => 1)
-    users.size.should == 1
-    users[0].should == sydney_aussie.id
   end
 
   it "should return all users if no filter specified" do

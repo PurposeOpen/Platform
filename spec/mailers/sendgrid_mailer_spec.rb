@@ -101,21 +101,4 @@ describe SendgridMailer do
       email_settings[:domain].should == "yourdomain.org"
     end
   end
-
-  xit 'should send subscription confirmation email' do
-    movement = FactoryGirl.create(:movement, :name => "Shake it")
-    user = FactoryGirl.create(:user, :first_name=>"Leo", :is_member => true, :movement => movement)
-
-    ActionMailer::Base.deliveries.size.should eql(1)
-    @delivered = ActionMailer::Base.deliveries.last
-    @delivered.parts.length.should be(2)
-
-    @delivered.parts[0].should have_body_text(/#{user.first_name}/)
-    @delivered.parts[0].should have_body_text(/#{user.movement.name}/)
-    @delivered.parts[1].should have_body_text(/#{user.first_name}/)
-    @delivered.parts[1].should have_body_text(/#{user.movement.name}/)
-
-    @delivered.should have_subject(/Welcome to Shake it!/)
-    @delivered.should deliver_to(user.email)
-  end
 end

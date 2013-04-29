@@ -6,7 +6,6 @@ def setup_member_count_test_double(count, movement)
 end
 
 describe Api::MovementsController do
-
   before do
     @english = FactoryGirl.create :english
     @us_locale = @english
@@ -34,7 +33,6 @@ describe Api::MovementsController do
 
   describe 'Display language recommendations' do
     it "should not recommend languages which do not have complete homepage contents" do
-      english = FactoryGirl.create :english
       us_locale = @english
       spanish = create(:spanish)
       follow_links = {:facebook => 'facebook_url', :twitter => 'twitter_url', :youtube => 'youtube_url'}
@@ -74,18 +72,19 @@ describe Api::MovementsController do
   end
 
   describe 'featured content,' do
+    before do
+      @movement = FactoryGirl.create :movement, :languages => [@english]
+    end
 
     it 'should return featured content collection and module data' do
-      pending "This breaks under Ubuntu."
-
-      carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
+      carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @movement.homepage)
       carousel_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 0)
       carousel_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 1)
-      featured_actions = FactoryGirl.create(:featured_content_collection, :name => 'Featured Actions', :featurable => @allout_homepage)
+      featured_actions = FactoryGirl.create(:featured_content_collection, :name => 'Featured Actions', :featurable => @movement.homepage)
       featured_action_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => featured_actions, :position => 0)
       featured_action_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => featured_actions, :position => 1)
 
-      get :show, :id => @movement_language.iso_code, :locale => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
+      get :show, :id => @english.iso_code, :locale => @english.iso_code, :movement_id => @movement.id, :format => "json"
 
       data = ActiveSupport::JSON.decode(response.body)
 
@@ -121,8 +120,6 @@ describe Api::MovementsController do
     end
 
     it 'should return featured content modules sorted by position' do
-      pending "This breaks under Ubuntu."
-
       carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
       carousel_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 1)
       carousel_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 0)
@@ -136,19 +133,17 @@ describe Api::MovementsController do
     end
 
     it 'should only return featured content modules that are valid' do
-      pending "This breaks under Ubuntu."
-
       carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
       carousel_module_1 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel)
       carousel_module_2 = FactoryGirl.build(:featured_content_module, :language => @english, :featured_content_collection => carousel)
       carousel_module_2.title = nil
-      carousel_module_2.save!(:validate => false)
 
+      carousel_module_2.save!(:validate => false)
       get :show, :id => @movement_language.iso_code, :locale => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
 
       data = ActiveSupport::JSON.decode(response.body)
 
-      carousel_module_2.valid?.should be_false
+      carousel_module_2.valid_with_warnings?.should be_false
       data["featured_contents"]["Carousel"].size.should eql 1
       data["featured_contents"]["Carousel"][0]['id'].should == carousel_module_1.id
     end
@@ -170,11 +165,10 @@ describe Api::MovementsController do
   end
 
   it "should replace the MEMBERCOUNT token with the current member count on the banner_text" do
-    english = FactoryGirl.create(:english)
     french = FactoryGirl.create(:french)
-    languages = [english, french]
+    languages = [@english, french]
     movement = FactoryGirl.create(:movement, :languages => languages)
-    movement.default_language = english
+    movement.default_language = @english
     MemberCountCalculator.init(movement, 1000000)
     languages.each do |lang|
       FactoryGirl.create(:homepage_content,
@@ -183,7 +177,7 @@ describe Api::MovementsController do
                      :banner_text => "OMG, {MEMBERCOUNT} members!",
       )
     end
-    get :show, :id => english.iso_code, :format => "json", :movement_id => movement.id
+    get :show, :id => @english.iso_code, :format => "json", :movement_id => movement.id
     data = ActiveSupport::JSON.decode(response.body)
     data["banner_text"].should == "OMG, <span class='member_count'>1,000,000</span> members!"
 
