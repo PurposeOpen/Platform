@@ -8,9 +8,9 @@ class BlastJob
 
   def perform
     user_ids = list.filter_by_rules_excluding_users_from_push(email, options)
-    list.saved_intermediate_result.update_results!
     email.deliver_blast_in_batches(user_ids)
     email.update_attributes(:sent => true, :delayed_job_id => nil, :sent_at => Time.now.utc)
+    list.saved_intermediate_result.update_results!
   rescue Exception => e
     email.update_attribute(:delayed_job_id, nil)
     PushLog.log_exception(email, "N/A", e)

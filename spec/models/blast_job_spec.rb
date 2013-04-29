@@ -38,8 +38,8 @@ describe BlastJob do
       :no_jobs => no_jobs,
       :current_job_id => current_job_id
     )) do
-      list_intermediate_result.should_receive(:update_results!).once do
-        email.should_receive(:deliver_blast_in_batches).with(user_ids)                
+      email.should_receive(:deliver_blast_in_batches).with(user_ids) do
+        list_intermediate_result.should_receive(:update_results!).once
       end
       user_ids
     end
