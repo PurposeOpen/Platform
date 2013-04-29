@@ -60,25 +60,20 @@ describe MemberCountCalculator do
   end
 
   describe "#update_all_counts" do
-    xit "should update the count for all movements" do
-      MemberCountCalculator.delete_all
+    it "should update the count for all movements" do
+      # MemberCountCalculator.delete_all
       
-      movements = (1..5).map do
-        FactoryGirl.create(:movement)
-      end
-      
-      movements.each_with_index do |movement, i|
-        User.should_receive(:subscribed_to).with(anything()).and_return(User)
-        User.should_receive(:count).and_return(0,100,200,300,400)
-        MemberCountCalculator.init(movement, i*100)
-      end
-      
+      movements = []
+      (0..4).each do |i|
+        movements << FactoryGirl.create(:movement)
 
-      
-            
-#       User.should_receive(:subscribed_to).and_call_original
-#       User.should_receive(:count).and_call_original
-      #binding.pry
+        user_double = double
+        user_double.should_receive(:count).and_return(i*100)
+        User.should_receive(:subscribed_to).with(movements[i]).and_return(user_double)
+        
+        MemberCountCalculator.init(movements[i], 0)
+      end
+
       MemberCountCalculator.update_all_counts!
       MemberCountCalculator.for_movement(movements[0]).current.should == 0
       MemberCountCalculator.for_movement(movements[2]).current.should == 200
