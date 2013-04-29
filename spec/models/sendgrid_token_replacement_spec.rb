@@ -77,7 +77,7 @@ describe SendgridTokenReplacement do
         "{MOVEMENT_URL|}" => [ walkfree.url, walkfree.url ],
         "{NAME|Friend}" => ["Friend", "Leonardo"],
         "{POSTCODE|Nowhere}" => ["Nowhere", "9999"],
-        "{TRACKING_HASH|NOT_AVAILABLE}" => ["NOT_AVAILABLE", leo_hash ]
+        "{TRACKING_HASH|NOT_AVAILABLE}" => ["NOT_AVAILABLE", "NOT_AVAILABLE" ]
       }
 
       get_substitutions_list(email_to_send, :recipients => ["non-member@gmail.com", leo.email], :test => true).should == expected_hash
@@ -101,7 +101,7 @@ describe SendgridTokenReplacement do
         "{TRACKING_HASH|NOT_AVAILABLE}" => [Base64.urlsafe_encode64("userid=#{leo_allout_member.id},emailid=#{email_to_send.id}") ]
       }
 
-      get_substitutions_list(email_to_send, :recipients => ["leo@yourdomain.com"], :test => true).should == expected_hash
+      get_substitutions_list(email_to_send, :recipients => ["leo@yourdomain.com"], :test => false).should == expected_hash
     end
 
     it "should scan the subject line for tokens" do
@@ -112,11 +112,11 @@ describe SendgridTokenReplacement do
       leo = FactoryGirl.create(:leo, :first_name => "Leonardo", :movement => walkfree)
       leo_hash = Base64.urlsafe_encode64("userid=#{leo.id},emailid=#{email_to_send.id}")
       expected_hash = {
-        "{TRACKING_HASH|NOT_AVAILABLE}" => ["NOT_AVAILABLE", leo_hash], 
-        "{NAME|Friend}" => ["Friend", "Leonardo"]
+        "{TRACKING_HASH|NOT_AVAILABLE}" => [leo_hash, "NOT_AVAILABLE"],
+        "{NAME|Friend}" => ["Leonardo", "Friend"]
       }
 
-      get_substitutions_list(email_to_send, :recipients => ["non-member@gmail.com", leo.email], :test => true).should == expected_hash
+      get_substitutions_list(email_to_send, :recipients => ["non-member@gmail.com", leo.email], :test => false).should == expected_hash
     end
   end
 end

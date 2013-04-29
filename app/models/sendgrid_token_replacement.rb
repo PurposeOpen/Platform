@@ -2,14 +2,14 @@ require 'uri'
 
 module SendgridTokenReplacement
   TOKENS_REGEX = /\{([^\{]*\|[^\{]*)\}/m #matches tokens of the form {TOKEN_NAME|DEFAULT_VALUE}
-  
-  private 
+
+  private
 
   def get_substitutions_list(email, options)
     # we group by email in the following query to safe guard against duplicate email addresses, a legacy from v2
     users = User.where(:email => options[:recipients], :movement_id => email.movement).order(:email).group(:email)
     create_temporary_user_entries_for_non_members(options[:recipients], users)
-    generate_replacement_tokens(email, users, options[:test] ? options[:recipients] : nil)
+    generate_replacement_tokens(email, users, options[:test] ? options[:recipients] : nil, options[:test])
   end
 
   def create_temporary_user_entries_for_non_members(recipients, users)
@@ -18,15 +18,15 @@ module SendgridTokenReplacement
       users << User.new(:email => email_address) unless users.find { |user|  user.email == email_address }
     end
   end
-  
-  def generate_replacement_tokens(email, users, recipients = nil)
+
+  def generate_replacement_tokens(email, users, recipients = nil, isTest = false)
     sub = {}
     text_to_scan = %{
-      #{email.subject}
-      #{email.html_body}
-      #{email.plain_text_body}
-      #{email.footer.html}
-      #{email.footer.text}
+    #{email.subject}
+    #{email.html_body}
+    #{email.plain_text_body}
+    #{email.footer.html}
+    #{email.footer.text}
     }
     text_to_scan.scan(TOKENS_REGEX).uniq.each do |token_pair|
       token_name, default_value = token_pair[0].split("|")
@@ -51,7 +51,7 @@ module SendgridTokenReplacement
       end
     end
     set_tokens(sub, "NOT_AVAILABLE", "TRACKING_HASH", users, recipients) do |u|
-      u.persisted? ? EmailTrackingHash.new(email, u).encode : "NOT_AVAILABLE"
+      u.persisted? && !isTest ? EmailTrackingHash.new(email, u).encode : "NOT_AVAILABLE"
     end
     sub
   end
@@ -68,5 +68,5 @@ module SendgridTokenReplacement
     end
 
     sub["{#{token_name}|#{default_value}}"] = result
-  end  
+  end
 end
