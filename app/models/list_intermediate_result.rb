@@ -51,4 +51,11 @@ class ListIntermediateResult < ActiveRecord::Base
   rescue => e
     self.update_attributes! ready: true, data: { error_message: e.message, error_backtrace: e.backtrace }
   end
+
+  def update_results_from_sent_email!(email, members_sent_count)
+    if data
+      data['number_of_selected_users'] -= members_sent_count
+      data['number_of_selected_users_by_language'][email.language.name] -= members_sent_count if data['number_of_selected_users_by_language'][email.language.name]
+    end
+  end
 end

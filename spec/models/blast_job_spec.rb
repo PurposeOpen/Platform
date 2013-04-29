@@ -32,14 +32,14 @@ describe BlastJob do
     email.should be_sent
   end
 
-  it "should update the list intermediate results just before sending the emails" do
+  it "should update the list intermediate results after sending the emails" do
     list.should_receive(:filter_by_rules_excluding_users_from_push).with(email, hash_including(
       :limit => limit,
       :no_jobs => no_jobs,
       :current_job_id => current_job_id
     )) do
       email.should_receive(:deliver_blast_in_batches).with(user_ids) do
-        list_intermediate_result.should_receive(:update_results!).once
+        list_intermediate_result.should_receive(:update_results_from_sent_email!).with(email, user_ids.count).once
       end
       user_ids
     end
