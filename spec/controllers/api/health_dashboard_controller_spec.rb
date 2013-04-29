@@ -148,5 +148,15 @@ describe Api::HealthDashboardController do
       service_statuses[:services][:delayedJobs].should eql "CRITICAL - Dead jobs: 1"
     end
 
+    it "should return OK if there are not dead jobs" do
+      Delayed::Job.should_receive(:where).and_return([])
+
+      get :index, :format => 'html', :movement_id=>@movement.id
+
+      response.should be_success
+      service_statuses = assigns(:service_statuses)
+      service_statuses[:services][:delayedJobs].should eql "OK"
+    end
+
   end
 end
