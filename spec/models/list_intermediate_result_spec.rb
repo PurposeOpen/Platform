@@ -45,9 +45,11 @@ describe ListIntermediateResult do
 	    
 	    list_intermediate_result.update_results_from_sent_email!(@email, 100)
 
-	    list_intermediate_result.user_count.should == 100
-	    list_intermediate_result.summary[:number_of_selected_users_by_language]['English'].should == 0
-	    list_intermediate_result.summary[:number_of_selected_users_by_language]['Spanish'].should == 100
+      updated_list_intermediate_result = ListIntermediateResult.find(list_intermediate_result.id)
+
+	    updated_list_intermediate_result.user_count.should == 100
+	    updated_list_intermediate_result.summary[:number_of_selected_users_by_language]['English'].should == 0
+	    updated_list_intermediate_result.summary[:number_of_selected_users_by_language]['Spanish'].should == 100
 	  end
   end
   

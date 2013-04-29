@@ -56,6 +56,8 @@ class ListIntermediateResult < ActiveRecord::Base
     if data
       data['number_of_selected_users'] -= members_sent_count
       data['number_of_selected_users_by_language'][email.language.name] -= members_sent_count if data['number_of_selected_users_by_language'][email.language.name]
+
+      self.save
     end
   end
 end
