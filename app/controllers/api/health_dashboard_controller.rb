@@ -9,10 +9,21 @@ class Api::HealthDashboardController < ApplicationController
     @service_statuses[:services] = @service_statuses[:services].merge(db_status)
     @service_statuses[:services] = @service_statuses[:services].merge(mail_status)
     @service_statuses[:services] = @service_statuses[:services].merge(platform_status)
+    @service_statuses[:services] = @service_statuses[:services].merge(delayed_jobs_status)
+
 
     respond_to do |format|
       format.html
       format.json { render json: @service_statuses }
+    end
+  end
+
+  def delayed_jobs_status
+    dj_count = Delayed::Job.where("attempts >= #{Delayed::Worker.max_attempts}").count
+    if dj_count == 0
+      {delayedJobs: 'OK'}
+    else
+      {delayedJobs: "CRITICAL - Dead jobs: #{dj_count}"}
     end
   end
 
