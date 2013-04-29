@@ -1,3 +1,4 @@
+@group3
 Feature: Managing campaigns
   In order to manage campaigns
   As a campaigner

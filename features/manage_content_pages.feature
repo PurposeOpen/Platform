@@ -1,4 +1,4 @@
-@admin @javascript
+@group3 @admin @javascript
 Feature: Managing content pages
   As a campaigner
   I want to add content pages

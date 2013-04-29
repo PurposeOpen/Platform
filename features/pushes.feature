@@ -1,4 +1,4 @@
-@admin @without_transactional_fixtures @no-database-cleaner
+@group5 @admin @without_transactional_fixtures @no-database-cleaner
 Feature: Creating a push for a campaign
   In order to inform users that their assistance is required
   As a campaigner

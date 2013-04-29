@@ -1,3 +1,4 @@
+@group1
 Feature: Breadcrumbs
   In order to see where I am in the platform
   As a platform user

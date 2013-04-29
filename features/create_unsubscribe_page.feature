@@ -1,3 +1,4 @@
+@group1
 Feature: Add an unsubscribe action sequence in a campaign so that the user can stop receiving emails.
 
   Background:

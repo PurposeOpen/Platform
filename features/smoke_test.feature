@@ -1,3 +1,4 @@
+@group5
 Feature: Smoke test to quickly check that main features are working
 
   Background:

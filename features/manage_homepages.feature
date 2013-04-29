@@ -1,4 +1,4 @@
-@admin
+@group3 @admin
 Feature: Managing homepages
   In order to keep the members informed
   As a movement admin

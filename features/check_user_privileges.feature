@@ -1,3 +1,4 @@
+@group1
 Feature: Ensure users have the correct access to parts of the application
 
   Background:

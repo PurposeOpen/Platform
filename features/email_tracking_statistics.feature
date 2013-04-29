@@ -1,3 +1,4 @@
+@group2
 Feature: Monitoring email statistics
   In order to tune emails for maximum performance
   As a campaigner

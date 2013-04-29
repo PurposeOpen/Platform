@@ -1,3 +1,4 @@
+@group2
 Feature: Health check dashboard
   As a platform administrator
   I want to be able to check the overall systems status
