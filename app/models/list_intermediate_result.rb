@@ -41,7 +41,7 @@ class ListIntermediateResult < ActiveRecord::Base
     Timeout.timeout(TIMEOUT) do
       results_table = []
 
-      languages_hash = list.count_by_rules(rules) do |description, sql, time|
+      languages_hash = list.count_by_rules_excluding_users_from_push(rules) do |description, sql, time|
         results_table << [ description, sql, time ]
       end
 

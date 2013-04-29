@@ -296,6 +296,32 @@ describe List do
     end
   end
 
+  describe "count" do
+    before do
+      @english = create(:english)
+
+      @movement = create(:movement, :languages => [@english])
+      @campaign = create(:campaign, :movement => @movement)
+
+      @push = create(:push, :campaign => @campaign)
+      @blast = create(:blast, :push => @push)
+      @email = create(:email, :blast => @blast, :language => @english)
+
+      @user1 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'US', :language => @english)
+      @user2 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'US', :language => @english)
+      @user3 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'US', :language => @english)
+    end
+
+    it "should filter out users that have already received an email within the given push" do
+      Push.log_activity!(:email_sent, @user1, @email)
+
+      list = List.create!(:blast => @blast)
+      list.add_rule(:country_rule, :selected_by => 'name', :values => ['UNITED STATES'])
+
+      list.count_by_rules_excluding_users_from_push.should == { 'English' => 2 }
+    end
+  end
+
   describe "excluding specific users" do
     it "should use the modulus function to partition users" do
       user = create(:leo, :movement => movement)
@@ -490,7 +516,7 @@ describe List do
       let(:list) { create(:list, rules: [], blast: @blast) }
 
       it "should return language counts for empty rule set" do
-        results = list.count_by_rules
+        results = list.count_by_rules_excluding_users_from_push
         results.should == { @language_name_1 => 2, @language_name_2 => 1 }
       end
     end
@@ -503,7 +529,7 @@ describe List do
       end
 
       it "should return language_breakdown_sql for list with rules" do
-        list.count_by_rules.should == { @language_name_1 => 1 }
+        list.count_by_rules_excluding_users_from_push.should == { @language_name_1 => 1 }
       end
     end
   end
