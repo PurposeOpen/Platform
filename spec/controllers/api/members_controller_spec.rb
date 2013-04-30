@@ -168,18 +168,30 @@ describe Api::MembersController do
   describe 'show' do
     before do
       @movement = FactoryGirl.create(:movement)
-      @member = FactoryGirl.create(:user, :movement => @movement, :email => 'john.doe@example.com')
+      @member = FactoryGirl.create(:user, :movement => @movement, 
+        :email => 'john.doe@example.com', :first_name => 'John', :last_name => 'Doe', :country_iso => 'us', :postcode => '10011', 
+        :home_number => '555-5555', :mobile_number => '444-4444', :street_address => "John's place", :suburb => 'NY')
     end
 
-    it "should retrieve user by email" do
+    it "should retrieve user by email with only significant fields" do
       get :show, :movement_id => @movement.id, :email => 'john.doe@example.com'
 
       response.status.should == 200
 
       json = JSON.parse(response.body)
 
+      json.length.should == 11
       json['success'].should be_true
       json['id'].should == @member.id
+      json['first_name'].should == @member.first_name
+      json['last_name'].should == @member.last_name
+      json['email'].should == @member.email
+      json['country_iso'].should == @member.country_iso
+      json['postcode'].should == @member.postcode
+      json['home_number'].should == @member.home_number
+      json['mobile_number'].should == @member.mobile_number
+      json['street_address'].should == @member.street_address
+      json['suburb'].should == @member.suburb
     end
 
     it "should return HTTP 404 (Not Found) if cannot find user by email" do

@@ -6,7 +6,7 @@ class Api::MembersController < Api::BaseController
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
 
     if @member
-      response = @member.as_json.merge({
+      response = @member.as_json(:only => [:id, :first_name, :last_name, :email, :country_iso, :postcode, :home_number, :mobile_number, :street_address, :suburb]).merge({
         :success => true
       })
       status_response = :ok
