@@ -1,12 +1,12 @@
 class Api::MembersController < Api::BaseController
-
+  MEMBER_FIELDS = [:id, :first_name, :last_name, :email, :country_iso, :postcode, :home_number, :mobile_number, :street_address, :suburb]
   respond_to :json
 
   def show
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
 
     if @member
-      response = @member.as_json(:only => [:id, :first_name, :last_name, :email, :country_iso, :postcode, :home_number, :mobile_number, :street_address, :suburb]).merge({
+      response = @member.as_json(:only => MEMBER_FIELDS).merge({
         :success => true
       })
       status_response = :ok
@@ -26,7 +26,7 @@ class Api::MembersController < Api::BaseController
       @member.subscribe_through_homepage!(identify_email)
       MailSender.new.send_join_email(@member, movement)
 
-      response = @member.as_json.merge({
+      response = @member.as_json(:only => MEMBER_FIELDS).merge({
         :success => true,
         :next_page_identifier => join_page_slug,
         :member_id => @member.id
