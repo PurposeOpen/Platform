@@ -43,14 +43,12 @@ class Api::ActionPagesController < Api::BaseController
 
       render :status => :created,
               :json => {
-                :success => true,
                 :next_page_identifier => @page.next.try(:slug),
                 :member_id => member.id
               }
     rescue => error
-      render :status => :internal_server_error,
+      render :status => :bad_request,
               :json => {
-                :success => false,
                 :next_page_identifier => @page.next.try(:slug),
                 :error => error.class.name.underscore
               }
@@ -64,7 +62,7 @@ class Api::ActionPagesController < Api::BaseController
                                           .merge(params[:member_info] || {})).symbolize_keys!)
     PaymentErrorMailer.delay.report_error(donation_error)
 
-    render :json => { :success => true }
+    render :nothing => true, :status => :ok
   end
 
   def preview

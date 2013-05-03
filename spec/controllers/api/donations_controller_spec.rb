@@ -29,9 +29,7 @@ describe Api::DonationsController do
 		it "should make one off donation active" do
 			post :confirm_payment, :movement_id => @movement.friendly_id, :transaction_id => '1234567'
 
-			json = response.body
-      data = ActiveSupport::JSON.decode(json)
-      data['success'].should be_true
+			response.status.should == 200
 			Donation.find(@one_off_donation.id).active.should be_true			      
 		end
 		
@@ -46,9 +44,7 @@ describe Api::DonationsController do
 		it "should make recurring donation active on first payment" do
 			post :add_payment, :movement_id => @movement.friendly_id, :transaction_id => '111111', :subscription_id => '2222222', :order_number => '1001', :amount_in_cents => 1000
 
-			json = response.body
-			data = ActiveSupport::JSON.decode(json)
-			data['success'].should be_true
+			response.status.should == 200
 			updated_donation = Donation.find(@monthly_donation.id)
 			updated_donation.amount_in_cents.should == 1000
 			updated_donation.active.should be_true
@@ -100,9 +96,7 @@ describe Api::DonationsController do
 
       post :handle_failed_payment, params.merge({:movement_id=>@movement.id})
 
-      json = response.body
-      data = ActiveSupport::JSON.decode(json)
-      data['success'].should be_true
+      response.status.should == 200
     end
 
   end

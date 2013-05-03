@@ -36,8 +36,6 @@ describe Api::MembersController do
       response.status.should == 201
 
       json = JSON.parse(response.body)
-
-      json['success'].should be_true
       json['member_id'].should == User.find_by_email('lemmy@kilmister.com').id
     end
 
@@ -49,8 +47,6 @@ describe Api::MembersController do
         response.status.should == 201
 
         json = JSON.parse(response.body)
-
-        json['success'].should be_true
         json['next_page_identifier'].should == 'join'
         json['email'].should == 'lemmy@kilmister.com'
         User.where(:email => 'lemmy@kilmister.com', :movement_id => @movement.id).size.should == 1
@@ -72,8 +68,6 @@ describe Api::MembersController do
         response.status.should == 201
 
         json = JSON.parse(response.body)
-
-        json['success'].should be_true
         json['next_page_identifier'].should == 'join'
         json['email'].should == 'lemmy@kilmister.com'
 
@@ -90,8 +84,6 @@ describe Api::MembersController do
         response.status.should == 422
 
         json = JSON.parse(response.body)
-
-        json['success'].should be_false
         json['next_page_identifier'].should be_blank
         json['errors'].should_not be_blank
       end
@@ -102,8 +94,6 @@ describe Api::MembersController do
         response.status.should == 422
 
         json = JSON.parse(response.body)
-
-        json['success'].should be_false
         json['next_page_identifier'].should be_blank
         json['errors'].should_not be_blank
       end
@@ -125,7 +115,6 @@ describe Api::MembersController do
         json = JSON.parse(response.body)
 
         response.status.should == 201
-        json['success'].should be_true
         json['next_page_identifier'].should == 'join'
         json['email'].should == 'lemmy@kilmister.com'
         member = @movement.members.where(:email => "lemmy@kilmister.com").first
@@ -180,8 +169,7 @@ describe Api::MembersController do
 
       json = JSON.parse(response.body)
 
-      json.length.should == 11
-      json['success'].should be_true
+      json.length.should == 10
       json['id'].should == @member.id
       json['first_name'].should == @member.first_name
       json['last_name'].should == @member.last_name
@@ -198,20 +186,12 @@ describe Api::MembersController do
       get :show, :movement_id => @movement.id, :email => 'user.does.not@exist.com'
 
       response.status.should == 404
-
-      json = JSON.parse(response.body)
-
-      json['success'].should be_false
     end
 
     it "should return HTTP 400 (Bad Request) if email is not sent in request" do
       get :show, :movement_id => @movement.id
 
       response.status.should == 400
-
-      json = JSON.parse(response.body)
-
-      json['success'].should be_false
     end
   end
 

@@ -366,7 +366,6 @@ describe Api::ActionPagesController do
       created_user.last_name.should eql "Johnson"
       created_user.language.should eql @portuguese
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
       response.status.should eql 201
     end
 
@@ -381,7 +380,7 @@ describe Api::ActionPagesController do
       created_user.last_name.should eql "Johnson"
       created_user.language.should eql @portuguese
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
+      response.status.should eql 201
       User.find_all_by_email("bob@johnson.com").size.should eql 1
     end
 
@@ -440,7 +439,7 @@ describe Api::ActionPagesController do
       created_user.last_name.should eql "Johnson"
       created_user.language.should eql @portuguese
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
+      response.status.should eql 201
     end
 
     it "should unsubscribe existing member" do
@@ -453,7 +452,7 @@ describe Api::ActionPagesController do
       put :take_action, :movement_id => @movement.friendly_id, :id => unsubscribe_page.id, :member_info => { :email => user.email }, :locale => "pt"
 
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
+      response.status.should eql 201
       data["next_page_identifier"].should eql "next_page"
       User.find_by_email_and_movement_id(user.email, @movement.id).is_member.should be_false
       UserActivityEvent.find_by_user_id_and_activity(user.id, UserActivityEvent::Activity::UNSUBSCRIBED).should_not be_nil
@@ -470,7 +469,7 @@ describe Api::ActionPagesController do
       put :take_action, :movement_id => @movement.friendly_id, :id => unsubscribe_page.id, :member_info => { :email => email }, :locale => "pt"
 
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
+      response.status.should eql 201
       data["next_page_identifier"].should eql "next_page"
       User.find_by_email_and_movement_id(email, @movement.id).should be_nil
       UserActivityEvent.includes(:user).where('users.email = ?', email).count.should eql 0
@@ -514,7 +513,7 @@ describe Api::ActionPagesController do
       #binding.pry    
       activity_events.count.should == 1
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
+      response.status.should eql 201
     end
 
     it "should record a 'subscribed' user activity event with email id" do
@@ -530,7 +529,7 @@ describe Api::ActionPagesController do
           :activity => UserActivityEvent::Activity::SUBSCRIBED.to_s, :email_id => email.id, :user_id => user.id).all
       activity_events.count.should == 1
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
+      response.status.should eql 201
     end
 
     it "should allow actions to be taken when there's no action info provided" do
@@ -539,7 +538,7 @@ describe Api::ActionPagesController do
           :locale => "pt"
 
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
+      response.status.should eql 201
     end
 
     it "should allow actions to be taken when there's no action info provided and it's an empty string" do
@@ -549,7 +548,7 @@ describe Api::ActionPagesController do
           :action_info => ""
 
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql true
+      response.status.should eql 201
     end
 
     it "should sign unsuccessful action and error code on DuplicateActionTakenError" do
@@ -563,7 +562,7 @@ describe Api::ActionPagesController do
           :action_info => ""
 
       data = ActiveSupport::JSON.decode(response.body)
-      data["success"].should eql false
+      response.status.should eql 400
       data["error"].should eql "duplicate_action_taken_error"
     end
 
@@ -755,6 +754,8 @@ describe Api::ActionPagesController do
       PaymentErrorMailer.should_receive(:report_error).with(an_instance_of(DonationError)).and_return(mail)
 
       post :donation_payment_error, :movement_id => @movement.friendly_id, :id => @page.id, :payment_error_data => payment_error_data, :member_info => member_info
+
+      response.status.should == 200
     end
 
     it "should send payment error email even if there is no member info available" do

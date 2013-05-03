@@ -5,17 +5,12 @@ class Api::MembersController < Api::BaseController
   def show
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
 
-    if @member
-      response = @member.as_json(:only => MEMBER_FIELDS).merge({
-        :success => true
-      })
-      status_response = :ok
+    if @member      
+      render :json => @member.as_json(:only => MEMBER_FIELDS), :status => :ok
     else
-      response = { :success => false }
       status_response = params[:email].blank? ? :bad_request : :not_found
+      render :nothing => true, :status => status_response
     end
-
-    render :json => response, :status => status_response
   end
 
   def create
@@ -27,14 +22,12 @@ class Api::MembersController < Api::BaseController
       MailSender.new.send_join_email(@member, movement)
 
       response = @member.as_json(:only => MEMBER_FIELDS).merge({
-        :success => true,
         :next_page_identifier => join_page_slug,
         :member_id => @member.id
       })
       status_response = :created
     else
       response = {
-        :success => false,
         :errors => @member.errors.messages
       }
       status_response = 422
