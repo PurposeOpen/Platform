@@ -156,6 +156,35 @@ describe Donation do
     end
   end
 
+  describe "stats_by_action_page" do
+
+    it "should calculate donation stats by page" do
+      a_page = FactoryGirl.create(:action_page)
+      a_module = FactoryGirl.create(:donation_module, :pages => [a_page])
+      another_page = FactoryGirl.create(:action_page)
+      another_module = FactoryGirl.create(:donation_module, :pages => [another_page])
+
+      FactoryGirl.create(:donation, :currency => :usd, :amount_in_cents => 500, :content_module => a_module, :action_page => a_page)
+      FactoryGirl.create(:donation, :currency => :usd, :amount_in_cents => 700, :content_module => a_module, :action_page => a_page)
+      FactoryGirl.create(:donation, :currency => :usd, :amount_in_cents => 200, :content_module => another_module, :action_page => another_page)
+
+      Donation.stats_by_action_page(a_page.id)[0].should == 2
+      Donation.stats_by_action_page(a_page.id)[1].should == 1200
+
+      Donation.stats_by_action_page(another_page.id)[0].should == 1
+      Donation.stats_by_action_page(another_page.id)[1].should == 200
+
+    end
+
+    it "should return zero if no donations" do
+      a_page = FactoryGirl.create(:action_page)
+      a_module = FactoryGirl.create(:donation_module, :pages => [a_page])
+
+      Donation.stats_by_action_page(a_page.id)[0].should == 0
+      Donation.stats_by_action_page(a_page.id)[1].should == 0
+    end
+
+  end
   describe "#made_to" do
     it "should return the campaign the donation was made to" do
       donation = FactoryGirl.create(:donation, :frequency => "monthly", :subscription_id => '12345')

@@ -67,6 +67,13 @@ class Donation < ActiveRecord::Base
     result.empty? ? 0 : result[0].total
   end
 
+
+  def self.stats_by_action_page(action_page_id)
+    result = Donation.select('COALESCE(COUNT(amount_in_dollar_cents), 0) as donations_count, COALESCE(SUM(amount_in_dollar_cents), 0) as total_money_collected').where(:page_id => action_page_id).group('donations.page_id')
+    result.empty? ? [0,0] : [result[0].donations_count, result[0].total_money_collected]
+  end
+
+
   def made_to
     action_page.action_sequence.campaign ? action_page.action_sequence.campaign.name : "Purpose"
   end
