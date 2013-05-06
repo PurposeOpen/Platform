@@ -563,7 +563,22 @@ describe Api::ActionPagesController do
 
       data = ActiveSupport::JSON.decode(response.body)
       response.status.should eql 400
-      data["error"].should eql "duplicate_action_taken_error"
+      data["error"].should eql "Member already took this action"
+    end
+
+    it "should sign unsuccessful action and error code on generic error" do
+      bad_user = double
+      bad_user.stub!(:take_action_on!).and_raise StandardError
+      User.stub_chain(:for_movement, :where).and_return [bad_user]
+
+      put :take_action, :movement_id => @movement.friendly_id, :id => @page.id,
+          :member_info => { :first_name => "Bob", :last_name => "Johnson", :email => "bob@johnson.com" },
+          :locale => "pt",
+          :action_info => ""
+
+      data = ActiveSupport::JSON.decode(response.body)
+      response.status.should eql 500
+      data["error"].should eql "standard_error"
     end
 
     context "two movements have action pages with the same name" do

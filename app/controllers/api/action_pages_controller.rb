@@ -46,8 +46,14 @@ class Api::ActionPagesController < Api::BaseController
                 :next_page_identifier => @page.next.try(:slug),
                 :member_id => member.id
               }
-    rescue => error
+    rescue DuplicateActionTakenError => duplicated_action_taken
       render :status => :bad_request,
+              :json => {
+                :next_page_identifier => @page.next.try(:slug),
+                :error => 'Member already took this action'
+              }
+    rescue => error
+      render :status => :internal_server_error,
               :json => {
                 :next_page_identifier => @page.next.try(:slug),
                 :error => error.class.name.underscore
