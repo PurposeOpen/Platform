@@ -72,7 +72,7 @@ class Campaign < ActiveRecord::Base
         join(content_modules).on(content_modules[:id].eq(content_module_links[:content_module_id]),
             content_modules[:type].in(ask_content_modules)).
         join(user_activity_events, Arel::Nodes::OuterJoin).on(user_activity_events[:content_module_id].eq(content_modules[:id]),
-            user_activity_events[:activity].in(reported_activities))
+            user_activity_events[:activity].in(reported_activities), user_activity_events[:user_response_type].not_eq('Transaction').or(user_activity_events[:user_response_type].eq(nil)))
 
     relation = relation.where(action_sequences[:campaign_id].eq(self.id)).group(pages[:id])
     relation.order(action_sequences[:created_at].desc).to_sql
