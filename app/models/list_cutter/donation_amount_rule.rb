@@ -15,6 +15,23 @@ module ListCutter
     fields :amount
     validates_presence_of :amount, :message => 'Please specify a amount in dollar cents'
 
+    def amount_in_dollars
+      amount.nil? ?  0.0 : amount / 100.0
+    end
+
+    def amount_in_dollars=(dollars)
+      self.amount = dollars.to_f * 100.0
+    end
+
+    def initialize(params={})
+      super(params)
+
+      # set virtual attribute to initialize 'amount' value
+      if params.has_key?(:amount_in_dollars) && !params.has_key?(:amount)
+        self.amount_in_dollars = params[:amount_in_dollars]
+      end
+    end
+
     def operators
       OPERATORS
     end

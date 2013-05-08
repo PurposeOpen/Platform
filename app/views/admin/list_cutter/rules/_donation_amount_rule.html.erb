@@ -1,4 +1,4 @@
 <%= f.select :operator, ListCutter::DonationAmountRule::OPERATORS %>
-<div style="margin-left: 10px; display: inline-block;" data-tip="join-date-tip">
-  <%= f.text_field "amount", :value => rule.amount %>
+<div style="margin-left: 10px; display: inline-block;" data-tip="donation-amount-tip">
+  <%= f.text_field "amount_in_dollars", :value => rule.amount_in_dollars, :size => '15', :style => 'margin-right: 10px;' %>USD
 </div>

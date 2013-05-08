@@ -26,6 +26,54 @@ describe ListCutter::DonationAmountRule do
     @rule.to_relation.all.should =~ [donation_one_off_2.user, donation_monthly_2.user]
   end
 
+  describe "amount_in_dollars" do
+    it "should translate cents into dollars" do
+      filter = {amount: 150, operator: "less_than"}
+      rule = ListCutter::DonationAmountRule.new(filter)
+
+      rule.amount_in_dollars.should == 1.5
+    end
+
+    it "should return 0 amount_in_dollars if amount attribute is not set" do
+      rule = ListCutter::DonationAmountRule.new
+
+      rule.amount = nil
+
+      rule.amount_in_dollars.should == 0.0
+    end
+
+    it "should translate dollars into cents" do
+      rule = ListCutter::DonationAmountRule.new
+
+      rule.amount_in_dollars = 1.5
+
+      rule.amount.should == 150
+    end
+
+    it "should set amount from amount_in_dollars param on initialization" do
+      filter = {amount_in_dollars: 15.5, operator: "less_than"}
+      
+      rule = ListCutter::DonationAmountRule.new(filter)
+
+      rule.amount_in_dollars.should == 15.5
+      rule.amount.should == 1550
+    end
+
+    it "should convert amount_in_dollars from string" do
+      filter = {amount_in_dollars: "15.5", operator: "less_than"}
+      
+      rule = ListCutter::DonationAmountRule.new(filter)
+
+      rule.amount_in_dollars.should == 15.5
+      rule.amount.should == 1550
+
+      rule.amount_in_dollars = "11.1"
+
+      rule.amount_in_dollars.should == 11.1
+      rule.amount.should == 1110
+    end
+  end
+
 end
 
 
