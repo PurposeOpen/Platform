@@ -19,9 +19,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :donation
   
   scope :successful, where(:successful => true)
-  
-  after_create :create_activity_event_on_success
-  
+
   def amount_in_dollars
     self.amount_in_cents.to_f / 100
   end
