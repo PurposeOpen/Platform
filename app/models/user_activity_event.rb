@@ -14,8 +14,6 @@
 #  user_response_type       :string(64)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  donation_amount_in_cents :integer
-#  donation_frequency       :string(255)
 #  email_id                 :integer
 #  push_id                  :integer
 #  movement_id              :integer
@@ -219,7 +217,7 @@ class UserActivityEvent < ActiveRecord::Base
   def to_row
     [created_at, action_sequence.name, page.name, content_module_type.to_s.sub('Module',''), user.language_iso_code,
       user.email, user.first_name, user.last_name, user.name_safe, user.country_iso_code, user.postcode, user.mobile_number,
-      comment, comment_safe, donation_amount_in_cents, donation_frequency]
+      comment, comment_safe]
   end
 
   private

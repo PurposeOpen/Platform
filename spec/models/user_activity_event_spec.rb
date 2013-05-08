@@ -15,8 +15,6 @@
 #  user_response_type       :string(64)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  donation_amount_in_cents :integer
-#  donation_frequency       :string(255)
 #  email_id                 :integer
 #  push_id                  :integer
 #  get_together_event_id    :integer
@@ -240,7 +238,7 @@ describe UserActivityEvent do
 
       activity.to_row.should == [activity.created_at, action_sequence.name, action_page.name, 'Petition',
         'EN', user.email, user.first_name, user.last_name, user.name_safe, 'US',
-        user.postcode, user.mobile_number, activity.comment, activity.comment_safe, activity.donation_amount_in_cents, activity.donation_frequency]
+        user.postcode, user.mobile_number, activity.comment, activity.comment_safe]
     end
 
     it "should convert to row if some attributes are nil" do
@@ -251,7 +249,7 @@ describe UserActivityEvent do
 
       activity.to_row.should == [activity.created_at, action_sequence.name, action_page.name, '',
         nil, user.email, user.first_name, user.last_name, user.name_safe, nil,
-        user.postcode, user.mobile_number, activity.comment, activity.comment_safe, activity.donation_amount_in_cents, activity.donation_frequency]
+        user.postcode, user.mobile_number, activity.comment, activity.comment_safe]
     end
   end
 end
