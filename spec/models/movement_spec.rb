@@ -21,7 +21,9 @@ describe Movement do
   describe 'create' do
     it 'should create MemberCountCalculator for the new movement' do
       new_movement = create(:movement)
-      MemberCountCalculator.for_movement(new_movement).last_member_count.should be_nil
+      count = MemberCountCalculator.for_movement(new_movement)
+      count.last_member_count.should == 0
+      count.current.should == 0
     end
   end
 

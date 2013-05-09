@@ -61,17 +61,14 @@ describe MemberCountCalculator do
 
   describe "#update_all_counts" do
     it "should update the count for all movements" do
-      # MemberCountCalculator.delete_all
-      
       movements = []
-      (0..4).each do |i|
-        movements << FactoryGirl.create(:movement)
 
+      5.times { movements << FactoryGirl.create(:movement) }
+
+      5.times do |i|
         user_double = double
         user_double.should_receive(:count).and_return(i*100)
         User.should_receive(:subscribed_to).with(movements[i]).and_return(user_double)
-        
-        MemberCountCalculator.init(movements[i], 0)
       end
 
       MemberCountCalculator.update_all_counts!

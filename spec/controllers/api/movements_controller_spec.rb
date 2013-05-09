@@ -1,10 +1,5 @@
 require "spec_helper"
 
-def setup_member_count_test_double(count, movement)
-  member_count = MemberCountCalculator.new(:movement => movement, :current => count)
-  MemberCountCalculator.stub(:for_movement).and_return(member_count)
-end
-
 describe Api::MovementsController do
   before do
     @english = FactoryGirl.create :english
@@ -27,8 +22,6 @@ describe Api::MovementsController do
     @allout.default_language = @us_locale
     @movement_locale = @allout.movement_locales.first
     @movement_language = @movement_locale.language
-
-    setup_member_count_test_double 10, @allout
   end
 
   describe 'Display language recommendations' do
