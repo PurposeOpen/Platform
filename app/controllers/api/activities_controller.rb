@@ -3,7 +3,7 @@ class Api::ActivitiesController < Api::BaseController
   DEFAULT_ACTIVITY_FEED_REFRESH_FREQ = 30
 
   caches_action :show, :expires_in => (ENV['ACTIVITY_FEED_REFRESH_FREQ'].try(:to_i) || DEFAULT_ACTIVITY_FEED_REFRESH_FREQ).seconds, :cache_path => lambda { |_|
-    "#{I18n.locale}#{request.fullpath}"
+    request.fullpath
   }
 
   def show

@@ -101,30 +101,34 @@ PurposePlatform::Application.routes.draw do
   end
 
   scope 'api', :module => "api" do
-    match 'movements/:movement_id' => 'movements#show'
+    scope "/:locale", :locale => /(..){1}/ do
+      match 'movements/:movement_id' => 'movements#show'
+
+      scope 'movements/:movement_id' do
+        resources :members, :only => [:create]
+        resources :content_pages, :only => [:show] do
+          member do
+            get 'preview'
+          end
+        end
+        resource  :activity, :only => [:show]
+        resources :action_pages, :only => [:show] do
+          member do
+            get  'member_fields'
+            post 'take_action'
+            post 'donation_payment_error'
+            get 'preview'
+            get 'share_counts'
+          end
+        end
+      end
+    end
 
     scope 'movements/:movement_id' do
       get "awesomeness(.:format)" => "health_dashboard#index", :as => 'awesomeness_dashboard'
       post 'sendgrid_event_handler' => 'sendgrid#event_handler'
-      resources :members, :only => [:create]
+
       get 'members' => 'members#show'
-      resources :content_pages, :only => [:show] do
-        member do
-          get 'preview'
-        end
-      end
-      resource  :activity, :only => [:show]
-      resources :action_pages, :only => [:show] do
-        member do
-          get  'member_fields'
-          post 'take_action'
-          post 'donation_payment_error'
-          get 'preview'
-          get 'share_counts'
-        end
-      end
-      #VERSION remove after #626 is deployed to all movements
-      resources :activity, :only => [:show]
       resources :shares, :only => [:create]
 
       get 'email_tracking/email_opened' => "email_tracking#email_opened"

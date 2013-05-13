@@ -31,7 +31,7 @@ describe Api::MembersController do
     end
 
     it "should create a new member unless they exist, and return the member id" do
-      post :create, :format => :json, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id
+      post :create, :locale => :en, :format => :json, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id
 
       response.status.should == 201
 
@@ -42,7 +42,7 @@ describe Api::MembersController do
     context 'a welcome page does not exist' do
 
       it "should create a new member unless they exist, and return blank next page id" do
-        post :create, :format => :json, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id
+        post :create, :locale => :en, :format => :json, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id
 
         response.status.should == 201
 
@@ -79,7 +79,7 @@ describe Api::MembersController do
 
     context 'member cannot be created with the attributes provided' do
       it 'should return status 422 unprocessable entity when email is missing' do
-        post :create, :format => :json, :member => {}, :movement_id => @movement.id
+        post :create, :locale => :en, :format => :json, :member => {}, :movement_id => @movement.id
 
         response.status.should == 422
 
@@ -89,7 +89,7 @@ describe Api::MembersController do
       end
 
       it 'should return status 422 unprocessable entity when email is invalid' do
-        post :create, :format => :json, :member => {:email => "chocolate_rain"}, :movement_id => @movement.id
+        post :create, :locale => :en, :format => :json, :member => {:email => "chocolate_rain"}, :movement_id => @movement.id
 
         response.status.should == 422
 
@@ -110,7 +110,7 @@ describe Api::MembersController do
         user = User.new(member_attrs.merge(:movement_id => @movement.id))
         user.save!
 
-        post :create, :format => :json, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id
+        post :create, :locale => :en, :format => :json, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id
 
         json = JSON.parse(response.body)
 
@@ -129,7 +129,7 @@ describe Api::MembersController do
 
       another_action_page = create(:action_page, name: 'join' )
       another_movement = another_action_page.movement
-      post :create, :member => {:email => email}, :movement_id => another_movement.id, :format => :json
+      post :create, :locale => :en, :member => {:email => email}, :movement_id => another_movement.id, :format => :json
 
       response.status.should == 201
     end

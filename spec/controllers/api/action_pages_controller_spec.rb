@@ -31,7 +31,7 @@ describe Api::ActionPagesController do
         context 'member has not entered a field set to refresh,' do
           it "should return json with the refresh field," do
             user = create(:user, :movement_id => @movement.id)
-            get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+            get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
             json = remove_callback_wrapper(response.body)
             data = ActiveSupport::JSON.decode(json)
@@ -43,7 +43,7 @@ describe Api::ActionPagesController do
         context 'member has entered a field set to refresh,' do
           it "should return json with the refresh field," do
             user = create(:user, :mobile_number => '6317234567')
-            get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+            get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
             json = remove_callback_wrapper(response.body)
             data = ActiveSupport::JSON.decode(json)
@@ -73,7 +73,7 @@ describe Api::ActionPagesController do
 
             user = create(:user, :movement_id => @movement.id)
 
-            get :member_fields, :movement_id => another_movement.friendly_id, :id => another_page.friendly_id, :email => user.email, :callback => "callback"
+            get :member_fields, :locale => :en, :movement_id => another_movement.friendly_id, :id => another_page.friendly_id, :email => user.email, :callback => "callback"
 
             json = remove_callback_wrapper(response.body)
             data = ActiveSupport::JSON.decode(json)
@@ -90,7 +90,7 @@ describe Api::ActionPagesController do
 
         it "should return json with the required field when member has not entered a required field" do
           user = create(:user, :movement_id => @movement.id)
-          get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+          get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
           json = remove_callback_wrapper(response.body)
           data = ActiveSupport::JSON.decode(json)
@@ -100,7 +100,7 @@ describe Api::ActionPagesController do
 
         it "should return json without the required field when member has entered a required field" do
           user = create(:user, :country_iso => 'US', :movement_id => @movement.id)
-          get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+          get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
           json = remove_callback_wrapper(response.body)
           data = ActiveSupport::JSON.decode(json)
@@ -110,7 +110,7 @@ describe Api::ActionPagesController do
 
         it "should set postcode as required when the selected country is postcode-aware" do
           user = create(:user, :movement_id => @movement.id, :country_iso => 'us')
-          get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+          get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
           json = remove_callback_wrapper(response.body)
           data = ActiveSupport::JSON.decode(json)
@@ -120,7 +120,7 @@ describe Api::ActionPagesController do
 
         it "should not set postcode as required when the selected country is not postcode-aware" do
           user = create(:user, :movement_id => @movement.id, :country_iso => 'ao')
-          get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+          get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
           json = remove_callback_wrapper(response.body)
           data = ActiveSupport::JSON.decode(json)
@@ -135,7 +135,7 @@ describe Api::ActionPagesController do
         context 'member has not entered a field set to optional' do
           it "should return json with the optional field" do
             user = create(:user, :movement_id => @movement.id)
-            get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+            get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
             json = remove_callback_wrapper(response.body)
             data = ActiveSupport::JSON.decode(json)
@@ -147,7 +147,7 @@ describe Api::ActionPagesController do
         context 'member has entered a field set to optional' do
           it "should return json without the optional field" do
             user = create(:user, :last_name => 'Marley', :movement_id => @movement.id)
-            get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+            get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
             json = remove_callback_wrapper(response.body)
             data = ActiveSupport::JSON.decode(json)
@@ -162,7 +162,7 @@ describe Api::ActionPagesController do
 
         it "should take user's input country over their existing country when re-signing" do
           user = create(:user, :movement_id => @movement.id, :country_iso => 'af')
-          get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :country_iso => 'us', :callback => 'callback'
+          get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :country_iso => 'us', :callback => 'callback'
 
           json = remove_callback_wrapper(response.body)
           data = ActiveSupport::JSON.decode(json)
@@ -176,7 +176,7 @@ describe Api::ActionPagesController do
           @page.update_attribute('required_user_details', @page.required_user_details.merge(:country => :refresh, :postcode => :refresh))
           @page.save!
 
-          get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+          get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
           json = remove_callback_wrapper(response.body)
           data = ActiveSupport::JSON.decode(json)
@@ -190,7 +190,7 @@ describe Api::ActionPagesController do
 
     context 'new member,' do
       it "should return json with required, optional, and refresh fields" do
-        get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => "nobody@example.com", :callback => "callback"
+        get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => "nobody@example.com", :callback => "callback"
 
         json = remove_callback_wrapper(response.body)
         data = ActiveSupport::JSON.decode(json)
@@ -199,7 +199,7 @@ describe Api::ActionPagesController do
       end
 
       it "should set postcode as required when the selected country is postcode-aware" do
-        get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => 'nobody@example.com', :country_iso => 'us', :callback => "callback"
+        get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => 'nobody@example.com', :country_iso => 'us', :callback => "callback"
 
         json = remove_callback_wrapper(response.body)
         data = ActiveSupport::JSON.decode(json)
@@ -208,7 +208,7 @@ describe Api::ActionPagesController do
       end
 
       it "should not set postcode as required when the selected country is not postcode-aware" do
-        get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => 'nobody@example.com', :country_iso => 'ao', :callback => "callback"
+        get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => 'nobody@example.com', :country_iso => 'ao', :callback => "callback"
 
         json = remove_callback_wrapper(response.body)
         data = ActiveSupport::JSON.decode(json)
@@ -222,7 +222,7 @@ describe Api::ActionPagesController do
         another_movement = create(:movement)
         user = create(:user, :movement => another_movement)
 
-        get :member_fields, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
+        get :member_fields, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :email => user.email, :callback => "callback"
 
         json = remove_callback_wrapper(response.body)
         data = ActiveSupport::JSON.decode(json)
@@ -247,7 +247,7 @@ describe Api::ActionPagesController do
 
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
 
-      get :show, :movement_id => page.action_sequence.campaign.movement.id, :id => page.id, :t => tracking_hash
+      get :show, :locale => :en, :movement_id => page.action_sequence.campaign.movement.id, :id => page.id, :t => tracking_hash
 
       data = ActiveSupport::JSON.decode(response.body)
       data["id"].should eql page.id
@@ -298,7 +298,7 @@ describe Api::ActionPagesController do
       page = create(:action_page, :name => "Cool page")
       page.action_sequence.campaign.movement.default_language = Language.find_by_iso_code("en")
 
-      get :show, :movement_id => page.action_sequence.campaign.movement.id, :id => page.id
+      get :show, :locale => :en, :movement_id => page.action_sequence.campaign.movement.id, :id => page.id
 
       data = ActiveSupport::JSON.decode(response.body)
       data["name"].should eql "Cool page"
@@ -310,7 +310,7 @@ describe Api::ActionPagesController do
 
     it "should return Not Found status when there's no page matching the query" do
       movement = create(:movement)
-      get :show, :movement_id => movement.id, :id => -1
+      get :show, :locale => :en, :movement_id => movement.id, :id => -1
 
       response.status.should eql 404
     end
@@ -319,7 +319,7 @@ describe Api::ActionPagesController do
       first_movement_page = create(:action_page, :name => "Cool page in first movement")
       second_movement_page = create(:action_page, :name => "Cool page in second movement")
 
-      get :show, :movement_id => first_movement_page.movement.id, :id => second_movement_page.id
+      get :show, :locale => :en, :movement_id => first_movement_page.movement.id, :id => second_movement_page.id
 
       first_movement_page.movement.id.should_not eql second_movement_page.movement.id
       response.status.should eql 404
@@ -329,7 +329,7 @@ describe Api::ActionPagesController do
       first_movement_page = create(:action_page, :name => "Cool page in first movement")
       second_movement_page = create(:action_page, :name => "Cool page in second movement")
 
-      get :show, :movement_id => first_movement_page.movement.id, :id => "cool-page-in-second-movement"
+      get :show, :locale => :en, :movement_id => first_movement_page.movement.id, :id => "cool-page-in-second-movement"
 
       first_movement_page.movement.id.should_not eql second_movement_page.movement.id
       response.status.should eql 404
@@ -338,7 +338,7 @@ describe Api::ActionPagesController do
     it "should return Not Found status when the action sequence of the given page is not published" do
       @page.action_sequence.update_attribute :published, false
 
-      get :show, :movement_id => @page.movement.id, :id => @page.friendly_id
+      get :show, :locale => :en, :movement_id => @page.movement.id, :id => @page.friendly_id
 
       response.status.should eql 404
     end
@@ -703,7 +703,7 @@ describe Api::ActionPagesController do
 
     it "should return Not Found status when there's no page matching the query" do
       movement = create(:movement)
-      get :preview, :movement_id => movement.id, :id => -1
+      get :preview, :locale => :en, :movement_id => movement.id, :id => -1
 
       response.status.should eql 404
     end
@@ -717,7 +717,7 @@ describe Api::ActionPagesController do
       create(:facebook_share, :page_id => page.id)
       create(:email_share, :page_id => page.id)
 
-      get :share_counts, :movement_id => @movement.id, :id => page.id, :format => :json
+      get :share_counts, :locale => :en, :movement_id => @movement.id, :id => page.id, :format => :json
 
       ActiveSupport::JSON.decode(response.body).should == {'facebook' => 1,
                                                            'twitter' => 1,
@@ -731,7 +731,7 @@ describe Api::ActionPagesController do
         create(:twitter_share, :page_id => page.id)
         create(:facebook_share, :page_id => page.id)
 
-        get :share_counts, :movement_id => @movement.id, :id => page.id, :format=>:json
+        get :share_counts, :locale => :en, :movement_id => @movement.id, :id => page.id, :format=>:json
 
         ActiveSupport::JSON.decode(response.body).should == {'facebook' => 1,
                                                              'twitter' => 1,
@@ -768,7 +768,7 @@ describe Api::ActionPagesController do
       mail.should_receive(:deliver)
       PaymentErrorMailer.should_receive(:report_error).with(an_instance_of(DonationError)).and_return(mail)
 
-      post :donation_payment_error, :movement_id => @movement.friendly_id, :id => @page.id, :payment_error_data => payment_error_data, :member_info => member_info
+      post :donation_payment_error, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :payment_error_data => payment_error_data, :member_info => member_info
 
       response.status.should == 200
     end
@@ -789,7 +789,7 @@ describe Api::ActionPagesController do
       mail.should_receive(:deliver)
       PaymentErrorMailer.should_receive(:report_error).with(an_instance_of(DonationError)).and_return(mail)
 
-      post :donation_payment_error, :movement_id => @movement.friendly_id, :id => @page.id, :payment_error_data => payment_error_data
+      post :donation_payment_error, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :payment_error_data => payment_error_data
     end
   end
 end

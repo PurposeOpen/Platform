@@ -36,10 +36,12 @@ describe Api::ActivitiesController do
     it 'should cache action with request path', :caching => true do
       load "app/controllers/api/activities_controller.rb"
       Rails.cache.clear
-      get :show, :movement_id => @movement.slug, :format => "json", :type => "comments"
-      Rails.cache.exist?("views/en/api/movements/#{@movement.slug}/activity.json?type=comments").should be_true
-      UserActivityEvent.should_not_receive(:load_feed)
-      get :show, :movement_id => @movement.slug, :format => "json"
+
+      UserActivityEvent.should_receive(:load_feed).once.and_return([])
+
+      get :show, :locale => :en, :movement_id => @movement.slug, :format => "json", :type => "comments"
+
+      get :show, :locale => :en, :movement_id => @movement.slug, :format => "json"
     end
   end
 
@@ -48,7 +50,7 @@ describe Api::ActivitiesController do
       profane_user = FactoryGirl.create(:user_with_profane_name, :movement => @movement, :language => @language)
       profane_user.take_action_on!(@page)
 
-      get :show, :movement_id => @movement.id, :module_id => @petition_module.id, :format => "json"
+      get :show, :locale => :en, :movement_id => @movement.id, :module_id => @petition_module.id, :format => "json"
 
       json = ActiveSupport::JSON.decode(response.body)
       json.count.should == 0
@@ -71,7 +73,7 @@ describe Api::ActivitiesController do
 
       context 'type is activity,' do
         it 'should return all action-taken user activity events for the module' do
-          get :show, :movement_id => @movement.id, :module_id => @petition_module.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :module_id => @petition_module.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 2
@@ -88,7 +90,7 @@ describe Api::ActivitiesController do
           portuguese_user = FactoryGirl.build(:user, :first_name => "Manoel", :last_name => "Silva", :movement => @movement, :language => portuguese)
           portuguese_user.take_action_on!(@page, :comment => "Gostei muito!")
 
-          get :show, :movement_id => @movement.id, :module_id => portuguese_petition_module.id, :type => "comments", :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :module_id => portuguese_petition_module.id, :type => "comments", :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 2
@@ -99,7 +101,7 @@ describe Api::ActivitiesController do
         it 'should filter out activities with profane comments' do
           @user.take_action_on!(@page, :comment => 'Mierda!!')
 
-          get :show, :movement_id => @movement.id, :module_id => @petition_module.id,
+          get :show, :locale => :en, :movement_id => @movement.id, :module_id => @petition_module.id,
               :type => 'comments', :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
@@ -111,7 +113,7 @@ describe Api::ActivitiesController do
         it 'should not include subscribed events' do
           @movement.update_attribute(:subscription_feed_enabled, true)
 
-          get :show, :movement_id => @movement.id, :module_id => @petition_module.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :module_id => @petition_module.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should eql 2
@@ -134,7 +136,7 @@ describe Api::ActivitiesController do
           end
 
           last_subscription = UserActivityEvent.where(:activity => UserActivityEvent::Activity::SUBSCRIBED).order("id desc").first
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
 
@@ -154,7 +156,7 @@ describe Api::ActivitiesController do
             action_taken_event = UserActivityEvent.where(:user_id => another_user.id, :movement_id => @movement.id,
                                                          :activity => UserActivityEvent::Activity::ACTION_TAKEN).first
 
-            get :show, :movement_id => @movement.id, :format => "json"
+            get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
             json = ActiveSupport::JSON.decode(response.body)
             json.count.should == 2
@@ -167,7 +169,7 @@ describe Api::ActivitiesController do
                                       :movement => @movement, :language => @language)
             user.take_action_on!(@page, :comment => 'Mierda!!')
 
-            get :show, :movement_id => @movement.id, :format => "json"
+            get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
             json = ActiveSupport::JSON.decode(response.body)
             json.count.should == 1
@@ -184,7 +186,7 @@ describe Api::ActivitiesController do
             another_user_subscribed_event = UserActivityEvent.where(:user_id => another_user.id,
                                                                     :movement_id => @movement.id, :activity => UserActivityEvent::Activity::SUBSCRIBED).first
 
-            get :show, :movement_id => @movement.id, :format => "json"
+            get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
             json = ActiveSupport::JSON.decode(response.body)
             json.count.should == 2
@@ -198,7 +200,7 @@ describe Api::ActivitiesController do
             user = user_that_joined_through_the_join_page
             user.take_action_on!(@page)
 
-            get :show, :movement_id => @movement.id, :format => "json"
+            get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
             json = ActiveSupport::JSON.decode(response.body)
             json.count.should == 2
@@ -212,7 +214,7 @@ describe Api::ActivitiesController do
             user = user_that_has_taken_an_action_on_page
             user.take_action_on!(@join_page)
 
-            get :show, :movement_id => @movement.id, :format => "json"
+            get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
             json = ActiveSupport::JSON.decode(response.body)
             json.count.should == 1
@@ -225,7 +227,7 @@ describe Api::ActivitiesController do
             user = user_that_has_taken_an_action_on_page
             user.subscribe_through_homepage!
 
-            get :show, :movement_id => @movement.id, :format => "json"
+            get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
             json = ActiveSupport::JSON.decode(response.body)
             json.count.should == 1
@@ -242,7 +244,7 @@ describe Api::ActivitiesController do
                                               :first_name => nil, :last_name => nil, :country_iso => nil, :postcode => nil, :is_member => true)
           anonymous_user.subscribe_through_homepage!
 
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 3
@@ -258,7 +260,7 @@ describe Api::ActivitiesController do
           user = user_that_has_taken_an_action_on_page
           @page.action_sequence.update_attribute(:published, false)
 
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 0
@@ -271,7 +273,7 @@ describe Api::ActivitiesController do
           action_sequence.enabled_languages = []
           action_sequence.save!
 
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 1
@@ -292,7 +294,7 @@ describe Api::ActivitiesController do
           action_taken_event = UserActivityEvent.where(:user_id => another_user.id,
                                                        :movement_id => @movement.id, :activity => UserActivityEvent::Activity::ACTION_TAKEN).first
 
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 1
@@ -303,7 +305,7 @@ describe Api::ActivitiesController do
           user = user_that_has_taken_an_action_on_page
           @page.action_sequence.update_attribute(:published, false)
 
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 0
@@ -315,7 +317,7 @@ describe Api::ActivitiesController do
           action_sequence.enabled_languages = []
           action_sequence.save!
 
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
 
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 0
@@ -329,7 +331,7 @@ describe Api::ActivitiesController do
 
         it 'should be set to the correct five-second interval after now if there are no events' do
           Time.stub(:now).and_return Time.parse "17:15:42"
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
           response.headers['Expires'].should == Time.parse("17:15:45").httpdate
         end
 
@@ -339,13 +341,13 @@ describe Api::ActivitiesController do
                                                        :activity => UserActivityEvent::Activity::ACTION_TAKEN).first
           action_taken_event.update_attribute :created_at, Time.parse("17:15:55")
 
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
           response.headers['Expires'].should == Time.parse("17:16:00").httpdate
         end
 
         it 'should pick the next highest interval number on the cusp' do
           Time.stub(:now).and_return Time.parse "17:15:00"
-          get :show, :movement_id => @movement.id, :format => "json"
+          get :show, :locale => :en, :movement_id => @movement.id, :format => "json"
           response.headers['Expires'].should == Time.parse("17:15:05").httpdate
         end
       end

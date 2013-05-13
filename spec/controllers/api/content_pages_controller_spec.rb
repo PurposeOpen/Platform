@@ -17,7 +17,7 @@ describe Api::ContentPagesController do
 
     tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
 
-    get :show, :movement_id => page.movement.id, :id => page.id, :t => tracking_hash
+    get :show, :locale => :en, :movement_id => page.movement.id, :id => page.id, :t => tracking_hash
 
     data = ActiveSupport::JSON.decode(response.body)
     data["id"].should eql page.id
@@ -42,7 +42,7 @@ describe Api::ContentPagesController do
     featured_actions.featured_content_modules << second_module
     featured_actions.save!
     
-    get :show, :movement_id => page.movement.id, :id => page.id
+    get :show, :locale => :en, :movement_id => page.movement.id, :id => page.id
 
     data = ActiveSupport::JSON.decode(response.body)
         data["featured_contents"]["FeaturedActions"][0]["title"].should eql "First"
@@ -52,7 +52,7 @@ describe Api::ContentPagesController do
   end
 
   it "should return 404 when page is not found" do
-    get :show, :movement_id => FactoryGirl.create(:movement).id, :id => 69
+    get :show, :locale => :en, :movement_id => FactoryGirl.create(:movement).id, :id => 69
 
     response.response_code.should eql 404
   end
@@ -69,7 +69,7 @@ describe Api::ContentPagesController do
     featured_actions.featured_content_modules << first_module
     featured_actions.featured_content_modules << second_module
     featured_actions.save!
-    get :preview, :movement_id => page.movement.id, :id => page.id
+    get :preview, :locale => :en, :movement_id => page.movement.id, :id => page.id
 
     data = ActiveSupport::JSON.decode(response.body)
     data["featured_contents"]["FeaturedActions"][0]["title"].should eql "First"
@@ -91,7 +91,7 @@ describe Api::ContentPagesController do
     featured_actions.featured_content_modules << first_module
     featured_actions.featured_content_modules << second_module
     featured_actions.save!
-    get :preview, :movement_id => page.movement.id, :id => page.id
+    get :preview, :locale => :en, :movement_id => page.movement.id, :id => page.id
 
     data = ActiveSupport::JSON.decode(response.body)
     data["featured_contents"]["FeaturedActions"][0]["title"].should eql "First"

@@ -33,20 +33,13 @@ class Api::BaseController < ApplicationController
   end
 
   def set_locale
-    I18n.locale = identify_accepted_language ||  movement.default_iso_code  || 'en'
+    I18n.locale = identify_accepted_language || movement.default_iso_code || 'en'
     headers['Content-Language'] = I18n.locale.to_s
   end
 
   def identify_accepted_language
-    headers = request.env['HTTP_ACCEPT_LANGUAGE'] || ''
     languages_iso_codes = movement.languages.pluck('languages.iso_code')
-
-    accepted_language = headers.split(',').select { |language| languages_iso_codes.include? language }.first
-    if accepted_language.blank? && languages_iso_codes.include?(params[:locale])
-      accepted_language = params[:locale]
-    end
-
-    accepted_language
+    languages_iso_codes.include?(params[:locale]) ? params[:locale] : nil
   end
 
 end

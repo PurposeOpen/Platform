@@ -66,50 +66,15 @@ describe Api::BaseController do
   context "setting locale" do
     it "should default locale to the one given in the request if it exists" do
       perform_request do
-        request.env['HTTP_ACCEPT_LANGUAGE'] = 'fr'
-        post :create, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id, :format => :json
+        post :create, :locale => 'fr', :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id, :format => :json
 
         I18n.locale.should eql :fr
-      end
-    end
-
-    it "should default locale to the locale value in params if request does not contain it" do
-      perform_request do
-        post :create, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id, :locale => 'fr', :format => :json
-
-        I18n.locale.should eql :fr
-      end
-    end
-
-    it "should default locale to movement's default if request and params do not contain locale information" do
-      perform_request do
-        post :create, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id, :format => :json
-
-        I18n.locale.should eql :pt
       end
     end
 
     it "should use movement's default locale if the locale specified in the params is not supported by the movement" do
       perform_request do
         post :create, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id, :format => :json, :locale => "sw"
-
-        I18n.locale.should eql :pt
-      end
-    end
-
-    it "should use locale specified in a list of accepted languages" do
-      perform_request do
-        request.env['HTTP_ACCEPT_LANGUAGE'] = 'en-US,en,q=0.8'
-        post :create, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id, :format => :json
-
-        I18n.locale.should eql :en
-      end
-    end
-
-    it "should use movement's default locale if the request accepts any language" do
-      perform_request do
-        request.env['HTTP_ACCEPT_LANGUAGE'] = '*'
-        post :create, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id, :format => :json
 
         I18n.locale.should eql :pt
       end
