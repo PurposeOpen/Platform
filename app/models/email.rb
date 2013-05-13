@@ -98,6 +98,7 @@ class Email < ActiveRecord::Base
       begin
         recipients = User.select(:email).where(:id => slice).order(:email).map(&:email)
         SendgridMailer.blast_email(self, :recipients => recipients).deliver
+        Rails.logger.debug("Mail #{name} sent to user: #{recipients}")
         self.push.batch_create_sent_activity_event!(slice, self)
       rescue Exception => e
         self.update_attribute(:delayed_job_id, nil)

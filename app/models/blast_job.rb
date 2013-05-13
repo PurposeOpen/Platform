@@ -8,6 +8,7 @@ class BlastJob
 
   def perform
     user_ids = list.filter_by_rules_excluding_users_from_push(email, options)
+    Rails.logger.debug("Blast #{email.name} to users: #{user_ids}")
     email.deliver_blast_in_batches(user_ids)
     email.update_attributes(:sent => true, :delayed_job_id => nil, :sent_at => Time.now.utc)
     list.saved_intermediate_result.update_results_from_sent_email!(email, user_ids.count)
