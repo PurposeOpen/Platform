@@ -215,6 +215,23 @@ describe Email do
       ActionMailer::Base.deliveries.size.should eql(2)
     end
 
+
+    it "should not send mails when SendGrid interaction is disable" do
+      english = create(:english)
+      walkfree = create(:movement, :name => "WalkFree", :url => "http://walkfree.org", :languages => [english])
+      leonardo = create(:user, :email=> 'leonardo@borges.com', :is_member => true, :movement => walkfree)
+      another_dude = create(:user, :email=> 'another@dude.com', :is_member => true, :movement => walkfree)
+      email_to_send = create(:email_with_tokens, :language => english)
+      email_to_send.blast.push.campaign.movement = walkfree
+      email_to_send.save!
+
+      ENV['DISABLE_SENDGRID_INTERACTION'] = 'true'
+
+      email_to_send.deliver_blast_in_batches([leonardo, another_dude].map(&:id), 1)
+
+      ActionMailer::Base.deliveries.size.should eql(0)
+    end
+
     it "should log push issues" do
       user1 = create(:user, :email=> 'leonardo@borges.com', :is_member => true)
       user2 = create(:user, :email=> 'another@dude.com', :is_member => true)

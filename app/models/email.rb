@@ -97,7 +97,7 @@ class Email < ActiveRecord::Base
     user_ids.each_slice(batch_size) do |slice|
       begin
         recipients = User.select(:email).where(:id => slice).order(:email).map(&:email)
-        SendgridMailer.blast_email(self, :recipients => recipients).deliver
+        SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
         Rails.logger.debug("Mail #{name} sent to user: #{recipients}")
         EmailRecipientDetail.create_with(self, slice).save
         self.push.batch_create_sent_activity_event!(slice, self)
@@ -106,6 +106,10 @@ class Email < ActiveRecord::Base
         PushLog.log_exception(self, slice, e)
       end
     end
+  end
+
+  def  sendgrid_interation_is_disabled?
+    ENV['DISABLE_SENDGRID_INTERACTION'] == "true"
   end
 
   def proofed?
