@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130507154165) do
+ActiveRecord::Schema.define(:version => 20130515163716) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -172,6 +172,14 @@ ActiveRecord::Schema.define(:version => 20130507154165) do
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.text     "text"
+  end
+
+  create_table "email_recipient_details", :force => true do |t|
+    t.integer  "email_id"
+    t.integer  "recipients_count"
+    t.text     "sent_to_users_ids"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "emails", :force => true do |t|
