@@ -105,7 +105,6 @@ PurposePlatform::Application.routes.draw do
       match 'movements/:movement_id' => 'movements#show'
 
       scope 'movements/:movement_id' do
-        resources :members, :only => [:create]
         resources :content_pages, :only => [:show] do
           member do
             get 'preview'
@@ -128,6 +127,7 @@ PurposePlatform::Application.routes.draw do
       get "awesomeness(.:format)" => "health_dashboard#index", :as => 'awesomeness_dashboard'
       post 'sendgrid_event_handler' => 'sendgrid#event_handler'
 
+      resources :members, :only => [:create]
       get 'members' => 'members#show'
       resources :shares, :only => [:create]
 

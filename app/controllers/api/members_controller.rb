@@ -14,8 +14,10 @@ class Api::MembersController < Api::BaseController
   end
 
   def create
+    (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank? 
+
     @member = movement.members.find_or_initialize_by_email(params[:member][:email])
-    @member.language = Language.find_by_iso_code(I18n.locale)
+    @member.language = Language.find_by_iso_code(params[:member][:language])
     if @member.valid?
       @member.join_email_sent = true
       @member.subscribe_through_homepage!(identify_email)
