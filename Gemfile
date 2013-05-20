@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
-ruby '1.9.3'
+ruby '2.0.0'
 
 gem 'rails', '3.2.13'
 gem 'heroku'
@@ -69,7 +69,7 @@ end
 
 group :development do
   gem 'therubyracer'
-  gem 'debugger'
+  gem 'debugger', '>= 1.4.0'
   # gem 'bullet'
   gem 'better_errors'
   gem 'binding_of_caller'
