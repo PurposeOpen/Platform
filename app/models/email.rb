@@ -98,7 +98,6 @@ class Email < ActiveRecord::Base
       begin
         recipients = User.select(:email).where(:id => slice).order(:email).map(&:email)
         SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
-        Rails.logger.debug("Mail #{name} sent to user: #{recipients}")
         EmailRecipientDetail.create_with(self, slice).save
         self.push.batch_create_sent_activity_event!(slice, self)
       rescue Exception => e
