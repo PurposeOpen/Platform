@@ -37,7 +37,7 @@ Feature: Breadcrumbs
     Then the breadcrumbs should match "Dummy Movement, Campaigns, Forestry, Gunns Petition"
     When I follow "Landing Page for Gunns Petition"
     Then the breadcrumbs should match "Dummy Movement, Campaigns, Forestry, Gunns Petition, Landing Page for Gunns Petition"
-    When I follow "Campaigns"
+    When I follow the "Campaigns" breadcrumb
     And I follow "Forestry"
     And I follow "Dummy Push"
     Then the breadcrumbs should match "Dummy Movement, Campaigns, Forestry, Dummy Push"
