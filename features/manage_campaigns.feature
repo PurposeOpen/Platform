@@ -14,7 +14,7 @@ Feature: Managing campaigns
 
   @javascript
   Scenario: Creating a Campaign
-    When I follow "Campaigns"
+    And I navigate to "Campaigns"
     And I follow "Create new campaign"
     And I fill in "Name" with "Save the kittens!"
     And I fill in "Description" with "Won't somebody think of the kittens?"
@@ -24,7 +24,7 @@ Feature: Managing campaigns
 
   @javascript
   Scenario: Deleting an existing campaign
-    When I follow "Campaigns"
+    And I navigate to "Campaigns"
     And I follow "Narwhal conservation"
     And I click "No" after following "Delete"
     And I should not see "'Narwhal conservation' has been deleted"
@@ -32,5 +32,5 @@ Feature: Managing campaigns
     When I click "Yes" after following "Delete"
     Then I should be on the "Conservation" movement page
     And I should see "'Narwhal conservation' has been deleted"
-    And I follow "Campaigns"
+    And I navigate to "Campaigns"
     And I should not see "Narwhal conservation" within "#campaigns_index"

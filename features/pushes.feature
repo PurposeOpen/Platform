@@ -143,8 +143,8 @@ Scenario: Email that is being delivered has a warning message on edit page
 
   @javascript
   Scenario: Renaming a push
-    When I navigate to Dummy Movement
-    And I follow "Campaigns"
+    When I navigate to the Dummy Movement movement
+    And I navigate to "Campaigns"
     And I search for Campaign Forestry
     And I press submit button
     When I visit the "Forestry" campaign page

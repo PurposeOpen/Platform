@@ -109,12 +109,6 @@ end
 
 When /^I save my changes$/ do
   click_button("Save")
-  begin
-    wait_until do
-      page.evaluate_script('$.active') == 0
-    end
-  rescue Capybara::NotSupportedByDriverError
-  end
 end
 
 Then /^(?:|I )should see "([^"]*)"$/ do |text|

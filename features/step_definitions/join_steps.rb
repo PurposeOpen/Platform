@@ -9,9 +9,6 @@ When /^I enter details for creating a join module (.+)$/ do|module_name|
   element=page.all(:css,"div.module_body input")
   element[2].set("Join Title")
   page.execute_script('$("div.modules_container span.mceEditor iframe")[2].contentDocument.documentElement.innerHTML="<html>This is join statement</html>"')
-  #element[4].set("10")
-  element[8].set("Comment Label")
-  #element[9].set("Join!")
   sleep 4
   click_button "Save page"
   sleep 5

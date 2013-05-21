@@ -14,7 +14,7 @@ Feature: Breadcrumbs
     When I follow "Settings"
     Then the breadcrumbs should match "Dummy Movement » Edit Movement"
     When I visit the "Dummy movement" movement page
-    And I follow "Campaigns"
+    And I navigate to "Campaigns"
     Then the breadcrumbs should match "Dummy Movement » Campaigns"
     When I follow "Content Pages"
     Then the breadcrumbs should match "Dummy Movement » Content Pages"
@@ -29,7 +29,7 @@ Feature: Breadcrumbs
   Scenario: Viewing breadcrumbs under campaigns
     When I visit the "Dummy movement" movement page
     Then the breadcrumbs should match "Dummy Movement, Home"
-    When I follow "Campaigns"
+    And I navigate to "Campaigns"
     Then the breadcrumbs should match "Dummy Movement, Campaigns"
     When I follow "Forestry"
     Then the breadcrumbs should match "Dummy Movement, Campaigns, Forestry"

@@ -76,14 +76,14 @@ module NavigationHelpers
       #TODO #223 - Refactor after the member/platform user split is done
       when /the edit admin user page for "(.*?)" in "(.*?)"/
         movement = Movement.find_last_by_name($2)
-        user = wait_until(10) { PlatformUser.find_by_email($1) }
+        user = PlatformUser.find_by_email($1)
         user.should_not be_nil
         edit_admin_movement_user_path(movement, user)
 
       #TODO #223 - Refactor after the member/platform user split is done
       when /the select role page for "(.*?)" in "(.*?)"/
         movement = Movement.find_last_by_name($2)
-        user = wait_until(10) { PlatformUser.find_by_email($1) }
+        user = PlatformUser.find_by_email($1)
         [user,movement].each do |o| o.should_not be_nil end
         edit_admin_movement_movements_user_path(movement, user)
 

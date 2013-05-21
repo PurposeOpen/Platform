@@ -18,8 +18,7 @@ Feature: Smoke test to quickly check that main features are working
     And I add a Automation Blast blast
     And I add new email Automation Email to the blast
     When I enter the details of the email
-    And I send the mail for proofing to abc@yourdomain.com
-    And I follow "Campaigns"
+    And I navigate to "Campaigns"
     And I search for Campaign Blast Campaign Automation
     And I select the Campaign Blast Campaign Automation from results
     Then I goto the push Automation Push
@@ -32,13 +31,13 @@ Feature: Smoke test to quickly check that main features are working
     @javascript
     Scenario: Navigation through all pages on the platform side
      Then I check if I am logged into the platform
-     When I navigate to Dummy Movement
+     When I navigate to the Dummy Movement movement
      Then I check if I am on the movement home page for Dummy Movement
      And I follow "Settings"
      When I check for New User Emails button
      And I check for Email Footers button
      When I check for Cancel button
-     And I follow "Campaigns"
+     And I navigate to "Campaigns"
      And I search for Campaign Forestry
      And I press submit button
      When I visit the "Forestry" campaign page
@@ -58,7 +57,6 @@ Feature: Smoke test to quickly check that main features are working
     And I go back to the sequence Test Sequence Automation
     When I create a new page action with Tell A Friend named Automation Tell A Friend
     Then I go select Automation Tell A Friend
-    And I wait for the page Automation Tell A Friend
     And I enter details required for creating the TAF page Automation Tell A Friend
     And I go back to the sequence Test Sequence Automation
     When I create a new page action with Unsubscribe named Automation Unsubscribe

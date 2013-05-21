@@ -7,7 +7,7 @@ Feature: Add an unsubscribe action sequence in a campaign so that the user can s
 
   Scenario: Add an unsubscribe page
     Given I am in "Dummy Movement" homepage
-    And I follow "Campaigns"
+    And I navigate to "Campaigns"
     And I follow "Walruses"
     And I follow "Walrus MP Call"
     And I create a new page action with Unsubscribe named "UnsubscribePage"
@@ -19,5 +19,5 @@ Feature: Add an unsubscribe action sequence in a campaign so that the user can s
     And I enter my information for the Main content as This is main content
     And I Save Page
     And then I go to "Dummy Movement" homepage
-    And I follow "Campaigns"
+    And I navigate to "Campaigns"
     Then I should see "UnsubscribePage"

@@ -11,6 +11,5 @@ When /^I enter the details required for creating the petition page (.+)$/ do |pe
   page.execute_script('$("div.modules_container span.mceEditor iframe")[2].contentDocument.documentElement.innerHTML="<html>This is petition statement</html>"')
   element[4].set("10")
   element[5].set("1")
-  element[8].set("Comment Label")
   sleep 10
 end

@@ -1,13 +1,9 @@
 When /^I enter details required for creating the TAF page (.+)$/ do|module_name|
- # click_link(module_name)
-
-  sleep 10
   text_element=page.all(:css,"div.module_body textarea")
-  element= page.all(:css,"div.module_body input")
-  element[0].set("www.testurl.com")
-  element[1].set("Test Headline")
-  element[5].set("ImageURL")
-  element[10].set("Email Subject")
+  fill_in('Share Landing Page URL', :with => "www.testurl.com")
+  fill_in('Headline', :with => "test headline")
+  fill_in('Image URL', :with => "image url")
+  fill_in('Subject', :with => "email subject")
   text_element[0].set("Test Message")
   text_element[2].set("Test Tweet")
   text_element[3].set("Email Body")
@@ -19,9 +15,7 @@ When /^I enter details required for creating the TAF page (.+)$/ do|module_name|
   sleep 1
   page.execute_script('$("div.modules_container span.mceEditor iframe")[1].contentDocument.documentElement.innerHTML="<html>This is main content</html>"')
   sleep 1
-  element[5].set("ImageURL")
   click_button "Save page"
-  sleep 5
 end
 
 When /^I check for the share options$/ do
