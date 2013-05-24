@@ -16,8 +16,8 @@ Scenario: Viewing an email
   And I visit the admin push page for "Email everyone to save the trees"
   Then I should see "Last updated"
   Then I should see the following statistics for the email "Forestry Campaign Email":
-  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed |
-  | 0       | 1     | 0      | 0             | 0           | 0            |
+  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed | Spam |
+  | 0       | 1 N/A | 0 0%   | 0 0%          | 0 0%        | 0 0%         | 0 0% |
   
 Scenario: Clicking an email
   When "fred@example.com" opens the email "Forestry Campaign Email"
@@ -25,8 +25,8 @@ Scenario: Clicking an email
   And I refresh the push stats aggregation table
   And I visit the admin push page for "Email everyone to save the trees"
   Then I should see the following statistics for the email "Forestry Campaign Email":
-  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed |
-  | 0       | 1     | 1      | 0             | 0           | 0            |
+  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed | Spam |
+  | 0       | 1 N/A | 1 N/A  | 0 0%          | 0 0%        | 0 0%         | 0 0% |
 
 @wip
 Scenario: Existing member taking action on an email
@@ -39,8 +39,8 @@ Scenario: Existing member taking action on an email
   And I refresh the push stats aggregation table
   When I visit the admin push page for "Email everyone to save the trees"
   Then I should see the following statistics for the email "Forestry Campaign Email":
-  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed |
-  | 0       | 1     | 1      | 1             | 0           | 0            |
+  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed | Spam |
+  | 0       | 1 N/A | 1 N/A  | 1 N/A         | 0 0%        | 0 0%         | 0 0% |
 
 @wip
 Scenario: New member taking action on an email
@@ -53,8 +53,8 @@ Scenario: New member taking action on an email
   And I refresh the push stats aggregation table
   When I visit the admin push page for "Email everyone to save the trees"
   Then I should see the following statistics for the email "Forestry Campaign Email":
-  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed |
-  | 0       | 1     | 1      | 1             | 1           | 0            |  
+  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed | Spam |
+  | 0       | 1 N/A | 1 N/A  | 1 N/A         | 1 N/A       | 0 0%         | 0 0% |
 
 @wip
 Scenario: Member gets upset by an email and unsubscribes
@@ -66,5 +66,5 @@ Scenario: Member gets upset by an email and unsubscribes
   And I refresh the push stats aggregation table
   When I visit the admin push page for "Email everyone to save the trees"
   Then I should see the following statistics for the email "Forestry Campaign Email":
-  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed |
-  | 0       | 1     | 0      | 0             | 0           | 1            |
+  | Sent to | Opens | Clicks | Actions Taken | New Members | Unsubscribed | Spam |
+  | 0       | 1 N/A | 0 0%   | 0 0%          | 0 0%        | 1 N/A        | 0 0% |
