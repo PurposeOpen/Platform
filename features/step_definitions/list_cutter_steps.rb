@@ -25,7 +25,7 @@ When /^I select Country Name as (.+)$/ do|country_name|
   end
   find(:css,"button.ui-multiselectcheckbox").click
   find(:css,"div.ui-multiselectcheckbox-filter input").set(country_name)
-  find(:css,"a.ui-multiselectcheckbox-all span")[0].click
+  find(:css,".ui-multiselectcheckbox-checkboxes input[value=#{country_name.upcase}]").click
 end
 When /^I check the member count$/ do
   click_button("Show count")
