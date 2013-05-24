@@ -10,28 +10,6 @@ When /^I add a (.+) blast$/ do |blast_name|
   sleep 2
 end
 When /^I add new email (.+) to the blast$/ do|email_name|
-  #page.execute_script('$("ul.actions li span.button").trigger("mouseenter")')
- # p page.driver.methods
-  #p page.methods
-  #p page.driver.browser.methods
-  #p page.driver.browser.action.methods
-  #p page.driver.browser.mouse.methods
-  #mouse_over_element = page.driver.browser.find_element(:css => "ul.actions li span.button")
-  #p mouse_over_element
-  #page.driver.browser.action.move_to(mouse_over_element).perform()
-  #sleep 5
-  #find(:css,"ul.actions li span.button")
-  #sleep 5
-  #p find(:css,"ul.actions li span.button").methods
-  #p find(:xpath,"//ul[@class='actions']/li[2]//a")
-  #find(:xpath,"//ul[@class='actions']/li[2]").native.click
-  #email_create = page.driver.browser.find_element(:css => "ul.actions li ul li a")
-  #p email_create
-
-  #p email_create.size()
-  #p email_create[1]
-  #p email_create[1].methods
-  #email_create.click()
   page.execute_script('$("ul.actions li ul li a")[0].click()')
   sleep 2
   fill_in("email_name",:with=>email_name)
