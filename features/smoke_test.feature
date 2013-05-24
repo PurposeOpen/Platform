@@ -26,7 +26,7 @@ Feature: Smoke test to quickly check that main features are working
     When I select Country by Name
     And I select Country Name as Afghanistan
     And I save count and go to blast
-    And I send email and schedule it for next day
+    Then I should see "Automation Blast (1 member)"
 
     @javascript
     Scenario: Navigation through all pages on the platform side
