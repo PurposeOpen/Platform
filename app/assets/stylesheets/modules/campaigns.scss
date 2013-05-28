@@ -31,7 +31,7 @@
     .list_group_item {
       @include white_box;
 
-      &#action_sequences_list, &#emails_list, &#get_togethers_list {
+      &#action_sequences_list, &#pushes_list, &#get_togethers_list {
         .push {
           @include white_box;
           margin-top: 10px;
