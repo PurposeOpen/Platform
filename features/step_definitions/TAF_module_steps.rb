@@ -4,9 +4,9 @@ When /^I enter details required for creating the TAF page (.+)$/ do|module_name|
   fill_in('Headline', :with => "test headline")
   fill_in('Image URL', :with => "image url")
   fill_in('Subject', :with => "email subject")
-  text_element[0].set("Test Message")
-  text_element[2].set("Test Tweet")
-  text_element[3].set("Email Body")
+  fill_in('Message', :with => "Test Message")
+  fill_in('Tweet', :with => "Test Tweet")
+  fill_in('Body', :with => "Email Body")
   page.find(:css,"div[data-layout-type='header_content'] ul.add_module_buttons a.html_module").click
   sleep 1
   page.execute_script('$("div.modules_container span.mceEditor iframe")[0].contentDocument.documentElement.innerHTML="<html>This is header content</html>"')
