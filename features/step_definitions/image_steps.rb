@@ -19,6 +19,6 @@ end
 When /^I upload a fixture downloadable asset$/ do
   filename = File.join(Rails.root, 'spec/fixtures/images/wikileaks.jpg')
   step %{I fill in "asset_link_text" with "Wikileaks file"}
-  attach_file(:downloadable_asset_asset, filename)
+  attach_file('asset[asset]', filename)
   click_button "Upload"
 end

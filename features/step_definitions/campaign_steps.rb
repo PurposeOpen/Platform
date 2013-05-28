@@ -18,7 +18,7 @@ Given /^there is an email "([^"]*)" for the "([^"]*)" campaign$/ do |email_name,
   push = FactoryGirl.create(:push, :campaign => campaign, :name => "Push for #{email_name}")
   
   blast = FactoryGirl.create(:blast, :push => push, :name => "Blast for #{email_name}")
-  email = FactoryGirl.create(:email, {:blast => blast, :name => email_name, :from => "test@yourdomain.com.au", :subject => "test email", :body => "This is a test"}) 
+  email = FactoryGirl.create(:email, {:blast => blast, :name => email_name, :from => "test@yourdomain.com.au", :subject => "test email", :body => "This is a test"})
 end
 
 Given /^there is a push "([^"]*)" for the "([^"]*)" campaign$/ do |push_name, campaign_name|
@@ -26,8 +26,7 @@ Given /^there is a push "([^"]*)" for the "([^"]*)" campaign$/ do |push_name, ca
   campaign.should_not be_nil
   
   push = FactoryGirl.create(:push, :campaign => campaign, :name => push_name)
-  sleep 30
-
+  sleep 2
 end
 
 Given /^there is a blast "([^"]*)" for the "([^"]*)" push$/ do |blast_name, push_name|

@@ -189,6 +189,8 @@ Then /^I should see a not found page$/ do
 end
 
 Then /^I should see "([^"]*)" as available movements$/ do |movement_names|
+  page.find('.movement.menu').click
+
   within('#movements-container') do
     movement_names.split(",").each do |name|
       should have_content(name)

@@ -48,7 +48,7 @@ end
 
 When /^I fill in the content of the HTML module on the header for "([^"]*)" with "([^"]*)"$/ do |language, html_module_content|
   page.click_on language
-  textarea_id = page.field_labeled("Content")[:id]
+  textarea_id = page.find("[data-layout-type='header_content'] label")[:for]
   within_frame("#{textarea_id}_ifr") do
     page.find_by_id('tinymce').click
   end
@@ -59,13 +59,13 @@ Then /^there should be an HTML module for each language on the header of the "([
   content_page = ContentPage.find_by_name(content_page_name)
   content_page.movement.languages.each do |language|
     page.click_on language.name
-    page.find("[data-layout-type='header_content']").find("textarea:last").should_not be_nil
+    page.find("[data-layout-type='header_content'] .content_module").should_not be_nil
   end
 end
 
 When /^there should be an HTML module with content "([^"]*)" on the header of the "([^"]*)" page in "([^"]*)"$/ do |html_module_content, content_page_name, language|
   page.click_on language
-  textarea_id = page.find("[data-layout-type='header_content']").find("textarea:last")[:id]
+  textarea_id = page.find("[data-layout-type='header_content'] label")[:for]
   within_frame("#{textarea_id}_ifr") do
     page.find_by_id('tinymce').click
   end

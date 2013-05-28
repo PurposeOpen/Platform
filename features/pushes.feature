@@ -20,6 +20,15 @@ Feature: Creating a push for a campaign
     And I press "Create blast"
     Then I should be on the admin push page for "Test Push"
 
+  @javascript
+  Scenario: Renaming a push
+    Given there is a push "Push for Renaming" in the "Forestry" campaign
+    When I visit the "Forestry" campaign page
+    Then I should see "Push for Renaming"
+    When I click Rename for the push "Push for Renaming"
+    And I enter the new name as Renamed Push for the same push
+    And I press Save Push button
+    Then I should see "Renamed Push" in the Pushes listing
 
   Scenario: Add a blast to a push
     Given there is a push "Climate action" for the "Forestry" campaign
@@ -140,17 +149,4 @@ Scenario: Email that is being delivered has a warning message on edit page
   And I follow "The ice age cometh"
   Then I should see "This email is scheduled for delivery. Changes made will not apply to blasts already scheduled."
   And blasts are processed again
-
-  @javascript
-  Scenario: Renaming a push
-    When I navigate to the Dummy Movement movement
-    And I navigate to "Campaigns"
-    And I search for Campaign Forestry
-    And I press submit button
-    When I visit the "Forestry" campaign page
-    Then there is a push "Dummy Push" for the "Forestry" campaign
-    When I press Rename
-    And I enter the new name as Dummy Push Renamed for the same push
-    And I press Save Push button
-    Then I check for the changed push name Dummy Push Renamed
 
