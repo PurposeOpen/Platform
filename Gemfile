@@ -89,7 +89,6 @@ group :development, :test do
   gem 'jslint_on_rails'
   gem 'rspec-rails' #, '~> 2.8.1'
   gem 'guard-rspec' #, '~> 0.7.0'
-  #gem 'thin'
   gem 'launchy'
   gem 'selenium-webdriver' #, "~> 2.27.2"
   gem 'capybara'#, '1.1.2'
@@ -115,5 +114,4 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'quiet_assets'
   gem 'subcontractor'
-  gem 'fakeweb', :require => false
 end
