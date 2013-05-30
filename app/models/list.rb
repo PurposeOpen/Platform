@@ -52,7 +52,6 @@ class List < ActiveRecord::Base
     options[:no_jobs]         ||= 1
 
     relation = self.list_relation
-    relation = partition_users_by_job_id(relation, options[:no_jobs], options[:current_job_id]) if options[:no_jobs] > 1
     relation = filter_users_by_language(relation, email)
 
     if options[:limit].is_a? Fixnum
@@ -98,10 +97,6 @@ class List < ActiveRecord::Base
     ensure
       drop_tables! rules_with_excluded_users
     end
-  end
-
-  def partition_users_by_job_id(relation, no_jobs, current_job_id)
-    relation.select("MOD(users.id, #{no_jobs}) modulus").having("modulus = #{current_job_id || 0}")
   end
 
   def filter_users_by_language(relation, email)

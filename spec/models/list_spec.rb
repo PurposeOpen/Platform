@@ -151,42 +151,6 @@ describe List do
     list.filter_by_rules_excluding_users_from_push(email, :no_jobs => 1).should == [@user1.id]
   end
 
-  context "using a blast that has multiple emails (each email spawns a job to cut its own list)" do
-    before do
-      @english = create(:language)
-      @portuguese = create(:portuguese)
-      @spanish = create(:spanish)
-
-      @movement = create(:movement, :languages => [@english, @portuguese, @spanish])
-      @campaign = create(:campaign, :movement => @movement)
-
-      @push = create(:push, :campaign => @campaign)
-      @blast = create(:blast, :push => @push)
-    end
-
-    it "should correctly split the users by job" do
-      user1 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'US', :language => @english)
-      user2 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'US', :language => @english)
-      user3 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'US', :language => @portuguese)
-      user4 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'US', :language => @english)
-      user5 = create(:user, :movement => @movement, :is_member => true, :country_iso => 'US', :language => @english)
-
-      email1 = create(:email, :blast => @blast, :language => @english)
-      email2 = create(:email, :blast => @blast, :language => @english)
-
-      list = List.create!(:blast => @blast)
-      list.add_rule(:country_rule, :selected_by => 'name', :values => ['UNITED STATES'])
-
-      first_users, second_users = [ user1.id, user2.id, user4.id, user5.id ].partition { |id| id % 2 == 0 }
-
-      us_users_for_1st_job = list.filter_by_rules_excluding_users_from_push(email1, :no_jobs => 2, :current_job_id => 0)
-      us_users_for_2nd_job = list.filter_by_rules_excluding_users_from_push(email2, :no_jobs => 2, :current_job_id => 1)
-
-      us_users_for_1st_job.should =~ first_users
-      us_users_for_2nd_job.should =~ second_users
-    end
-  end
-
   describe "using filters of the same type multiple times" do
     before do
       @campaign1 = create(:campaign, :movement => movement)
@@ -284,24 +248,6 @@ describe List do
   end
 
   describe "excluding specific users" do
-    it "should use the modulus function to partition users" do
-      user = create(:leo, :movement => movement, :language => movement.default_language)
-      user1 = create(:user, :movement => movement, :country_iso => 'AU', :language => movement.default_language)
-      user2 = create(:user, :movement => movement, :country_iso => 'AU', :language => movement.default_language)
-      push = email.blast.push
-
-      Push.log_activity!(:email_sent, user, email)
-      no_jobs = 2
-
-      first_users, second_users = [ user1.id, user2.id ].partition { |id| id % 2 == 0 }
-
-      user_ids = list.filter_by_rules_excluding_users_from_push(email, :no_jobs => no_jobs, :current_job_id => 0)
-      user_ids.should =~ first_users
-
-      user_ids = list.filter_by_rules_excluding_users_from_push(email, :no_jobs => no_jobs, :current_job_id => 1)
-      user_ids.should =~ second_users
-    end
-
     it "should filter out users that have already received an email within the given push" do
       users = ['user1@gmail.com', 'user2@gmail.com', 'user3@gmail.com'].map do |email|
         create(:user, :email => email, :country_iso => 'AU', :movement => movement, :language => movement.default_language)
