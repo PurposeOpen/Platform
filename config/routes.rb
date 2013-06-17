@@ -131,6 +131,8 @@ PurposePlatform::Application.routes.draw do
       get 'members' => 'members#show'
       resources :shares, :only => [:create]
 
+      resources :external_activity_events, :only => [:create]
+
       get 'email_tracking/email_opened' => "email_tracking#email_opened"
       post 'email_tracking/email_clicked' => "email_tracking#email_clicked"
 

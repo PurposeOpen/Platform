@@ -6,6 +6,9 @@
 #  email_id          :integer
 #  recipients_count  :integer
 #  sent_to_users_ids :text
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
 
 class EmailRecipientDetail < ActiveRecord::Base
 

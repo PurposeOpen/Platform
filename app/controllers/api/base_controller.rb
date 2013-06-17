@@ -4,7 +4,7 @@ class Api::BaseController < ApplicationController
 
   private
 
-  def identify_email
+  def tracked_email
     @email = email_tracking_hash.email
   end
 

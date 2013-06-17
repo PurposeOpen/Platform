@@ -28,7 +28,6 @@
 #  is_admin                 :boolean          default(FALSE)
 #  created_by               :string(255)
 #  updated_by               :string(255)
-#  postcode_id              :integer
 #  is_volunteer             :boolean          default(FALSE)
 #  random                   :float
 #  movement_id              :integer          not null
@@ -152,6 +151,18 @@ class User < ActiveRecord::Base
     page.process_action_taken_by(self, action_info)
   end
 
+  def take_external_action!(email=nil)
+    if !self.can_subscribe?
+      self.is_member = false
+      save!
+    else
+      join_through_external_action!(email)
+    end
+
+    UserActivityEvent.action_taken!(self, nil, nil, nil, email)
+    UserActivityEvent.email_clicked!(self, email) if email
+  end
+
   def subscribe_through_homepage!(email=nil)
     return unless self.can_subscribe?
 
@@ -169,6 +180,29 @@ class User < ActiveRecord::Base
     self.source = :movement
     save!
     UserActivityEvent.subscribed!(self, email, page, page.ask_module_for_language(self.language)) unless is_already_subscribed?
+  end
+
+  def join_through_external_action!(email=nil)
+    return unless self.can_subscribe?
+
+    hard_opt_in
+    self.source = :movement if self.source.blank?
+    save!
+    UserActivityEvent.subscribed!(self, email) unless (self.is_member == false || is_already_subscribed?)
+  end
+
+  def hard_opt_in
+    self.is_member =
+
+    if self.new_record?
+      blank_but_not_false(self.is_member) ? true : self.is_member
+    else
+      true
+    end
+  end
+
+  def blank_but_not_false(value)
+    value.blank? && !(value == false)
   end
 
   def unsubscribe!(email = nil)

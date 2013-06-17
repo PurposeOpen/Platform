@@ -212,6 +212,152 @@ describe User do
     end
   end
 
+  describe '#take_external_action!,' do
+    before do
+      @blast = FactoryGirl.create(:blast)
+      @movement = @blast.push.campaign.movement
+      @email = FactoryGirl.create(:email, :blast => @blast)
+      @user = FactoryGirl.create(:user, :movement => @movement)
+    end
+
+    it 'should create subscribed, action_taken, email_clicked, and email_viewed events associated with the tracked email' do
+      @user.take_external_action!(@email)
+
+      events = @user.user_activity_events.all
+      events.count.should == 4
+      events.detect { |event| event.activity == :subscribed }.attributes.should include('email_id' => @email.id)
+      events.detect { |event| event.activity == :action_taken }.attributes.should include('push_id' => @blast.push.id, 'email_id' => @email.id)
+      PushClickedEmail.first.attributes.should include('movement_id' => @movement.id, 'user_id' => @user.id, 'push_id' => @blast.push.id, 'email_id' => @email.id)
+      PushViewedEmail.first.attributes.should include('movement_id' => @movement.id, 'user_id' => @user.id, 'push_id' => @blast.push.id, 'email_id' => @email.id)
+    end
+
+    context 'user is not permanently unsubscribed' do
+      it 'should attempt to subscribe the user' do
+        @user.should_receive(:join_through_external_action!).with(@email)
+
+        @user.take_external_action!(@email)
+      end
+    end
+
+    context 'user is permanentely unsubscribed:' do
+      it "should not subscribe the user, but should create action taken and email events and update the user's info" do
+        user = FactoryGirl.create(:user, :movement => @movement, :first_name => 'Bagger', :last_name => 'Vance', :is_member => false, :permanently_unsubscribed => true)
+        user.is_member = true
+        new_first_name = 'Carl'
+        new_last_name = 'Spackler'
+        user.first_name = new_first_name
+        user.last_name = new_last_name
+        user.should_not_receive(:subscribe!)
+
+        user.take_external_action!(@email)
+
+        user.reload
+        user.attributes.should include('is_member' => false, 'permanently_unsubscribed' => true, 'first_name' => new_first_name, 'last_name' => new_last_name)
+
+        user.user_activity_events.where(:activity => :action_taken).count.should == 1
+
+        PushClickedEmail.count.should == 1
+        PushViewedEmail.count.should == 1
+      end
+    end
+  end
+
+  describe '#join_through_external_action!,' do
+    context 'new user:' do
+      it 'should create a subscribed event associated with the tracked email (existing user shared a Platform email with the new user)' do
+        blast = FactoryGirl.create(:blast)
+        movement = blast.push.campaign.movement
+        email = FactoryGirl.create(:email, :blast => blast)
+        email_address = 'bob@example.com'
+        new_user = movement.members.find_or_initialize_by_email(email_address)
+
+        new_user.join_through_external_action!(email)
+
+        saved_user = movement.members.find_by_email(email_address)
+        saved_user.should_not be_nil
+        saved_user.should have(1).user_activity_events
+        subscribed_event = saved_user.user_activity_events.first
+        subscribed_event.attributes.should include('email_id' => email.id, 'activity' => 'subscribed')
+      end
+
+      it 'should set a default source if it is not set' do
+        user = FactoryGirl.build(:user, :source => nil)
+
+        user.join_through_external_action!
+
+        User.find_by_email(user.email).source.should == 'movement'
+      end
+
+      context 'did not opt in:' do
+        it 'should create an unsubscribed user' do
+          user = FactoryGirl.build(:user, :is_member => false)
+
+          user.join_through_external_action!
+
+          User.find_by_email(user.email).is_member.should be_false
+        end
+
+        it 'should not create a subscribed event' do
+          user = FactoryGirl.build(:user, :is_member => false)
+
+          user.join_through_external_action!
+
+          user.user_activity_events.count.should == 0
+        end
+      end
+    end
+
+    context 'existing user:' do
+      context 'that is unsubscribed:' do
+        it 'should subscribe the user' do
+          user = FactoryGirl.create(:user, :is_member => false, :permanently_unsubscribed => false)
+
+          user.join_through_external_action!
+
+          user.reload
+          user.is_member.should be_true
+          user.permanently_unsubscribed.should be_false
+          user.should have(1).user_activity_events
+        end
+      end
+
+      context 'that is permanently unsubscribed:' do
+        it 'should not subscribe the user nor create a subscribed event' do
+          user = FactoryGirl.create(:user, :is_member => false, :permanently_unsubscribed => true)
+
+          user.join_through_external_action!
+
+          user.reload
+          user.is_member.should be_false
+          user.permanently_unsubscribed.should be_true
+          user.should have(0).user_activity_events
+        end
+      end
+
+      context 'subscribes multiple times:' do
+        it 'should not create additional subcribe events' do
+          user = FactoryGirl.create(:user)
+
+          user.join_through_external_action!
+          user.join_through_external_action!
+
+          user.should have(1).user_activity_events
+        end
+      end
+    end
+
+    context 'did not opt in:' do
+      it 'should not unsubscribe the user' do
+        user = FactoryGirl.create(:user)
+        opted_out_user = FactoryGirl.build(:user, :email => user.email, :is_member => false)
+
+        opted_out_user.join_through_external_action!
+
+        User.find_by_email(user.email).is_member.should be_true
+      end
+    end
+  end
+
   describe "activity events" do
     describe "new users" do
       before(:each) do

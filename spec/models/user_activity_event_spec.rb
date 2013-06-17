@@ -84,7 +84,6 @@ describe UserActivityEvent do
   end
 
   describe 'action_taken' do
-
     context 'page is present' do
       it "creates an action_taken event, using the page's movement" do
         event = UserActivityEvent.action_taken!(@user, @page, @petition_module, @signature, @email)
@@ -98,6 +97,17 @@ describe UserActivityEvent do
         event.campaign.should == @page.action_sequence.campaign
         event.public_stream_html.should == "Someone signed!"
         event.movement.should == @page.movement
+      end
+
+      it "should allow multiple identical action taken events" do
+        UserActivityEvent.action_taken!(@user, @page, @petition_module, @signature, @email)
+        UserActivityEvent.action_taken!(@user, @page, @petition_module, @signature, @email)
+
+        UserActivityEvent.where(:user_id           => @user.id,
+                                :page_id           => @page.id,
+                                :content_module_id => @petition_module.id,
+                                :user_response_id  => @signature.id,
+                                :email_id          => @email.id).count.should == 2
       end
     end
 
@@ -116,7 +126,6 @@ describe UserActivityEvent do
         event.movement.should == @user.movement
       end
     end
-
   end
 
   describe 'email clicked event' do

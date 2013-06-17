@@ -5,7 +5,7 @@ class Api::MembersController < Api::BaseController
   def show
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
 
-    if @member      
+    if @member
       render :json => @member.as_json(:only => MEMBER_FIELDS), :status => :ok
     else
       status_response = params[:email].blank? ? :bad_request : :not_found
@@ -20,7 +20,7 @@ class Api::MembersController < Api::BaseController
     @member.language = Language.find_by_iso_code(params[:member][:language])
     if @member.valid?
       @member.join_email_sent = true
-      @member.subscribe_through_homepage!(identify_email)
+      @member.subscribe_through_homepage!(tracked_email)
       MailSender.new.send_join_email(@member, movement)
 
       response = @member.as_json(:only => MEMBER_FIELDS).merge({

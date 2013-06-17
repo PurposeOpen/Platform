@@ -125,7 +125,7 @@ class Api::ActionPagesController < Api::BaseController
 
   def action_info_from(params)
     action_info = (params[:action_info].is_a? Hash) ? params[:action_info] : {}
-    action_info.merge(:email => identify_email)
+    action_info.merge(:email => tracked_email)
   end
 
 end

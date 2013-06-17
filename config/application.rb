@@ -43,7 +43,7 @@ module PurposePlatform
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password, :card_number, :card_cvv  ]
+    config.filter_parameters += [:password, :card_number, :card_cvv]
 
     # Use SQL instead of Active Record's schema dumper when creating the database.
     # This is necessary if your schema can't be completely dumped by the schema dumper,
