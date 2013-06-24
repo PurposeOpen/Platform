@@ -17,9 +17,13 @@
 class ExternalActivityEvent < ActiveRecord::Base
   include ActiveModel::ForbiddenAttributesProtection
 
+  belongs_to :movement
+  belongs_to :user
+
   attr_accessible :action_slug, :action_language_iso, :partner, :role, :source, :user_id, :movement_id
 
   validates_presence_of :action_slug, :action_language_iso, :role, :source, :user_id, :movement_id
 
+  after_save ->{Rails.cache.delete("/grouped_select_options_external_actions/#{movement_id}")}
 
 end

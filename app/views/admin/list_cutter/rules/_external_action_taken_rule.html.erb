@@ -1,0 +1,8 @@
+<div class="tooltip" data-tip="page-id-tip">
+  <%= select_tag 'rules[external_action_taken_rule][$index][action_slugs][]',
+                 grouped_select_options_external_actions(@movement.id, rule.action_slugs),
+                 {:multiple => true,
+                  :id => "rules_external_action_taken_rule_$index_action_slugs_",
+                  :class => "required multiselectcheckbox external_action_taken_select",
+                  "data-placeholder" => "Choose an External Action..."} %>
+</div>

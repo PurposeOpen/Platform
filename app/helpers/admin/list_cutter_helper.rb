@@ -13,7 +13,8 @@ module Admin::ListCutterHelper
         {label: "Originating Action", class: ListCutter::OriginatingActionRule},
         {label: "Member Email Activity", class: ListCutter::MemberEmailActivityRule},
         {label: "Donation frequency", class: ListCutter::DonorRule},
-        {label: "Donation amount", class: ListCutter::DonationAmountRule}
+        {label: "Donation amount", class: ListCutter::DonationAmountRule},
+        {label: "External Action", class: ListCutter::ExternalActionTakenRule}
     ]
   end
 
@@ -66,6 +67,22 @@ module Admin::ListCutterHelper
     create_opt_groups(store, selected)
   end
 
+  def grouped_select_options_external_actions(movement_id, selected)
+    store_key = "/grouped_select_options_external_actions/#{movement_id}"
+    store = Rails.cache.fetch(store_key)
+    Rails.logger.info("Got #{store}")
+    return options_for_select(store, selected) if !store.nil?
+
+    fields = 'source, partner, action_slug'
+    store = ExternalActivityEvent.where(:movement_id => movement_id).group(fields).select(fields).order(fields).map do |event|
+      partner = event.partner.blank? ? '' : "#{event.partner.upcase} - "
+      ["#{event.source.upcase}: #{partner}#{event.action_slug}", event.action_slug]
+    end
+
+    Rails.cache.write(store_key, store)
+    options_for_select(store, selected)
+  end
+
   def select_options_action_pages(movement_id, selected)
     store_key = "/select_options_pages/#{movement_id}"
     store = Rails.cache.fetch(store_key)
@@ -76,7 +93,6 @@ module Admin::ListCutterHelper
     response = options_for_select(store, selected)
     response.gsub(/\n/, '').html_safe
   end
-
 
   def filter_selected?(rule, rule_option)
     rule.class == rule_option[:class] ? "selected='selected'".html_safe : ""

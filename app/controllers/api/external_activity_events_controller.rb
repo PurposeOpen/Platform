@@ -24,7 +24,6 @@ class Api::ExternalActivityEventsController < Api::BaseController
     rescue => e
       render :status => :internal_server_error, :json => {:error => e.class.name.underscore}
     end
-
   end
 
 

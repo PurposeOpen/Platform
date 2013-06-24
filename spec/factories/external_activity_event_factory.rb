@@ -2,11 +2,12 @@
 
 FactoryGirl.define do
   factory :external_activity_event do
-    association :user, :factory => :user
-    partner "movement partner"
-    source "controlshift"
-    action "take action"
-    action_language_iso_code "en"
+    association :movement
+    association :user
     role "signer"
+    partner "movement partner"
+    action_slug "take_action"
+    action_language_iso "en"
+    source "controlshift"
   end
 end

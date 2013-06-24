@@ -5,7 +5,7 @@ describe ListCutter::CountryRule do
     @rule = ListCutter::CountryRule.new(:selected_by => 'name', :values => ["BRAZIL"])
   end
 
-  describe 'vaidation' do
+  describe 'validation' do
     it "should mandate selected_by" do
       rule = ListCutter::CountryRule.new(:selected_by => '')
       rule.should_not be_valid

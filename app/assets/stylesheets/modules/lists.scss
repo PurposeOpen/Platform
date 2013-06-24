@@ -236,7 +236,8 @@
     }
   }
 
-  .choose-action_taken_rule{
+  .choose-action_taken_rule,
+  .choose-external_action_taken_rule {
     div.rule-details {
       .ui-multiselectcheckbox {
         width: 250px !important;
