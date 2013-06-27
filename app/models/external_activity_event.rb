@@ -20,9 +20,18 @@ class ExternalActivityEvent < ActiveRecord::Base
   belongs_to :movement
   belongs_to :user
 
-  attr_accessible :action_slug, :action_language_iso, :partner, :role, :source, :user_id, :movement_id
+  attr_accessible :action_slug, :action_language_iso, :partner, :role, :source, :user_id, :movement_id, :activity
+
+  module Activity
+    ACTION_TAKEN = 'action_taken'
+    ACTION_CREATED = 'action_created'
+  end
+
+  ACTIVITIES = [Activity::ACTION_TAKEN, Activity::ACTION_CREATED]
 
   validates_presence_of :action_slug, :action_language_iso, :role, :source, :user_id, :movement_id
+  validates_inclusion_of :activity, :in => ACTIVITIES
+
 
   after_save ->{Rails.cache.delete("/grouped_select_options_external_actions/#{movement_id}")}
 

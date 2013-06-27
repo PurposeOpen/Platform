@@ -13,17 +13,18 @@ describe ListCutter::ExternalActionTakenRule do
 
     before do
       @movement = FactoryGirl.create(:movement)
-      @bob, @john, @sally = FactoryGirl.create_list(:user, 3, :movement => @movement)
+      @bob, @john, @sally, @creator = FactoryGirl.create_list(:user, 4, :movement => @movement)
 
-      event_attributes = {:movement_id => @movement.id, :role => 'signer', :action_language_iso => 'en', :source => 'controlshift'}
+      event_attributes = {:movement_id => @movement.id, :role => 'signer', :action_language_iso => 'en', :source => 'controlshift', :activity => ExternalActivityEvent::Activity::ACTION_TAKEN}
 
       ExternalActivityEvent.create! event_attributes.merge(:user_id => @bob.id, :action_slug => 'russia',)
       ExternalActivityEvent.create! event_attributes.merge(:user_id => @john.id, :action_slug => 'cuba',)
       ExternalActivityEvent.create! event_attributes.merge(:user_id => @sally.id, :action_slug => 'ecuador',)
+      ExternalActivityEvent.create! event_attributes.merge(:user_id => @creator.id, :action_slug => 'china', :activity => ExternalActivityEvent::Activity::ACTION_CREATED)
     end
 
     it "should return users that have taken action on specific external pages" do
-      rule = ListCutter::ExternalActionTakenRule.new(:any_actions => false, :not => false, :action_slugs => ['cuba', 'ecuador'], :movement => @movement)
+      rule = ListCutter::ExternalActionTakenRule.new(:any_actions => false, :not => false, :action_slugs => ['cuba', 'ecuador', 'china'], :movement => @movement)
 
       rule.to_relation.all.should =~ [@john, @sally]
     end

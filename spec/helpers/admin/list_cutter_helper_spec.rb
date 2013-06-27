@@ -78,14 +78,17 @@ describe Admin::ListCutterHelper do
           "<optgroup label=\"#{as2.name}\"><option value=\"#{ap2.id}\">#{ap2.name}</option></optgroup>"
     end
 
-    it "should return nested <opt group> for source -> partner with action slugs as <options>" do
+    it "#grouped_select_options_external_actions should return nested <opt group> for source -> partner with action slugs as <options>,
+        and exclude actions that were created but not signed" do
       movement = create(:movement)
-
-      event1 = create(:external_activity_event, :movement => movement, :source => 'controlshift', :partner => 'aclu', :action_slug => 'russia')
-      event2 = create(:external_activity_event, :movement => movement, :source => 'controlshift', :partner => 'aclu', :action_slug => 'cuba')
-      event3 = create(:external_activity_event, :movement => movement, :source => 'controlshift', :partner => nil,    :action_slug => 'ecuador')
-      event4 = create(:external_activity_event, :movement => movement, :source => 'controloption', :partner => nil, :action_slug => 'brazil')
-      event5 = create(:external_activity_event, :movement => movement, :source => 'controloption', :partner => 'aclu', :action_slug => 'china')
+      action_taken = ExternalActivityEvent::Activity::ACTION_TAKEN
+      action_created = ExternalActivityEvent::Activity::ACTION_CREATED
+      event1 = create(:external_activity_event, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'russia', :activity => action_taken)
+      event2 = create(:external_activity_event, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'cuba',   :activity => action_taken)
+      event2 = create(:external_activity_event, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'france', :activity => action_created)
+      event3 = create(:external_activity_event, :movement => movement, :source => 'controlshift',  :partner => nil,    :action_slug => 'ecuador',:activity => action_taken)
+      event4 = create(:external_activity_event, :movement => movement, :source => 'controloption', :partner => nil,    :action_slug => 'brazil', :activity => action_taken)
+      event5 = create(:external_activity_event, :movement => movement, :source => 'controloption', :partner => 'aclu', :action_slug => 'china',  :activity => action_taken)
 
       helper.grouped_select_options_external_actions(movement.id, event4.action_slug).gsub(/\sid=\"([^\"]*)\"/, '').should ==
       "<option value=\"brazil\" selected=\"selected\">CONTROLOPTION: brazil</option>"+

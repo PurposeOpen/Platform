@@ -12,6 +12,7 @@ describe Api::ExternalActivityEventsController do
                      :partner               => 'kenya_now',
                      :action_slug           => 'kenya',
                      :action_language_iso   => @english.iso_code,
+                     :activity              => ExternalActivityEvent::Activity::ACTION_TAKEN,
                      :source                => @source}
 
     @user_attributes = {:email              => 'bob@example.com',
@@ -46,6 +47,29 @@ describe Api::ExternalActivityEventsController do
       external_activity_event = ExternalActivityEvent.last
       external_activity_event.should_not be_nil
       expected_event_attributes = @event_params.merge(:user_id => user.id, :movement_id => @movement.id)
+      saved_event_attributes = external_activity_event.attributes.symbolize_keys.slice(*expected_event_attributes.keys)
+      saved_event_attributes.should == expected_event_attributes
+
+      response.status.should == 201
+    end
+
+  end
+
+  context 'new user creating an action:' do
+
+    it 'should create a new user, and an external activity event' do
+      activity = ExternalActivityEvent::Activity::ACTION_CREATED
+
+      post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug, :activity => activity), :format => :json
+
+      user = @movement.members.find_by_email('bob@example.com')
+      user.should_not be_nil
+      saved_user_attributes = user.attributes.symbolize_keys.slice(*@user_attributes.keys)
+      saved_user_attributes.should == @user_attributes.except(:language_iso)
+
+      external_activity_event = ExternalActivityEvent.last
+      external_activity_event.should_not be_nil
+      expected_event_attributes = @event_params.merge(:user_id => user.id, :movement_id => @movement.id, :activity => activity)
       saved_event_attributes = external_activity_event.attributes.symbolize_keys.slice(*expected_event_attributes.keys)
       saved_event_attributes.should == expected_event_attributes
 

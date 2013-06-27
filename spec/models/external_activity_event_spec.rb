@@ -8,5 +8,6 @@ describe ExternalActivityEvent do
     it { should validate_presence_of :source }
     it { should validate_presence_of :action_slug }
     it { should validate_presence_of :action_language_iso }
+    it { should ensure_inclusion_of(:activity).in_array(ExternalActivityEvent::ACTIVITIES) }
 
 end

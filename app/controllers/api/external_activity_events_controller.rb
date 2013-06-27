@@ -39,7 +39,7 @@ class Api::ExternalActivityEventsController < Api::BaseController
   end
 
   def event_params
-    params.permit(:source, :partner, :action_slug, :action_language_iso, :role)
+    params.permit(:source, :partner, :action_slug, :action_language_iso, :role, :activity)
   end
 
   def event_attributes

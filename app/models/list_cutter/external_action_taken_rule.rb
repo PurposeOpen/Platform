@@ -4,9 +4,10 @@ module ListCutter
     validates_presence_of :action_slugs, :message => 'Please specify the external action page slugs'
 
     def to_sql
-      sanitize_sql <<-SQL, @movement.id, self.action_slugs
+      sanitize_sql <<-SQL, @movement.id, ExternalActivityEvent::Activity::ACTION_TAKEN, self.action_slugs
         SELECT user_id FROM external_activity_events
         WHERE movement_id = ?
+        AND activity = ?
         AND action_slug IN (?)
         GROUP BY user_id
       SQL
