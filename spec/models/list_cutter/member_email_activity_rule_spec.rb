@@ -115,10 +115,10 @@ describe ListCutter::MemberEmailActivityRule do
       before(:each) do
         options = {not: false, activity_type: UserActivityEvent::Activity::EMAIL_SENT, range_operator: "equal_to", activity_count: "1"}
         activities_table = "push_sent_emails"
-        insert_sql = "INSERT INTO #{activities_table} (movement_id, user_id, email_id, created_at) VALUES "
-        values = ["(#{movement.id}, #{user_with_today_event.id}, #{email.id}, '#{one_hour_ago}')",
-          "(#{movement.id}, #{user_with_event_1_day_back.id}, #{email.id}, '#{one_day_ago}')",
-          "(#{movement.id}, #{user_with_event_2_days_back.id}, #{email.id}, '#{two_days_ago}')"]
+        insert_sql = "INSERT INTO #{activities_table} (movement_id, user_id, email_id, created_at, push_id) VALUES "
+        values = ["(#{movement.id}, #{user_with_today_event.id}, #{email.id}, '#{one_hour_ago}', 1)",
+          "(#{movement.id}, #{user_with_event_1_day_back.id}, #{email.id}, '#{one_day_ago}', 1)",
+          "(#{movement.id}, #{user_with_event_2_days_back.id}, #{email.id}, '#{two_days_ago}', 1)"]
           sql = insert_sql + values.join(',')
           ActiveRecord::Base.connection.execute(sql)
 

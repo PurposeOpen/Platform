@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130517173716) do
+ActiveRecord::Schema.define(:version => 20130628183427) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -502,7 +502,6 @@ ActiveRecord::Schema.define(:version => 20130517173716) do
     t.integer  "email_id"
     t.string   "activity",    :limit => 64
     t.integer  "total_count"
-    t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
   end
 

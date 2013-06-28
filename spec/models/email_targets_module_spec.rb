@@ -25,8 +25,7 @@ describe EmailTargetsModule do
 
   def validated_email_targets_module(attrs)
     default_attrs = {active: 'true'}
-    etm = FactoryGirl.create(:email_targets_module)
-    etm.update_attributes default_attrs.merge(attrs)
+    etm = FactoryGirl.build(:email_targets_module, default_attrs.merge(attrs))
     etm.valid?
     etm
   end

@@ -21,8 +21,7 @@ require "ostruct"
 describe PetitionModule do
   def validated_petition_module(attrs)
     default_attrs = {active: 'true'}
-    pm = FactoryGirl.create(:petition_module)
-    pm.update_attributes default_attrs.merge(attrs)
+    pm = FactoryGirl.build(:petition_module, default_attrs.merge(attrs))
     pm.valid?
     pm
   end

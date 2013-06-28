@@ -20,9 +20,15 @@ require "spec_helper"
 describe DonationModule do
 
   def validated_donation_module(attrs)
-    default_attrs = {active: 'true'}
-    etm = FactoryGirl.create(:donation_module, :default_currency => 'usd', :suggested_amounts => {'usd' => '1,2,3'}, :default_amount => {'usd' => '1'}, :donations_goal => 10, :thermometer_threshold => 0)
-    etm.update_attributes default_attrs.merge(attrs)
+    default_attrs = {
+      active: 'true', 
+      :default_currency => 'usd', 
+      :suggested_amounts => {'usd' => '1,2,3'}, 
+      :default_amount => {'usd' => '1'}, 
+      :donations_goal => 10, 
+      :thermometer_threshold => 0
+    }
+    etm = FactoryGirl.build(:donation_module, default_attrs.merge(attrs))
     etm.valid_with_warnings?
     etm
   end

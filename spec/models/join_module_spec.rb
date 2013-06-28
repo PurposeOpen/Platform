@@ -20,8 +20,7 @@ require "spec_helper"
 describe JoinModule do
   def validated_join_module(attrs)
     default_attrs = {active: 'true'}
-    pm = FactoryGirl.create(:join_module)
-    pm.update_attributes default_attrs.merge(attrs)
+    pm = FactoryGirl.build(:join_module, default_attrs.merge(attrs))
     pm.valid?
     pm
   end

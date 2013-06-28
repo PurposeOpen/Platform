@@ -16,7 +16,7 @@
 class UniqueActivityByEmail < ActiveRecord::Base
   def self.update!
     only_events_created_after = self.last_updated_time
-    time_now = Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')
+    time_now = Time.now.utc.to_s(:db)
 
     update_other_activities only_events_created_after, time_now
     update_email_activities only_events_created_after, time_now
@@ -32,13 +32,13 @@ class UniqueActivityByEmail < ActiveRecord::Base
   def self.update_other_activities(last_updated_at, time_now)
     sql = <<-SQL
       INSERT INTO `#{self.table_name}` (email_id, activity, total_count, updated_at)
-      SELECT email_id, activity, COUNT(DISTINCT email_id, activity, user_id) as count, TIMESTAMP('#{time_now}', '%d-%m-%Y %h:%i:%s')
+      SELECT email_id, activity, COUNT(DISTINCT email_id, activity, user_id) as count, '#{time_now}'
         FROM `#{UserActivityEvent.table_name}`
         WHERE email_id IS NOT NULL
         AND activity NOT IN ('email_viewed', 'email_sent', 'email_clicked', 'email_spammed')
         AND created_at > '#{last_updated_at}'
         GROUP BY email_id, activity
-        ON DUPLICATE KEY UPDATE total_count = total_count + VALUES(total_count), updated_at = TIMESTAMP('#{time_now}', '%d-%m-%Y %h:%i:%s');
+        ON DUPLICATE KEY UPDATE total_count = total_count + VALUES(total_count), updated_at = '#{time_now}';
     SQL
 
     self.connection.execute(sql)
@@ -73,12 +73,12 @@ class UniqueActivityByEmail < ActiveRecord::Base
 
   def self.query_for_activity_stats_by_push(push_id, last_updated_at, time_now, activity)
     "INSERT INTO #{self.table_name} (email_id, activity, total_count, updated_at)
-     SELECT email_id, '#{activity.to_s}', count(distinct email_id, user_id) as count, TIMESTAMP('#{time_now}', '%d-%m-%Y %h:%i:%s')
+     SELECT email_id, '#{activity.to_s}', count(distinct email_id, user_id) as count, '#{time_now}'
      FROM #{Push.activity_class_for(activity).table_name}
      WHERE push_id = #{push_id}
      AND created_at > '#{last_updated_at}'
      GROUP BY email_id
-     ON DUPLICATE KEY UPDATE total_count = total_count + VALUES(total_count), updated_at = TIMESTAMP('#{time_now}', '%d-%m-%Y %h:%i:%s');"
+     ON DUPLICATE KEY UPDATE total_count = total_count + VALUES(total_count), updated_at = '#{time_now}';"
   end
 
   def self.last_updated_time
