@@ -6,6 +6,10 @@ module ApplicationHelper
   def minimum_blast_schedule_time
     (Time.now.utc + AppConstants.blast_job_delay).strftime("%Y/%m/%d %H:%M:%S")
   end
+
+  def now
+    Time.now.utc.strftime("%Y/%m/%d %H:%M:%S")
+  end
   
   def form_errors(subject)
     render :partial => "common/form_errors", :locals => {:subject => subject}

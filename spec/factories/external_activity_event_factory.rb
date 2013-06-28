@@ -6,8 +6,9 @@ FactoryGirl.define do
     association :user
     role "signer"
     partner "movement partner"
-    action_slug "take_action"
+    sequence(:action_slug) {|n| "take_action_#{n}" }
     action_language_iso "en"
+    activity "action_taken"
     source "controlshift"
   end
 end

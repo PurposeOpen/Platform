@@ -20,6 +20,19 @@ describe Admin::ListCutterHelper do
     end
   end
 
+  describe "#source_options" do
+    it 'should list all sources for the movement' do
+      movement = create(:movement)
+      create(:external_activity_event, :movement => movement, :source => 'controlshift')
+      create(:external_activity_event, :movement => movement, :source => 'controloption')
+      create(:external_activity_event, :source => 'controldelete')
+
+      helper.source_options(movement.id, ['controloption']).should ==
+        "<option value=\"controloption\" selected=\"selected\">CONTROLOPTION</option>\n"+
+        "<option value=\"controlshift\">CONTROLSHIFT</option>"
+    end
+  end
+
   describe "#grouped_select_options and custom selects" do
     it "should return nested <opt group> for campaign -> blast with emails as <options> " do
       movement = create(:movement)

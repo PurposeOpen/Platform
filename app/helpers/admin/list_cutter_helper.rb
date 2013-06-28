@@ -14,7 +14,8 @@ module Admin::ListCutterHelper
         {label: "Member Email Activity", class: ListCutter::MemberEmailActivityRule},
         {label: "Donation frequency", class: ListCutter::DonorRule},
         {label: "Donation amount", class: ListCutter::DonationAmountRule},
-        {label: "External Action", class: ListCutter::ExternalActionTakenRule}
+        {label: "External Action", class: ListCutter::ExternalActionTakenRule},
+        {label: "External Action Created", class: ListCutter::ExternalActionCreatedRule}
     ]
   end
 
@@ -93,6 +94,17 @@ module Admin::ListCutterHelper
     Rails.cache.write(store_key, store)
     response = options_for_select(store, selected)
     response.gsub(/\n/, '').html_safe
+  end
+
+  def source_options(movement_id, selected)
+    store_key = "/source_options/#{movement_id}"
+    store = Rails.cache.fetch(store_key)
+    return options_for_select(store, selected) if !store.nil?
+
+    store = ExternalActivityEvent.where(:movement_id => movement_id).group(:source).select(:source).map { |event| [event.source.upcase, event.source] }
+
+    Rails.cache.write(store_key, store)
+    options_for_select(store, selected)
   end
 
   def filter_selected?(rule, rule_option)

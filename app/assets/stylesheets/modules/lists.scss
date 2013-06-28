@@ -246,6 +246,15 @@
     }
   }
 
+  .choose-external_action_created_rule {
+    div.rule-details {
+      .ui-multiselectcheckbox {
+        width: 216px !important;
+        margin-left: 5px;
+      }
+    }
+  }
+
   .choose-email_action_rule {
     .connector {
       margin: 0 5px;

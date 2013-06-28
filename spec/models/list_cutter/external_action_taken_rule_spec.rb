@@ -2,12 +2,7 @@ require "spec_helper"
 
 describe ListCutter::ExternalActionTakenRule do
 
-  it "should validate itself" do
-    rule = ListCutter::ExternalActionTakenRule.new
-
-    rule.valid?.should be_false
-    rule.errors.messages.should == {:action_slugs => ["Please specify the external action page slugs"]}
-  end
+  it { should validate_presence_of(:action_slugs).with_message("Please specify the external action page slugs") }
 
   describe do
 
@@ -24,7 +19,7 @@ describe ListCutter::ExternalActionTakenRule do
     end
 
     it "should return users that have taken action on specific external pages" do
-      rule = ListCutter::ExternalActionTakenRule.new(:any_actions => false, :not => false, :action_slugs => ['cuba', 'ecuador', 'china'], :movement => @movement)
+      rule = ListCutter::ExternalActionTakenRule.new(:not => false, :action_slugs => ['cuba', 'ecuador', 'china'], :movement => @movement)
 
       rule.to_relation.all.should =~ [@john, @sally]
     end

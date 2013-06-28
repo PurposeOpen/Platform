@@ -20,7 +20,7 @@ module ListCutter
     end
 
     validates_each :activity_since_date do |record, attr, value|
-      record.errors.add attr, "can't be in future" if value && Date.strptime(value, '%m/%d/%Y').future?
+      record.errors.add attr, "can't be in the future" if value && Date.strptime(value, '%m/%d/%Y').future?
     end
 
     def all_activity_module_types
