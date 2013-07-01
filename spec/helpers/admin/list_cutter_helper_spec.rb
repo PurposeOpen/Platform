@@ -91,8 +91,7 @@ describe Admin::ListCutterHelper do
           "<optgroup label=\"#{as2.name}\"><option value=\"#{ap2.id}\">#{ap2.name}</option></optgroup>"
     end
 
-    it "#grouped_select_options_external_actions should return nested <opt group> for source -> partner with action slugs as <options>,
-        and exclude actions that were created but not signed" do
+    it "#grouped_select_options_external_actions should return nested <opt group> for source -> partner with action slugs as <options>" do
       movement = create(:movement)
       action_taken = ExternalActivityEvent::Activity::ACTION_TAKEN
       action_created = ExternalActivityEvent::Activity::ACTION_CREATED
@@ -108,6 +107,7 @@ describe Admin::ListCutterHelper do
       "\n<option value=\"china\">CONTROLOPTION: ACLU - china</option>"+
       "\n<option value=\"ecuador\">CONTROLSHIFT: ecuador</option>"+
       "\n<option value=\"cuba\">CONTROLSHIFT: ACLU - cuba</option>"+
+      "\n<option value=\"france\">CONTROLSHIFT: ACLU - france</option>"+
       "\n<option value=\"russia\">CONTROLSHIFT: ACLU - russia</option>"
     end
 

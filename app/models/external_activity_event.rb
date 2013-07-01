@@ -34,6 +34,19 @@ class ExternalActivityEvent < ActiveRecord::Base
   validates_inclusion_of :activity, :in => ACTIVITIES
 
 
-  after_save ->{Rails.cache.delete("/grouped_select_options_external_actions/#{movement_id}")}
+  after_create :consider_creators_supporters_of_their_action
+  after_commit ->{Rails.cache.delete("/grouped_select_options_external_actions/#{movement_id}")}
+
+  private
+
+  def consider_creators_supporters_of_their_action
+    if self.activity == Activity::ACTION_CREATED
+      attributes = self.attributes.slice(*self.class.accessible_attributes).merge('activity' => Activity::ACTION_TAKEN)
+
+      self.class.create!(attributes)
+    end
+
+    return true
+  end
 
 end

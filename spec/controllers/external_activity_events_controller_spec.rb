@@ -57,21 +57,30 @@ describe Api::ExternalActivityEventsController do
 
   context 'new user creating an action:' do
 
-    it 'should create a new user, and an external activity event' do
-      activity = ExternalActivityEvent::Activity::ACTION_CREATED
+    it 'should create a new user, an action_created event, and an action_taken event' do
+      created = ExternalActivityEvent::Activity::ACTION_CREATED
+      taken = ExternalActivityEvent::Activity::ACTION_TAKEN
 
-      post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug, :activity => activity), :format => :json
+      post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug, :activity => created, :role => 'creator'), :format => :json
 
       user = @movement.members.find_by_email('bob@example.com')
       user.should_not be_nil
       saved_user_attributes = user.attributes.symbolize_keys.slice(*@user_attributes.keys)
       saved_user_attributes.should == @user_attributes.except(:language_iso)
 
-      external_activity_event = ExternalActivityEvent.last
-      external_activity_event.should_not be_nil
-      expected_event_attributes = @event_params.merge(:user_id => user.id, :movement_id => @movement.id, :activity => activity)
-      saved_event_attributes = external_activity_event.attributes.symbolize_keys.slice(*expected_event_attributes.keys)
-      saved_event_attributes.should == expected_event_attributes
+      actions_created, actions_taken = ExternalActivityEvent.all.partition { |event| event.activity == created }
+      actions_created.should_not be_blank
+      actions_taken.should_not be_blank
+
+      attributes_for_comparison = ExternalActivityEvent.accessible_attributes.to_a
+
+      expected_action_created_attributes = @event_params.merge(:user_id => user.id, :movement_id => @movement.id, :activity => created, :role => 'creator')
+      saved_action_created_attributes = actions_created.first.attributes.slice(*attributes_for_comparison)
+      expected_action_created_attributes.should == saved_action_created_attributes.symbolize_keys
+
+      expected_action_taken_attributes = @event_params.merge(:user_id => user.id, :movement_id => @movement.id, :activity => taken, :role => 'creator')
+      saved_action_taken_attributes = actions_taken.first.attributes.slice(*attributes_for_comparison)
+      expected_action_taken_attributes.should == saved_action_taken_attributes.symbolize_keys
 
       response.status.should == 201
     end
