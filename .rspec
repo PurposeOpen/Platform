@@ -1,7 +1,6 @@
---require rspec/instafail
 -t ~wip
 -t ~movement
 --colour
---format  RSpec::Instafail
 --format RspecJunitFormatter --out reports/spec/spec.xml
+--format documentation
 --drb

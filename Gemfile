@@ -57,7 +57,7 @@ gem 'recurly'
 gem 'font-awesome-rails'
 gem 'rack-timeout'
 gem 'strong_parameters'
-
+gem 'devise-encryptable'
 
 group :assets do
   gem 'uglifier', '>= 1.0.3'
@@ -102,7 +102,6 @@ group :development, :test do
   gem "foreman"
   gem "rspec_junit_formatter"
   gem 'simplecov'
-  gem 'rspec-instafail'
   gem 'rspec-html-matchers'
   gem 'parallel_tests'
   gem 'spork-rails'
