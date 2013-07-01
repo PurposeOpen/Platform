@@ -14,7 +14,8 @@ module Admin::ListCutterHelper
         {label: "Member Email Activity", class: ListCutter::MemberEmailActivityRule},
         {label: "Donation frequency", class: ListCutter::DonorRule},
         {label: "Donation amount", class: ListCutter::DonationAmountRule},
-        {label: "External Action", class: ListCutter::ExternalActionTakenRule},
+        {label: "External Action", class: ListCutter::ExternalActionRule},
+        {label: "External Action Taken", class: ListCutter::ExternalActionTakenRule},
         {label: "External Action Created", class: ListCutter::ExternalActionCreatedRule}
     ]
   end
@@ -75,8 +76,7 @@ module Admin::ListCutterHelper
     return options_for_select(store, selected) if !store.nil?
 
     fields = 'source, partner, action_slug'
-    store = ExternalActivityEvent.where(:movement_id => movement_id, :activity => ExternalActivityEvent::Activity::ACTION_TAKEN).
-                                  group(fields).select(fields).order(fields).map do |event|
+    store = ExternalActivityEvent.where(:movement_id => movement_id).group(fields).select(fields).order(fields).map do |event|
                                     partner = event.partner.blank? ? '' : "#{event.partner.upcase} - "
                                     ["#{event.source.upcase}: #{partner}#{event.action_slug}", event.action_slug]
                                   end
@@ -105,6 +105,11 @@ module Admin::ListCutterHelper
 
     Rails.cache.write(store_key, store)
     options_for_select(store, selected)
+  end
+
+  def activity_options(selected)
+    options = ExternalActivityEvent::ACTIVITIES.map { |activity| [activity.split("_")[1..-1].join(" ").titleize, activity] }
+    options_for_select(options, selected)
   end
 
   def filter_selected?(rule, rule_option)

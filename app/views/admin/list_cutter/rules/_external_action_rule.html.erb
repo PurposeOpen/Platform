@@ -1,0 +1,19 @@
+<div>
+  <%= select_tag 'rules[external_action_rule][$index][activity]',
+                 activity_options(rule.activity),
+                 {:multiple => false,
+                  :id => "rules_external_action_rule_$index_activity_",
+                  :class => "required external_action_activity_select",
+                  "data-placeholder" => "Choose an activity..."} %>
+  from
+  <%= select_tag 'rules[external_action_rule][$index][action_slugs][]',
+                 grouped_select_options_external_actions(@movement.id, rule.action_slugs),
+                 {:multiple => true,
+                  :id => "rules_external_action_rule_$index_action_slugs_",
+                  :class => "required multiselectcheckbox external_action_select",
+                  "data-placeholder" => "Choose external actions..."} %>
+</div>
+<div class="since">
+  since
+  <%= f.text_field :since, value: rule.since, class: "since_date required datepicker platformDate", maxDate: now %>
+</div>

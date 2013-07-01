@@ -30,8 +30,8 @@ class ExternalActivityEvent < ActiveRecord::Base
 
   ACTIVITIES = [Activity::ACTION_TAKEN, Activity::ACTION_CREATED]
 
-  validates_presence_of :action_slug, :action_language_iso, :role, :source, :user_id, :movement_id
-  validates_inclusion_of :activity, :in => ACTIVITIES
+  validates_presence_of   :action_slug, :action_language_iso, :role, :source, :user_id, :movement_id
+  validates_inclusion_of  :activity,    :in => ACTIVITIES
 
 
   after_create :consider_creators_supporters_of_their_action

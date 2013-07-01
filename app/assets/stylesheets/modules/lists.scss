@@ -255,6 +255,21 @@
     }
   }
 
+  .choose-external_action_rule {
+    margin: 15px 0px 0px 73px;
+    .rule-negate {
+      margin-top: 2px;
+    }
+    div.rule-details {
+      .ui-multiselectcheckbox {
+        width: 423px !important;
+      }
+    }
+    .since {
+      margin: 10px 0px 0px 83px;
+    }
+  }
+
   .choose-email_action_rule {
     .connector {
       margin: 0 5px;
