@@ -746,11 +746,13 @@ describe Api::ActionPagesController do
       ActionMailer::Base.delivery_method = :test
     end
 
+    let(:donation_error)  { double }
+    let(:mail)            { double }
+
     it "should send payment error email" do
       member_info = { :email => 'john.smith@example.com', :first_name => 'John', :last_name => 'Smith', :country_iso => 'ar', :postcode => '1111' }
       payment_error_data = { :error_code => '9999', :message => 'Error message', :donation_payment_method => 'paypal', :donation_amount_in_cents => 100, :donation_currency => 'USD' }
-      # donation_error = DonationError.new(payment_error_data.merge(member_info))
-      DonationError.any_instance.should_receive(:initialize).with({
+      DonationError.should_receive(:new).with({
         :movement => @movement,
         :action_page => @page,
         :error_code => '9999',
@@ -763,20 +765,17 @@ describe Api::ActionPagesController do
         :last_name => 'Smith',
         :country_iso => 'ar',
         :postcode => '1111'
-      })
-      mail = double
+      }).and_return(donation_error)
       mail.should_receive(:deliver)
-      PaymentErrorMailer.should_receive(:report_error).with(an_instance_of(DonationError)).and_return(mail)
+      PaymentErrorMailer.should_receive(:report_error).with(donation_error).and_return(mail)
 
       post :donation_payment_error, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :payment_error_data => payment_error_data, :member_info => member_info
-
       response.status.should == 200
     end
 
     it "should send payment error email even if there is no member info available" do
       payment_error_data = { :error_code => '8888', :message => 'Error message', :donation_payment_method => 'paypal', :donation_amount_in_cents => 100, :donation_currency => 'USD' }
-      # donation_error = DonationError.new(payment_error_data)
-      DonationError.any_instance.should_receive(:initialize).with({
+      DonationError.should_receive(:new).with({
         :movement => @movement,
         :action_page => @page,
         :error_code => '8888',
@@ -784,10 +783,9 @@ describe Api::ActionPagesController do
         :donation_payment_method => 'paypal',
         :donation_amount_in_cents => '100',
         :donation_currency => 'USD'
-      })
-      mail = double
+      }).and_return(donation_error)
       mail.should_receive(:deliver)
-      PaymentErrorMailer.should_receive(:report_error).with(an_instance_of(DonationError)).and_return(mail)
+      PaymentErrorMailer.should_receive(:report_error).with(donation_error).and_return(mail)
 
       post :donation_payment_error, :locale => :en, :movement_id => @movement.friendly_id, :id => @page.id, :payment_error_data => payment_error_data
     end

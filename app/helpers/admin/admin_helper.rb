@@ -81,8 +81,5 @@ module Admin
         "Unknown version"
       end
     end
-    
-    extend ActiveSupport::Memoizable
-    memoize :version_string
   end
 end

@@ -56,7 +56,7 @@ Devise.setup do |config|
   #Set due to this warning
   #[DEVISE] Devise.use_salt_as_remember_token is false which is no longer supported.
   #Devise now only uses the salt as remember token and the remember_token column can be removed from your models.
-  Devise.use_salt_as_remember_token = true
+  # Devise.use_salt_as_remember_token = true
 
   #Set due to this warning
   #[DEVISE] Devise.reset_password_within is nil. Please set this value to an interval (for example, 6.hours)
