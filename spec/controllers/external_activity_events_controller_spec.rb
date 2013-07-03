@@ -31,6 +31,7 @@ describe Api::ExternalActivityEventsController do
                         :is_member          => true}
 
     @user_params = @user_attributes.except(:movement_id, :language_id, :source)
+    ExternalAction.stub(:find_or_create_by_unique_action_slug_and_movement_id).and_return(mock_model(ExternalAction, invalid?: false))
   end
 
   context 'new user taking action:' do
@@ -282,8 +283,8 @@ describe Api::ExternalActivityEventsController do
     end
   end
 
-  context 'when there is an external action' do
-    let(:movement)  { mock_model(Movement, default_language: "en") }
+  context "" do
+    let(:movement)  { mock_model(Movement, default_language: mock_model(Language)) }
     let(:user)      { mock_model(User, :attributes= => true, take_external_action!: true) }
 
     before do
@@ -291,53 +292,70 @@ describe Api::ExternalActivityEventsController do
       Movement.stub(:find).with("1").and_return(movement)
     end
 
-    it 'should find or create this external action' do
-      ExternalAction.should_receive(:find_or_create_by_unique_action_slug_and_movement_id).with(
-        "controlshift_join", 
-        "1", 
-        action_slug: "join", 
-        partner: "purpose", 
-        source: "controlshift", 
-        action_language_iso: "en"
-      )
-      post(:create, {
-        movement_id: "1", 
-        source: "controlshift",
-        action_slug: "join",
-        partner: "purpose",
-        action_language_iso: "en",
-        user: {}, 
-        format: :json
-      })
+    context 'when there is a valid external action' do
+      it 'should find or create this external action' do
+        ExternalAction.should_receive(:find_or_create_by_unique_action_slug_and_movement_id).with(
+          "controlshift_join", 
+          "1", 
+          action_slug: "join", 
+          partner: "purpose", 
+          source: "controlshift", 
+          action_language_iso: "en"
+        )
+        post(:create, {
+          movement_id: "1", 
+          source: "controlshift",
+          action_slug: "join",
+          partner: "purpose",
+          action_language_iso: "en",
+          user: {}, 
+          format: :json
+        })
+      end
+
+      context 'when there are tags for this external action' do
+        let(:language)        { mock_model(Language) }
+        let(:external_action) { mock_model(ExternalAction, :<< => true) }
+        let(:tag1)            { mock_model(ExternalTag) }
+        let(:tag2)            { mock_model(ExternalTag) }
+        let(:tag3)            { mock_model(ExternalTag) }
+
+        before do
+          Language.stub(:find_by_iso_code).and_return(language)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag1", "1").and_return(tag1)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag2", "1").and_return(tag2)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag3", "1").and_return(tag3)
+          ExternalAction.stub(:find_or_create_by_unique_action_slug_and_movement_id).and_return(external_action)
+        end
+
+        it 'should find or create those tags' do
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag1", "1")
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag2", "1")
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag3", "1")
+          post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
+        end
+
+        it 'should attribute those tags to the external action' do
+          external_action.should_receive(:<<).with(tag1)
+          external_action.should_receive(:<<).with(tag2)
+          external_action.should_receive(:<<).with(tag3)
+          post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
+        end
+      end
     end
 
-    context 'when there are tags for this external action' do
-      let(:language)        { mock_model(Language) }
-      let(:external_action) { mock_model(ExternalAction, :<< => true) }
-      let(:tag1)            { mock_model(ExternalTag) }
-      let(:tag2)            { mock_model(ExternalTag) }
-      let(:tag3)            { mock_model(ExternalTag) }
+    context 'when there is an invalid external action' do
+      let(:external_action) { mock_model(ExternalAction, invalid?: true, errors: "this is the external action errors") }
+      before { ExternalAction.should_receive(:find_or_create_by_unique_action_slug_and_movement_id).and_return(external_action) }
 
-      before do
-        Language.stub(:find_by_iso_code).and_return(language)
-        ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag1", "1").and_return(tag1)
-        ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag2", "1").and_return(tag2)
-        ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag3", "1").and_return(tag3)
-        ExternalAction.stub(:find_or_create_by_unique_action_slug_and_movement_id).and_return(external_action)
+      it 'should return unprocessable entity status' do
+        post :create, movement_id: 1, user: {}
+        response.status.should be_== 422
       end
-
-      it 'should find or create those tags' do
-        ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag1", "1")
-        ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag2", "1")
-        ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag3", "1")
-        post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
-      end
-
-      it 'should attribute those tags to the external action' do
-        external_action.should_receive(:<<).with(tag1)
-        external_action.should_receive(:<<).with(tag2)
-        external_action.should_receive(:<<).with(tag3)
-        post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
+      
+      it 'should return the external action errors' do
+        post :create, movement_id: 1, user: {}
+        response.body.should be_== "this is the external action errors".to_json
       end
     end
   end
