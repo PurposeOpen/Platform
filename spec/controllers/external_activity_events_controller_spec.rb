@@ -280,9 +280,40 @@ describe Api::ExternalActivityEventsController do
         JSON.parse(response.body).should == {"action_slug" => ["can't be blank"]}
         response.status.should == 422
       end
-
     end
-
   end
 
+  context 'when there are tags' do
+    let(:movement)        { mock_model(Movement, default_language: "en") }
+    let(:user)            { mock_model(User, :attributes= => true, take_external_action!: true) }
+    let(:language)        { mock_model(Language) }
+    let(:external_action) { mock_model(ExternalAction, :<< => true) }
+    let(:tag1)            { mock_model(ExternalTag) }
+    let(:tag2)            { mock_model(ExternalTag) }
+    let(:tag3)            { mock_model(ExternalTag) }
+
+    before do
+      movement.stub_chain(:members, :find_or_initialize_by_email).and_return(user)
+      Movement.stub(:find).with("1").and_return(movement)
+      Language.stub(:find_by_iso_code).and_return(language)
+      ExternalTag.stub(:find_or_create_by_name).with("tag1").and_return(tag1)
+      ExternalTag.stub(:find_or_create_by_name).with("tag2").and_return(tag2)
+      ExternalTag.stub(:find_or_create_by_name).with("tag3").and_return(tag3)
+      ExternalAction.stub(:find_or_create_by_unique_action_slug).and_return(external_action)
+    end
+
+    it 'should find or create those tags' do
+      ExternalTag.should_receive(:find_or_create_by_name).with("tag1")
+      ExternalTag.should_receive(:find_or_create_by_name).with("tag2")
+      ExternalTag.should_receive(:find_or_create_by_name).with("tag3")
+      post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
+    end
+
+    it 'should attribute those tags to the external action' do
+      external_action.should_receive(:<<).with(tag1)
+      external_action.should_receive(:<<).with(tag2)
+      external_action.should_receive(:<<).with(tag3)
+      post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
+    end
+  end
 end

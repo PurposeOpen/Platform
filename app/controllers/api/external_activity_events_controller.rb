@@ -16,12 +16,16 @@ class Api::ExternalActivityEventsController < Api::BaseController
       (render :json => @user.errors.to_json, :status => :unprocessable_entity and return) unless @user.valid?
       @user.take_external_action!(tracked_email)
 
+      external_action = ExternalAction.find_or_create_by_unique_action_slug("#{params[:source]}_#{params[:action_slug]}")
+      params[:tags].each { |name| external_action << ExternalTag.find_or_create_by_name(name) }
+
       event = ExternalActivityEvent.new(event_attributes)
       (render :json => event.errors.to_json, :status => :unprocessable_entity and return) unless event.valid?
       event.save!
 
       render :status => :created, :nothing => true
     rescue => e
+      raise e.inspect
       render :status => :internal_server_error, :json => {:error => e.class.name.underscore}
     end
   end
