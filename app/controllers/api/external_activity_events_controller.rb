@@ -16,8 +16,13 @@ class Api::ExternalActivityEventsController < Api::BaseController
       (render :json => @user.errors.to_json, :status => :unprocessable_entity and return) unless @user.valid?
       @user.take_external_action!(tracked_email)
 
-      external_action = ExternalAction.find_or_create_by_unique_action_slug("#{params[:source]}_#{params[:action_slug]}")
-      params[:tags].each { |name| external_action << ExternalTag.find_or_create_by_name(name) }
+      external_action = ExternalAction.find_or_create_by_unique_action_slug_and_movement_id("#{params[:source]}_#{params[:action_slug]}", params[:movement_id], {
+        action_slug:          params[:action_slug],
+        partner:              params[:partner],
+        source:               params[:source],
+        action_language_iso:  params[:action_language_iso]
+      })
+      params[:tags].each { |name| external_action << ExternalTag.find_or_create_by_name_and_movement_id(name, params[:movement_id]) } if params[:tags]
 
       event = ExternalActivityEvent.new(event_attributes)
       (render :json => event.errors.to_json, :status => :unprocessable_entity and return) unless event.valid?
@@ -25,7 +30,7 @@ class Api::ExternalActivityEventsController < Api::BaseController
 
       render :status => :created, :nothing => true
     rescue => e
-      raise e.inspect
+      raise "controller error: #{e.inspect}"
       render :status => :internal_server_error, :json => {:error => e.class.name.underscore}
     end
   end
