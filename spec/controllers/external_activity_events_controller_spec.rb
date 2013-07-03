@@ -319,8 +319,10 @@ describe Api::ExternalActivityEventsController do
         let(:tag1)            { mock_model(ExternalTag) }
         let(:tag2)            { mock_model(ExternalTag) }
         let(:tag3)            { mock_model(ExternalTag) }
+        let(:external_tags)   { double(:<< => true) }
 
         before do
+          external_action.stub(:external_tags).and_return(external_tags)
           Language.stub(:find_by_iso_code).and_return(language)
           ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag1", "1").and_return(tag1)
           ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag2", "1").and_return(tag2)
@@ -336,9 +338,9 @@ describe Api::ExternalActivityEventsController do
         end
 
         it 'should attribute those tags to the external action' do
-          external_action.should_receive(:<<).with(tag1)
-          external_action.should_receive(:<<).with(tag2)
-          external_action.should_receive(:<<).with(tag3)
+          external_tags.should_receive(:<<).with(tag1)
+          external_tags.should_receive(:<<).with(tag2)
+          external_tags.should_receive(:<<).with(tag3)
           post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
         end
       end

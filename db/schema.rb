@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130703144453) do
+ActiveRecord::Schema.define(:version => 20130703213845) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -214,6 +214,11 @@ ActiveRecord::Schema.define(:version => 20130703144453) do
   end
 
   add_index "external_actions", ["unique_action_slug"], :name => "index_external_actions_on_unique_action_slug", :unique => true
+
+  create_table "external_actions_external_tags", :force => true do |t|
+    t.integer "external_action_id", :null => false
+    t.integer "external_tag_id",    :null => false
+  end
 
   create_table "external_activity_events", :force => true do |t|
     t.string   "source"

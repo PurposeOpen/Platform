@@ -23,7 +23,7 @@ class Api::ExternalActivityEventsController < Api::BaseController
         action_language_iso:  params[:action_language_iso]
       })
       (render json: external_action.errors.to_json, status: :unprocessable_entity and return) if external_action.invalid?
-      params[:tags].each { |name| external_action << ExternalTag.find_or_create_by_name_and_movement_id(name, params[:movement_id]) } if params[:tags]
+      params[:tags].each { |name| external_action.external_tags << ExternalTag.find_or_create_by_name_and_movement_id(name, params[:movement_id]) } if params[:tags]
 
       event = ExternalActivityEvent.new(event_attributes)
       (render :json => event.errors.to_json, :status => :unprocessable_entity and return) unless event.valid?
