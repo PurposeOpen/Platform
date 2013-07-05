@@ -84,7 +84,7 @@ describe Admin::PushesController do
       email = FactoryGirl.create(:sent_email)
       get :email_stats_report, :id => email.blast.push.id, :movement_id => @movement.id
       csv = response.body.split("\n")
-      csv[0].should == "Created,Sent At,Blast,Email,Sent to,Opens,Opens Percentage,Clicks,Clicks Percentage,Actions Taken,Actions Taken Percentage,New Members,New Members Percentage,Unsubscribed,Unsubscribed Percentage,Spam,Spam Percentage,Total $,Avg. $"
+      csv[0].should == "Id,Created,Sent At,Blast,Email,Sent to,Opens,Opens Percentage,Clicks,Clicks Percentage,Actions Taken,Actions Taken Percentage,New Members,New Members Percentage,Unsubscribed,Unsubscribed Percentage,Spam,Spam Percentage,Total $,Avg. $"
       csv[1].should match /[\d-]+,[\d-]+ [\d:]+ UTC,Dummy Blast Name,Dummy Email Name,0,0,0%,0,0%,0,0%,0,0%,0,0%,0,0%,\$0.00,/
     end
   end

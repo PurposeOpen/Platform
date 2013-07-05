@@ -26,8 +26,6 @@ describe ListCutter::DonationAmountRule do
     @rule.to_relation.all.should =~ [donation_one_off_2.user, donation_monthly_2.user]
   end
 
-<<<<<<< HEAD
-=======
   it "should filter donations equal than the specified amount" do
     filter = {amount: 10, operator: "equal_to"}
     @rule = ListCutter::DonationAmountRule.new(filter)
@@ -87,8 +85,6 @@ describe ListCutter::DonationAmountRule do
       rule.amount.should == 1110
     end
   end
-
->>>>>>> initial commit
 end
 
 

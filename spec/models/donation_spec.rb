@@ -10,25 +10,10 @@
 #  frequency              :string(32)       not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-<<<<<<< HEAD
-#  card_type              :string(32)
-#  card_expiry_month      :integer
-#  card_expiry_year       :integer
-#  card_last_four_digits  :string(4)
-#  name_on_card           :string(255)
-=======
->>>>>>> initial commit
 #  active                 :boolean          default(TRUE)
 #  last_donated_at        :datetime
 #  page_id                :integer          not null
 #  email_id               :integer
-<<<<<<< HEAD
-#  cheque_number          :string(128)
-#  cheque_name            :string(255)
-#  cheque_bank            :string(255)
-#  cheque_branch          :string(255)
-=======
->>>>>>> initial commit
 #  recurring_trigger_id   :string(255)
 #  last_tried_at          :datetime
 #  identifier             :string(255)
@@ -105,8 +90,6 @@ describe Donation do
     donation_events.first.page.should eql page
   end
 
-<<<<<<< HEAD
-=======
   it "should allow multiple action_taken user activity events for the same user and donation module" do
     user = FactoryGirl.create(:user)
     content_module = FactoryGirl.create(:donation_module)
@@ -119,7 +102,6 @@ describe Donation do
                             :content_module_id => content_module.id, :user_response_type => 'Donation').all.count.should == 2
   end
 
->>>>>>> initial commit
   describe "amounts" do
     it "converts user's currency cents into US dollars" do
       donation = FactoryGirl.create(:donation, :currency => :brl, :amount_in_cents => 235)
@@ -165,8 +147,6 @@ describe Donation do
     end
   end
 
-<<<<<<< HEAD
-=======
   describe "stats_by_action_page" do
 
     it "should calculate donation stats by page" do
@@ -196,7 +176,6 @@ describe Donation do
     end
 
   end
->>>>>>> initial commit
   describe "#made_to" do
     it "should return the campaign the donation was made to" do
       donation = FactoryGirl.create(:donation, :frequency => "monthly", :subscription_id => '12345')

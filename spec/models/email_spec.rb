@@ -19,10 +19,7 @@
 #  alternate_key_a   :string(25)
 #  alternate_key_b   :string(25)
 #  sent              :boolean
-<<<<<<< HEAD
-=======
 #  sent_at           :datetime
->>>>>>> initial commit
 #
 
 require "spec_helper"
@@ -183,31 +180,19 @@ describe Email do
       email = build_email(:language => english, :body => "Hello {NAME|Friend}! Pls click <a href=\"http://somewhere.com\">here</a>. Oh and you probably live near {POSTCODE|Nowhere}")
       email.movement = walkfree
       slash_hash, scott_hash, dave_hash = tracking_hash_for(email, users[4], users[3], users[2])
-
-<<<<<<< HEAD
-      expected_sendgrid_header = {
-        :to => ['dave@megadeth.com', 'scott@anthrax.com', 'slash@slash.com'],
-=======
       recipients = ['dave@megadeth.com', 'scott@anthrax.com', 'slash@slash.com']
       recipients << AppConstants.blast_cc_email unless AppConstants.blast_cc_email.blank?
 
       expected_sendgrid_header = {
 
         :to => recipients,
->>>>>>> initial commit
         :category => [
           "push_#{email.blast.push.id}", "blast_#{email.blast.id}", "email_#{email.id}", walkfree.friendly_id, Rails.env, email.language.iso_code
         ],
         :sub => {
-<<<<<<< HEAD
-          "{NAME|Friend}" => ["dave", "scott", "slash"],
-          "{POSTCODE|Nowhere}" => ["0003", "0002", "0001"],
-          "{TRACKING_HASH|NOT_AVAILABLE}" => [dave_hash, scott_hash, slash_hash]
-=======
           "{NAME|Friend}" => ["dave", "scott", "slash","Friend"],
           "{POSTCODE|Nowhere}" => ["0003", "0002", "0001", "Nowhere"],
           "{TRACKING_HASH|NOT_AVAILABLE}" => [dave_hash, scott_hash, slash_hash,"NOT_AVAILABLE"]
->>>>>>> initial commit
         },
         :unique_args => { :email_id => email.id }
       }
@@ -234,9 +219,6 @@ describe Email do
       ActionMailer::Base.deliveries.size.should eql(2)
     end
 
-<<<<<<< HEAD
-=======
-
     it "should not send mails when SendGrid interaction is disable" do
       english = create(:english)
       walkfree = create(:movement, :name => "WalkFree", :url => "http://walkfree.org", :languages => [english])
@@ -253,7 +235,6 @@ describe Email do
       ActionMailer::Base.deliveries.size.should eql(0)
     end
 
->>>>>>> initial commit
     it "should log push issues" do
       user1 = create(:user, :email=> 'leonardo@borges.com', :is_member => true)
       user2 = create(:user, :email=> 'another@dude.com', :is_member => true)

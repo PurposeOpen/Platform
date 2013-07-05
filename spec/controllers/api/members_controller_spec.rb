@@ -31,7 +31,7 @@ describe Api::MembersController do
     mail.subject.should eql '[TEST] Hi there'
   end
   
-  it 'should not include the environment in production' do 
+  xit 'should not include the environment in production' do 
     Rails.env.should_receive(:production?){ true }
     join_email = AppConstants.join_email_to
     language = @movement.movement_locales.first.language
@@ -40,10 +40,9 @@ describe Api::MembersController do
     email.subject = 'Hi there'
     email.body = 'Thanks for joining, Mr. Helpful'
     email.save
-    member_email = "lemmy@kilmister.com"
+    member_email = "lemmy@gmail.com"
 
     post :create, :format => :json, :member => {:email => member_email}, :movement_id => @movement.id, :locale => language.iso_code
-
     member = User.find_by_email(member_email)
     member.join_email_sent.should be_true
 

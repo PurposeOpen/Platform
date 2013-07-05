@@ -419,12 +419,6 @@ describe ActionPage do
         page.process_action_taken_by(member)
       end
 
-<<<<<<< HEAD
-      it "when enabled should deliver an email to the user taking an action" do
-        join_email = ENV['JOIN_EMAIL_TO']
-
-=======
-
       it "when enabled in non-production should deliver an email to the user taking an action" do
         join_email = AppConstants.join_email_to
         petition = create(:petition_module)
@@ -449,7 +443,6 @@ describe ActionPage do
       it "when enabled in production should deliver an email to the user taking an action" do
         Rails.env.should_receive(:production?) { true }
         join_email = AppConstants.join_email_to
->>>>>>> initial commit
         petition = create(:petition_module)
         page = create(:action_page, :content_modules => [petition])
         member = create(:user, :language => page.movement.languages.first)
@@ -483,12 +476,7 @@ describe ActionPage do
 
       it "should use additional tokens provided by the generated user response after an action is taken" do
 
-<<<<<<< HEAD
-        join_email = ENV['JOIN_EMAIL_TO']
-=======
         join_email = AppConstants.join_email_to
->>>>>>> initial commit
-
         donation = double
         donation.stub(:respond_to?).and_return(true)
         donation.stub(:autofire_tokens).and_return({"RECEIPT" => "$10 donated to movement!"})
@@ -513,16 +501,9 @@ describe ActionPage do
 
         ActionMailer::Base.deliveries.size.should == 1
         mail = ActionMailer::Base.deliveries.first
-<<<<<<< HEAD
-        mail.from.should eql ['noreply@yourdomain.com']
-        mail.to.should eql [join_email]
-        mail.subject.should eql "Autofire email"
-=======
-
         mail.from.should eql ['noreply@yourdomain.com']
         mail.to.should eql [join_email]
         mail.subject.should eql "[TEST] Autofire email"
->>>>>>> initial commit
         mail.should have_body_text("Here's your receipt: $10 donated to movement!")
       end
     end

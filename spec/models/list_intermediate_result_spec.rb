@@ -24,8 +24,6 @@ describe ListIntermediateResult do
     create(:list_intermediate_result, data: {:number_of_selected_users => 10}).user_count.should == 10
     create(:list_intermediate_result).user_count.should be_nil
   end
-<<<<<<< HEAD
-=======
 
   context "update results from sent email" do
   	before do
@@ -54,6 +52,4 @@ describe ListIntermediateResult do
 	    updated_list_intermediate_result.summary[:number_of_selected_users_by_language]['Spanish'].should == 100
 	  end
   end
-  
->>>>>>> initial commit
 end

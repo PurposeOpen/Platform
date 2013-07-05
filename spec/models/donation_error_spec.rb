@@ -8,11 +8,7 @@ describe DonationError do
 			campaign = create(:campaign, :movement => movement)
 			action_sequence = create(:published_action_sequence, :campaign => campaign, :enabled_languages => [english.iso_code])
 	    page = create(:action_page, :name => "Donation page", :action_sequence => action_sequence)
-<<<<<<< HEAD
-			attributes_hash = { :movement => movement, :action_page => page, :error_code => '9999', :message => 'Error message', :donation_payment_method => 'paypal', :donation_amount_in_cents => 100, :donation_currency => 'USD', :email => 'john.smith@example.com', :first_name => 'John', :last_name => 'Smith', :country_iso => 'ar', :postcode => '1111' }
-=======
 			attributes_hash = { :movement => movement, :action_page => page, :error_code => '9999', :message => 'Error message', :donation_payment_method => 'paypal', :donation_amount_in_cents => 100, :donation_currency => 'USD', :email => 'john.smith@example.com', :first_name => 'John', :last_name => 'Smith', :country_iso => 'ar', :locale => 'es', :postcode => '1111' }
->>>>>>> initial commit
 
 			donation_error = DonationError.new attributes_hash
 
@@ -27,10 +23,7 @@ describe DonationError do
 			donation_error.member_first_name.should eql 'John'
 			donation_error.member_last_name.should eql 'Smith'
 			donation_error.member_country_iso.should eql 'ar'
-<<<<<<< HEAD
-=======
 			donation_error.member_language_iso.should eql 'es'
->>>>>>> initial commit
 		end
 
 		it "should initialize member attributes even if not present on hash" do
@@ -54,10 +47,7 @@ describe DonationError do
 			donation_error.member_first_name.should be_empty
 			donation_error.member_last_name.should be_empty
 			donation_error.member_country_iso.should be_empty
-<<<<<<< HEAD
-=======
 			donation_error.member_language_iso.should eql 'en'
->>>>>>> initial commit
 		end
 
 		it "should not throw error if attributes hash is empty" do

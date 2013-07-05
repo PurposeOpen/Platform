@@ -25,3 +25,6 @@ vendor/bundle
 tags
 zeus.json
 /env.local
+
+/environment.sh
+/.ackrc
