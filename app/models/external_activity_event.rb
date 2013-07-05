@@ -21,7 +21,7 @@ class ExternalActivityEvent < ActiveRecord::Base
   belongs_to :movement
   belongs_to :user
 
-  attr_accessible :action_slug, :action_language_iso, :partner, :role, :source, :user_id, :movement_id, :activity
+  attr_accessible :action_slug, :action_language_iso, :partner, :role, :source, :user_id, :movement_id, :activity, :external_action_id
 
   module Activity
     ACTION_TAKEN = 'action_taken'
