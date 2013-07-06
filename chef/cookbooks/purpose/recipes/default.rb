@@ -22,22 +22,45 @@ package "libxslt-dev"
 # ImageMagick
 package "libmagick9-dev"
 
+#redis
+package "redis-server"
 
-# Update Ruby to 1.9.3
+# Update Ruby to 2.0.0
 package "python-software-properties"
-bash "update_ruby" do
+package "build-essential" 
+package "openssl" 
+package "libreadline6" 
+package "libreadline6-dev" 
+package "curl" 
+package "git-core" 
+package "zlib1g" 
+package "zlib1g-dev" 
+package "libssl-dev" 
+package "libyaml-dev" 
+package "libsqlite3-dev" 
+package "sqlite3" 
+package "libxml2-dev" 
+package "libxslt-dev" 
+package "autoconf" 
+package "libc6-dev" 
+package "libgdbm-dev" 
+package "ncurses-dev" 
+package "automake"
+package "libtool" 
+package "bison" 
+package "subversion" 
+package "pkg-config"
+package "libffi-dev"
+
+bash "install_ruby_2.0.0" do 
   code <<-EOH
-  apt-add-repository ppa:brightbox/ruby-ng
-  apt-get update
-  EOH
-end
-package "ruby"
-package "rubygems"
-package "ruby-switch"
-package "ruby1.9.3"
-bash "switch_default_ruby" do
-  code <<-EOH
-  ruby-switch --set ruby1.9.1
+  cd /tmp
+  wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p0.tar.gz
+  tar -xvzf ruby-2.0.0-p0.tar.gz
+  cd ruby-2.0.0-p0
+  ./configure --prefix=/usr/local
+  make
+  make install
   EOH
 end
 

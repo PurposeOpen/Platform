@@ -78,5 +78,6 @@ Vagrant.configure("2") do |config|
     chef.add_recipe "recipe[apt]"
     chef.add_recipe "recipe[java]"
     chef.add_recipe "recipe[purpose]"
+    chef.add_recipe "recipe[redis]"
   end
 end
