@@ -23,9 +23,9 @@ describe Admin::ListCutterHelper do
   describe "#source_options" do
     it 'should list all sources for the movement' do
       movement = create(:movement)
-      create(:external_activity_event, :movement => movement, :source => 'controlshift')
-      create(:external_activity_event, :movement => movement, :source => 'controloption')
-      create(:external_activity_event, :source => 'controldelete')
+      create(:external_action, :movement => movement, :source => 'controlshift')
+      create(:external_action, :movement => movement, :source => 'controloption')
+      create(:external_action, :source => 'controldelete')
 
       helper.source_options(movement.id, ['controloption']).should ==
         "<option value=\"controloption\" selected=\"selected\">CONTROLOPTION</option>\n"+
@@ -95,12 +95,12 @@ describe Admin::ListCutterHelper do
       movement = create(:movement)
       action_taken = ExternalActivityEvent::Activity::ACTION_TAKEN
       action_created = ExternalActivityEvent::Activity::ACTION_CREATED
-      event1 = create(:external_activity_event, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'russia', :activity => action_taken)
-      event2 = create(:external_activity_event, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'cuba',   :activity => action_taken)
-      event2 = create(:external_activity_event, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'france', :activity => action_created)
-      event3 = create(:external_activity_event, :movement => movement, :source => 'controlshift',  :partner => nil,    :action_slug => 'ecuador',:activity => action_taken)
-      event4 = create(:external_activity_event, :movement => movement, :source => 'controloption', :partner => nil,    :action_slug => 'brazil', :activity => action_taken)
-      event5 = create(:external_activity_event, :movement => movement, :source => 'controloption', :partner => 'aclu', :action_slug => 'china',  :activity => action_taken)
+      event1 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'russia')
+      event2 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'cuba')
+      event2 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'france')
+      event3 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => nil,    :action_slug => 'ecuador')
+      event4 = create(:external_action, :movement => movement, :source => 'controloption', :partner => nil,    :action_slug => 'brazil')
+      event5 = create(:external_action, :movement => movement, :source => 'controloption', :partner => 'aclu', :action_slug => 'china')
 
       helper.grouped_select_options_external_actions(movement.id, event4.action_slug).gsub(/\sid=\"([^\"]*)\"/, '').should ==
       "<option value=\"brazil\" selected=\"selected\">CONTROLOPTION: brazil</option>"+

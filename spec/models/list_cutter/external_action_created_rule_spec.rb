@@ -22,23 +22,22 @@ describe ListCutter::ExternalActionCreatedRule do
       
       event_attributes = {:movement_id => @movement.id, :action_language_iso => 'en'}
 
-      ExternalActivityEvent.create! event_attributes.merge(:user_id => @bob.id,     :action_slug => 'russia',  :activity => action_created, :source => 'controlshift',  :role => 'creator')
-      ExternalActivityEvent.create! event_attributes.merge(:user_id => @john.id,    :action_slug => 'cuba',    :activity => action_created, :source => 'controloption', :role => 'creator')
-      ExternalActivityEvent.create! event_attributes.merge(:user_id => @sally.id,   :action_slug => 'ecuador', :activity => action_created, :source => 'disneyland',    :role => 'creator')
-      ExternalActivityEvent.create! event_attributes.merge(:user_id => @signer.id,  :action_slug => 'china',   :activity => action_taken,   :source => 'controlshift',  :role => 'signer')
+      external_action_1 = ExternalAction.create! event_attributes.merge(:action_slug => 'russia',  :source => 'controlshift',   :unique_action_slug => 'russia')
+      external_action_2 = ExternalAction.create! event_attributes.merge(:action_slug => 'cuba',    :source => 'controloption',  :unique_action_slug => 'cuba')
+      external_action_3 = ExternalAction.create! event_attributes.merge(:action_slug => 'ecuador', :source => 'disneyland',     :unique_action_slug => 'ecuador')
+      external_action_4 = ExternalAction.create! event_attributes.merge(:action_slug => 'china',   :source => 'controlshift',   :unique_action_slug => 'china')
+      ExternalActivityEvent.create! user_id: @bob.id,   activity: action_created,  role: "signer",  external_action_id: external_action_1.id
+      ExternalActivityEvent.create! user_id: @john.id,  activity: action_created,  role: "signer",  external_action_id: external_action_2.id
     end
 
     it "should return users that have created external actions for the specified sources" do
       rule = ListCutter::ExternalActionCreatedRule.new(:not => false, :sources => ['controlshift', 'controloption'], :since => 1.day.ago.strftime("%m/%d/%Y"), :movement => @movement)
-
       rule.to_relation.all.should =~ [@bob, @john]
     end
 
     it "should return users that have created external actions within a timeframe" do
       ExternalActivityEvent.find_by_user_id(@bob.id).update_attribute(:created_at, 3.days.ago)
-
       rule = ListCutter::ExternalActionCreatedRule.new(:not => false, :sources => ['controlshift', 'controloption'], :since => 1.day.ago.strftime("%m/%d/%Y"), :movement => @movement)
-
       rule.to_relation.all.should =~ [@john]
     end
 

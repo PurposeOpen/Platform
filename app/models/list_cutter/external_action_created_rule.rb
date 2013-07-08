@@ -11,12 +11,14 @@ module ListCutter
     def to_sql
       date = Date.strptime(since, '%m/%d/%Y')
 
-      sanitize_sql <<-SQL, @movement.id, ExternalActivityEvent::Activity::ACTION_CREATED, self.sources, date
-        SELECT user_id FROM external_activity_events
-        WHERE movement_id = ?
-        AND activity = ?
-        AND source IN (?)
-        AND created_at >= ?
+      sanitize_sql <<-SQL, self.sources, @movement.id, ExternalActivityEvent::Activity::ACTION_CREATED, date
+        SELECT external_activity_events.user_id FROM external_activity_events
+        INNER JOIN external_actions
+        ON external_actions.source IN (?)
+        AND external_actions.movement_id = ?
+        WHERE external_activity_events.activity = ?
+        AND external_activity_events.created_at >= ?
+        AND external_activity_events.external_action_id = external_actions.id
         GROUP BY user_id
       SQL
     end

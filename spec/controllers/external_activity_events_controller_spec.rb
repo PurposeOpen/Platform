@@ -1,18 +1,15 @@
 require 'spec_helper'
 
 describe Api::ExternalActivityEventsController do
+  let(:external_action) { mock_model(ExternalAction, invalid?: false) }
+
   before do
     @english = FactoryGirl.create(:english)
     @movement = FactoryGirl.create(:movement, :name => 'AllOut', :languages => [@english])
 
     @source = 'controlshift'
 
-    @event_params = {:role                  => 'signer',
-                     :partner               => 'kenya_now',
-                     :action_slug           => 'kenya',
-                     :action_language_iso   => @english.iso_code,
-                     :activity              => ExternalActivityEvent::Activity::ACTION_TAKEN,
-                     :source                => @source}
+    @event_params = { :role => 'signer', :activity => ExternalActivityEvent::Activity::ACTION_TAKEN }
 
     @user_attributes = {:email              => 'bob@example.com',
                         :language_iso       => @english.iso_code,
@@ -31,13 +28,19 @@ describe Api::ExternalActivityEventsController do
                         :is_member          => true}
 
     @user_params = @user_attributes.except(:movement_id, :language_id, :source)
-    ExternalAction.stub(:find_or_create_by_unique_action_slug_and_movement_id).and_return(mock_model(ExternalAction, invalid?: false))
+    ExternalAction.stub(:find_or_create_by_unique_action_slug).and_return(external_action)
   end
 
   context 'new user taking action:' do
 
     it 'should create a new user, and an external activity event' do
-      post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug), :format => :json
+      post :create, @event_params.merge(
+        :user => @user_params, 
+        :movement_id => @movement.slug, 
+        :partner => 'kenya_now', 
+        :action_slug => 'kenya', 
+        :source => @source,
+        :action_language_iso => @english.iso_code,), :format => :json
 
       user = @movement.members.find_by_email('bob@example.com')
       user.should_not be_nil
@@ -46,7 +49,7 @@ describe Api::ExternalActivityEventsController do
 
       external_activity_event = ExternalActivityEvent.last
       external_activity_event.should_not be_nil
-      expected_event_attributes = @event_params.merge(:user_id => user.id, :movement_id => @movement.id)
+      expected_event_attributes = @event_params.merge(:user_id => user.id)
       saved_event_attributes = external_activity_event.attributes.symbolize_keys.slice(*expected_event_attributes.keys)
       saved_event_attributes.should == expected_event_attributes
 
@@ -61,7 +64,7 @@ describe Api::ExternalActivityEventsController do
       created = ExternalActivityEvent::Activity::ACTION_CREATED
       taken = ExternalActivityEvent::Activity::ACTION_TAKEN
 
-      post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug, :activity => created, :role => 'creator'), :format => :json
+      post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug, :activity => created, :role => 'creator', :source => @source), :format => :json
 
       user = @movement.members.find_by_email('bob@example.com')
       user.should_not be_nil
@@ -74,11 +77,11 @@ describe Api::ExternalActivityEventsController do
 
       attributes_for_comparison = ExternalActivityEvent.accessible_attributes.to_a
 
-      expected_action_created_attributes = @event_params.merge(:user_id => user.id, :movement_id => @movement.id, :activity => created, :role => 'creator')
+      expected_action_created_attributes = @event_params.merge(:user_id => user.id, :activity => created, :role => 'creator', external_action_id: external_action.id)
       saved_action_created_attributes = actions_created.first.attributes.slice(*attributes_for_comparison)
       expected_action_created_attributes.should == saved_action_created_attributes.symbolize_keys
 
-      expected_action_taken_attributes = @event_params.merge(:user_id => user.id, :movement_id => @movement.id, :activity => taken, :role => 'creator')
+      expected_action_taken_attributes = @event_params.merge(:user_id => user.id, :activity => taken, :role => 'creator', external_action_id: external_action.id)
       saved_action_taken_attributes = actions_taken.first.attributes.slice(*attributes_for_comparison)
       expected_action_taken_attributes.should == saved_action_taken_attributes.symbolize_keys
 
@@ -249,7 +252,7 @@ describe Api::ExternalActivityEventsController do
   context 'errors:' do
 
     it 'should return 500 when unable to satisfy the request' do
-      event = mock('event', :valid? => true)
+      event = mock('event', :invalid? => false)
       ExternalActivityEvent.should_receive(:new).and_return(event)
       event.should_receive(:save!).and_raise StandardError
 
@@ -274,10 +277,10 @@ describe Api::ExternalActivityEventsController do
     context 'invalid external activity event:' do
 
       it 'should return validation error details and status 422' do
-        @event_params.delete(:action_slug)
+        @event_params.delete(:role)
         post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug), :format => :json
 
-        JSON.parse(response.body).should == {"action_slug" => ["can't be blank"]}
+        JSON.parse(response.body).should == {"role" => ["can't be blank"]}
         response.status.should == 422
       end
     end
@@ -294,9 +297,9 @@ describe Api::ExternalActivityEventsController do
 
     context 'when there is a valid external action' do
       it 'should find or create this external action' do
-        ExternalAction.should_receive(:find_or_create_by_unique_action_slug_and_movement_id).with(
-          "controlshift_join", 
-          "1", 
+        ExternalAction.should_receive(:find_or_create_by_unique_action_slug).with(
+          "1_controlshift_join", 
+          movement_id: "1", 
           action_slug: "join", 
           partner: "purpose", 
           source: "controlshift", 
@@ -327,7 +330,7 @@ describe Api::ExternalActivityEventsController do
           ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag1", "1").and_return(tag1)
           ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag2", "1").and_return(tag2)
           ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag3", "1").and_return(tag3)
-          ExternalAction.stub(:find_or_create_by_unique_action_slug_and_movement_id).and_return(external_action)
+          ExternalAction.stub(:find_or_create_by_unique_action_slug).and_return(external_action)
         end
 
         it 'should find or create those tags' do
@@ -348,7 +351,7 @@ describe Api::ExternalActivityEventsController do
 
     context 'when there is an invalid external action' do
       let(:external_action) { mock_model(ExternalAction, invalid?: true, errors: "this is the external action errors") }
-      before { ExternalAction.should_receive(:find_or_create_by_unique_action_slug_and_movement_id).and_return(external_action) }
+      before { ExternalAction.should_receive(:find_or_create_by_unique_action_slug).and_return(external_action) }
 
       it 'should return unprocessable entity status' do
         post :create, movement_id: 1, user: {}

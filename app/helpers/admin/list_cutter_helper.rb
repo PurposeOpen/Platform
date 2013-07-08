@@ -76,7 +76,7 @@ module Admin::ListCutterHelper
     return options_for_select(store, selected) if !store.nil?
 
     fields = 'source, partner, action_slug'
-    store = ExternalActivityEvent.where(:movement_id => movement_id).group(fields).select(fields).order(fields).map do |event|
+    store = ExternalAction.where(:movement_id => movement_id).group(fields).select(fields).order(fields).map do |event|
                                     partner = event.partner.blank? ? '' : "#{event.partner.upcase} - "
                                     ["#{event.source.upcase}: #{partner}#{event.action_slug}", event.action_slug]
                                   end
@@ -101,7 +101,7 @@ module Admin::ListCutterHelper
     store = Rails.cache.fetch(store_key)
     return options_for_select(store, selected) if !store.nil?
 
-    store = ExternalActivityEvent.where(:movement_id => movement_id).group(:source).select(:source).map { |event| [event.source.upcase, event.source] }
+    store = ExternalAction.where(:movement_id => movement_id).group(:source).select(:source).map { |event| [event.source.upcase, event.source] }
 
     Rails.cache.write(store_key, store)
     options_for_select(store, selected)

@@ -6,7 +6,7 @@ FactoryGirl.define do
     source "MyString"
     partner "MyString"
     action_slug "MyString"
-    unique_action_slug "MyString"
+    sequence(:unique_action_slug) {|n| "MyString #{n}" }
     action_language_iso "MyString"
   end
 end

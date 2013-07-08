@@ -19,6 +19,10 @@ describe ListCutter::ExternalActionRule do
   end
 
   describe do
+    let(:external_action_1){ ExternalAction.create! movement_id: @movement.id, action_slug: 'russia',  unique_action_slug: 'russia',   action_language_iso: 'en', source: 'controlshift' }
+    let(:external_action_2){ ExternalAction.create! movement_id: @movement.id, action_slug: 'cuba',    unique_action_slug: 'cuba',     action_language_iso: 'en', source: 'controlshift' }
+    let(:external_action_3){ ExternalAction.create! movement_id: @movement.id, action_slug: 'ecuador', unique_action_slug: 'ecuador',  action_language_iso: 'en', source: 'controlshift' }
+    let(:external_action_4){ ExternalAction.create! movement_id: @movement.id, action_slug: 'china',   unique_action_slug: 'china',    action_language_iso: 'en', source: 'controlshift' }
 
     before do
       @movement = FactoryGirl.create(:movement)
@@ -26,16 +30,11 @@ describe ListCutter::ExternalActionRule do
     end
 
     it "should return users that have taken action on specific external pages" do
-      event_attributes = {:movement_id => @movement.id,
-                          :role => 'signer',
-                          :action_language_iso => 'en',
-                          :source => 'controlshift',
-                          :activity => @action_taken}
-
-      ExternalActivityEvent.create! event_attributes.merge(:user_id => @bob.id,   :action_slug => 'russia',)
-      ExternalActivityEvent.create! event_attributes.merge(:user_id => @john.id,  :action_slug => 'cuba',)
-      ExternalActivityEvent.create! event_attributes.merge(:user_id => @sally.id, :action_slug => 'ecuador',)
-      ExternalActivityEvent.create! event_attributes.merge(:user_id => @jenny.id, :action_slug => 'china', :activity => @action_created, :role => 'creator')
+      event_attributes = {:role => 'signer', :activity => @action_taken}
+      ExternalActivityEvent.create! event_attributes.merge(:user_id => @bob.id,   external_action_id: external_action_1.id)
+      ExternalActivityEvent.create! event_attributes.merge(:user_id => @john.id,  external_action_id: external_action_2.id)
+      ExternalActivityEvent.create! event_attributes.merge(:user_id => @sally.id, external_action_id: external_action_3.id)
+      ExternalActivityEvent.create! event_attributes.merge(:user_id => @jenny.id, external_action_id: external_action_4.id, :activity => @action_created, :role => 'creator')
 
       rule = ListCutter::ExternalActionRule.new(:not => false, :action_slugs => ['cuba', 'ecuador', 'china'], :activity => @action_taken, :since => @yesterday, :movement => @movement)
 
@@ -47,16 +46,14 @@ describe ListCutter::ExternalActionRule do
       before do
         all_action_slugs = ['russia', 'cuba', 'ecuador', 'china']
         @rule_parameters = {:not => false, :action_slugs => all_action_slugs, :activity => @action_created, :since => @yesterday, :movement => @movement}
-        event_attributes = {:movement_id => @movement.id, :action_language_iso => 'en', :source => 'controlshift'}
-        ExternalActivityEvent.create! event_attributes.merge(:user_id => @bob.id,     :action_slug => 'russia',  :activity => @action_created, :role => 'creator')
-        ExternalActivityEvent.create! event_attributes.merge(:user_id => @john.id,    :action_slug => 'cuba',    :activity => @action_created, :role => 'creator')
-        ExternalActivityEvent.create! event_attributes.merge(:user_id => @sally.id,   :action_slug => 'ecuador', :activity => @action_created, :role => 'creator')
-        ExternalActivityEvent.create! event_attributes.merge(:user_id => @jenny.id,   :action_slug => 'china',   :activity => @action_taken,   :role => 'signer')
+        ExternalActivityEvent.create! :user_id => @bob.id,   :activity => @action_created, :role => 'creator',  external_action_id: external_action_1.id
+        ExternalActivityEvent.create! :user_id => @john.id,  :activity => @action_created, :role => 'creator',  external_action_id: external_action_2.id
+        ExternalActivityEvent.create! :user_id => @sally.id, :activity => @action_created, :role => 'creator',  external_action_id: external_action_3.id
+        ExternalActivityEvent.create! :user_id => @jenny.id, :activity => @action_taken,   :role => 'signer',   external_action_id: external_action_4.id
       end
 
       it "should return users that have created external actions for the specified sources" do
         rule = ListCutter::ExternalActionRule.new(@rule_parameters)
-
         rule.to_relation.all.should =~ [@bob, @john, @sally]
       end
 
