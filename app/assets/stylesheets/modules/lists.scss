@@ -236,21 +236,11 @@
     }
   }
 
-  .choose-action_taken_rule,
-  .choose-external_action_taken_rule {
+  .choose-action_taken_rule {
     div.rule-details {
       .ui-multiselectcheckbox {
         width: 250px !important;
         float: right;
-      }
-    }
-  }
-
-  .choose-external_action_created_rule {
-    div.rule-details {
-      .ui-multiselectcheckbox {
-        width: 216px !important;
-        margin-left: 5px;
       }
     }
   }
