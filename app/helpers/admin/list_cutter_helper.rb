@@ -14,7 +14,8 @@ module Admin::ListCutterHelper
         {label: "Member Email Activity", class: ListCutter::MemberEmailActivityRule},
         {label: "Donation frequency", class: ListCutter::DonorRule},
         {label: "Donation amount", class: ListCutter::DonationAmountRule},
-        {label: "External Action", class: ListCutter::ExternalActionRule}
+        {label: "External Action", class: ListCutter::ExternalActionRule},
+        {label: "External Tag", class: ListCutter::ExternalTagRule}
     ]
   end
 
@@ -143,5 +144,11 @@ module Admin::ListCutterHelper
       body << content_tag(:optgroup, options_for_select(group[1], selected_key), :label => group[0], id: SecureRandom.uuid)
     end
     body.html_safe
+  end
+
+  def grouped_select_options_external_tags movement_id, selected
+    fields = 'name'
+    store = ExternalTag.where(:movement_id => movement_id).map {|tag| tag.name}
+    options_for_select(store, selected)
   end
 end

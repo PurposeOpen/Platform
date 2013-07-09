@@ -1,0 +1,8 @@
+<div>
+  <%= select_tag 'rules[external_tag_rule][$index][names][]',
+                 grouped_select_options_external_tags(@movement.id, rule.names),
+                 {:multiple => true,
+                  :id => "rules_external_tag_rule_$index_names_",
+                  :class => "required multiselectcheckbox external_tag_select",
+                  "data-placeholder" => "Choose an External Tag..."} %>
+</div>

@@ -8,5 +8,6 @@ FactoryGirl.define do
     action_slug "MyString"
     sequence(:unique_action_slug) {|n| "MyString #{n}" }
     action_language_iso "MyString"
+    external_tags { [FactoryGirl.create(:external_tag)] }
   end
 end
