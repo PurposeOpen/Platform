@@ -71,25 +71,16 @@ describe Page do
       it 'should not create a click event' do
         @page.register_click_from(@email, nil)
         @page.register_click_from(nil, @user)
-        UserActivityEvent.count.should == 0
+        PushClickedEmail.count.should == 0
       end
     end
 
     context 'click was already registered' do
       it 'should create another click event' do
-        create(:email_clicked_activity, :page_id => @page.id, :email_id => @email.id, :user_id => @user.id)
+        PushClickedEmail.create(:movement_id => @email.movement.id, :push_id => @email.blast.push.id, :email_id => @email.id, :user_id => @user.id)
         @page.register_click_from(@email, @user)
 
-        uaes = UserActivityEvent.all
-        uaes.count.should == 3
-
-        uaes.map(&:page).should =~ [nil, @page, @page]
-        # uaes.map(&:page).uniq.compact.should eql [@page]
-        uaes.map(&:user).uniq.compact.should eql [@user]
-
-        uaes.map(&:activity).should =~ [UserActivityEvent::Activity::EMAIL_VIEWED,
-            UserActivityEvent::Activity::EMAIL_CLICKED,
-            UserActivityEvent::Activity::EMAIL_CLICKED]
+        PushClickedEmail.count.should == 2
       end
     end
 
@@ -119,20 +110,11 @@ describe Page do
       end
     end
 
-    it 'should register a click (and create an email open event)' do
+    it 'should register a click (and create an email viewed event)' do
       @page.register_click_from(@email, @user)
 
-      uaes = UserActivityEvent.all
-      uaes.count.should == 2
-
-      uaes.first.activity.should == UserActivityEvent::Activity::EMAIL_VIEWED
-      uaes.first.user.should == @user
-      uaes.first.email.should == @email
-
-      uaes.last.activity.should == UserActivityEvent::Activity::EMAIL_CLICKED
-      uaes.last.page.should == @page
-      uaes.last.user.should == @user
-      uaes.last.email.should == @email
+      PushClickedEmail.count.should == 1
+      PushViewedEmail.count.should == 1
     end
   end
 

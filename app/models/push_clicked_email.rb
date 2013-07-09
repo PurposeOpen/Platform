@@ -10,4 +10,5 @@
 #
 
 class PushClickedEmail < ActiveRecord::Base
+  validates_presence_of :movement_id, :user_id, :push_id, :email_id
 end

@@ -140,32 +140,14 @@ class UserActivityEvent < ActiveRecord::Base
   def self.email_clicked!(user, email, page=nil)
     self.email_viewed!(user, email)
     Push.log_activity!(:email_clicked, user, email)
-    create!(
-      :activity => Activity::EMAIL_CLICKED,
-      :user => user,
-      :email => email,
-      :page => page
-    )
   end
 
   def self.email_spammed!(user, email)
     Push.log_activity!(:email_spammed, user, email)
-    create!(
-      :activity => Activity::EMAIL_SPAMMED,
-      :user => user,
-      :email => email
-    )
   end
 
   def self.email_viewed!(user, email)
-    uae = UserActivityEvent.new(:activity => Activity::EMAIL_VIEWED,
-      :user => user,
-      :email => email)
-    if uae.valid?
-      Push.log_activity!(:email_viewed, user, email)
-      uae.save!
-    end
-    uae
+    Push.log_activity!(:email_viewed, user, email)
   end
 
   def self.unsubscribed!(user, email=nil)

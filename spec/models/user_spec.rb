@@ -224,7 +224,7 @@ describe User do
       @user.take_external_action!(@email)
 
       events = @user.user_activity_events.all
-      events.count.should == 4
+      events.count.should == 2
       events.detect { |event| event.activity == :subscribed }.attributes.should include('email_id' => @email.id)
       events.detect { |event| event.activity == :action_taken }.attributes.should include('push_id' => @blast.push.id, 'email_id' => @email.id)
       PushClickedEmail.first.attributes.should include('movement_id' => @movement.id, 'user_id' => @user.id, 'push_id' => @blast.push.id, 'email_id' => @email.id)

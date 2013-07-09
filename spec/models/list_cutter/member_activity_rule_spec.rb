@@ -44,8 +44,6 @@ describe ListCutter::MemberActivityRule do
         create(:activity, user: @user2, content_module: create(:donation_module))
         create(:activity, user: @user3, content_module: create(:petition_module))
         create(:activity, user: @user4, content_module: create(:join_module))
-        create(:email_clicked_activity, user: @user5)
-        create(:email_viewed_activity, user: @user6)
         create(:activity, user: @user1, content_module: create(:email_targets_module))
         create(:activity, user: @user2, content_module: create(:join_module))
 
@@ -90,8 +88,6 @@ describe ListCutter::MemberActivityRule do
         create(:activity, user: @user2, content_module: create(:donation_module))
         create(:activity, user: @user3, content_module: create(:petition_module))
         create(:activity, user: @user4, content_module: create(:join_module))
-        create(:email_clicked_activity, user: @user5)
-        create(:email_viewed_activity, user: @user6)
         create(:activity, user: @user1, content_module: create(:email_targets_module))
         create(:activity, user: @user2, content_module: create(:join_module))
 

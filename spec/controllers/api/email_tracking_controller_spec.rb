@@ -25,19 +25,6 @@ describe Api::EmailTrackingController do
       UserActivityEvent.should_receive(:email_viewed!).with(@user, @email)
       get :email_opened, :movement_id => @movement.id, :t => hash.encode
     end
-
-    it "should not create additional email viewed events when the same user opens the same email multiple times" do
-      @user = FactoryGirl.create(:user)
-      @email = FactoryGirl.create(:email)
-      hash = EmailTrackingHash.new(@email, @user)
-      UserActivityEvent.email_viewed!(@user, @email)
-
-      get :email_opened, :movement_id => @movement.id, :t => hash.encode
-
-      UserActivityEvent.where(:activity => UserActivityEvent::Activity::EMAIL_VIEWED,
-          :user_id => @user.id,
-          :email_id => @email.id).count.should eql 1
-    end
   end
 
   describe "email_clicked" do
@@ -85,19 +72,6 @@ describe Api::EmailTrackingController do
 
       UserActivityEvent.should_receive(:email_clicked!).with(@user, @email, nil)
       post :email_clicked, :movement_id => @movement.id, :page_type => "Homepage", :t => hash.encode
-    end
-
-    it "should allow additional email clicked events when the same user clicks the same link multiple times" do
-      @user = FactoryGirl.create(:user)
-      @email = FactoryGirl.create(:email)
-      hash = EmailTrackingHash.new(@email, @user)
-      UserActivityEvent.email_clicked!(@user, @email)
-
-      post :email_clicked, :movement_id => @movement.id, :page_type => "Homepage", :t => hash.encode
-
-      UserActivityEvent.where(:activity => UserActivityEvent::Activity::EMAIL_CLICKED,
-          :user_id => @user.id,
-          :email_id => @email.id).count.should eql 2
     end
   end
 end

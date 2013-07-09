@@ -64,11 +64,9 @@ describe UniqueActivityByEmail do
       UniqueActivityByEmail.where(:activity => 'subscribed').sum(:total_count).should == 2
     end
 
-    it "should group activities of the same type on the same email by the same user, even if they are clicks to different pages" do
+    it "should count multiple clicks from the same email by the same user once" do
       user = FactoryGirl.create(:user)
       email = FactoryGirl.create(:email)
-      page1 = FactoryGirl.create(:action_page)
-      page2 = FactoryGirl.create(:action_page)
 
       Push.activity_class_for(:email_clicked).create(:movement_id => email.movement.id, :user_id => user.id, :push_id => email.push.id, :email_id => email.id)
       Push.activity_class_for(:email_clicked).create(:movement_id => email.movement.id, :user_id => user.id, :push_id => email.push.id, :email_id => email.id)
@@ -76,6 +74,18 @@ describe UniqueActivityByEmail do
       UniqueActivityByEmail.update!
 
       UniqueActivityByEmail.where(:email_id => email.id, :activity => 'email_clicked').sum(:total_count).should == 1
+    end
+
+    it "should count multiple views of the same email by the same user once" do
+      user = FactoryGirl.create(:user)
+      email = FactoryGirl.create(:email)
+
+      Push.activity_class_for(:email_viewed).create(:movement_id => email.movement.id, :user_id => user.id, :push_id => email.push.id, :email_id => email.id)
+      Push.activity_class_for(:email_viewed).create(:movement_id => email.movement.id, :user_id => user.id, :push_id => email.push.id, :email_id => email.id)
+
+      UniqueActivityByEmail.update!
+
+      UniqueActivityByEmail.where(:email_id => email.id, :activity => 'email_viewed').sum(:total_count).should == 1
     end
 
     it "should only process unique activities that happened after the last processing time" do

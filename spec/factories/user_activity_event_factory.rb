@@ -82,14 +82,6 @@ FactoryGirl.define do
     push     { create(:email).blast.push }
   end
 
-  factory :email_clicked_activity, :class => UserActivityEvent do
-    activity "email_clicked"
-  end
-
-  factory :email_viewed_activity, :class => UserActivityEvent do
-    activity "email_viewed"
-  end
-
   factory :user_activity_event, :class => UserActivityEvent do
     user
   end

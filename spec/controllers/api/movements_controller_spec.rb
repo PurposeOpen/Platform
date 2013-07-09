@@ -179,99 +179,88 @@ describe Api::MovementsController do
     data["banner_text"].should == "OMG, <span class='member_count'>1 000 000</span> members!"
   end
 
-  context "registering click events on the homepage" do
-    it "should create a user activity event for the click event on a link to the homepage" do
-      user = FactoryGirl.create(:user, :movement => @allout)
-      email = FactoryGirl.create(:email)
-      tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
-
-      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-          :t => tracking_hash, :page_type => "Homepage"
-
-      UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
-          :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => nil).count.should == 1
-    end
-
-    it "should allow the creation of duplicate user activity events for the click event on a link to the homepage" do
-      user = FactoryGirl.create(:user, :movement => @allout)
-      email = FactoryGirl.create(:email)
-      tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
-      FactoryGirl.create(:email_clicked_activity, :user => user, :email => email, :page_id => nil,
-          :movement => @allout, :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s)
-
-      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-          :t => tracking_hash, :page_type => "Homepage"
-
-      UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
-          :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => nil).count.should == 2
-    end
-  end
-
-  context "registering click events on an action page" do
+  describe "click tracking" do
     before do
+      @user = FactoryGirl.create(:user, :movement => @allout)
       @campaign = FactoryGirl.create(:campaign, :movement => @allout)
-      @action_sequence = FactoryGirl.create(:action_sequence, :campaign => @campaign)
-      @page = FactoryGirl.create(:action_page, :action_sequence => @action_sequence, :name => "Pretty page")
+      @push = FactoryGirl.create(:push, :campaign => @campaign)
+      blast = FactoryGirl.create(:blast, :push => @push)
+      @email = FactoryGirl.create(:email, :blast => blast)
     end
 
-    it "should create a user activity event for the click event on a link to an action page" do
-      user = FactoryGirl.create(:user, :movement => @allout)
-      email = FactoryGirl.create(:email)
-      tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
+    context "registering click events on the homepage" do
+      it "should record the click event" do
+        tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
 
-      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-          :t => tracking_hash, :page_type => "ActionPage", :page_id => @page.friendly_id
+        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
+            :t => tracking_hash, :page_type => "Homepage"
 
-      UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
-          :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => @page.id).count.should == 1
+        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 1
+      end
+
+      it "should allow the creation of duplicate records for the click event" do
+        tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
+        PushClickedEmail.create(:user_id => @user.id, :push_id => @push.id, :email_id => @email.id, :movement_id => @allout.id)
+
+        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
+            :t => tracking_hash, :page_type => "Homepage"
+
+        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 2
+      end
     end
 
-    it "should allow the creation of duplicate user activity events for the click event on a link to an action page" do
-      user = FactoryGirl.create(:user, :movement => @allout)
-      email = FactoryGirl.create(:email)
-      tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
-      FactoryGirl.create(:email_clicked_activity, :user => user, :email => email, :page_id => @page.id,
-          :movement => @allout)
+    context "registering click events on an action page" do
+      before do
+        @action_sequence = FactoryGirl.create(:action_sequence, :campaign => @campaign)
+        @page = FactoryGirl.create(:action_page, :action_sequence => @action_sequence, :name => "Pretty page")
+      end
 
-      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-          :t => tracking_hash, :page_type => "ActionPage", :page_id => @page.friendly_id
+      it "should record the click event on a link to an action page" do
+        tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
 
-      UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
-          :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => @page.id).count.should == 2
-    end
-  end
+        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
+            :t => tracking_hash, :page_type => "ActionPage", :page_id => @page.friendly_id
 
-  context "registering click events on a content page" do
-    before do
-      @content_page_collection = FactoryGirl.create(:content_page_collection, :movement => @allout)
-      @page = FactoryGirl.create(:content_page, :content_page_collection => @content_page_collection, :name => "About")
-    end
+        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 1
+      end
 
-    it "should create a user activity event for the click event on a link to a content page" do
-      user = FactoryGirl.create(:user, :movement => @allout)
-      email = FactoryGirl.create(:email)
-      tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
+      it "should allow the creation of duplicate records for the click event on a link to an action page" do
+        tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
+        PushClickedEmail.create(:user_id => @user.id, :push_id => @push.id, :email_id => @email.id, :movement_id => @allout.id)
 
-      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-          :t => tracking_hash, :page_type => "ContentPage", :page_id => @page.friendly_id
+        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
+            :t => tracking_hash, :page_type => "ActionPage", :page_id => @page.friendly_id
 
-      UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
-          :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => @page.id).count.should == 1
+        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 2
+      end
     end
 
-    it "should allow the creation of duplicate user activity events for the click event on a link to a content page" do
-      user = FactoryGirl.create(:user, :movement => @allout)
-      email = FactoryGirl.create(:email)
-      tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
-      FactoryGirl.create(:email_clicked_activity, :user => user, :email => email, :page_id => @page.id,
-          :movement => @allout)
+    context "registering click events on a content page" do
+      before do
+        @content_page_collection = FactoryGirl.create(:content_page_collection, :movement => @allout)
+        @page = FactoryGirl.create(:content_page, :content_page_collection => @content_page_collection, :name => "About")
+      end
 
-      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-          :t => tracking_hash, :page_type => "ContentPage", :page_id => @page.friendly_id
+      it "should record the click event on a link to a content page" do
+        tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
 
-      UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
-          :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => @page.id).count.should == 2
+        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
+            :t => tracking_hash, :page_type => "ContentPage", :page_id => @page.friendly_id
+
+        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 1
+      end
+
+      it "should allow the creation of duplicate records for the click event on a link to a content page" do
+        tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
+        PushClickedEmail.create(:user_id => @user.id, :push_id => @push.id, :email_id => @email.id, :movement_id => @allout.id)
+
+        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
+            :t => tracking_hash, :page_type => "ContentPage", :page_id => @page.friendly_id
+
+        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 2
+      end
     end
+
   end
 
   context 'show for preview' do
