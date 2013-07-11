@@ -147,8 +147,9 @@ module Admin::ListCutterHelper
   end
 
   def grouped_select_options_external_tags movement_id, selected
-    fields = 'name'
-    store = ExternalTag.where(:movement_id => movement_id).map {|tag| tag.name}
-    options_for_select(store, selected)
+    options = Rails.cache.fetch("/grouped_select_options_external_tags/#{movement_id}") do
+      ExternalTag.where(:movement_id => movement_id).map {|tag| tag.name}
+    end
+    options_for_select(options, selected)
   end
 end

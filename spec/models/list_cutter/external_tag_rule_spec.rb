@@ -1,9 +1,10 @@
 require "spec_helper"
 
 describe ListCutter::ExternalTagRule do
-  let(:external_tag) { FactoryGirl.create :external_tag, name: "Cuba" }
+  let(:movement)     { FactoryGirl.create(:movement) }
+  let(:external_tag) { FactoryGirl.create :external_tag, name: "Cuba", movement: movement }
   let(:user1)        { FactoryGirl.create :user }
-  subject            { ListCutter::ExternalTagRule.new names: [external_tag.name] }
+  subject            { ListCutter::ExternalTagRule.new names: [external_tag.name], movement: movement }
   
   context "when nobody taken an action for the tag" do
     its(:to_relation) { should be_empty }

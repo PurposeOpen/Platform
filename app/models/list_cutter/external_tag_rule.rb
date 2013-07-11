@@ -3,10 +3,11 @@ module ListCutter
     fields :names
 
     def to_sql
-      sanitize_sql <<-SQL, self.names
+      sanitize_sql <<-SQL, self.names, @movement.id
         SELECT external_activity_events.user_id FROM external_activity_events
         JOIN external_tags
         ON external_tags.name IN (?)
+        AND external_tags.movement_id = ?
         JOIN external_actions_external_tags
         ON external_actions_external_tags.external_tag_id = external_tags.id
         JOIN external_actions
