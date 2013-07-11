@@ -5,14 +5,7 @@ class Api::ExternalActivityEventsController < Api::BaseController
 
   def create
     begin
-      @user = movement.members.find_or_initialize_by_email(user_attributes)
-
-      if @user.new_record?
-        @user.source = params['source']
-      else
-        @user.attributes = user_attributes
-      end
-
+      set_up_user 
       (render :json => @user.errors.to_json, :status => :unprocessable_entity and return) if @user.invalid?
       @user.take_external_action!(tracked_email)
 
@@ -33,6 +26,16 @@ class Api::ExternalActivityEventsController < Api::BaseController
 
 
   private
+
+  def set_up_user
+    @user = movement.members.find_or_initialize_by_email(user_attributes)
+
+    if @user.new_record?
+      @user.source = params['source']
+    else
+      @user.attributes = user_attributes
+    end
+  end
 
   def unique_action_slug
     "#{movement.id}_#{params[:source]}_#{params[:action_slug]}"

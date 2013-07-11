@@ -6,7 +6,6 @@
 #  email_id    :integer
 #  activity    :string(64)
 #  total_count :integer
-#  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
 

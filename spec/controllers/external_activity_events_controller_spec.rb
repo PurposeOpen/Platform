@@ -286,7 +286,7 @@ describe Api::ExternalActivityEventsController do
     end
   end
 
-  context "" do
+  describe "external action and external tags" do
     let(:movement)  { mock_model(Movement, slug: 'movement', default_language: mock_model(Language)) }
     let(:user)      { mock_model(User, :attributes= => true, take_external_action!: true) }
 
