@@ -287,26 +287,26 @@ describe Api::ExternalActivityEventsController do
   end
 
   context "" do
-    let(:movement)  { mock_model(Movement, default_language: mock_model(Language)) }
+    let(:movement)  { mock_model(Movement, slug: 'movement', default_language: mock_model(Language)) }
     let(:user)      { mock_model(User, :attributes= => true, take_external_action!: true) }
 
     before do
       movement.stub_chain(:members, :find_or_initialize_by_email).and_return(user)
-      Movement.stub(:find).with("1").and_return(movement)
+      Movement.stub(:find).with(movement.slug).and_return(movement)
     end
 
     context 'when there is a valid external action' do
       it 'should find or create this external action' do
         ExternalAction.should_receive(:find_or_create_by_unique_action_slug).with(
-          "1_controlshift_join", 
-          movement_id: "1", 
+          "#{movement.id}_controlshift_join", 
+          movement_id: movement.id, 
           action_slug: "join", 
           partner: "purpose", 
           source: "controlshift", 
           action_language_iso: "en"
         )
         post(:create, {
-          movement_id: "1", 
+          movement_id: movement.slug, 
           source: "controlshift",
           action_slug: "join",
           partner: "purpose",
@@ -327,24 +327,24 @@ describe Api::ExternalActivityEventsController do
         before do
           external_action.stub(:external_tags).and_return(external_tags)
           Language.stub(:find_by_iso_code).and_return(language)
-          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag1", "1").and_return(tag1)
-          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag2", "1").and_return(tag2)
-          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag3", "1").and_return(tag3)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag1", movement.id).and_return(tag1)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag2", movement.id).and_return(tag2)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag3", movement.id).and_return(tag3)
           ExternalAction.stub(:find_or_create_by_unique_action_slug).and_return(external_action)
         end
 
         it 'should find or create those tags' do
-          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag1", "1")
-          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag2", "1")
-          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag3", "1")
-          post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag1", movement.id)
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag2", movement.id)
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag3", movement.id)
+          post :create, movement_id: movement.slug, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
         end
 
         it 'should attribute those tags to the external action' do
           external_tags.should_receive(:<<).with(tag1)
           external_tags.should_receive(:<<).with(tag2)
           external_tags.should_receive(:<<).with(tag3)
-          post :create, movement_id: 1, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
+          post :create, movement_id: movement.slug, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
         end
       end
     end
@@ -354,12 +354,12 @@ describe Api::ExternalActivityEventsController do
       before { ExternalAction.should_receive(:find_or_create_by_unique_action_slug).and_return(external_action) }
 
       it 'should return unprocessable entity status' do
-        post :create, movement_id: 1, user: {}
+        post :create, movement_id: movement.slug, user: {}
         response.status.should be_== 422
       end
       
       it 'should return the external action errors' do
-        post :create, movement_id: 1, user: {}
+        post :create, movement_id: movement.slug, user: {}
         response.body.should be_== "this is the external action errors".to_json
       end
     end

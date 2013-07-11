@@ -13,18 +13,18 @@ class Api::ExternalActivityEventsController < Api::BaseController
         @user.attributes = user_attributes
       end
 
-      (render :json => @user.errors.to_json, :status => :unprocessable_entity and return) unless @user.valid?
+      (render :json => @user.errors.to_json, :status => :unprocessable_entity and return) if @user.invalid?
       @user.take_external_action!(tracked_email)
 
-      external_action = ExternalAction.find_or_create_by_unique_action_slug("#{params[:movement_id]}_#{params[:source]}_#{params[:action_slug]}", {
-        movement_id:          params[:movement_id],
+      external_action = ExternalAction.find_or_create_by_unique_action_slug(unique_action_slug, {
+        movement_id:          movement.id,
         action_slug:          params[:action_slug],
         partner:              params[:partner],
         source:               params[:source],
         action_language_iso:  params[:action_language_iso]
       })
       (render json: external_action.errors.to_json, status: :unprocessable_entity and return) if external_action.invalid?
-      params[:tags].each { |name| external_action.external_tags << ExternalTag.find_or_create_by_name_and_movement_id(name, params[:movement_id]) } if params[:tags]
+      params[:tags].each { |name| external_action.external_tags << ExternalTag.find_or_create_by_name_and_movement_id(name, movement.id) } if params[:tags]
 
       event = ExternalActivityEvent.new(event_attributes.merge(external_action_id: external_action.id))
       (render :json => event.errors.to_json, :status => :unprocessable_entity and return) if event.invalid?
@@ -38,6 +38,10 @@ class Api::ExternalActivityEventsController < Api::BaseController
 
 
   private
+
+  def unique_action_slug
+    "#{movement.id}_#{params[:source]}_#{params[:action_slug]}"
+  end
 
   def user_params
     params['user'].slice(*USER_PARAMS)
