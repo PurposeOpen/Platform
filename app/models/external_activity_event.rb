@@ -13,10 +13,10 @@
 class ExternalActivityEvent < ActiveRecord::Base
   include ActiveModel::ForbiddenAttributesProtection
 
+  attr_accessible :role, :user_id, :activity, :external_action_id
+
   belongs_to :user
   belongs_to :external_action
-
-  attr_accessible :role, :user_id, :activity, :external_action_id
 
   module Activity
     ACTION_TAKEN = 'action_taken'

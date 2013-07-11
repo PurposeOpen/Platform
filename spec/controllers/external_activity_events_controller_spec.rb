@@ -299,11 +299,11 @@ describe Api::ExternalActivityEventsController do
       it 'should find or create this external action' do
         ExternalAction.should_receive(:find_or_create_by_unique_action_slug).with(
           "#{movement.id}_controlshift_join", 
-          movement_id: movement.id, 
-          action_slug: "join", 
-          partner: "purpose", 
-          source: "controlshift", 
-          action_language_iso: "en"
+          {movement_id: movement.id, 
+           action_slug: "join", 
+           partner: "purpose", 
+           source: "controlshift", 
+           action_language_iso: "en"}.stringify_keys
         )
         post(:create, {
           movement_id: movement.slug, 
@@ -327,16 +327,16 @@ describe Api::ExternalActivityEventsController do
         before do
           external_action.stub(:external_tags).and_return(external_tags)
           Language.stub(:find_by_iso_code).and_return(language)
-          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag1", movement.id).and_return(tag1)
-          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag2", movement.id).and_return(tag2)
-          ExternalTag.stub(:find_or_create_by_name_and_movement_id).with("tag3", movement.id).and_return(tag3)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id!).with("tag1", movement.id).and_return(tag1)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id!).with("tag2", movement.id).and_return(tag2)
+          ExternalTag.stub(:find_or_create_by_name_and_movement_id!).with("tag3", movement.id).and_return(tag3)
           ExternalAction.stub(:find_or_create_by_unique_action_slug).and_return(external_action)
         end
 
         it 'should find or create those tags' do
-          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag1", movement.id)
-          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag2", movement.id)
-          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id).with("tag3", movement.id)
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id!).with("tag1", movement.id)
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id!).with("tag2", movement.id)
+          ExternalTag.should_receive(:find_or_create_by_name_and_movement_id!).with("tag3", movement.id)
           post :create, movement_id: movement.slug, user: {}, tags: ["tag1", "tag2", "tag3"], format: :json
         end
 

@@ -16,17 +16,12 @@ class Api::ExternalActivityEventsController < Api::BaseController
       (render :json => @user.errors.to_json, :status => :unprocessable_entity and return) if @user.invalid?
       @user.take_external_action!(tracked_email)
 
-      external_action = ExternalAction.find_or_create_by_unique_action_slug(unique_action_slug, {
-        movement_id:          movement.id,
-        action_slug:          params[:action_slug],
-        partner:              params[:partner],
-        source:               params[:source],
-        action_language_iso:  params[:action_language_iso]
-      })
+      external_action = ExternalAction.find_or_create_by_unique_action_slug(unique_action_slug, external_action_attributes)
       (render json: external_action.errors.to_json, status: :unprocessable_entity and return) if external_action.invalid?
-      params[:tags].each { |name| external_action.external_tags << ExternalTag.find_or_create_by_name_and_movement_id(name, movement.id) } if params[:tags]
 
-      event = ExternalActivityEvent.new(event_attributes.merge(external_action_id: external_action.id))
+      params[:tags].each { |name| external_action.external_tags << ExternalTag.find_or_create_by_name_and_movement_id!(name, movement.id) } if params[:tags].present?
+
+      event = ExternalActivityEvent.new(event_attributes.merge(:external_action_id => external_action.id))
       (render :json => event.errors.to_json, :status => :unprocessable_entity and return) if event.invalid?
       event.save!
 
@@ -50,6 +45,14 @@ class Api::ExternalActivityEventsController < Api::BaseController
   def user_attributes
     @user_attributes ||= user_params.merge({'movement_id' => movement.id,
                                             'language_id' => language_id(params['action_language_iso'])})
+  end
+
+  def external_action_params
+    params.permit(:action_slug, :partner, :source, :action_language_iso)
+  end
+
+  def external_action_attributes
+    external_action_params.merge(:movement_id => movement.id)
   end
 
   def event_params
