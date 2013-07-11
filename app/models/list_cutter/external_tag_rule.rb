@@ -19,6 +19,11 @@ module ListCutter
     def active?
       true
     end
+
+    def to_human_sql
+      "External tags #{is_clause} any of the following: #{names.join(', ')}"
+    end
+
   end
 end
 
