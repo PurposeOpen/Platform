@@ -6,7 +6,7 @@ class Api::ExternalActivityEventsController < Api::BaseController
   def create
     begin
       set_up_user 
-      (render :json => @user.errors.to_json, :status => :unprocessable_entity and return) if @user.invalid?
+      (render json: @user.errors.to_json, status: :unprocessable_entity and return) if @user.invalid?
       @user.take_external_action!(tracked_email)
 
       external_action = ExternalAction.find_or_create_by_unique_action_slug(unique_action_slug, external_action_attributes)
@@ -15,12 +15,12 @@ class Api::ExternalActivityEventsController < Api::BaseController
       params[:tags].each { |name| external_action.external_tags << ExternalTag.find_or_create_by_name_and_movement_id!(name, movement.id) } if params[:tags].present?
 
       event = ExternalActivityEvent.new(event_attributes.merge(:external_action_id => external_action.id))
-      (render :json => event.errors.to_json, :status => :unprocessable_entity and return) if event.invalid?
+      (render :json => event.errors.to_json, status: :unprocessable_entity and return) if event.invalid?
       event.save!
 
-      render :status => :created, :nothing => true
+      render status: :created, nothing: true
     rescue => e
-      render :status => :internal_server_error, :json => {:error => e.class.name.underscore}
+      render status: :internal_server_error, json: {error: e.class.name.underscore}
     end
   end
 
@@ -55,7 +55,7 @@ class Api::ExternalActivityEventsController < Api::BaseController
   end
 
   def external_action_attributes
-    external_action_params.merge(:movement_id => movement.id)
+    external_action_params.merge(movement_id: movement.id)
   end
 
   def event_params
@@ -63,7 +63,7 @@ class Api::ExternalActivityEventsController < Api::BaseController
   end
 
   def event_attributes
-    event_params.merge(:user_id => @user.id)
+    event_params.merge(user_id: @user.id)
   end
 
   def language_id(iso_code)
