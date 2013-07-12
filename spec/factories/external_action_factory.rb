@@ -3,11 +3,10 @@
 FactoryGirl.define do
   factory :external_action do
     movement_id 1
-    source "MyString"
-    partner "MyString"
-    action_slug "MyString"
-    sequence(:unique_action_slug) {|n| "MyString #{n}" }
-    action_language_iso "MyString"
+    source "source"
+    partner "partner"
+    sequence(:action_slug) {|n| "take_action_#{n}" }
+    action_language_iso "en"
     external_tags { [FactoryGirl.create(:external_tag)] }
   end
 end

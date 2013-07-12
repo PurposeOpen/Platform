@@ -18,9 +18,20 @@ class ExternalAction < ActiveRecord::Base
 
   attr_accessible :action_language_iso, :action_slug, :movement_id, :partner, :source, :unique_action_slug
 
+  has_and_belongs_to_many :external_tags, uniq: true
+  belongs_to :movement
+
+  before_validation :ensure_unique_action_slug_is_present
+
   validates_presence_of :movement_id, :source, :action_slug, :unique_action_slug, :action_language_iso
   validates_uniqueness_of :unique_action_slug
 
-  has_and_belongs_to_many :external_tags, uniq: true
-  belongs_to :movement
+  private
+
+  def ensure_unique_action_slug_is_present
+    if self.unique_action_slug.blank?
+      self.unique_action_slug = "#{self.movement_id}_#{self.source}_#{self.action_slug}"
+    end
+  end
+
 end

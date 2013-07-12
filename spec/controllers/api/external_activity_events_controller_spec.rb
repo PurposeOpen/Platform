@@ -5,27 +5,27 @@ describe Api::ExternalActivityEventsController do
 
   before do
     @english = FactoryGirl.create(:english)
-    @movement = FactoryGirl.create(:movement, :name => 'AllOut', :languages => [@english])
+    @movement = FactoryGirl.create(:movement, name: 'AllOut', languages: [@english])
 
     @source = 'controlshift'
 
-    @event_params = { :role => 'signer', :activity => ExternalActivityEvent::Activity::ACTION_TAKEN }
+    @event_params = {role: 'signer', activity: ExternalActivityEvent::Activity::ACTION_TAKEN}
 
-    @user_attributes = {:email              => 'bob@example.com',
-                        :language_iso       => @english.iso_code,
-                        :first_name         => 'Bob',
-                        :last_name          => 'Harris',
-                        :postcode           => '10003',
-                        :mobile_number      => '2123246343',
-                        :home_number        => '6317575899',
-                        :street_address     => '115 5th Ave',
-                        :suburb             => 'Bondi Beach',
-                        :state              => 'New York',
-                        :country_iso        => 'us',
-                        :movement_id        => @movement.id,
-                        :language_id        => @english.id,
-                        :source             => @source,
-                        :is_member          => true}
+    @user_attributes = {email:          'bob@example.com',
+                        language_iso:   @english.iso_code,
+                        first_name:     'Bob',
+                        last_name:      'Harris',
+                        postcode:       '10003',
+                        mobile_number:  '2123246343',
+                        home_number:    '6317575899',
+                        street_address: '115 5th Ave',
+                        suburb:         'Bondi Beach',
+                        state:          'New York',
+                        country_iso:    'us',
+                        movement_id:    @movement.id,
+                        language_id:    @english.id,
+                        source:         @source,
+                        is_member:      true}
 
     @user_params = @user_attributes.except(:movement_id, :language_id, :source)
     ExternalAction.stub(:find_or_create_by_unique_action_slug).and_return(external_action)
@@ -35,12 +35,12 @@ describe Api::ExternalActivityEventsController do
 
     it 'should create a new user, and an external activity event' do
       post :create, @event_params.merge(
-        :user => @user_params, 
-        :movement_id => @movement.slug, 
-        :partner => 'kenya_now', 
-        :action_slug => 'kenya', 
-        :source => @source,
-        :action_language_iso => @english.iso_code,), :format => :json
+        user: @user_params, 
+        movement_id: @movement.slug, 
+        partner: 'kenya_now', 
+        action_slug: 'kenya', 
+        source: @source,
+        action_language_iso: @english.iso_code,), format: :json
 
       user = @movement.members.find_by_email('bob@example.com')
       user.should_not be_nil
@@ -64,7 +64,7 @@ describe Api::ExternalActivityEventsController do
       created = ExternalActivityEvent::Activity::ACTION_CREATED
       taken = ExternalActivityEvent::Activity::ACTION_TAKEN
 
-      post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug, :activity => created, :role => 'creator', :source => @source), :format => :json
+      post :create, @event_params.merge(user: @user_params, movement_id: @movement.slug, activity: created, role: 'creator', source: @source), format: :json
 
       user = @movement.members.find_by_email('bob@example.com')
       user.should_not be_nil
@@ -77,11 +77,11 @@ describe Api::ExternalActivityEventsController do
 
       attributes_for_comparison = ExternalActivityEvent.accessible_attributes.to_a
 
-      expected_action_created_attributes = @event_params.merge(:user_id => user.id, :activity => created, :role => 'creator', external_action_id: external_action.id)
+      expected_action_created_attributes = @event_params.merge(user_id: user.id, activity: created, role: 'creator', external_action_id: external_action.id)
       saved_action_created_attributes = actions_created.first.attributes.slice(*attributes_for_comparison)
       expected_action_created_attributes.should == saved_action_created_attributes.symbolize_keys
 
-      expected_action_taken_attributes = @event_params.merge(:user_id => user.id, :activity => taken, :role => 'creator', external_action_id: external_action.id)
+      expected_action_taken_attributes = @event_params.merge(user_id: user.id, activity: taken, role: 'creator', external_action_id: external_action.id)
       saved_action_taken_attributes = actions_taken.first.attributes.slice(*attributes_for_comparison)
       expected_action_taken_attributes.should == saved_action_taken_attributes.symbolize_keys
 
@@ -94,16 +94,16 @@ describe Api::ExternalActivityEventsController do
 
     it "it should update the user's info, and the user's source should not be external" do
       non_external_source = 'movement'
-      aussie = FactoryGirl.create(:aussie, :movement => @movement, :language => @english, :source => non_external_source)
+      aussie = FactoryGirl.create(:aussie, movement: @movement, language: @english, source: non_external_source)
 
       aussie_params = @user_params.clone
       aussie_params[:email] = aussie.email
 
-      post :create, @event_params.merge(:user => aussie_params, :movement_id => @movement.slug), :format => :json
+      post :create, @event_params.merge(user: aussie_params, movement_id: @movement.slug), format: :json
 
       updated_aussie = @movement.members.find_by_email(aussie.email)
       updated_aussie_attributes = updated_aussie.attributes.symbolize_keys.slice(*@user_attributes.keys)
-      updated_aussie_attributes.should == @user_attributes.except(:language_iso).merge(:email => aussie.email, :source => non_external_source)
+      updated_aussie_attributes.should == @user_attributes.except(:language_iso).merge(email: aussie.email, source: non_external_source)
 
       response.status.should == 201
     end
@@ -114,7 +114,7 @@ describe Api::ExternalActivityEventsController do
 
     before do
       @french = FactoryGirl.create(:french)
-      @french_movement = FactoryGirl.create(:movement, :languages => [@french, @english])
+      @french_movement = FactoryGirl.create(:movement, languages: [@french, @english])
     end
 
     context "user takes action on a page in a language that the Platform doesn't have:" do
@@ -126,7 +126,7 @@ describe Api::ExternalActivityEventsController do
         event_params = @event_params.clone
         event_params[:action_language_iso] = 'zz'
 
-        post :create, event_params.merge(:user => @user_params, :movement_id => @french_movement.slug), :format => :json
+        post :create, event_params.merge(user: @user_params, movement_id: @french_movement.slug), format: :json
 
         user = @french_movement.members.find_by_email(@user_params[:email])
         user.language.should == @french
@@ -148,7 +148,7 @@ describe Api::ExternalActivityEventsController do
         user_params = @user_params.clone
         user_params[:language_iso] = 'ww'
 
-        post :create, event_params.merge(:user => user_params, :movement_id => @french_movement.slug), :format => :json
+        post :create, event_params.merge(user: user_params, movement_id: @french_movement.slug), format: :json
 
         user = @french_movement.members.find_by_email(user_params[:email])
         user.language.should == @french
@@ -168,7 +168,7 @@ describe Api::ExternalActivityEventsController do
         user_params = @user_params.clone
         user_params[:is_member] = false
 
-        post :create, @event_params.merge(:user => user_params, :movement_id => @movement.slug), :format => :json
+        post :create, @event_params.merge(user: user_params, movement_id: @movement.slug), format: :json
 
         user = User.find_by_email(user_params[:email])
         user.should_not be_nil
@@ -183,12 +183,12 @@ describe Api::ExternalActivityEventsController do
     context 'existing user:' do
 
       it 'should not unsubscribe the user' do
-        user = FactoryGirl.create(:user, :movement => @movement)
+        user = FactoryGirl.create(:user, movement: @movement)
         user_params = @user_params.clone
         user_params[:email] = user.email
         user_params[:is_member] = false
 
-        post :create, @event_params.merge(:user => user_params, :movement_id => @movement.slug), :format => :json
+        post :create, @event_params.merge(user: user_params, movement_id: @movement.slug), format: :json
 
         user.reload
         user.is_member.should be_true
@@ -204,12 +204,12 @@ describe Api::ExternalActivityEventsController do
   context 'user is permanently unsubscribed' do
 
     it 'should not subscribe the user' do
-      user = FactoryGirl.create(:user, :movement => @movement, :is_member => false, :permanently_unsubscribed => true)
+      user = FactoryGirl.create(:user, movement: @movement, is_member: false, permanently_unsubscribed: true)
       user_params = @user_params.clone
       user_params[:email] = user.email
       user_params[:is_member] = true
 
-      post :create, @event_params.merge(:user => user_params, :movement_id => @movement.slug), :format => :json
+      post :create, @event_params.merge(user: user_params, movement_id: @movement.slug), format: :json
 
       user.reload
       user.is_member.should be_false
@@ -225,14 +225,14 @@ describe Api::ExternalActivityEventsController do
     it 'should create subscribed and action_taken events associated with the email, and record that the email was viewed and clicked' do
       blast = FactoryGirl.create(:blast)
       movement = blast.push.campaign.movement
-      email = FactoryGirl.create(:email, :blast => blast)
-      user = FactoryGirl.create(:user, :movement => movement)
+      email = FactoryGirl.create(:email, blast: blast)
+      user = FactoryGirl.create(:user, movement: movement)
       tracking_hash = EmailTrackingHash.new(email, user).encode
 
       user_params = @user_params.clone
       user_params[:email] = user.email
 
-      post :create, @event_params.merge(:user => user_params, :movement_id => movement.slug, :t => tracking_hash), :format => :json
+      post :create, @event_params.merge(user: user_params, movement_id: movement.slug, t: tracking_hash), format: :json
 
       subscribed_event, action_taken_event = UserActivityEvent.all.partition { |event| event.activity == 'subscribed' }.flatten
       subscribed_event.should_not be_nil
@@ -256,7 +256,7 @@ describe Api::ExternalActivityEventsController do
       ExternalActivityEvent.should_receive(:new).and_return(event)
       event.should_receive(:save!).and_raise StandardError
 
-      post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug), :format => :json
+      post :create, @event_params.merge(user: @user_params, movement_id: @movement.slug), format: :json
 
       JSON.parse(response.body).should == {"error" => "standard_error"}
       response.status.should == 500
@@ -266,7 +266,7 @@ describe Api::ExternalActivityEventsController do
 
       it 'should return validation error details and status 422' do
         @user_params.delete(:email)
-        post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug), :format => :json
+        post :create, @event_params.merge(user: @user_params, movement_id: @movement.slug), format: :json
 
         JSON.parse(response.body).should == {"email" => ["can't be blank", "is invalid"]}
         response.status.should == 422
@@ -278,7 +278,7 @@ describe Api::ExternalActivityEventsController do
 
       it 'should return validation error details and status 422' do
         @event_params.delete(:role)
-        post :create, @event_params.merge(:user => @user_params, :movement_id => @movement.slug), :format => :json
+        post :create, @event_params.merge(user: @user_params, movement_id: @movement.slug), format: :json
 
         JSON.parse(response.body).should == {"role" => ["can't be blank"]}
         response.status.should == 422

@@ -37,62 +37,52 @@ module Admin::ListCutterHelper
   end
 
   def grouped_select_options_emails(movement_id, selected)
-    store_key = "/grouped_select_options_email/#{movement_id}"
-    store = Rails.cache.fetch(store_key)
-    return create_opt_groups(store, selected) if !store.nil?
+    options = Rails.cache.fetch("/grouped_select_options_email/#{movement_id}") do
+      store = Hash.new
+      Campaign.joins(:movement).where("campaigns.movement_id = %d", movement_id).order("campaigns.updated_at desc").select("campaigns.id, campaigns.name").each {|campaign|
+        campaign_blasts = Blast.joins(:push).where("pushes.campaign_id = #{campaign.id}")
+        blasts_for_campaign = construct_group_options_hash(campaign_blasts, :emails, &nil)
+        store[campaign.name] = blasts_for_campaign if !blasts_for_campaign.empty?
+      }
+      store
+    end
 
-    store = Hash.new
-    Campaign.joins(:movement).where("campaigns.movement_id = %d", movement_id).order("campaigns.updated_at desc").select("campaigns.id, campaigns.name").each {|campaign|
-      campaign_blasts = Blast.joins(:push).where("pushes.campaign_id = #{campaign.id}")
-      blasts_for_campaign = construct_group_options_hash(campaign_blasts, :emails, &nil)
-      store[campaign.name] = blasts_for_campaign if !blasts_for_campaign.empty?
-    }
-    Rails.cache.write(store_key, store)
-    create_opt_groups(store, selected)
+    create_opt_groups(options, selected)
   end
 
   def grouped_select_options_pages(movement_id, selected)
-    store_key = "/grouped_select_options_pages/#{movement_id}"
-    store = Rails.cache.fetch(store_key)
-    Rails.logger.info("Got #{store}")
-    return create_opt_groups(store, selected) if !store.nil?
+    options = Rails.cache.fetch("/grouped_select_options_pages/#{movement_id}") do
+      store = Hash.new
+      Campaign.joins(:movement).where("campaigns.movement_id = %d", movement_id).order("campaigns.updated_at desc").select("campaigns.id, campaigns.name").each {|campaign|
+        campaign_action_sequences = ActionSequence.joins(:campaign).where("action_sequences.campaign_id = %d", campaign.id)
+        condition_for_inclusion = Proc.new{|action_page| (action_page.has_an_ask? && !action_page.is_unsubscribe? )}
+        action_sequences_for_campaign = construct_group_options_hash(campaign_action_sequences, :action_pages, &condition_for_inclusion)
+        store[campaign.name] = action_sequences_for_campaign if !action_sequences_for_campaign.empty?
+      }
+      store
+    end
 
-    store = Hash.new
-    Campaign.joins(:movement).where("campaigns.movement_id = %d", movement_id).order("campaigns.updated_at desc").select("campaigns.id, campaigns.name").each {|campaign|
-      campaign_action_sequences = ActionSequence.joins(:campaign).where("action_sequences.campaign_id = %d", campaign.id)
-      condition_for_inclusion = Proc.new{|action_page| (action_page.has_an_ask? && !action_page.is_unsubscribe? )}
-      action_sequences_for_campaign = construct_group_options_hash(campaign_action_sequences, :action_pages, &condition_for_inclusion)
-      store[campaign.name] = action_sequences_for_campaign if !action_sequences_for_campaign.empty?
-    }
-    Rails.cache.write(store_key, store)
-    create_opt_groups(store, selected)
+    create_opt_groups(options, selected)
   end
 
   def grouped_select_options_external_actions(movement_id, selected)
-    store_key = "/grouped_select_options_external_actions/#{movement_id}"
-    store = Rails.cache.fetch(store_key)
-    Rails.logger.info("Got #{store}")
-    return options_for_select(store, selected) if !store.nil?
+    options = Rails.cache.fetch("/grouped_select_options_external_actions/#{movement_id}") do
+      fields = 'source, partner, action_slug'
+      store = ExternalAction.where(movement_id: movement_id).select(fields + ', unique_action_slug').order(fields).map do |event|
+                                      partner = event.partner.blank? ? '' : "#{event.partner.upcase} - "
+                                      ["#{event.source.upcase}: #{partner}#{event.action_slug}", event.unique_action_slug]
+                                    end
+    end
 
-    fields = 'source, partner, action_slug'
-    store = ExternalAction.where(:movement_id => movement_id).group(fields).select(fields).order(fields).map do |event|
-                                    partner = event.partner.blank? ? '' : "#{event.partner.upcase} - "
-                                    ["#{event.source.upcase}: #{partner}#{event.action_slug}", event.action_slug]
-                                  end
-
-    Rails.cache.write(store_key, store)
-    options_for_select(store, selected)
+    options_for_select(options, selected)
   end
 
   def select_options_action_pages(movement_id, selected)
-    store_key = "/select_options_pages/#{movement_id}"
-    store = Rails.cache.fetch(store_key)
-    return options_for_select(store, selected) if !store.nil?
+    options = Rails.cache.fetch("/select_options_pages/#{movement_id}") do
+      ActionPage.page_options(movement_id, ListCutter::OriginatingActionRule::POSSIBLE_MODULE_TYPES)
+    end
 
-    store = ActionPage.page_options(movement_id, ListCutter::OriginatingActionRule::POSSIBLE_MODULE_TYPES)
-    Rails.cache.write(store_key, store)
-    response = options_for_select(store, selected)
-    response.gsub(/\n/, '').html_safe
+    options_for_select(options, selected).gsub(/\n/, '').html_safe
   end
 
   def activity_options(selected)
@@ -141,15 +131,16 @@ module Admin::ListCutterHelper
   def create_group_options(grouped_options, selected_key)
     body = ''
     grouped_options.sort.each do |group|
-      body << content_tag(:optgroup, options_for_select(group[1], selected_key), :label => group[0], id: SecureRandom.uuid)
+      body << content_tag(:optgroup, options_for_select(group[1], selected_key), label: group[0], id: SecureRandom.uuid)
     end
     body.html_safe
   end
 
   def grouped_select_options_external_tags movement_id, selected
     options = Rails.cache.fetch("/grouped_select_options_external_tags/#{movement_id}") do
-      ExternalTag.where(:movement_id => movement_id).map {|tag| tag.name}
+      ExternalTag.where(movement_id: movement_id).map {|tag| tag.name}
     end
+
     options_for_select(options, selected)
   end
 end

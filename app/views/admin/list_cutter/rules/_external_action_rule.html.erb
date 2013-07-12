@@ -1,16 +1,16 @@
 <div>
   <%= select_tag 'rules[external_action_rule][$index][activity]',
                  activity_options(rule.activity),
-                 {:multiple => false,
-                  :id => "rules_external_action_rule_$index_activity_",
-                  :class => "required external_action_activity_select",
+                 {multiple: false,
+                  id: "rules_external_action_rule_$index_activity_",
+                  class: "required external_action_activity_select",
                   "data-placeholder" => "Choose an activity..."} %>
   from
-  <%= select_tag 'rules[external_action_rule][$index][action_slugs][]',
-                 grouped_select_options_external_actions(@movement.id, rule.action_slugs),
-                 {:multiple => true,
-                  :id => "rules_external_action_rule_$index_action_slugs_",
-                  :class => "required multiselectcheckbox external_action_select",
+  <%= select_tag 'rules[external_action_rule][$index][unique_action_slugs][]',
+                 grouped_select_options_external_actions(@movement.id, rule.unique_action_slugs),
+                 {multiple: true,
+                  id: "rules_external_action_rule_$index_unique_action_slugs_",
+                  class: "required multiselectcheckbox external_action_select",
                   "data-placeholder" => "Choose external actions..."} %>
 </div>
 <div class="since">

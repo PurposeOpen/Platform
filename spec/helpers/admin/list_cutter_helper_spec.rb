@@ -78,24 +78,25 @@ describe Admin::ListCutterHelper do
           "<optgroup label=\"#{as2.name}\"><option value=\"#{ap2.id}\">#{ap2.name}</option></optgroup>"
     end
 
-    it "#grouped_select_options_external_actions should return nested <opt group> for source -> partner with action slugs as <options>" do
+    it "#grouped_select_options_external_actions should return nested <opt group> for source -> partner with action slugs as <options> and unique action slugs as values" do
       movement = create(:movement)
       action_taken = ExternalActivityEvent::Activity::ACTION_TAKEN
       action_created = ExternalActivityEvent::Activity::ACTION_CREATED
+
       event1 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'russia')
       event2 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'cuba')
-      event2 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'france')
-      event3 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => nil,    :action_slug => 'ecuador')
-      event4 = create(:external_action, :movement => movement, :source => 'controloption', :partner => nil,    :action_slug => 'brazil')
-      event5 = create(:external_action, :movement => movement, :source => 'controloption', :partner => 'aclu', :action_slug => 'china')
+      event3 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'france')
+      event4 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => nil,    :action_slug => 'ecuador')
+      event5 = create(:external_action, :movement => movement, :source => 'controloption', :partner => nil,    :action_slug => 'brazil')
+      event6 = create(:external_action, :movement => movement, :source => 'controloption', :partner => 'aclu', :action_slug => 'china')
 
-      helper.grouped_select_options_external_actions(movement.id, event4.action_slug).gsub(/\sid=\"([^\"]*)\"/, '').should ==
-      "<option value=\"brazil\" selected=\"selected\">CONTROLOPTION: brazil</option>"+
-      "\n<option value=\"china\">CONTROLOPTION: ACLU - china</option>"+
-      "\n<option value=\"ecuador\">CONTROLSHIFT: ecuador</option>"+
-      "\n<option value=\"cuba\">CONTROLSHIFT: ACLU - cuba</option>"+
-      "\n<option value=\"france\">CONTROLSHIFT: ACLU - france</option>"+
-      "\n<option value=\"russia\">CONTROLSHIFT: ACLU - russia</option>"
+      helper.grouped_select_options_external_actions(movement.id, event5.unique_action_slug).gsub(/\sid=\"([^\"]*)\"/, '').should ==
+      "<option value=\"#{event5.movement_id}_#{event5.source}_#{event5.action_slug}\" selected=\"selected\">CONTROLOPTION: brazil</option>"+
+      "\n<option value=\"#{event6.movement_id}_#{event6.source}_#{event6.action_slug}\">CONTROLOPTION: ACLU - china</option>"+
+      "\n<option value=\"#{event4.movement_id}_#{event4.source}_#{event4.action_slug}\">CONTROLSHIFT: ecuador</option>"+
+      "\n<option value=\"#{event2.movement_id}_#{event2.source}_#{event2.action_slug}\">CONTROLSHIFT: ACLU - cuba</option>"+
+      "\n<option value=\"#{event3.movement_id}_#{event3.source}_#{event3.action_slug}\">CONTROLSHIFT: ACLU - france</option>"+
+      "\n<option value=\"#{event1.movement_id}_#{event1.source}_#{event1.action_slug}\">CONTROLSHIFT: ACLU - russia</option>"
     end
 
     it "should return action pages of type petition, email targets, join, donation as <options>" do
