@@ -16,4 +16,5 @@ class ExternalTag < ActiveRecord::Base
   belongs_to :movement
 
   validates_presence_of :movement_id, :name
+  validates_uniqueness_of :name, scope: [:movement_id]
 end
