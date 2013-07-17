@@ -25,7 +25,7 @@ module Jobs
             when 'Unsubscribed Address'
               member.unsubscribe! #unsubscribe member but do not attribute to current blast_email, as it was from previos
             when 'Bounced Address'
-              UserActivityEvent.email_bounced!(member, nil, "Dropped: #{params['reason']}") #record event but don't attribute (blast_email is nil)       
+              UserActivityEvent.email_bounced!(member, blast_email, "Dropped: #{params['reason']}") #record event but don't attribute (blast_email is nil)       
             when 'Spam Reporting Address'
               member.permanently_unsubscribe!(nil,params['reason']) #permanently unsubscribe member, but don't attribute to blast_email 
             when 'Invalid'
