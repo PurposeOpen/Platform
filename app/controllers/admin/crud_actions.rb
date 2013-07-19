@@ -87,7 +87,7 @@ module Admin
 
       def find_parent
         return unless parent_model_class
-        if parent_id = params["#{parent_model_name}_id"]
+        if parent_id == params["#{parent_model_name}_id"]
           self.parent_model = parent_model_class.find(parent_id)
         else
           self.parent_model = model.send(parent_model_name)

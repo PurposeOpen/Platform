@@ -12,7 +12,9 @@ Language.seed_once(:iso_code,
   {:iso_code => "sw", :name => "Swahili", :native_name => "Kiswahili"},
   {:iso_code => "tl", :name => "Tagalog", :native_name => "Wikang Tagalog"},
   {:iso_code => "vi", :name => "Vietnamese", :native_name => "Tiếng Việt"},
-  {:iso_code => "it", :name => "Italian", :native_name => "Italiano"}
+  {:iso_code => "it", :name => "Italian", :native_name => "Italiano"},
+  {:iso_code => "zh", :name => "Chinese", :native_name => "中文"},
+  {:iso_code => "ar", :name => "Arabic", :native_name => "العربية"}
 )
 
 PlatformUser.seed_once(:email,
