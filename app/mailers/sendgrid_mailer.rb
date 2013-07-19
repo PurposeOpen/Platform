@@ -34,8 +34,10 @@ class SendgridMailer < ActionMailer::Base
   def prepare(email, options)
     sendgrid_headers = prepare_sendgrid_headers(email, options)
     
-    logger.debug "LDEBUG: sendgrid headers for #{email.id} - #{email.subject}"
-    logger.debug sendgrid_headers
+    if options[:recipients].size > 1
+      Rails.logger.debug "LDEBUG: sendgrid headers for #{email.id} - #{email.subject} below"
+      Rails.logger.debug "LDEBUG: #{sendgrid_headers}"
+    end
     
     headers['X-SMTPAPI'] = sendgrid_headers
     headers['List-Unsubscribe' ] = "<mailto:#{email.from}>"
@@ -79,11 +81,6 @@ protected
   include CountryHelper
   include EmailBodyConverter
 
-
-
-
-
-
   def prepare_sendgrid_headers(email_to_send, options)
     category = email_to_send.respond_to?(:blast) ? ["push_#{email_to_send.blast.push.id}", "blast_#{email_to_send.blast.id}"] : []
     category += ["#{email_to_send.class.name.downcase}_#{email_to_send.id}", email_to_send.movement.friendly_id, Rails.env, email_to_send.language.iso_code]
@@ -96,6 +93,8 @@ protected
     }
 
     raise_error_if_sizes_dont_match(options[:recipients].size, email_headers['sub'][email_headers['sub'].keys.first].size)
+    Rails.logger.debug "LDEBUG: options[:recipients].size = #{options[:recipients].size}"
+    Rails.logger.debug "LDEBUG: email_headers['sub'][email_headers['sub'].keys.first].size = #{email_headers['sub'][email_headers['sub'].keys.first].size}"
     email_headers.to_json
   end
 

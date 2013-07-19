@@ -115,8 +115,10 @@ class Email < ActiveRecord::Base
     end
   end
 
-  def  sendgrid_interation_is_disabled?
-    ENV['DISABLE_SENDGRID_INTERACTION'] == "true"
+  def sendgrid_interation_is_disabled?
+    check = (ENV['DISABLE_SENDGRID_INTERACTION'] == "true")
+    Rails.logger.debug "LDEBUG: sendgrid_interation_is_disabled? #{check}"
+    return check
   end
 
   def proofed?
