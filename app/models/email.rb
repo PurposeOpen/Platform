@@ -99,12 +99,13 @@ class Email < ActiveRecord::Base
     user_ids.each_slice(batch_size).with_index do |slice,i|
       begin
         recipients = User.select(:email).where(:id => slice).order(:email).map(&:email)
-        logger.debug "LDEBUG: User ids for email #{self.id} slice # #{i} - #{slice.count}"
+        logger.debug "LDEBUG: User ids for email #{self.id} slice # #{i} - #{slice.count}. Recipients: #{recipients.count}"
         
         if i==0 && AppConstants.blast_cc_email.present?
           recipients << AppConstants.blast_cc_email
         end 
-        SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
+        email_sent = SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
+        Rails.logger.debug "LDEBUG: Email #{self.id}, Slice #{i}. email_sent return: #{email_sent}"
         EmailRecipientDetail.create_with(self, slice).save
         self.push.batch_create_sent_activity_event!(slice, self)
       rescue Exception => e
