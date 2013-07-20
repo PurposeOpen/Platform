@@ -64,6 +64,7 @@ class PlatformUser < ActiveRecord::Base
     is_admin? ? Movement.all : movements.for_all_roles.all
   end
 
+  #without this, the admin will never be able to login 
   def primary_movement
     movements_administered.first || movements_allowed.first
   end

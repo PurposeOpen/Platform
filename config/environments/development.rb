@@ -41,6 +41,8 @@ PurposePlatform::Application.configure do
   
   #config.autoload_paths += %W(#{Rails.root}/app/jobs)
 
+  config.action_mailer.raise_delivery_errors = true
+
   # config.after_initialize do
   #   Bullet.enable = true
   #   Bullet.alert = true
