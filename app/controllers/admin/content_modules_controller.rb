@@ -32,8 +32,13 @@ class Admin::ContentModulesController < Admin::AdminController
   end
 
   def delete
-    ContentModuleLink.where(:page_id => @page.id, :content_module_id => params[:content_module_id]).first.destroy
-    head :ok
+    content_module = ContentModuleLink.where(:page_id => @page.id, :content_module_id => params[:content_module_id]).first
+    if content_module
+      content_module.destroy
+      head :ok
+    else
+      head 404
+    end
   end
 
   def sort
