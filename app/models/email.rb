@@ -105,6 +105,7 @@ class Email < ActiveRecord::Base
           recipients << AppConstants.blast_cc_email
         end 
         email_sent = SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
+        #might be good to compare email_sent to slice here?
         EmailRecipientDetail.create_with(self, email_sent).save
         self.push.batch_create_sent_activity_event!(slice, self)
       rescue Exception => e
