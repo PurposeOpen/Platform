@@ -104,10 +104,10 @@ class Email < ActiveRecord::Base
         if i==0 && AppConstants.blast_cc_email.present?
           recipients << AppConstants.blast_cc_email
         end 
-        email_sent = SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
+        SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
         #might be good to compare email_sent to slice here?
-        EmailRecipientDetail.create_with(self, email_sent).save
         self.push.batch_create_sent_activity_event!(slice, self)
+        EmailRecipientDetail.create_with(self, slice).save
       rescue Exception => e
         logger.error e.inspect
         self.update_attribute(:delayed_job_id, nil)
