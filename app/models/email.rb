@@ -94,7 +94,9 @@ class Email < ActiveRecord::Base
     push.campaign.movement = new_movement
   end
 
-  def deliver_blast_in_batches(user_ids, batch_size=1000)
+  def deliver_blast_in_batches(user_ids, batch_size=100)
+    batch_size = 100 if batch_size > 100
+
     user_ids.each_slice(batch_size) do |slice|
       begin
         recipients = User.select(:email).where(:id => slice).order(:email).map(&:email)
