@@ -94,7 +94,10 @@ class Email < ActiveRecord::Base
     push.campaign.movement = new_movement
   end
 
-  def deliver_blast_in_batches(user_ids, batch_size=1000)
+  def deliver_blast_in_batches(user_ids, batch_size=100)
+    if batch_size > 100
+      batch_size = 100
+    end
     logger.debug "LDEBUG: Total user ids for email #{self.id} - #{user_ids.count}"
     user_ids.each_slice(batch_size).with_index do |slice,i|
       begin
