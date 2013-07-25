@@ -16,7 +16,7 @@ development: &default
   enable_unfiltered_blasting: <%= ENV['ENABLE_UNFILTERED_BLASTING'] || false %>
   authenticate_api_calls: <%= ENV["AUTHENTICATE_API_CALLS"] || false %>
   readonly_database_url: <%= ENV["READONLY_DATABASE_URL"] %> 
-  blast_cc_email: "blasts@allout.org"
+  blast_cc_email: "test-blasts@allout.org"
   join_email_to: <%= ENV['JOIN_EMAIL_TO'] || 'does-not-matter@purpose.org' %>
   sendgrid_api_user: systems@allout.org
   sendgrid_api_password: <%= ENV['SENDGRID_API_PASSWORD'] %>
@@ -31,6 +31,7 @@ development: &default
 
 production:
   <<: *default
+  blast_cc_email: "blasts@allout.org"
   default_cache_timeout: <%= 5.minutes %>
   blast_job_delay: <%= 5.minutes %>
 
@@ -56,5 +57,6 @@ showcase:
 
 staging:
   <<: *default
+  blast_cc_email: "test-blasts@allout.org"
   default_cache_timeout: <%= 5.minutes %>
   blast_job_delay: <%= 1.minute %>
