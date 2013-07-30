@@ -265,10 +265,10 @@ class DonationModule < ContentModule
   end
 
   def one_off?
-    default_frequency == :one_off || (!default_currency.nil? && !default_currency.empty?)
+    default_frequency == :one_off || default_currency.present?
   end
 
   def recurring?
-    [:weekly, :monthly, :annual].include?(default_frequency) || (!recurring_default_currency.nil? && !recurring_default_currency.empty?)
+    [:weekly, :monthly, :annual].include?(default_frequency) || recurring_default_currency.present?
   end
 end
