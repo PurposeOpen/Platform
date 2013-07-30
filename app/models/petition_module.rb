@@ -54,21 +54,38 @@ class PetitionModule < ContentModule
 
   def take_action(user, action_info, page)
     return if PetitionSignature.where(:content_module_id => self.id, :user_id => user.id).count > 0
+    Resque.enqueue(Jobs::SignPetition, user, action_info, page, self.id)
+  end
+
+  #this is normally run by the background job
+  def sign_petition(user, action_info, page, petition_module_id)
     petition_signature = PetitionSignature.new(petition_signature_attributes_hash)
     petition_signature.user = user
     petition_signature.action_page = page
     petition_signature.email = action_info[:email] if action_info.present?
     petition_signature.comment = action_info[:comment] if action_info.present?
     petition_signature.save
-    petition_signature
+    increment_signature_count(page.id)
   end
 
   def signatures
     page = pages.first
     return 0 unless page
     crowdring_url = page.movement.crowdring_url
-    PetitionSignature.where(:page_id => page.id).count +
+    signature_count(page.id) +
       (crowdring_url.present? && page.crowdring_campaign_name.present? ? crowdring_member_count(crowdring_url, page.crowdring_campaign_name).to_i : 0 )
+  end
+
+  def signature_count(page_id)
+    Rails.cache.fetch("petition_signature_count_page_id_#{page_id}", expires_in: 24.hours) do
+      PetitionSignature.where(:page_id => page_id).count
+    end
+  end
+
+  def increment_signature_count(page_id)
+    if signature_count(page_id)
+      Rails.cache.increment("petition_signature_count_page_id_#{page_id}", 1)
+    end
   end
 
   def crowdring_member_count(crowdring_url, crowdring_campaign_name)

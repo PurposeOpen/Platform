@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
     # vb.gui = true
     
     # Use more memory, for a bit of a performance boost
-    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
 
     # This might improve network performance
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "off"]
