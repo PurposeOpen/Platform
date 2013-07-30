@@ -41,7 +41,8 @@ class DonationModule < ContentModule
     validate :default_currency_set_for_at_least_a_frequency
     validates_presence_of :receipt_frequency
 
-    validate :suggested_and_default_amount_for_at_least_one_currency
+    validate :suggested_and_default_amount_for_at_least_one_currency, :if => :one_off?
+    validate :recurring_suggested_and_default_amount_for_at_least_one_currency, :if => :recurring?
     validate :all_suggested_amounts_are_greater_than_zero
     validate :default_amount_is_one_of_the_suggested_amounts
     validate :recurring_default_amount_is_one_of_the_recurring_suggested_amounts
@@ -167,16 +168,11 @@ class DonationModule < ContentModule
   end
 
   def suggested_and_default_amount_for_at_least_one_currency
-    if default_frequency == :one_off || (!default_currency.nil? && !default_currency.empty?)
-      self.errors.add(:base, "A Suggested and Default amount is required for at least one currency for one-off donations.") if (suggested_amounts.select do |currency, amounts|
-        !currency.blank? && !amounts.blank? && !default_amount[currency].blank?
-      end.empty?)
-    end
-    if [:weekly, :monthly, :annual].include?(default_frequency) || (!recurring_default_currency.nil? && !recurring_default_currency.empty?)
-      self.errors.add(:base, "A Suggested and Default amount is required for at least one currency for recurring donations.") if (recurring_suggested_amounts.select do |currency, amounts|
-        !currency.blank? && !amounts.blank? && !recurring_default_amount[currency].blank?
-      end.empty?)
-    end
+    self.errors.add(:base, "A Suggested and Default amount is required for at least one currency for one-off donations.") if suggested_amounts_empty?
+  end
+  
+  def recurring_suggested_and_default_amount_for_at_least_one_currency
+    self.errors.add(:base, "A Suggested and Default amount is required for at least one currency for recurring donations.") if recurring_suggested_amounts_empty?
   end
 
   def all_suggested_amounts_are_greater_than_zero
@@ -258,5 +254,21 @@ class DonationModule < ContentModule
 
   def count_donations_made
     pages.first ? Donation.where(:page_id => pages.first.id).count : 0
+  end
+
+  def suggested_amounts_empty?
+    suggested_amounts.select {|currency, amounts| !currency.blank? && !amounts.blank? && !default_amount[currency].blank?}.empty?
+  end
+
+  def recurring_suggested_amounts_empty?
+    recurring_suggested_amounts.select {|currency, amounts| !currency.blank? && !amounts.blank? && !recurring_default_amount[currency].blank?}.empty?
+  end
+
+  def one_off?
+    default_frequency == :one_off || (!default_currency.nil? && !default_currency.empty?)
+  end
+
+  def recurring?
+    [:weekly, :monthly, :annual].include?(default_frequency) || (!recurring_default_currency.nil? && !recurring_default_currency.empty?)
   end
 end
