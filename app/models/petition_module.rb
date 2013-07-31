@@ -54,14 +54,14 @@ class PetitionModule < ContentModule
 
   def take_action(user, action_info, page)
     return if PetitionSignature.where(:content_module_id => self.id, :user_id => user.id).count > 0
-    Resque.enqueue(Jobs::SignPetition, user.id, action_info, page, self.id)
+    Resque.enqueue(Jobs::SignPetition, user.id, action_info, page.id, self.id)
   end
 
   #this is normally run by the background job
-  def sign_petition(user_id, action_info, page, petition_module_id)
+  def sign_petition(user_id, action_info, page_id, petition_module_id)
     petition_signature = PetitionSignature.new(petition_signature_attributes_hash)
     petition_signature.user = User.find(user_id)
-    petition_signature.action_page = page
+    petition_signature.action_page = Page.find(page_id)
     petition_signature.email = action_info[:email] if action_info.present?
     petition_signature.comment = action_info[:comment] if action_info.present?
     petition_signature.save
