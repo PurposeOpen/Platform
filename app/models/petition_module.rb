@@ -60,8 +60,9 @@ class PetitionModule < ContentModule
   #this is normally run by the background job
   def sign_petition(user_id, action_info, page_id, petition_module_id)
     petition_signature = PetitionSignature.new(petition_signature_attributes_hash)
+    page = Page.find(page_id)
     petition_signature.user = User.find(user_id)
-    petition_signature.action_page = Page.find(page_id)
+    petition_signature.action_page = page
     petition_signature.email = action_info[:email] if action_info.present?
     petition_signature.comment = action_info[:comment] if action_info.present?
     petition_signature.save
