@@ -3,7 +3,7 @@ class Api::ActionPagesController < Api::BaseController
   
   def show
     page = movement.find_published_page(params[:id])
-    language = Language.find_by_iso_code(I18n.locale)
+    language = Language.find_by_iso_code_cache(I18n.locale)
     if page.language_enabled? language
       render :json => merge_join_and_member_count_attrs(page.as_json(language: language, email: params[:email], member_has_joined: params[:member_has_joined]), page)
     else

@@ -101,7 +101,9 @@ class Movement < ActiveRecord::Base
   end
 
   def find_published_page(query)
-    self.action_pages.published.find(query)
+    Rails.cache.fetch("/movement_find_published_page_/#{query}", expires_in: 48.hours) do
+      self.action_pages.published.find(query)
+    end
   end
 
   def footer_for_language(iso_code)

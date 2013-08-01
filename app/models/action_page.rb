@@ -49,6 +49,7 @@ class ActionPage < Page
   after_save ->{campaign.touch if !live_page_id}
   after_save ->{Rails.cache.delete("/grouped_select_options_pages/#{movement_id}")}
   after_save ->{Rails.cache.delete("/select_options_pages/#{movement_id}")}
+  after_save ->{Rails.cache.delete("/movement_find_published_page_/#{id}")}
 
   attr_accessor :seeded_module
   attr_accessible :seeded_module, :name, :action_sequence, :position, :required_user_details, :no_wrappers, :movement_id, :crowdring_campaign_name
