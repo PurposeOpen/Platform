@@ -1,7 +1,6 @@
 class Api::ActionPagesController < Api::BaseController
   include CountryHelper
-  extend ::NewRelic::Agent::MethodTracer
-
+  
   def show
     page = movement.find_published_page(params[:id])
     language = Language.find_by_iso_code(I18n.locale)
