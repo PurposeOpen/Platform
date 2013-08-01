@@ -72,14 +72,16 @@ class PetitionModule < ContentModule
     page = pages.first
     return 0 unless page
     crowdring_url = page.movement.crowdring_url
+    Rails.logger.debug "Signature Count #{signature_count(page.id)}"
     signature_count(page.id) +
       (crowdring_url.present? && page.crowdring_campaign_name.present? ? crowdring_member_count(crowdring_url, page.crowdring_campaign_name).to_i : 0 )
   end
 
   def signature_count(page_id)
-    Rails.cache.fetch("petition_signature_count_page_id_#{page_id}", expires_in: 24.hours, raw: true) do
+    counter = Rails.cache.fetch("petition_signature_count_page_id_#{page_id}", expires_in: 24.hours, raw: true) do
       PetitionSignature.where(:page_id => page_id).count
     end
+    return counter.to_i
   end
 
   def increment_signature_count(page_id)
