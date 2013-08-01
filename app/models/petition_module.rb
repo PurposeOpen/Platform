@@ -72,7 +72,6 @@ class PetitionModule < ContentModule
     page = pages.first
     return 0 unless page
     crowdring_url = page.movement.crowdring_url
-    Rails.logger.debug "Signature Count #{signature_count(page.id)}"
     signature_count(page.id) +
       (crowdring_url.present? && page.crowdring_campaign_name.present? ? crowdring_member_count(crowdring_url, page.crowdring_campaign_name).to_i : 0 )
   end
