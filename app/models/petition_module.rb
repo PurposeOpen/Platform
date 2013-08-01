@@ -17,7 +17,6 @@
 
 # "Petition Ask" module -- requests that user signs a petition
 class PetitionModule < ContentModule
-
   has_many :petition_signatures, :foreign_key => :content_module_id
   option_fields :signatures_goal, :thermometer_threshold, :button_text, :petition_statement, :custom_fields,
       :comment_label, :comment_text, :comments_enabled
@@ -66,7 +65,7 @@ class PetitionModule < ContentModule
     petition_signature.email = action_info[:email] if action_info.present?
     petition_signature.comment = action_info[:comment] if action_info.present?
     petition_signature.save
-    increment_signature_count(page.id)
+    increment_signature_count(page.id.to_s)
   end
 
   def signatures
@@ -78,7 +77,7 @@ class PetitionModule < ContentModule
   end
 
   def signature_count(page_id)
-    Rails.cache.fetch("petition_signature_count_page_id_#{page_id}", expires_in: 24.hours) do
+    Rails.cache.fetch("petition_signature_count_page_id_#{page_id}", expires_in: 24.hours, raw: true) do
       PetitionSignature.where(:page_id => page_id).count
     end
   end
