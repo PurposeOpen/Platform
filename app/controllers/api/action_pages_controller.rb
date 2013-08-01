@@ -15,28 +15,17 @@ class Api::ActionPagesController < Api::BaseController
   end
 
   def member_fields
-    self.class.trace_execution_scoped(['api/action_pages_controller/member_fields/sql_lookups']) do
-      page = movement.find_published_page(params[:id])
-      member = User.find_by_email_and_movement_id(params[:email], movement.id)
-    end
-
+    page = movement.find_published_page(params[:id])
+    member = User.find_by_email_and_movement_id(params[:email], movement.id)
     if member
-      self.class.trace_execution_scoped(['api/action_pages_controller/member_fields/member_fields_to_display']) do
-        fields_to_display = member_fields_to_display(page.non_hidden_user_details, member.entered_fields)
-      end
+      fields_to_display = member_fields_to_display(page.non_hidden_user_details, member.entered_fields)
     else
-      self.class.trace_execution_scoped(['api/action_pages_controller/member_fields/non_hidden_user_details']) do
-        fields_to_display = page.non_hidden_user_details
-      end
+      fields_to_display = page.non_hidden_user_details
     end
-    self.class.trace_execution_scoped(['api/action_pages_controller/member_fields/should_delete_postcode']) do
-      fields_to_display.delete('postcode') if should_delete_postcode params, member
-    end
-    self.class.trace_execution_scoped(['api/action_pages_controller/member_fields/render_json']) do
-      render :json => {
-        :member_fields => fields_to_display,
-      }, :callback => params[:callback]
-    end
+    fields_to_display.delete('postcode') if should_delete_postcode params, member
+    render :json => {
+      :member_fields => fields_to_display,
+    }, :callback => params[:callback]
   end
 
   def take_action
