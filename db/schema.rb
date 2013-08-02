@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130730174342) do
+ActiveRecord::Schema.define(:version => 20130801173251) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -97,6 +97,8 @@ ActiveRecord::Schema.define(:version => 20130730174342) do
     t.integer "position"
     t.string  "layout_container",  :limit => 64
   end
+
+  add_index "content_module_links", ["id", "page_id", "content_module_id", "position", "layout_container"], :name => "content_module_links_pid_pos_layout"
 
   create_table "content_modules", :force => true do |t|
     t.string   "type",                            :limit => 64,  :null => false

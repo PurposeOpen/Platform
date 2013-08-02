@@ -22,6 +22,7 @@ describe Api::ActionPagesController do
     @page = create(:action_page, :name => "Cool page", :action_sequence => @action_sequence, :required_user_details => @fields)
     @petition_module = create(:petition_module, :pages => [@page], :language => @english)
     create(:petition_module, :pages => [@page], :language => @portuguese)
+    Resque.inline = true
   end
 
   describe 'member_fields,' do
