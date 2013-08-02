@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130716115345) do
+ActiveRecord::Schema.define(:version => 20130802143021) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -455,6 +455,18 @@ ActiveRecord::Schema.define(:version => 20130716115345) do
     t.datetime "updated_at",                                               :null => false
     t.datetime "deleted_at"
   end
+
+  create_table "postcodes", :force => true do |t|
+    t.string   "country"
+    t.string   "zip",        :null => false
+    t.string   "city"
+    t.string   "lat",        :null => false
+    t.string   "lng",        :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "postcodes", ["zip"], :name => "index_postcodes_on_zip", :unique => true
 
   create_table "push_clicked_emails", :id => false, :force => true do |t|
     t.integer  "movement_id", :null => false
