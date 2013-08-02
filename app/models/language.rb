@@ -21,7 +21,7 @@ class Language < ActiveRecord::Base
 
   after_save ->{Rails.cache.delete("language_#{iso_code.to_s}")}
 
-  def find_by_iso_code_cache(locale)
+  def self.find_by_iso_code_cache(locale)
   	Rails.cache.fetch('language_#{locale.to_s}', expires_in: 48.hours) do
   	  Language.find_by_iso_code(locale)
   	end
