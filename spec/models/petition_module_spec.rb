@@ -120,7 +120,7 @@ describe PetitionModule do
     before :each do
       Rails.cache.clear
     end
-    
+
     it "includes the current signatures count value" do
       petition = validated_petition_module(:title => 'A very popular action!')
       action_page = FactoryGirl.create(:action_page)
@@ -232,6 +232,7 @@ describe PetitionModule do
       @pm.take_action(@user, {}, @page)
     end
 
+    #this won't work because the emails come over because we decode them
     it "should create a user activity event with an email reference" do
       @email = FactoryGirl.create(:email)
       UserActivityEvent.should_receive(:action_taken!).with(@user, @page, @pm, an_instance_of(PetitionSignature), @email, nil)

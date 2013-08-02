@@ -38,8 +38,6 @@ class Api::ActionPagesController < Api::BaseController
     begin
       action_info = action_info_from(params)
       member.take_action_on!(@page, action_info, member_attributes)
-      Rails.logger.debug "TAKE_ACTION_DEBUG:API Take Action #{action_info}"
-      Rails.logger.debug "TAKE_ACTION_DEBUG:API PARAMS #{params}"
       render :status => :created,
               :json => {
                 :success => true,
@@ -128,11 +126,8 @@ class Api::ActionPagesController < Api::BaseController
 
   def action_info_from(params)
     action_info = (params[:action_info].is_a? Hash) ? params[:action_info] : {}
-    member_info = (params[:member_info].is_a? Hash) ? params[:member_info] : {}
-    Rails.logger.debug "TAKE_ACTION_DEBUG Action Info #{action_info}"
-    Rails.logger.debug "TAKE_ACTION_DEBUG Member #{member_info}"
-    Rails.logger.debug "TAKE_ACTION_DEBUG Email: #{member_info['email']}"
-    action_info.merge(:email => member_info["email"])
+    email = identity_email || params[:email] || nil
+    action_info.merge(:email => email)
   end
 
 end
