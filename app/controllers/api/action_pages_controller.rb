@@ -131,7 +131,7 @@ class Api::ActionPagesController < Api::BaseController
     member_info = (params[:member_info].is_a? Hash) ? params[:member_info] : {}
     Rails.logger.debug "TAKE_ACTION_DEBUG Action Info #{action_info}"
     Rails.logger.debug "TAKE_ACTION_DEBUG Member #{member_info}"
-    Rails.logger.debug "TAKE_ACTION_DEBUG Email: #{member_info["email"])}"
+    Rails.logger.debug "TAKE_ACTION_DEBUG Email: #{member_info['email']}"
     action_info.merge(:email => member_info["email"])
   end
 
