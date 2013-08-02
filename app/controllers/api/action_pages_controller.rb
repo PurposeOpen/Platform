@@ -37,9 +37,9 @@ class Api::ActionPagesController < Api::BaseController
 
     begin
       action_info = action_info_from(params)
-      member.take_action_on!(@page, action_info member_attributes)
+      member.take_action_on!(@page, action_info, member_attributes)
       Rails.logger.debug "TAKE_ACTION_DEBUG:API Take Action #{action_info}"
-      Rails.logger.debug "TAKE_ACTION_DEBUG:API PARAMS #{params}"
+      Rails.logger.debug "TAKE_ACTION_DEBUG:API PARAMS #{action_info}"
       render :status => :created,
               :json => {
                 :success => true,
