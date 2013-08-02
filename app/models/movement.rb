@@ -101,7 +101,7 @@ class Movement < ActiveRecord::Base
   end
 
   def find_published_page(query)
-    Rails.cache.fetch("/#{I18n.locale.to_s}/movement_find_published_page_/#{query}", expires_in: 48.hours) do
+    Rails.cache.fetch("/movement_find_published_page_/#{query}", expires_in: 48.hours) do
       self.action_pages.published.find(query)
     end
   end
