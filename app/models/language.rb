@@ -19,10 +19,11 @@ class Language < ActiveRecord::Base
 
   scope :by_code, lambda {|*codes| where(:iso_code => codes)}
 
-  after_save ->{Rails.cache.delete("language_#{iso_code.to_s}")}
+  after_save ->{Rails.cache.delete("language_#{iso_code}")}
 
   def self.find_by_iso_code_cache(locale)
-  	Rails.cache.fetch('language_#{locale.to_s}', expires_in: 48.hours) do
+    Rails.logger.debug "MOVEMENT_PAGE_DEBUG Language cache key: language_#{locale}"
+  	Rails.cache.fetch('language_#{locale}', expires_in: 48.hours) do
   	  Language.find_by_iso_code(locale)
   	end
   end
