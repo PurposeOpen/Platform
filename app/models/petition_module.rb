@@ -89,7 +89,7 @@ class PetitionModule < ContentModule
   end
 
   def increment_signature_count(page_id)
-    if Rails.cache.read("petition_signature_count_page_id_#{page_id}")
+    if Rails.cache.read("petition_signature_count_page_id_#{page_id}", raw: true)
       Rails.cache.increment("petition_signature_count_page_id_#{page_id}", 1)
     else
       signature_count(page_id)
