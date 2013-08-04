@@ -22,8 +22,9 @@ class Language < ActiveRecord::Base
   after_save ->{Rails.cache.delete("language_#{iso_code}")}
 
   def self.find_by_iso_code_cache(locale)
-    Rails.logger.debug "MOVEMENT_PAGE_DEBUG Language cache key: language_#{locale}"
-  	Rails.cache.fetch('language_#{locale}', expires_in: 48.hours) do
+    cache_key = "language_#{locale}"
+    Rails.logger.debug "MOVEMENT_PAGE_DEBUG Language cache key: #{cache_key}"
+  	Rails.cache.fetch(cache_key, expires_in: 48.hours) do
   	  Language.find_by_iso_code(locale)
   	end
   end
