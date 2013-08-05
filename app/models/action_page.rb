@@ -213,8 +213,8 @@ class ActionPage < Page
       facebook_title: taf.try {|taf| taf.options['facebook_title']},
       facebook_description: taf.try {|taf| taf.options['facebook_description']},
       facebook_image_url: taf.try {|taf| taf.options['facebook_image_url']},
-      actions_taken_count: count_actions,
-      shares: share_counts,
+      #actions_taken_count: count_actions,
+      #shares: share_counts,
       footer_content_modules: modules_as_json(modules_for_container_and_language(ContentModule::FOOTER, language), opts)
     }.merge(self.required_user_details).merge(super)
   end
