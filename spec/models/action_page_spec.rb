@@ -406,6 +406,10 @@ describe ActionPage do
     end
 
     describe "autofire email" do
+      before do
+        AppConstants.stub(:no_reply_address) { 'test@example.com' }
+      end
+
       it "should not be sent from non-ask pages" do
         page = create(:action_page)
         language = page.movement.languages.first
@@ -420,8 +424,6 @@ describe ActionPage do
       end
 
       it "when enabled should deliver an email to the user taking an action" do
-        join_email = ENV['JOIN_EMAIL_TO']
-
         petition = create(:petition_module)
         page = create(:action_page, :content_modules => [petition])
         member = create(:user, :language => page.movement.languages.first)
@@ -437,7 +439,7 @@ describe ActionPage do
         ActionMailer::Base.deliveries.size.should == 1
         mail = ActionMailer::Base.deliveries.first
         mail.from.should eql ['noreply@yourdomain.com']
-        mail.to.should eql [join_email]
+        mail.to.should eql [AppConstants.no_reply_address]
         mail.subject.should eql "Autofire email"
       end
 
@@ -454,9 +456,6 @@ describe ActionPage do
       end
 
       it "should use additional tokens provided by the generated user response after an action is taken" do
-
-        join_email = ENV['JOIN_EMAIL_TO']
-
         donation = double
         donation.stub(:respond_to?).and_return(true)
         donation.stub(:autofire_tokens).and_return({"RECEIPT" => "$10 donated to movement!"})
@@ -482,7 +481,7 @@ describe ActionPage do
         ActionMailer::Base.deliveries.size.should == 1
         mail = ActionMailer::Base.deliveries.first
         mail.from.should eql ['noreply@yourdomain.com']
-        mail.to.should eql [join_email]
+        mail.to.should eql [AppConstants.no_reply_address]
         mail.subject.should eql "Autofire email"
         mail.should have_body_text("Here's your receipt: $10 donated to movement!")
       end

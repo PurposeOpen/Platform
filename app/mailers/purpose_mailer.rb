@@ -1,8 +1,8 @@
 class PurposeMailer < ActionMailer::Base
   include InlineTokenReplacement
-  
-  DEFAULT_FROM = "Your Name Platform <noreply@yourdomain.com>"
-  
+
+  DEFAULT_FROM = AppConstants.no_reply_address
+
   default :content_type => "text/html"
 
   def mail_using_generic_template(options, &block)

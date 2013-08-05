@@ -6,11 +6,8 @@ class SendgridMailer < ActionMailer::Base
     @body_text = pre_process_body(email.body, user, tokens)
     @footer = email.footer
 
-    join_email = ENV['JOIN_EMAIL_TO']
-    raise "ENV JOIN_EMAIL_TO is empty!" if join_email.blank?
-
     options = {
-      :to => join_email,
+      :to => AppConstants.no_reply_address,
       :subject => email.subject,
       :recipients => [user.email]
     }
@@ -34,11 +31,8 @@ class SendgridMailer < ActionMailer::Base
     headers['X-SMTPAPI'] = prepare_sendgrid_headers(email, options)
     headers['List-Unsubscribe' ] = "<mailto:#{email.from}>"
     subject = get_subject(email, options)
-    #binding.pry
-    join_email = ENV['JOIN_EMAIL_TO']
-    raise "ENV JOIN_EMAIL_TO is empty!" if join_email.blank?
 
-    mail(:to => join_email, :from => email.from, :reply_to => (email.reply_to || email.from), :subject => subject) do |format|
+    mail(:to => AppConstants.no_reply_address, :from => email.from, :reply_to => (email.reply_to || email.from), :subject => subject) do |format|
       format.text { render 'sendgrid_mailer/text_email' }
       format.html { render 'sendgrid_mailer/html_email' }
     end.with_settings(blast_email_settings(email.movement))

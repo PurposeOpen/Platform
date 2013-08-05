@@ -31,7 +31,6 @@ describe 'SendgridMailer' do
     before { AppConstants.stub(:enable_unfiltered_blasting) { false } }
 
     it "should send the email to sendgrid, with the corresponding API headers" do
-      join_email = ENV['JOIN_EMAIL_TO']
       donald_hash = Base64.urlsafe_encode64("userid=#{donald.id},emailid=#{email_to_send.id}")
       steve_hash = Base64.urlsafe_encode64("userid=#{steve.id},emailid=#{email_to_send.id}")
       AppConstants.stub(:enable_unfiltered_blasting) { true }
@@ -51,7 +50,7 @@ describe 'SendgridMailer' do
       @delivered.text_part.body.should match /Pls click {MOVEMENT_URL|}t={TRACKING_HASH|NOT_AVAILABLE}/
 
       @delivered.should have_subject(/Meltdown!/)
-      @delivered.should deliver_to(join_email)
+      @delivered.should deliver_to(AppConstants.no_reply_address)
 
       expected_header = {
         :to => ['another@dude.com', 'leonardo@borges.com'],

@@ -15,6 +15,7 @@ development: &default
   enable_unfiltered_blasting: <%= ENV['ENABLE_UNFILTERED_BLASTING'] || false %>
   authenticate_api_calls: <%= ENV["AUTHENTICATE_API_CALLS"] || false %>
   readonly_database_url: <%= ENV["READONLY_DATABASE_URL"] %>
+  no_reply_address: <%= ENV["NO_REPLY_ADDRESS"] || "noreply@yourdomain.com" %>
 
 production:
   <<: *default

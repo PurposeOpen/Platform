@@ -76,7 +76,6 @@ Cucumber::Rails::Database.javascript_strategy = :truncation
 
 Before do
   ENV['WHITELISTED_EMAIL_TEST_DOMAINS']='thoughtworks.com,purpose.com,purpose.org,allout.org'
-  ENV['JOIN_EMAIL_TO']='test@purpose.com'
 end
 
 Before('@without_transactional_fixtures') do |scenario|

@@ -29,7 +29,7 @@ class AutofireEmail < ActiveRecord::Base
     validates_presence_of :reply_to, :if => :enabled
   end
 
-  DEFAULT_SENDER = "noreply@yourdomain.com"
+  DEFAULT_SENDER = AppConstants.no_reply_address
   DEFAULT_SUBJECT = "Thanks for taking action!"
   DEFAULT_BODY = "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
 

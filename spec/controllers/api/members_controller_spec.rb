@@ -8,8 +8,6 @@ describe Api::MembersController do
     end
 
     it 'should send a join email after creating or saving the user' do
-      join_email = ENV['JOIN_EMAIL_TO']
-
       language = @movement.movement_locales.first.language
       email = @movement.movement_locales.first.join_email
       email.from = 'movement@here.com'
@@ -17,6 +15,7 @@ describe Api::MembersController do
       email.body = 'Thanks for joining, Mr. Helpful'
       email.save
       member_email = "lemmy@kilmister.com"
+      AppConstants.stub(:no_reply_address) { 'test@example.com' }
 
       post :create, :format => :json, :member => {:email => member_email, :language => 'en'}, :movement_id => @movement.id
 
@@ -26,7 +25,7 @@ describe Api::MembersController do
       ActionMailer::Base.deliveries.size.should == 1
       mail = ActionMailer::Base.deliveries.first
       mail.from.should eql ['movement@here.com']
-      mail.to.should eql [join_email]
+      mail.to.should eql [AppConstants.no_reply_address]
       mail.subject.should eql 'Hi there'
     end
 

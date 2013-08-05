@@ -65,7 +65,6 @@ require 'models/content_module_shared_examples'
 # override use securepay environment variable
 ENV['USE_SECUREPAY'] = ''
 ENV['WHITELISTED_EMAIL_TEST_DOMAINS']='generic.org,yourdomain.org,yourotherdomain.com'
-ENV['JOIN_EMAIL_TO']='test@purpose.com'
 ENV['ACTION_SEQUENCE_DEFAULT_EMAIL_SUBJECT']= "Check out this campaign"
 ENV['ACTION_SEQUENCE_DEFAULT_EMAIL_BODY']   = "Why don't you check out this?"
 ENV['ACTION_SEQUENCE_DEFAULT_EMAIL_TWEET_TEXT']  ="Why don't you check out this?"
