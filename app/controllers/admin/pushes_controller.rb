@@ -33,7 +33,7 @@ module Admin
 
     def show
       @stats_table = EmailStatsTable.new(@push.blasts.map(&:emails).flatten)
-      @campaigns = @movement.campaigns
+      @campaigns = @movement.campaigns.reverse
     end
   end
 end
