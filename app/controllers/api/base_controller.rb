@@ -26,7 +26,7 @@ class Api::BaseController < ApplicationController
 
   def movement    
     unless @movement.present?
-      @movement=Movement.find(params[:movement_id])
+      @movement=Movement.lookup_movement(params[:movement_id])
       logger.debug "Movement set to #{@movement.inspect}"
     end
     
