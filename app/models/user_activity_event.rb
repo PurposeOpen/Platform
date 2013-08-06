@@ -68,8 +68,14 @@ class UserActivityEvent < ActiveRecord::Base
         actions_taken.includes([{:user => :language}, :page, :action_sequence]).where(:action_sequence_id => action_sequence.id)
       end)
 
+  after_create :async_update_page_action_taken_counter, :if => Proc.new { |uae| (uae.activity == Activity::ACTION_TAKEN && uae.page_id) }
+
   def activity
     read_attribute(:activity).to_sym
+  end
+
+  def async_update_page_action_taken_counter
+    Resque.enqueue(Jobs::UpdatePageActionTakenCounter, self.page_id)
   end
 
   def self.load_feed(movement, language, page_id, after_time, only_with_comments=false)
