@@ -53,8 +53,6 @@ class Movement < ActiveRecord::Base
   after_initialize :ensure_homepage_exists
   after_create { MemberCountCalculator.init(self) }
 
-  after_save :async_refresh_cache
-
   validates_presence_of :homepage
   validates_length_of :name, :maximum => 20, :minimum => 3
   validates_format_of :url, :with => %r[\b(([\w-]+://)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))], :message => "must be valid"
@@ -105,26 +103,6 @@ class Movement < ActiveRecord::Base
   def find_published_page(query)
     Rails.cache.fetch("/movement_find_published_page_/#{query}", expires_in: 48.hours) do
       self.action_pages.published.find(query)
-    end
-  end
-
-  def self.lookup_movement(movement_id)
-    cache_key = "/movement_lookup_movement_with_id_#{movement_id}"
-    Rails.cache.fetch(cache_key, expires_in: 48.hours) do
-      Movement.find(movement_id)
-    end
-  end
-
-  def async_refresh_cache
-    Resque.enqueue(Jobs::UpdateMovementCache, self.id)
-  end
-
-  def refresh_cache
-    ids = [self.id, self.slug]
-    ids.each do |lookup_id|
-      cache_key = "/movement_lookup_movement_with_id_#{lookup_id}"
-      Rails.cache.delete(cache_key)
-      lookup_movement(lookup_id)
     end
   end
 
