@@ -1,5 +1,6 @@
 class Api::ActionPagesController < Api::BaseController
   include CountryHelper
+  include Errors
   
   def show
     page = movement.find_published_page(params[:id])
@@ -9,7 +10,7 @@ class Api::ActionPagesController < Api::BaseController
     else
       render :status => :not_acceptable, :json => {:error => 'No content for content locale accepted by the client.'}
     end
-  rescue ActiveRecord::RecordNotFound
+  rescue ActiveRecord::RecordNotFound, Errors::NotFound
     render :status => :not_found, :text => "Can't find page/action with id #{params[:id]}"
   end
 

@@ -39,12 +39,20 @@ class ActionSequence < ActiveRecord::Base
   validate :unique_name_within_campaign
   validates_length_of :name, :maximum => 64, :minimum => 3
 
+  after_save :update_action_pages
+
   def static?
     self.campaign.nil?
   end
 
   def action_pages_with_counter
     action_pages.select &:has_counter?
+  end
+
+  def update_action_pages
+    action_pages.each do |p|
+      p.clean_page_cache
+    end
   end
 
   def duplicate

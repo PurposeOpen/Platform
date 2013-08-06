@@ -43,7 +43,7 @@ class Page < ActiveRecord::Base
   default_scope where(:live_page_id => nil)
   scope :for_preview, ->(movement_id){ where(:deleted_at => nil, :movement_id => movement_id)}
   
-  after_save ->{Rails.cache.delete("/movement_find_published_page_/#{id}")}
+  after_save :clean_page_cache
 
   belongs_to :movement
 
@@ -154,11 +154,14 @@ class Page < ActiveRecord::Base
     language.is_a?(String)? Language.find_by_iso_code(language) : language
   end
 
+  def clean_page_cache
+    Rails.cache.delete("/movement_find_published_page_/#{id}")
+  end
+
   protected :language_option
 
 
   private
-
 
   def update_movement_id_column
     self.movement_id = movement.try(:id)

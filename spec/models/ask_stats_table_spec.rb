@@ -34,8 +34,8 @@ describe AskStatsTable do
       en_petition_module = FactoryGirl.create(:petition_module, :language => english, :pages => [page])
       pt_petition_module = FactoryGirl.create(:petition_module, :language => portuguese, :pages => [page])
 
-      en_petition_module.take_action(user, nil, page)
-      pt_petition_module.take_action(user, nil, page)
+      en_petition_module.take_action(user, {}, page)
+      pt_petition_module.take_action(user, {}, page)
 
       stats = Campaign.find_by_sql(campaign.build_stats_query)
       table = AskStatsTable.new(stats)

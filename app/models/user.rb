@@ -213,11 +213,15 @@ class User < ActiveRecord::Base
     country_iso.try(:upcase)
   end
 
-  private
-
   def assign_random_value
     self.connection.execute("update users set random = rand() where id = #{self.id} and movement_id = #{self.movement_id}")
     self.reload
+  end
+
+  private
+
+  def async_assign_random_value
+    Resque.enqueue(Jobs::AssignRandomValueToUser, self.id)
   end
 
   def downcase_email

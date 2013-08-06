@@ -344,10 +344,9 @@ describe Api::ActionPagesController do
     end
 
     it "should return No Acceptable Content status when the action sequence is published but there's no content for the requested language" do
-      action_sequence = @page.action_sequence
-      action_sequence.update_attributes :published => true
-      action_sequence.enabled_languages = [@english.iso_code.to_s]
-      action_sequence.save!
+      @page.action_sequence.update_attributes :published => true
+      @page.action_sequence.enabled_languages = [@english.iso_code.to_s]
+      @page.action_sequence.save!
 
       get :show, :movement_id => @page.movement.id, :id => @page.friendly_id, :locale => @portuguese.iso_code
 
@@ -610,7 +609,7 @@ describe Api::ActionPagesController do
         actions_taken = UserActivityEvent.where(:page_id => @walkfree_page.id,
           :content_module_id => @walkfree_module.id,
           :user_id => user.id,
-          :activity => UserActivityEvent::Activity::ACTION_TAKEN.to_s)
+          :activity => UserActivityEvent::Activity::ACTION_TAKEN)
         actions_taken.count.should eql 1
       end
 

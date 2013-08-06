@@ -27,6 +27,8 @@
 class ActionPage < Page
   include CacheableModel
   include QuickGoable
+  include Errors
+
   acts_as_paranoid
   belongs_to :action_sequence
   has_many :autofire_emails
@@ -203,6 +205,7 @@ class ActionPage < Page
   end
 
   def language_enabled?(language)
+    if action_sequence.blank? then raise Errors::NotFound end
     action_sequence.language_enabled? language
   end
 
