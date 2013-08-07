@@ -6,6 +6,6 @@ describe Postcode do
   it { should validate_presence_of :zip }
   context "when lat and lng are set" do
     subject { Postcode.create lat: "12", lng: "42", zip: "22280-020" }
-    it { should validate_uniqueness_of :zip }
+    it { should validate_uniqueness_of(:zip).scoped_to(:country) }
   end
 end
