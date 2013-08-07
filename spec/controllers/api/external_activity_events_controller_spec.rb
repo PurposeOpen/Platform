@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Api::ExternalActivityEventsController do
+  before { GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
   let(:external_action) { mock_model(ExternalAction, invalid?: false) }
 
   before do

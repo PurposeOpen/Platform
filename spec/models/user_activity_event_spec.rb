@@ -37,6 +37,7 @@ describe UserActivityEvent do
     @signature = FactoryGirl.create(:petition_signature, :user => @user, :content_module => @petition_module)
     @page = FactoryGirl.create(:action_page, :action_sequence => @join_page.action_sequence)
     @email = FactoryGirl.create(:email)
+    GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0"))
   end
 
   describe 'json format' do

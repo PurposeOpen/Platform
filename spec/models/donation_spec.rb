@@ -41,6 +41,7 @@
 require "spec_helper"
 
 describe Donation do
+  before { GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
   class RecordingGateway < ActiveMerchant::Billing::BogusGateway
     attr_accessor :added_trigger
     def add_trigger(amount, creditcard, options = {})

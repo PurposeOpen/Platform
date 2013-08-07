@@ -630,8 +630,8 @@ describe User do
   end
 
   describe "#set_geolocation" do
-    let(:postcode) { stub_model(Postcode, lat: "45.0", lng: "45.0") }
-    before { Postcode.stub(:find_by_zip).with("123456").and_return(postcode) }
+    let(:postcode) { stub_model(GeoData, lat: "45.0", lng: "45.0") }
+    before { GeoData.stub(:find_by_zip).with("123456").and_return(postcode) }
 
     context "when the user have postcode" do
       it "should set latitude and longitude before save" do

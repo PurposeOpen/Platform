@@ -9,6 +9,7 @@ describe Admin::UserActivityEventsController do
     # mock up an authentication in the underlying warden library
     user = FactoryGirl.create(:user, :is_admin => true)
     request.env['warden'] = mock(Warden, :authenticate => user, :authenticate! => user)
+    GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0"))
   end
 
   describe "GET 'index'" do

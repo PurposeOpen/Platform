@@ -13,6 +13,8 @@
 require 'spec_helper'
 
 describe CampaignShareStat do
+  before { GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
+
   context '#update_campaign_share_stats' do
     it 'should create campaign_share_stats if stats are not available' do
       taf_module_link1 = create(:taf_module_link)

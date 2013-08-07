@@ -12,6 +12,7 @@ describe Api::ActivitiesController do
     @join_page = FactoryGirl.create :action_page, :name => 'join', :action_sequence => @join_action_sequence
     @join_module = FactoryGirl.create(:join_module, :pages => [@join_page], :language => @language)
     @join_page.content_modules << @join_module
+    GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0"))
   end
 
   def user_that_joined_through_the_homepage

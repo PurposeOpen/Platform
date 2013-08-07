@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Api::MembersController do
+  before { GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
   describe 'create' do
     before :each do
       @join_page = FactoryGirl.create(:action_page, name: 'join')

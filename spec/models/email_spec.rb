@@ -43,6 +43,9 @@ def tracking_hash_for(email, *users)
 end
 
 describe Email do
+    
+  before { GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
+
   def build_email(overrides={})
     email = create(:email)
     email.attributes = overrides

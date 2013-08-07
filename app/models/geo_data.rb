@@ -1,4 +1,4 @@
-class Postcode < ActiveRecord::Base
+class GeoData < ActiveRecord::Base
   attr_accessible :city, :country, :lat, :lng, :zip
   validates_presence_of :lat, :lng, :zip
   validates_uniqueness_of :zip, scope: [:country]

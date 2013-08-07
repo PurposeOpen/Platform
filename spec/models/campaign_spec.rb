@@ -19,6 +19,8 @@
 require "spec_helper"
 
 describe Campaign do
+  before { GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
+
   describe "validations" do
     it "should require a name between 3 and 64 characters" do
       Campaign.new(:name => "Save the kittens!").should be_valid
