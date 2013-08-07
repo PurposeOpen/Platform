@@ -242,13 +242,6 @@ class ActionPage < Page
       count_actions
     end
   end
-
-  def async_deliver_autofire_email_to(member_id, user_response)
-    member = User.find(member_id)
-    email = AutofireEmail.find_by_action_page_id_and_language_id(self.id, member.language.id)
-    additional_tokens = user_response.respond_to?(:autofire_tokens) ? user_response.autofire_tokens : nil
-    SendgridMailer.user_email(email, member, additional_tokens) if (email && email.enabled_and_valid?)
-  end
   
   private
 
@@ -270,7 +263,10 @@ class ActionPage < Page
   end
 
   def deliver_autofire_email_to(member, user_response)
-    Resque.enqueue(Jobs::DeliverAutofireEmailTo, self.id, member.id, user_response)
+    email = AutofireEmail.find_by_action_page_id_and_language_id(self.id, member.language.id)
+    additional_tokens = user_response.respond_to?(:autofire_tokens) ? user_response.autofire_tokens : nil
+    SendgridMailer.user_email(email, member, additional_tokens) if (email && email.enabled_and_valid?)
   end
+  handle_asynchronously(:deliver_autofire_email_to) unless Rails.env == "test"
 
 end
