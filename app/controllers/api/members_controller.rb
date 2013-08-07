@@ -68,9 +68,7 @@ class Api::MembersController < Api::BaseController
 
   class MailSender
     def send_join_email(member, movement)
-      join_email = movement.join_emails.find {|join_email| join_email.language == member.language}
-      SendgridMailer.user_email(join_email, member)
+      Resque.enqueue(Jobs::SendJoinEmail, member.id, movement.id)
     end
-    handle_asynchronously(:send_join_email) unless Rails.env.test?
   end
 end
