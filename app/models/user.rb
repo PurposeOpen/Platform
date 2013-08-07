@@ -68,6 +68,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email, :scope => :movement_id
 
   before_save :downcase_email
+  before_save :set_geolocation
   after_create :assign_random_value
 
   scope :for_movement, lambda { |movement| where(:movement_id => movement.try(:id)) }
@@ -270,5 +271,13 @@ class User < ActiveRecord::Base
 
   def ensure_source_is_present
     self.source = :movement if self.source.nil?
+  end
+
+  def set_geolocation
+    if self.postcode.present?
+      postcode = Postcode.find_by_zip(self.postcode)
+      self.lat = postcode.lat
+      self.lng = postcode.lng
+    end
   end
 end

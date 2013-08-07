@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130802143021) do
+ActiveRecord::Schema.define(:version => 20130807154038) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -656,6 +656,8 @@ ActiveRecord::Schema.define(:version => 20130802143021) do
     t.string   "source"
     t.boolean  "permanently_unsubscribed"
     t.string   "state",                    :limit => 64
+    t.string   "lat"
+    t.string   "lng"
   end
 
   add_index "users", ["created_at"], :name => "created_at_idx"
