@@ -6,5 +6,6 @@ Resque.logger = Rails.logger
 
 
 Resque.after_fork = Proc.new do
+  ActiveRecord::Base.verify_active_connections!  
   #Rails.logger.auto_flushing = true
 end
