@@ -4,8 +4,8 @@ module Admin
     self.nav_category = :campaigns
 
     def new
-      blast = Blast.find_by_id(params[:blast_id])
-      @list = blast.try(:list) || List.new(blast: blast)
+      @blast = Blast.find_by_id(params[:blast_id])
+      @list = @blast.try(:list) || List.new(blast: @blast)
     end
 
     def edit
