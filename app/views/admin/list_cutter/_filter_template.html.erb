@@ -14,7 +14,7 @@
     <ul class="list-cutter-filter-value">
       <% if chosen_rule %>
           <li class="rule-choice choose-<%= chosen_rule.class.code %>">
-            <% cache ("rules_for_form_rule_#{chosen_rule.class.code}_blast_id_#{@list.blast_id}_updated_at#{@list.blast.updated_at}") do %>
+            <% cache ("rules_for_form_rule_#{chosen_rule.class.code}_list_id_#{@list.id}_updated_at#{@list.updated_at}") do %>
               <%= render :partial => "admin/list_cutter/rule_template", :locals => {:list => list, :rule => chosen_rule, :f => f} %>
             <% end %>
           </li>
