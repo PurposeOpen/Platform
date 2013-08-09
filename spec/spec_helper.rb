@@ -100,6 +100,7 @@ RSpec.configure do |config|
     I18n.locale = :en
   end
   config.include SunspotMatchers
+  config.before(:each) { GeoData.stub(:find_by_zip_and_country).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
 end
 
 def read_fixture(name)
@@ -188,5 +189,3 @@ end
 def login_as(user)
   request.env['warden'] = double(Warden, :authenticate => user, :authenticate! => user)
 end
-
-

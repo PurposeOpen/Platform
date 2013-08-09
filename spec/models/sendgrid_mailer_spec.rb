@@ -15,8 +15,6 @@ describe 'SendgridMailer' do
     email_to_send
   end
     
-  before { GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
-
   context 'individual email' do
     it 'should not be sent to permanently unsubscribed members' do
       user = create(:user, :email => 'bob@thoughtworks.com')

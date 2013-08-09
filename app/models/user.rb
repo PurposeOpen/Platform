@@ -274,8 +274,8 @@ class User < ActiveRecord::Base
   end
 
   def set_geolocation
-    if self.postcode.present?
-      geodata = GeoData.find_by_zip(self.postcode)
+    if self.postcode.present? && self.country_iso.present?
+      geodata = GeoData.find_by_zip_and_country(self.postcode, self.country_iso)
       self.lat = geodata.lat
       self.lng = geodata.lng
     end

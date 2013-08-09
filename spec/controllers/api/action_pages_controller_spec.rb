@@ -22,7 +22,6 @@ describe Api::ActionPagesController do
     @page = create(:action_page, :name => "Cool page", :action_sequence => @action_sequence, :required_user_details => @fields)
     @petition_module = create(:petition_module, :pages => [@page], :language => @english)
     create(:petition_module, :pages => [@page], :language => @portuguese)
-    GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0"))
   end
 
   describe 'member_fields,' do

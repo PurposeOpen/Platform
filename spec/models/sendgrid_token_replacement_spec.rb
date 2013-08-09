@@ -2,7 +2,6 @@ require "spec_helper"
 
 describe SendgridTokenReplacement do
   include SendgridTokenReplacement
-  before { GeoData.stub(:find_by_zip).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
 
   it "should always contain the tracking info in the substitutions hash" do
     english = FactoryGirl.create(:english)
