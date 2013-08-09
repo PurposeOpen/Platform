@@ -13,7 +13,7 @@
     </div>
     <ul class="list-cutter-filter-value">
       <% if chosen_rule %>
-          <li class="rule-choice choose-<%= chosen_rule.class.code %>">
+          <li class="rule-choice choose-<%= chosen_rule.class.code, chosen_rule.updated_at.to_i %>">
             <%= render :partial => "admin/list_cutter/rule_template", :locals => {:list => list, :rule => chosen_rule, :f => f} %>
           </li>
       <% end %>
