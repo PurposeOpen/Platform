@@ -1,4 +1,4 @@
 <% title "New List" %>
-<% cache 'new_list_cache' :expires_in => 24.hours do %>
+<% cache 'new_list_cache', @blast.updated_at.to_i do %>
   <%= render :partial => "form", :locals => {:show_save_button => true} %>
 <% end %>
