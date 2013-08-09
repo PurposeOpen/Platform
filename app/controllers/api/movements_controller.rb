@@ -6,9 +6,19 @@ class Api::MovementsController < Api::BaseController
   cache_sweeper Api::MovementSweeper
 
   def show
-    homepage_content 
-    languages = movement.languages.map do |lang|
-      {:iso_code => lang.iso_code, :name => lang.name, :native_name => lang.native_name, :is_default => (lang == movement.default_language)}
+    homepage = params[:draft_homepage_id].blank? ? movement.homepage : movement.draft_homepages.where(:id => params[:draft_homepage_id]).first
+    @homepage_content = Rails.cache.fetch('homepage_content/movement/#{movement.id}/locale/#{I18n.locale}/homepage/#{homepage.id}', expires_in: 24.hours) do
+      build_homepage_content(homepage) 
+    end
+    @featured_content_collections = Rails.cache.fetch('featured_content_collections/movement/#{movement.id}/locale/#{I18n.locale}/homepage/#{homepage.id}', expires_in: 24.hours) do
+      build_featured_content_collections(homepage)
+    end
+    lang_cache_key = '/languages/movement_id/#{movement.id}'
+    languages = Rails.cache.fetch(lang_cache_key, expires_in: 24.hours) do
+      languages = movement.languages.map do |lang|
+        {:iso_code => lang.iso_code, :name => lang.name, :native_name => lang.native_name, :is_default => (lang == movement.default_language)}
+      end
+      languages
     end
 
     track_page_view_from_email
@@ -23,13 +33,16 @@ class Api::MovementsController < Api::BaseController
 
   protected
 
-  def homepage_content
-    homepage = params[:draft_homepage_id].blank? ? movement.homepage : movement.draft_homepages.where(:id => params[:draft_homepage_id]).first
+  def build_homepage_content(homepage)
     @homepage_content ||= homepage.homepage_contents.by_iso_code(I18n.locale).first
-    @featured_content_collections = {}
+  end
+
+  def build_featured_content_collections(homepage)
+    featured_content_collections = {}
     homepage.featured_content_collections.each do |fcc|
-      @featured_content_collections[fcc.contantized_name] = fcc.valid_modules_for_language(I18n.locale).sort_by(&:position)
+      featured_content_collections[fcc.contantized_name] = fcc.valid_modules_for_language(I18n.locale).sort_by(&:position)
     end
+    featured_content_collections
   end
 
   def homepage_attributes
