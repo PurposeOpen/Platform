@@ -7,10 +7,12 @@ class Api::MovementsController < Api::BaseController
 
   def show
     homepage = params[:draft_homepage_id].blank? ? movement.homepage : movement.draft_homepages.where(:id => params[:draft_homepage_id]).first
-    @homepage_content = Rails.cache.fetch('homepage_content/movement/#{movement.id}/locale/#{I18n.locale}/homepage/#{homepage.id}', expires_in: 24.hours) do
+    homepage_key = 'homepage_content/movement/#{movement.id}/locale/#{I18n.locale}/homepage/#{homepage.id}'
+    @homepage_content = Rails.cache.fetch(homepage_key, expires_in: 24.hours) do
       build_homepage_content(homepage) 
     end
-    @featured_content_collections = Rails.cache.fetch('featured_content_collections/movement/#{movement.id}/locale/#{I18n.locale}/homepage/#{homepage.id}', expires_in: 24.hours) do
+    featured_content_collections_key = 'featured_content_collections/movement/#{movement.id}/locale/#{I18n.locale}/homepage/#{homepage.id}'
+    @featured_content_collections = Rails.cache.fetch(featured_content_collections_key, expires_in: 24.hours) do
       build_featured_content_collections(homepage)
     end
     lang_cache_key = '/languages/movement_id/#{movement.id}'
