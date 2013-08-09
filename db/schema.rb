@@ -283,8 +283,6 @@ ActiveRecord::Schema.define(:version => 20130807205640) do
     t.datetime "updated_at", :null => false
   end
 
-  add_index "geo_data", ["postcode"], :name => "index_postcodes_on_zip", :unique => true
-
   create_table "homepage_contents", :force => true do |t|
     t.string   "banner_image"
     t.string   "banner_text"
