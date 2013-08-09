@@ -27,7 +27,10 @@
       <!-- FILTERS PLACEHOLDER -->
       <%= fields_for :rules do |f| %>
           <% @list.rules.each do |rule| %>
-              <%= render :partial => "admin/list_cutter/filter_template", :locals => {:list => @list, :chosen_rule => rule, :f => f} %>
+              <%= rule.inspect %>
+              <% cache rule.class.code do %>
+                <%= render :partial => "admin/list_cutter/filter_template", :locals => {:list => @list, :chosen_rule => rule, :f => f} %>
+              <% end %>
           <% end %>
       <% end %>
     </ul>
