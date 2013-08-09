@@ -6,15 +6,17 @@
       <span class="where-label">Where</span>
       <select class="filter-by" name="filter-type">
         <option value="filter-empty">Filter</option>
-        <% rules_for_form.each do |rule_option| %>
-            <option value="filter-<%= rule_option[:class].code %>" <%= filter_selected?(chosen_rule, rule_option) %>><%= rule_option[:label] %></option>
+        <% rules_for_form.each do |rule_option| %>  
+          <option value="filter-<%= rule_option[:class].code %>" <%= filter_selected?(chosen_rule, rule_option) %>><%= rule_option[:label] %></option>
         <% end %>
       </select>
     </div>
     <ul class="list-cutter-filter-value">
       <% if chosen_rule %>
           <li class="rule-choice choose-<%= chosen_rule.class.code %>">
-            <%= render :partial => "admin/list_cutter/rule_template", :locals => {:list => list, :rule => chosen_rule, :f => f} %>
+            <% cache ("rules_for_form_rule_#{chosen_rule.class.code}_blast_id_#{@list.blast_id}_updated_at#{@list.blast.updated_at}") do %>
+              <%= render :partial => "admin/list_cutter/rule_template", :locals => {:list => list, :rule => chosen_rule, :f => f} %>
+            <% end %>
           </li>
       <% end %>
     </ul>
