@@ -2,30 +2,16 @@ class Api::MovementsController < Api::BaseController
   include InlineTokenReplacement
   #before_filter :homepage_content, :only => [:show]
 
-  caches_action :show, :expires_in => AppConstants.default_cache_timeout, :race_condition_ttl => 30.seconds, :cache_path => Proc.new {|c| "#{I18n.locale}#{c.request.path}" }
+  caches_action :show, :expires_in => 24.hours, :race_condition_ttl => 30.seconds, :cache_path => Proc.new {|c| "#{I18n.locale}#{c.request.path}" }
   cache_sweeper Api::MovementSweeper
 
   def show
-    Rails.logger.debug "Movement_API_DEBUG Locale: #{I18n.locale} identify_accepted_language: #{identify_accepted_language}"
     homepage = params[:draft_homepage_id].blank? ? movement.homepage : movement.draft_homepages.where(:id => params[:draft_homepage_id]).first
-    homepage_key = 'homepage_content/movement/#{movement.id}/locale/#{identify_accepted_language}/homepage/#{homepage.id}'
-    @homepage_content = Rails.cache.fetch(homepage_key, expires_in: 24.hours) do
-      build_homepage_content(homepage) 
+    @homepage_content = build_homepage_content(homepage) 
+    @featured_content_collections = build_featured_content_collections(homepage)
+    languages = movement.languages.map do |lang|
+      {:iso_code => lang.iso_code, :name => lang.name, :native_name => lang.native_name, :is_default => (lang == movement.default_language)}
     end
-    featured_content_collections_key = 'featured_content_collections/movement/#{movement.id}/locale/#{identify_accepted_language}/homepage/#{homepage.id}'
-    @featured_content_collections = Rails.cache.fetch(featured_content_collections_key, expires_in: 24.hours) do
-      build_featured_content_collections(homepage)
-    end
-    lang_cache_key = '/languages/movement_id/#{movement.id}'
-    languages = Rails.cache.fetch(lang_cache_key, expires_in: 24.hours) do
-      languages = movement.languages.map do |lang|
-        {:iso_code => lang.iso_code, :name => lang.name, :native_name => lang.native_name, :is_default => (lang == movement.default_language)}
-      end
-      languages
-    end
-
-    track_page_view_from_email
-
     render :json => {
         languages: languages,
         recommended_languages_to_display: languages_to_display,
