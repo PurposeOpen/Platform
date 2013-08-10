@@ -6,6 +6,7 @@ class Api::MovementsController < Api::BaseController
   cache_sweeper Api::MovementSweeper
 
   def show
+    Rails.logger.debug "Movement_API_DEBUG Locale: #{I18n.locale} identify_accepted_language: #{identify_accepted_language}"
     homepage = params[:draft_homepage_id].blank? ? movement.homepage : movement.draft_homepages.where(:id => params[:draft_homepage_id]).first
     homepage_key = 'homepage_content/movement/#{movement.id}/locale/#{identify_accepted_language}/homepage/#{homepage.id}'
     @homepage_content = Rails.cache.fetch(homepage_key, expires_in: 24.hours) do
