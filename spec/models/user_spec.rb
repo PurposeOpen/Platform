@@ -651,4 +651,23 @@ describe User do
       end
     end
   end
+
+  describe ".by_postcode" do
+    before { FactoryGirl.create(:user, :postcode => "123456", :country_iso => "US") }
+
+    context "when there are two users with same postcode and country" do
+      before { FactoryGirl.create(:user, :postcode => "123456", :country_iso => "US") }
+      it("should return two users") { User.by_postcode("123456", "US").should have(2).users }
+    end
+
+    context "when there are two users with different postcodes" do
+      before { FactoryGirl.create(:user, :postcode => "654321", :country_iso => "US") }
+      it("should return one user") { User.by_postcode("123456", "US").should have(1).user }
+    end
+
+    context "when there are two users with same postcode but from different countries" do
+      before { FactoryGirl.create(:user, :postcode => "123456", :country_iso => "BR") }
+      it("should return one user") { User.by_postcode("123456", "US").should have(1).user }
+    end
+  end
 end

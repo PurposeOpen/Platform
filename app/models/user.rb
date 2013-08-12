@@ -237,6 +237,10 @@ class User < ActiveRecord::Base
     find_by_email(AppConstants.umbrella_user_email_address)
   end
 
+  def self.by_postcode postcode, country_iso
+    User.where(:postcode => postcode, :country_iso => country_iso)
+  end
+
   def member?;
     is_member;
   end
