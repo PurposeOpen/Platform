@@ -279,8 +279,9 @@ class User < ActiveRecord::Base
 
   def set_geolocation
     if self.postcode.present? && self.country_iso.present?
-      if geodata = GeoData.find_by_postcode_and_country(self.postcode, self.country_iso)
-        self.lat, self.lng = geodata.lat, geodata.lng
+      if geodata = GeoData.find_by_postcode_and_country_iso(self.postcode, self.country_iso)
+        self.lat = geodata.lat
+        self.lng = geodata.lng
       else
         Rails.logger.warn("Postcode \"#{self.postcode}\" for \"#{self.country_iso}\" not found.")
       end
