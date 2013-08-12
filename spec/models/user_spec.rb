@@ -639,6 +639,7 @@ describe User do
         user.save
         user.lat.should be_== "45.0"
         user.lng.should be_== "45.0"
+        user.should be_persisted
       end
 
       context "when there is no corresponding postcode" do
@@ -648,6 +649,7 @@ describe User do
           user = FactoryGirl.build(:user, :postcode => "123456", :country_iso => "BR")
           Rails.logger.should_receive(:warn).with("Postcode \"123456\" for \"BR\" not found.")
           user.save
+          user.should be_persisted
         end
       end
     end
@@ -658,6 +660,7 @@ describe User do
         user.save
         user.lat.should be_nil
         user.lng.should be_nil
+        user.should be_persisted
       end
     end
   end
