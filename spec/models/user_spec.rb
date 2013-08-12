@@ -631,7 +631,7 @@ describe User do
 
   describe "#set_geolocation" do
     let(:postcode) { stub_model(GeoData, lat: "45.0", lng: "45.0") }
-    before { GeoData.stub(:find_by_zip_and_country).with("123456", "BR").and_return(postcode) }
+    before { GeoData.stub(:find_by_postcode_and_country).with("123456", "BR").and_return(postcode) }
 
     context "when the user have postcode" do
       it "should set latitude and longitude before save" do
@@ -639,6 +639,16 @@ describe User do
         user.save
         user.lat.should be_== "45.0"
         user.lng.should be_== "45.0"
+      end
+
+      context "when there is no corresponding postcode" do
+        before { GeoData.stub(:find_by_postcode_and_country).with("123456", "BR").and_return(nil) }
+
+        it "it should log the missing postcode/country" do
+          user = FactoryGirl.build(:user, :postcode => "123456", :country_iso => "BR")
+          Rails.logger.should_receive(:warn).with("Postcode \"123456\" for \"BR\" not found.")
+          user.save
+        end
       end
     end
 
