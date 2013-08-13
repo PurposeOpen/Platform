@@ -1,0 +1,2 @@
+class GeoDataNotFoundError < StandardError
+end

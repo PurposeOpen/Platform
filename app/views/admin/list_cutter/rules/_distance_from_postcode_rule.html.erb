@@ -1,0 +1,19 @@
+<div class="distance_from_postcode_rule_options_container">
+  is within
+  <%= f.text_field :distance, value: rule.distance, class: "required distance_from_postcode_rule_number_input" %>
+
+  <%= select_tag 'rules[distance_from_postcode_rule][$index][distance_unit]',
+                 options_for_select(ListCutter::DistanceFromPostcodeRule::DISTANCE_UNITS),
+                 {multiple: false,
+                  id: "rules_distance_from_postcode_rule_$index_distance_unit_",
+                  class: "required distance_from_postcode_distance_unit_select",
+                  "data-placeholder" => "Choose a distance unit..."} %>
+  from
+  <%= f.text_field :postcode, value: rule.postcode, class: "required distance_from_postcode_rule_number_input", placeholder: "postcode" %>
+  <%= select_tag 'rules[distance_from_postcode_rule][$index][country_iso]',
+                 geo_data_country_options,
+                 {multiple: false,
+                  id: "rules_distance_from_postcode_rule_$index_country_iso_",
+                  class: "required distance_from_postcode_country_iso_select",
+                  "data-placeholder" => "Choose a country..."} %>
+</div>

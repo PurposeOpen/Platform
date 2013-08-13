@@ -265,7 +265,6 @@
       margin: 0 5px;
       line-height: 22px;
     }
-
     div.rule-details {
       .second_line {
         margin-top: 30px;
@@ -274,16 +273,25 @@
           width: 300px !important;
           float: right;
         }
-
-
       }
     }
   }
+
   .choose-campaign_rule{
     div.rule-details {
       .ui-multiselectcheckbox{
         width: 300px !important;
         float: right;
+      }
+    }
+  }
+
+
+  .choose-distance_from_postcode_rule {
+    .distance_from_postcode_rule_options_container {
+      padding: 15px 0px 0px 83px;
+      .distance_from_postcode_rule_number_input {
+        width: 100px;
       }
     }
   }

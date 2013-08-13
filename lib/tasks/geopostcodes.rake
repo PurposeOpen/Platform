@@ -1,4 +1,5 @@
 namespace :geopostcodes do
+  desc 'Import csv of data from geopostcodes.com'
   task :import, [:url] => :environment do |t, args|
     CSV.parse(open(args[:url]), {col_sep: ";", headers: true}) do |row|
       puts row
