@@ -15,7 +15,8 @@ module Admin::ListCutterHelper
         {label: "Donation frequency", class: ListCutter::DonorRule},
         {label: "Donation amount", class: ListCutter::DonationAmountRule},
         {label: "External Action", class: ListCutter::ExternalActionRule},
-        {label: "External Tag", class: ListCutter::ExternalTagRule}
+        {label: "External Tag", class: ListCutter::ExternalTagRule},
+        {label: "Postal code", class: ListCutter::PostcodeRule}
     ]
   end
 

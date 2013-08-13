@@ -1,0 +1,4 @@
+<div>
+  <%= text_field_tag 'rules[postcode_rule][postcode]', "", placeholder: "Postal code" %>
+  <%= select_tag 'rules[postcode_rule][country_iso]', options_for_select(GeoData.group(:country_iso).map{|gd| [gd.country_name, gd.country_iso]}), default: "Choose a country..." %>
+</div>
