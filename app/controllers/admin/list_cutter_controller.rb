@@ -18,6 +18,8 @@ module Admin
 
     def save
       @list = List.build(params.symbolize_keys)
+      Rails.logger.debug "LIST_CUTTER_DEBUG #{@list.inspect}"
+      Rails.logger.debug "LIST_CUTTER_DEBUG Is it cuttable? #{@list.list_cuttable?}"
       head :unprocessable_entity and return unless @list.list_cuttable?
       build_list_and_create_bg_job(save: true)
     end
