@@ -20,6 +20,11 @@ module Admin
       @list = List.build(params.symbolize_keys)
       Rails.logger.debug "LIST_CUTTER_DEBUG #{@list.inspect}"
       Rails.logger.debug "LIST_CUTTER_DEBUG Is it cuttable? #{@list.list_cuttable?}"
+      Rails.logger.debug "LIST_CUTTER_DEBUG Pending Emails #{@list.blast.emails.pending_emails}"
+      Rails.logger.debug "LIST_CUTTER_DEBUG Pending Emails Empty? #{@list.blast.emails.pending_emails.empty?}"
+      Rails.logger.debug "LIST_CUTTER_DEBUG Sent Emails #{@list.blast.emails.sent_emails}"
+      Rails.logger.debug "LIST_CUTTER_DEBUG Sent Emails Empty? #{@list.blast.emails.sent_emails.empty?}"
+      Rails.logger.debug "LIST_CUTTER_DEBUG Cutter directly: #{@list.blast.emails.pending_emails.empty? && @list.blast.emails.sent_emails.empty?}"
       head :unprocessable_entity and return unless @list.list_cuttable?
       build_list_and_create_bg_job(save: true)
     end
