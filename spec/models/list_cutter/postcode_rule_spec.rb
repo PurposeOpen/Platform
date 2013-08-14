@@ -14,4 +14,3 @@ describe ListCutter::PostcodeRule do
     its(:to_relation) { should_not be_empty }
   end
 end
-

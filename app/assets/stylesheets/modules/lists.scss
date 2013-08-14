@@ -99,7 +99,7 @@
             float: left;
           }
 
-          .rule-details { float: left; }
+          .rule-details { float: left; margin-top: -3px; }
 
           label.error {
             display: block;
@@ -181,6 +181,7 @@
       width: auto;
       margin: 0;
       padding: 3px 7px;
+      &.postcode_rule_postcodes { width: 220px; }
     }
     input[type='text'] { padding: 3px; margin-top: 1px; }
   }
