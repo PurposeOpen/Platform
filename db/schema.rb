@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130807205640) do
+ActiveRecord::Schema.define(:version => 20130814182741) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -274,14 +274,16 @@ ActiveRecord::Schema.define(:version => 20130807205640) do
   end
 
   create_table "geo_data", :force => true do |t|
-    t.string   "country"
-    t.string   "postcode",   :null => false
+    t.string   "country_iso"
+    t.string   "postcode",    :null => false
     t.string   "city"
-    t.string   "lat",        :null => false
-    t.string   "lng",        :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "lat",         :null => false
+    t.string   "lng",         :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
+
+  add_index "geo_data", ["country_iso", "postcode"], :name => "index_geo_data_on_country_iso_and_postcode"
 
   create_table "homepage_contents", :force => true do |t|
     t.string   "banner_image"
