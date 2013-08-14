@@ -17,7 +17,7 @@ module Admin
     end
 
     def save
-      @list = List.build(params)
+      @list = List.build(params.symbolize_keys)
       head :unprocessable_entity and return unless @list.list_cuttable?
       build_list_and_create_bg_job(save: true)
     end
