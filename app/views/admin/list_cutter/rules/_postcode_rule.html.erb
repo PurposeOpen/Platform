@@ -1,4 +1,4 @@
-<div>
+<div class="postcode_rule_fields">
   <%= text_field_tag(
     'rules[postcode_rule][$index][postcodes]', 
     "", 
@@ -10,4 +10,7 @@
     options_for_select(GeoData.group(:country_iso).map{|gd| [gd.country_name, gd.country_iso]}), 
     id: "rules_postcode_rule_$index_contry_iso_", 
     class: "required") %>
+</div>
+<div class="postcode_rule_fields_legend">
+  <small>Separate postal codes by comma without whitespaces</small>
 </div>

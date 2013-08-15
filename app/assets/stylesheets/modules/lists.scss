@@ -99,7 +99,12 @@
             float: left;
           }
 
-          .rule-details { float: left; margin-top: -3px; }
+          .rule-details {
+            float: left; 
+            margin-top: -3px;
+            .postcode_rule_fields { margin-bottom: 5px; }
+            .postcode_rule_fields_legend { color: gray; font-style: italic; font-size: 12px }
+          }
 
           label.error {
             display: block;
