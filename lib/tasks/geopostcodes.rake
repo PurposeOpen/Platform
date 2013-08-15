@@ -12,8 +12,7 @@ namespace :geopostcodes do
   desc 'Set lat and lng on users'
   task :set_user_geo_data => :environment do
     User.find_each(conditions: 'country_iso IS NOT NULL AND postcode IS NOT NULL') do |user|
-      geodata = GeoData.find_by_country_iso_and_postcode(user.country_iso, user.postcode)
-      if geodata
+      if geodata = GeoData.find_by_country_iso_and_postcode(user.country_iso, user.postcode)
         user.update_attributes(lat: geodata.lat, lng: geodata.lng)
         puts "User #{user.id} updated: #{user.lat}, #{user.lng}"
       else

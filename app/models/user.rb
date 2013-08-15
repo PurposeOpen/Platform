@@ -283,6 +283,8 @@ class User < ActiveRecord::Base
         self.lat = geodata.lat
         self.lng = geodata.lng
       else
+        self.lat = nil
+        self.lng = nil
         Rails.logger.warn("Postcode \"#{self.postcode}\" for \"#{self.country_iso}\" not found.")
       end
     end

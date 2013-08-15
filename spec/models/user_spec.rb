@@ -56,15 +56,15 @@ describe User do
 
   describe "knowing whether a details field has been entered previously" do
     it "should be entered if user has been saved with a value in the field" do
-      user = FactoryGirl.create(:user, :first_name => "Bob")
+      user = FactoryGirl.create(:user, first_name: "Bob")
       user.already_entered?(:first_name).should be_true
     end
     it "should not be entered if a user has not been saved with a value in the field (probably means validation failure)" do
-      user = FactoryGirl.build(:user, :first_name => "Bob")
+      user = FactoryGirl.build(:user, first_name: "Bob")
       user.already_entered?(:first_name).should be_false
     end
     it "should not be entered if the user has been saved with no value in the field" do
-      user = FactoryGirl.create(:user, :first_name => "", :last_name => nil)
+      user = FactoryGirl.create(:user, first_name: "", last_name: nil)
       user.already_entered?(:first_name).should be_false
       user.already_entered?(:last_name).should be_false
     end
@@ -72,7 +72,7 @@ describe User do
   
   describe 'entered_fields' do
     it "should return the user detail fields that have been entered" do
-      user = FactoryGirl.create(:user, :first_name => "Bob", :country_iso => 'US')
+      user = FactoryGirl.create(:user, first_name: "Bob", country_iso: 'US')
       
       entered_fields = user.entered_fields
       (['email', 'first_name', 'country_iso'] - entered_fields).should eql []
@@ -82,27 +82,27 @@ describe User do
 
   describe "names" do
     it "should have a titlecased, HTML safe greeting for emails etc." do
-      FactoryGirl.create(:user, :first_name => "ferhandez").greeting.should == "Ferhandez"
-      FactoryGirl.create(:user, :first_name => nil).greeting.should == nil
+      FactoryGirl.create(:user, first_name: "ferhandez").greeting.should == "Ferhandez"
+      FactoryGirl.create(:user, first_name: nil).greeting.should == nil
     end
 
     it "should have a full name, or Unknown Username if neither first nor last names are present" do
-      FactoryGirl.create(:user, :first_name => "rico").full_name.should == "Rico"
-      FactoryGirl.create(:user, :last_name => "ferhandez").full_name.should == "Ferhandez"
-      FactoryGirl.create(:user, :first_name => "rico", :last_name => "ferhandez").full_name.should == "Rico Ferhandez"
-      FactoryGirl.create(:user, :first_name => "", :last_name => "").full_name.should == "Unknown Username"
+      FactoryGirl.create(:user, first_name: "rico").full_name.should == "Rico"
+      FactoryGirl.create(:user, last_name: "ferhandez").full_name.should == "Ferhandez"
+      FactoryGirl.create(:user, first_name: "rico", last_name: "ferhandez").full_name.should == "Rico Ferhandez"
+      FactoryGirl.create(:user, first_name: "", last_name: "").full_name.should == "Unknown Username"
     end
   end
 
   describe "validation" do
     before(:each) do
-      @required_user_details = {:first_name => :required, :last_name => :optional, :home_number => :required}
+      @required_user_details = {first_name: :required, last_name: :optional, home_number: :required}
     end
 
     it "must have a valid email address" do
-      User.new(:email => "me@email.com").should be_valid
-      User.new(:email => nil).should_not be_valid
-      User.new(:email => "me@email").should_not be_valid
+      User.new(email: "me@email.com").should be_valid
+      User.new(email: nil).should_not be_valid
+      User.new(email: "me@email").should_not be_valid
     end
 
     it "should add an error message for blank email" do
@@ -112,7 +112,7 @@ describe User do
     end
 
     it "must have all fields required by page" do
-      user = FactoryGirl.create(:user, :first_name => "Sanchez", :last_name => "Bob", :home_number => "")
+      user = FactoryGirl.create(:user, first_name: "Sanchez", last_name: "Bob", home_number: "")
       user.required_user_details = @required_user_details
       user.should_not be_valid
       user.home_number = '90632781'
@@ -120,13 +120,13 @@ describe User do
     end
 
     it "should not complain if optional fields are empty" do
-      user = FactoryGirl.create(:user, :first_name => "Sanchez", :last_name => "", :home_number => "0009990002")
+      user = FactoryGirl.create(:user, first_name: "Sanchez", last_name: "", home_number: "0009990002")
       user.required_user_details = @required_user_details
       user.should be_valid
     end
 
     it "validates max lengths for all supplied fields" do
-      user = FactoryGirl.create(:user, :first_name => "Sanchez", :last_name => "Bob")
+      user = FactoryGirl.create(:user, first_name: "Sanchez", last_name: "Bob")
       user.required_user_details = @required_user_details
 
       user.home_number = "X" * 2000
@@ -142,7 +142,7 @@ describe User do
 
     #TODO uncomment once database is clean again
     #it "should validate first and last names as alpha-dash if present" do
-    #  user = FactoryGirl.build(:user, :first_name => "@m breaking your$ d#tabase", :last_name => "z#man")
+    #  user = FactoryGirl.build(:user, first_name: "@m breaking your$ d#tabase", last_name: "z#man")
     #  user.valid?.should be_false
     #
     #  user.first_name = "Maybe-Now"
@@ -171,7 +171,7 @@ describe User do
     #  end
     #end
     #it "should prevent URLs from being entered in the address and suburb fields" do
-    #  user = FactoryGirl.build(:user, :street_address => "http://IshouldNotBeHere.com", :suburb => "http://meNeither.com")
+    #  user = FactoryGirl.build(:user, street_address: "http://IshouldNotBeHere.com", suburb: "http://meNeither.com")
     #  user.valid?.should be_false
     #
     #  user.street_address = "345, Nice St."
@@ -189,23 +189,23 @@ describe User do
     end
 
     it "looks up the postcode when #postcode_number is set" do
-      u = User.new(:postcode_number => "3065")
+      u = User.new(postcode_number: "3065")
       u.postcode.should == @fitzroy_postcode
     end
 
     it "renders number from postcode when #postcode_number is called" do
-      u = User.new(:postcode => @fitzroy_postcode)
+      u = User.new(postcode: @fitzroy_postcode)
       u.postcode_number.should == "3065"
     end
 
     it "does not require a postcode" do
-      u = User.new(:postcode => nil)
+      u = User.new(postcode: nil)
       u.postcode_number.should == nil
     end
 
     it "validates presence of postcode" do
-      u = User.new(:email => "someone@somewhere.com", :postcode_number => "")
-      u.required_user_details = {:postcode_number => :refresh}
+      u = User.new(email: "someone@somewhere.com", postcode_number: "")
+      u.required_user_details = {postcode_number: :refresh}
       u.should_not be_valid
       u.postcode_number = "3065"
       u.should be_valid
@@ -216,8 +216,8 @@ describe User do
     before do
       @blast = FactoryGirl.create(:blast)
       @movement = @blast.push.campaign.movement
-      @email = FactoryGirl.create(:email, :blast => @blast)
-      @user = FactoryGirl.create(:user, :movement => @movement)
+      @email = FactoryGirl.create(:email, blast: @blast)
+      @user = FactoryGirl.create(:user, movement: @movement)
     end
 
     it 'should create subscribed, action_taken, email_clicked, and email_viewed events associated with the tracked email' do
@@ -241,7 +241,7 @@ describe User do
 
     context 'user is permanentely unsubscribed:' do
       it "should not subscribe the user, but should create action taken and email events and update the user's info" do
-        user = FactoryGirl.create(:user, :movement => @movement, :first_name => 'Bagger', :last_name => 'Vance', :is_member => false, :permanently_unsubscribed => true)
+        user = FactoryGirl.create(:user, movement: @movement, first_name: 'Bagger', last_name: 'Vance', is_member: false, permanently_unsubscribed: true)
         user.is_member = true
         new_first_name = 'Carl'
         new_last_name = 'Spackler'
@@ -254,7 +254,7 @@ describe User do
         user.reload
         user.attributes.should include('is_member' => false, 'permanently_unsubscribed' => true, 'first_name' => new_first_name, 'last_name' => new_last_name)
 
-        user.user_activity_events.where(:activity => :action_taken).count.should == 1
+        user.user_activity_events.where(activity: :action_taken).count.should == 1
 
         PushClickedEmail.count.should == 1
         PushViewedEmail.count.should == 1
@@ -267,7 +267,7 @@ describe User do
       it 'should create a subscribed event associated with the tracked email (existing user shared a Platform email with the new user)' do
         blast = FactoryGirl.create(:blast)
         movement = blast.push.campaign.movement
-        email = FactoryGirl.create(:email, :blast => blast)
+        email = FactoryGirl.create(:email, blast: blast)
         email_address = 'bob@example.com'
         new_user = movement.members.find_or_initialize_by_email(email_address)
 
@@ -281,7 +281,7 @@ describe User do
       end
 
       it 'should set a default source if it is not set' do
-        user = FactoryGirl.build(:user, :source => nil)
+        user = FactoryGirl.build(:user, source: nil)
 
         user.join_through_external_action!
 
@@ -290,7 +290,7 @@ describe User do
 
       context 'did not opt in:' do
         it 'should create an unsubscribed user' do
-          user = FactoryGirl.build(:user, :is_member => false)
+          user = FactoryGirl.build(:user, is_member: false)
 
           user.join_through_external_action!
 
@@ -298,7 +298,7 @@ describe User do
         end
 
         it 'should not create a subscribed event' do
-          user = FactoryGirl.build(:user, :is_member => false)
+          user = FactoryGirl.build(:user, is_member: false)
 
           user.join_through_external_action!
 
@@ -310,7 +310,7 @@ describe User do
     context 'existing user:' do
       context 'that is unsubscribed:' do
         it 'should subscribe the user' do
-          user = FactoryGirl.create(:user, :is_member => false, :permanently_unsubscribed => false)
+          user = FactoryGirl.create(:user, is_member: false, permanently_unsubscribed: false)
 
           user.join_through_external_action!
 
@@ -323,7 +323,7 @@ describe User do
 
       context 'that is permanently unsubscribed:' do
         it 'should not subscribe the user nor create a subscribed event' do
-          user = FactoryGirl.create(:user, :is_member => false, :permanently_unsubscribed => true)
+          user = FactoryGirl.create(:user, is_member: false, permanently_unsubscribed: true)
 
           user.join_through_external_action!
 
@@ -349,7 +349,7 @@ describe User do
     context 'did not opt in:' do
       it 'should not unsubscribe the user' do
         user = FactoryGirl.create(:user)
-        opted_out_user = FactoryGirl.build(:user, :email => user.email, :is_member => false)
+        opted_out_user = FactoryGirl.build(:user, email: user.email, is_member: false)
 
         opted_out_user.join_through_external_action!
 
@@ -364,12 +364,12 @@ describe User do
         @action_page = FactoryGirl.create(:action_page)
         @movement = @action_page.movement
         @language = @movement.languages.first
-        @petition = FactoryGirl.create(:petition_module, :pages => [@action_page], :language => @language)
+        @petition = FactoryGirl.create(:petition_module, pages: [@action_page], language: @language)
 
-        @join_page = FactoryGirl.create(:action_page, :name => 'join', :action_sequence => @action_page.action_sequence)
-        @join_module = FactoryGirl.create(:join_module, :pages => [@join_page], :language => @language)
+        @join_page = FactoryGirl.create(:action_page, name: 'join', action_sequence: @action_page.action_sequence)
+        @join_module = FactoryGirl.create(:join_module, pages: [@join_page], language: @language)
         
-        @user = FactoryGirl.create(:user, :movement => @movement, :language => @language, :source => nil)
+        @user = FactoryGirl.create(:user, movement: @movement, language: @language, source: nil)
       end
 
       context "joining a movement through the movement's homepage" do
@@ -468,22 +468,22 @@ describe User do
           @user.subscribe_through_homepage!
           @user.subscribe_through!(@join_page)
 
-          subscribed_events = @user.user_activity_events.where(:activity => UserActivityEvent::Activity::SUBSCRIBED)
+          subscribed_events = @user.user_activity_events.where(activity: UserActivityEvent::Activity::SUBSCRIBED)
           subscribed_events.count.should eql 1
         end
       end
 
       context "taking an action on an unsubscribe page" do
         it "should not create a subscribed event if the email on the unsubscribe request does not belong to any user" do
-          unsubscribe_page = FactoryGirl.create(:action_page, :action_sequence => @action_page.action_sequence)
-          unsubscribe_module = FactoryGirl.create(:unsubscribe_module, :pages => [unsubscribe_page], :language => @language)
+          unsubscribe_page = FactoryGirl.create(:action_page, action_sequence: @action_page.action_sequence)
+          unsubscribe_module = FactoryGirl.create(:unsubscribe_module, pages: [unsubscribe_page], language: @language)
           
-          @user = FactoryGirl.build(:user, :email => "kikkoman@soy.com", :movement => @movement, :language => @language)
+          @user = FactoryGirl.build(:user, email: "kikkoman@soy.com", movement: @movement, language: @language)
           @user.take_action_on!(unsubscribe_page)
 
           User.for_movement(@movement).find_by_email("kikkoman@soy.com").should be_nil
-          UserActivityEvent.where(:activity => UserActivityEvent::Activity::SUBSCRIBED, :content_module_id => unsubscribe_module.id).any?.should be_false
-          UserActivityEvent.where(:activity => UserActivityEvent::Activity::UNSUBSCRIBED, :content_module_id => unsubscribe_module.id).any?.should be_false
+          UserActivityEvent.where(activity: UserActivityEvent::Activity::SUBSCRIBED, content_module_id: unsubscribe_module.id).any?.should be_false
+          UserActivityEvent.where(activity: UserActivityEvent::Activity::UNSUBSCRIBED, content_module_id: unsubscribe_module.id).any?.should be_false
         end
       end
 
@@ -496,8 +496,8 @@ describe User do
 
     describe "unsubscribed existing users" do
       before(:each) do
-        @join_page = FactoryGirl.create(:action_page, :name => 'join')
-        @user = FactoryGirl.create(:user, :is_member => false, movement: @join_page.movement)
+        @join_page = FactoryGirl.create(:action_page, name: 'join')
+        @user = FactoryGirl.create(:user, is_member: false, movement: @join_page.movement)
       end
 
       it "becomes a member again if subscribing one more time" do
@@ -513,9 +513,9 @@ describe User do
   describe "capturing information when responding to an ask" do
     it "saves an email even if other user details are not valid" do
       user = User.new
-      required_details = {:first_name => :refresh}
+      required_details = {first_name: :refresh}
       movement = FactoryGirl.create(:movement)
-      user.save_with_valid_email(required_details, {:email => "valid@useful.com", :first_name => nil, :movement => movement}, nil, nil, nil)
+      user.save_with_valid_email(required_details, {email: "valid@useful.com", first_name: nil, movement: movement}, nil, nil, nil)
       user.should be_persisted
       user.should_not be_valid
     end
@@ -523,7 +523,7 @@ describe User do
 
   describe "unsubscribe" do
     it "should change member status to false and add an unsubscribed activity event" do
-      user = FactoryGirl.create(:user, :is_member => true)
+      user = FactoryGirl.create(:user, is_member: true)
       user.is_member?.should be_true
       UserActivityEvent.should_receive("unsubscribed!").with(user, nil)
 
@@ -533,7 +533,7 @@ describe User do
 
     it "should change member status to false and add an unsubscribed activity event belonging to an email" do
       email = FactoryGirl.create(:email)
-      user = FactoryGirl.create(:user, :is_member => true)
+      user = FactoryGirl.create(:user, is_member: true)
       user.is_member?.should be_true
       UserActivityEvent.should_receive("unsubscribed!").with(user, email)
 
@@ -568,7 +568,7 @@ describe User do
   describe "#umbrella_user" do
     it "should return the offline donatinos umbrella user" do
       movement = FactoryGirl.create(:movement)
-      User.create(:first_name => "Umbrella", :last_name => "User", :email => 'offlinedonations@yourdomain.org', :movement => movement)
+      User.create(first_name: "Umbrella", last_name: "User", email: 'offlinedonations@yourdomain.org', movement: movement)
 
       "offlinedonations@yourdomain.org".should eql User.umbrella_user.email
     end
@@ -581,10 +581,10 @@ describe User do
     end
 
     it "should mark a name as unsafe if it contains profanity" do
-      user = FactoryGirl.create(:user, :first_name => "Bob", :last_name => "Mierda")
+      user = FactoryGirl.create(:user, first_name: "Bob", last_name: "Mierda")
       user.name_safe.should == false
 
-      user = FactoryGirl.create(:user, :first_name => "Mierda", :last_name => "Villa")
+      user = FactoryGirl.create(:user, first_name: "Mierda", last_name: "Villa")
       user.name_safe.should == false
     end
   end
@@ -633,9 +633,9 @@ describe User do
     let(:postcode) { stub_model(GeoData, lat: "45.0", lng: "45.0") }
     before { GeoData.stub(:find_by_country_iso_and_postcode).with("br", "123456").and_return(postcode) }
 
-    context "when the user have postcode" do
-      it "should set latitude and longitude before save" do
-        user = FactoryGirl.build(:user, :postcode => "123456", :country_iso => "br")
+    context "when the user has a postcode" do
+      it "should set latitude and longitude before saving the user" do
+        user = FactoryGirl.build(:user, postcode: "123456", country_iso: "br")
         user.save
         user.lat.should be_== "45.0"
         user.lng.should be_== "45.0"
@@ -646,17 +646,25 @@ describe User do
         before { GeoData.stub(:find_by_country_iso_and_postcode).with("br", "123456").and_return(nil) }
 
         it "it should log the missing postcode/country" do
-          user = FactoryGirl.build(:user, :postcode => "123456", :country_iso => "br")
+          user = FactoryGirl.build(:user, postcode: "123456", country_iso: "br")
           Rails.logger.should_receive(:warn).with("Postcode \"123456\" for \"br\" not found.")
           user.save
           user.should be_persisted
+        end
+
+        it "should unset the lat and lng fields on the user" do
+          user = FactoryGirl.create(:user, postcode: "123456", country_iso: "br", lat: '12', lng: '10')
+          user.save
+
+          user.lat.should be_nil
+          user.lng.should be_nil
         end
       end
     end
 
     context "when the user doesn't have a postcode" do
       it "should not set latitude and longitude before save" do
-        user = FactoryGirl.build(:user, :postcode => nil)
+        user = FactoryGirl.build(:user, postcode: nil)
         user.save
         user.lat.should be_nil
         user.lng.should be_nil
