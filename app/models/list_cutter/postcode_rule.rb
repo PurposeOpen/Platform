@@ -17,7 +17,7 @@ module ListCutter
       "Postal code is #{self.postcodes.gsub(",", " or ")}"
     end
 
-    def can_negate
+    def can_negate?
       false
     end
   end
