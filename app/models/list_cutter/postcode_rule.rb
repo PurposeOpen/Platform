@@ -14,7 +14,11 @@ module ListCutter
     end
 
     def to_human_sql
-      "Postal code #{is_clause} #{self.postcodes.gsub(",", " or ")}"
+      "Postal code is #{self.postcodes.gsub(",", " or ")}"
+    end
+
+    def can_negate
+      false
     end
   end
 end
