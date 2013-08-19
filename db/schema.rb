@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130814182741) do
+ActiveRecord::Schema.define(:version => 20130819192857) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -671,6 +671,7 @@ ActiveRecord::Schema.define(:version => 20130814182741) do
   add_index "users", ["movement_id", "language_id"], :name => "index_users_on_movement_id_and_language_id"
   add_index "users", ["movement_id", "source", "deleted_at"], :name => "index_users_on_movement_id_and_source_and_deleted_at"
   add_index "users", ["name_safe"], :name => "index_users_on_name_safe"
+  add_index "users", ["postcode"], :name => "index_users_on_postcode"
   add_index "users", ["random"], :name => "users_random_idx"
 
   add_foreign_key "content_modules", "content_modules", :name => "live_content_module_id_fk", :column => "live_content_module_id"
