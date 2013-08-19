@@ -4,6 +4,7 @@ module Admin::ListCutterHelper
         {label: "Country", class: ListCutter::CountryRule},
         {label: "Zone", class: ListCutter::ZoneRule},
         {label: "Distance from Postcode", class: ListCutter::DistanceFromPostcodeRule},
+        {label: "Postcode", class: ListCutter::PostcodeRule},
         {label: "Domain", class: ListCutter::EmailDomainRule},
         {label: "Campaigns", class: ListCutter::CampaignRule},
         {label: "Action Page", class: ListCutter::ActionTakenRule},
@@ -16,8 +17,7 @@ module Admin::ListCutterHelper
         {label: "Donation Frequency", class: ListCutter::DonorRule},
         {label: "Donation Amount", class: ListCutter::DonationAmountRule},
         {label: "External Action", class: ListCutter::ExternalActionRule},
-        {label: "External Tag", class: ListCutter::ExternalTagRule},
-        {label: "Postal code", class: ListCutter::PostcodeRule}
+        {label: "External Tag", class: ListCutter::ExternalTagRule}
     ]
   end
 
