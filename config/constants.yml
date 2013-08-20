@@ -16,6 +16,7 @@ development: &default
   authenticate_api_calls: <%= ENV["AUTHENTICATE_API_CALLS"] || false %>
   readonly_database_url: <%= ENV["READONLY_DATABASE_URL"] %>
   no_reply_address: <%= ENV["NO_REPLY_ADDRESS"] || "noreply@yourdomain.com" %>
+  google_api_key: <%= ENV["GOOGLE_API_KEY"] %>
 
 production:
   <<: *default

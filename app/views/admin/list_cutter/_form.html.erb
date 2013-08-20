@@ -1,3 +1,9 @@
+<% content_for :header do %>
+  <% maps_js = AppConstants.google_api_key ? "https://maps.googleapis.com/maps/api/js?key=#{AppConstants.google_api_key}&sensor=false" : "http://maps.google.com/maps/api/js?sensor=false" %>
+
+  <%= javascript_include_tag maps_js %>
+<% end %>
+
 <div id="saved-recipients">
   <%= render :template => "admin/list_cutter/show" %>
 </div>

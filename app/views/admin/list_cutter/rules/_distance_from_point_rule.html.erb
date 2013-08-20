@@ -1,0 +1,25 @@
+<div class="distance_from_point_rule_options_container">
+  <div class="distance_from_point_rule_instructions">
+    Click the map to select a point. Drag the point or click elsewhere on the map to move it.
+  </div>
+  <div class="distance_from_point_rule_inputs">
+    is within
+    <%= f.text_field :distance, value: rule.distance, class: "required distance_from_point_rule_number_input" %>
+
+    <%= select_tag 'rules[distance_from_point_rule][$index][distance_unit]',
+                   options_for_select(ListCutter::DistanceFromPostcodeRule::DISTANCE_UNITS, rule.distance_unit),
+                   {multiple: false,
+                    id: "rules_distance_from_point_rule_$index_distance_unit_",
+                    class: "required distance_from_point_distance_unit_select",
+                    "data-placeholder" => "Choose a distance unit..."} %>
+  </div>
+
+  <div>
+    <div class='distance_from_point_rule_map'></div>
+  </div>
+
+  <div class='coordinate_fields'>
+    <%= f.label :lat, 'lat' %><%= f.text_field :lat, value: rule.lat, class: "required lat", readonly: true %>
+    <%= f.label :lng, 'lng' %><%= f.text_field :lng, value: rule.lng, class: "required lng", readonly: true %>
+  </div>
+</div>

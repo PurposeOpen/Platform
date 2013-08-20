@@ -3,6 +3,7 @@ module Admin::ListCutterHelper
     [
         {label: "Country", class: ListCutter::CountryRule},
         {label: "Zone", class: ListCutter::ZoneRule},
+        {label: "Distance from Point", class: ListCutter::DistanceFromPointRule},
         {label: "Distance from Postcode", class: ListCutter::DistanceFromPostcodeRule},
         {label: "Postcode", class: ListCutter::PostcodeRule},
         {label: "Domain", class: ListCutter::EmailDomainRule},

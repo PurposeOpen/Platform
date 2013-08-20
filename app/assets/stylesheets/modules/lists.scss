@@ -300,6 +300,40 @@
       }
     }
   }
+
+  .choose-distance_from_point_rule {
+    .distance_from_point_rule_inputs {
+      margin-top: 15px;
+      padding-left: 83px;
+    }
+    .distance_from_point_rule_instructions {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .distance_from_point_rule_number_input {
+      width: 119px;
+    }
+    .distance_from_point_rule_map {
+      margin-top: 15px;
+      height: 400px;
+      width: 729px;
+      border: solid 1px black;
+    }
+    .coordinate_fields {
+      margin-top: 10px;
+      label, input {
+        float: left;
+        color: #888;
+      }
+      label {
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+      input {
+        width: 170px;
+      }
+    }
+  }
 }
 
 form#listForm .list_cutter_error {

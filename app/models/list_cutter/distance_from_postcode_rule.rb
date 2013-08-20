@@ -3,7 +3,7 @@ module ListCutter
     fields :postcode, :country_iso, :distance, :distance_unit
 
     EARTH_RADIUS = {miles: 3956, kilometers: 6371}
-    DISTANCE_UNITS = ['miles', 'kilometers']
+    DISTANCE_UNITS = ['kilometers', 'miles']
 
     validates_presence_of :postcode, :distance
     validates_presence_of :country_iso, message: 'Please specify the country iso'

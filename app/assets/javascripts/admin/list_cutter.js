@@ -247,6 +247,176 @@ Purpose.ListCutter.country_rule_selected = {
   }
 }
 
+Purpose.ListCutter.maps = {
+  settings: {
+    center: new google.maps.LatLng(10, 1.75),
+    zoom: 2,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    styles: [ 
+      { 
+        featureType: "poi.business", 
+        elementType: "labels", 
+        stylers: [ 
+          { visibility: "off" } 
+        ] 
+      },
+      { 
+        featureType: "poi.place_of_worship", 
+        elementType: "labels", 
+        stylers: [ 
+          { visibility: "off" } 
+        ] 
+      },
+      { 
+        featureType: "poi.attraction", 
+        elementType: "labels", 
+        stylers: [ 
+          { visibility: "off" } 
+        ] 
+      },
+      { 
+        featureType: "poi.school", 
+        elementType: "labels", 
+        stylers: [ 
+          { visibility: "off" } 
+        ] 
+      },
+      { 
+        featureType: "poi.sports_complex", 
+        elementType: "labels", 
+        stylers: [ 
+          { visibility: "off" } 
+        ]
+      }
+    ]
+  }
+}
+
+Purpose.ListCutter.distance_from_point_rule_selected = {
+  init: function(filter){
+    this.bind(filter, true);
+  },
+
+  bind: function(filter, set_up_existing_filter){ 
+    var gmap, marker, circle;
+
+    var distance_from_point_rule_inputs = $(filter).find('.distance_from_point_rule_inputs');
+    var distance_input = $(filter).find('.distance_from_point_rule_number_input');
+    var distance_unit_input = $(filter).find('.distance_from_point_distance_unit_select');
+    var coordinate_field_lat = $(filter).find('.coordinate_fields input.lat');
+    var coordinate_field_lng = $(filter).find('.coordinate_fields input.lng');
+
+    function updateLatLng(event) {
+      coordinate_field_lat.val(event.latLng.lat());
+      coordinate_field_lng.val(event.latLng.lng());
+    }
+
+    function placeMarker(location) {
+      if ( marker ) {
+        marker.setPosition(location);
+      } else {
+        marker = new google.maps.Marker({
+          position: location,
+          map: gmap,
+          draggable: true
+        });
+      }
+
+      google.maps.event.addListener(marker, 'drag', function(event) {
+        updateLatLng(event);
+      });
+    }
+
+    function getRadius() {
+      // in metres
+      var distance, distance_unit, radius;
+
+      var units_in_meters = {
+        miles: 1609.34,
+        kilometers: 1000
+      }
+
+      distance = parseFloat( distance_input.val() );
+      distance_unit = distance_unit_input.val();
+
+      if ( distance ){
+        unit_in_meters = units_in_meters[distance_unit];
+        radius = (unit_in_meters * distance);
+      }
+
+      return radius;
+    }
+
+    function setCircle(radius) {
+      if ( !circle ) {
+        circle = new google.maps.Circle({
+          map: gmap,
+          radius: radius,
+          fillColor: '#AA0000',
+          strokeColor: '#555'
+        });
+      } else {
+        circle.setRadius(radius);
+        circle.setMap(gmap);
+      }
+
+      if ( marker ) {
+        circle.bindTo('center', marker, 'position');
+      }
+    }
+
+    function unsetCircle() {
+      if ( circle ) { circle.setMap(null) };
+    }
+
+    function createMap() {
+      gmap = new google.maps.Map($(filter).find('.distance_from_point_rule_map')[0], Purpose.ListCutter.maps.settings);
+
+      google.maps.event.addListener(gmap, 'click', function(event) {
+        placeMarker(event.latLng);
+        updateLatLng(event);
+        unsetCircle();
+        displayControls();
+      });
+    }
+
+    function displayControls() {
+      $(filter).find('.distance_from_point_rule_instructions').hide();
+
+      if ( distance_from_point_rule_inputs.hasClass('hidden') ) {
+        distance_from_point_rule_inputs.fadeIn(500).removeClass('hidden').effect("highlight", {}, 3000);
+      }
+    }
+
+    function setupControls() {
+      if ( !distance_input.val() ) {
+        distance_from_point_rule_inputs.addClass('hidden').hide();
+      }
+
+      distance_input.on('input', function() {
+        setCircle(getRadius());
+      });
+
+      distance_unit_input.change(function() {
+        setCircle(getRadius());
+      });
+    }
+
+    createMap();
+    setupControls();
+
+    if ( set_up_existing_filter ) {
+      var lat_lng = new google.maps.LatLng(coordinate_field_lat.val(), coordinate_field_lng.val())
+
+      displayControls();
+      placeMarker(lat_lng);
+      setCircle(getRadius());
+      gmap.setCenter(lat_lng);
+      gmap.fitBounds(circle.getBounds());
+    }
+  }
+}
+
 $.page("#list_cutter_edit", "#list_cutter_new", function () {
   var view = View({
     allTemplates: "script[type='text/template']",
