@@ -72,6 +72,7 @@ group :development do
 end
 
 group :production, :staging do
+  gem 'memcachier'
   gem 'dalli'
 end
 
