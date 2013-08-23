@@ -17,7 +17,7 @@ Then /^the request protocol should be "(\w*)"/ do |protocol|
 end
 
 Given /^I wait (\d+) seconds$/ do |seconds|
-  sleep(seconds.to_f)
+  sleep(2)
 end
 
 Then /^I should (not )?see an element "([^"]*)"$/ do |negate, selector|

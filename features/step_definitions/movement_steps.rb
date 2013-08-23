@@ -69,7 +69,7 @@ When /^I add the language (.+)$/ do |language|
 end
 When /^I select the default language as (.+)$/ do |default_language|
   find(:css,"select[id=movement_default_language]").select(default_language)
-  sleep 10
+  sleep 2
 end
 Then /^I check for the movement (.+) and select it$/ do|movement_name|
   movement_link=find(:xpath,"//div[@id='application']//h2//a[text()='"+movement_name+"']")
@@ -78,7 +78,7 @@ Then /^I check for the movement (.+) and select it$/ do|movement_name|
 end
 Then /^I check if I am logged into the platform$/ do
  assert_equal(find(:xpath,"//a[text()='Log Out']").present?,true)
- sleep 60
+ sleep 2
 end
 Then /^I check if I am on the movement home page for (.+)$/ do|movement_name|
   breadcrumbs=page.find(:xpath,"//div[@class='breadcrumbs']").text

@@ -73,5 +73,5 @@ end
 
 When /^I fill the added html module with some content$/ do
   page.execute_script('$("div.modules_container span.mceEditor iframe")[0].contentDocument.documentElement.innerHTML="<html>some content</html>"')
-  sleep 3
+  sleep 2
 end

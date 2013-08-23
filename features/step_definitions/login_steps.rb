@@ -5,7 +5,7 @@ When /^I log in as (.+),(.+) to Platform$/ do |role,password|
   click_button "Sign in"
 end
 And /^I select the movement(.+)$/ do|movement_name|
-  sleep 5
+  sleep 2
   #if  page.should have_css('h2', :text => movement_name)
     #click_link (movement_name)
  #end
@@ -43,12 +43,12 @@ When /^I create a new page action with (.+) named (.+)$/ do |module_type,module_
 end
 When /^I goto action Page  (.+)$/ do|page_name|
   click_link(page_name)
-  sleep 25
+  sleep 2
 end
 When /^I add HTML for Header content$/ do
 #  page.all(:css,"ul.add_module_buttons")[1].click
   page.find(:css,"div[data-layout-type='header_content'] ul.add_module_buttons a.html_module").click
-  sleep 10
+  sleep 2
 end
 When /^I enter my information for the header content as (.+)$/ do|header_text|
 
@@ -58,11 +58,11 @@ page.execute_script('$("div.modules_container span.mceEditor iframe")[0].content
 end
 When /^I add HTML for Main content$/ do
   page.find(:css,"div[data-layout-type='main_content'] ul.add_module_buttons a.html_module").click
-  sleep 10
+  sleep 2
 end
 When /^I Save Page$/ do
   click_button "Save page"
-  sleep 5
+  sleep 2
 end
 When /^I check if am on the sequence page$/ do
   assert page.should have_content("Edit sequence")

@@ -85,7 +85,7 @@ When /^I preview the petition page$/ do |page_name|
  end
 end
 Then /^I check for errors$/ do
-  sleep 5
+  sleep 2
   p page.has_xpath?("//ul[@class='module_errors error']")
  if page.has_xpath?("//ul[@class='module_errors error']")==true
    click_link("Log Out")

@@ -212,7 +212,7 @@ Given /^I print date$/ do
 end
 Then /^I check if the email has been scheduled for the next day$/ do
  email_table= page.all(:css,"table.emails td")
- sleep 3
+ sleep 2
  email_date=email_table[3].text()
  date_tomorrow=Date.tomorrow
  date_tomorrow=date_tomorrow.strftime('%m/%d/%Y')

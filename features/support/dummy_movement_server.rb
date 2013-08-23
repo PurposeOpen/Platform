@@ -16,7 +16,7 @@ class DummyMovementServer
 
   def wait_till_server_is_up
     #TODO hit health dashboard until the status is OK
-    sleep 10
+    sleep 2
   end
 
   private

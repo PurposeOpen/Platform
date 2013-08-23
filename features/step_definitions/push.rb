@@ -20,9 +20,9 @@ When /^I enter the details of the email$/ do
   fill_in("email_reply_to",:with=>"noreply@yourdomain.com")
   fill_in("email_subject",:with=>"Test Email")
   page.execute_script('$("iframe")[0].contentDocument.documentElement.innerHTML="<html>This is creating a new test blast email</html>"')
-  sleep 5
+  sleep 2
   click_button("Save")
-  sleep 5
+  sleep 2
 end
 
 When /^(?:|I )write in "([^"]*)" with "([^"]*)"$/ do |field, value|

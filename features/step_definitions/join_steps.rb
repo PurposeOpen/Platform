@@ -1,27 +1,27 @@
 When /^I enter details for creating a join module (.+)$/ do|module_name|
   click_link(module_name)
   page.find(:css,"div[data-layout-type='header_content'] ul.add_module_buttons a.html_module").click
-  sleep 5
+  sleep 2
   page.execute_script('$("div.modules_container span.mceEditor iframe")[0].contentDocument.documentElement.innerHTML="<html>This is header content</html>"')
   page.find(:css,"div[data-layout-type='main_content'] ul.add_module_buttons a.html_module").click
-  sleep 5
+  sleep 2
   page.execute_script('$("div.modules_container span.mceEditor iframe")[1].contentDocument.documentElement.innerHTML="<html>This is main content</html>"')
   element=page.all(:css,"div.module_body input")
   element[2].set("Join Title")
   page.execute_script('$("div.modules_container span.mceEditor iframe")[2].contentDocument.documentElement.innerHTML="<html>This is join statement</html>"')
-  sleep 4
+  sleep 2
   click_button "Save page"
-  sleep 5
+  sleep 2
 end
 When /^I sign the join as (.+)$/ do|mail_id|
-  sleep 4
+  sleep 2
   fill_in("member_info_email",:with=> mail_id)
-  sleep 5
+  sleep 2
   fill_in("member_info_first_name",:with=>"First Name")
   fill_in("member_info_last_name",:with=>"Last Name")
   p find(:css,"a.selectBox").methods
   find(:css,"a.selectBox").click
-  sleep 4
+  sleep 2
   find(:css,"a.selectBox").set("Afghanistan")
   sleep 2
   click_button("Join")

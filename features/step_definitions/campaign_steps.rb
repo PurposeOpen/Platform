@@ -78,6 +78,6 @@ When /^I delete the campaign (.+)$/ do|campaign_name|
   click_link("Delete")
 end
 When /^I go back to the campaign (.+)$/ do |campaign_name|
-  sleep 5
+  sleep 2
   click_link(campaign_name)
 end
