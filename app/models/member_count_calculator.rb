@@ -47,7 +47,11 @@ class MemberCountCalculator < ActiveRecord::Base
   def update_count!
     real_member_count = User.subscribed_to(movement).count
     growth = (real_member_count - last_member_count)/FACTOR
-    update_attributes(:current => current + growth, :last_member_count => real_member_count) if growth > 0
+    if growth > 0
+      update_attributes(:current => current + growth) 
+    else
+      update_attributes(:last_member_count => real_member_count) 
+    end
     current
   end
 
