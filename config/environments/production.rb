@@ -56,7 +56,7 @@ PurposePlatform::Application.configure do
 
   memcache_servers = ENV['MEMCACHE_SERVERS']
   config.cache_store = :dalli_store, memcache_servers, 
-  { :namespace => ALLOUT, :expires_in => 10.days, :compress => true }
+  { :namespace => "allout_platform_production", :expires_in => 10.days, :compress => true }
 
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
