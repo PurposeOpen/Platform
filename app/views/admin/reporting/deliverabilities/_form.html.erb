@@ -1,0 +1,27 @@
+<%= form_for(@admin_reporting_deliverability, :url=>admin_movement_reporting_deliverabilities_path(@movement,@admin_reporting_deliverability)) do |f| %>
+  <% if @admin_reporting_deliverability.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@admin_reporting_deliverability.errors.count, "error") %> prohibited this admin_reporting_deliverability from being saved:</h2>
+
+      <ul>
+      <% @admin_reporting_deliverability.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :target_date %><br />
+    <%= f.date_select :target_date %>
+  </div>
+<!--
+  <div class="field">
+    <%= f.label :report %><br />
+    <%= f.text_area :report %>
+  </div>
+-->
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

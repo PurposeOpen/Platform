@@ -1,3 +1,4 @@
+@group2
 Feature: Cut list based on different options
 
   Background:

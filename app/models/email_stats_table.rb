@@ -1,7 +1,7 @@
 class EmailStatsTable < ReportTable
 
   def self.columns
-    ["Created", "Sent At", "Blast", "Email", "Sent to", "Opens", "Opens Percentage", "Clicks", "Clicks Percentage", "Actions Taken", "Actions Taken Percentage", "New Members", "New Members Percentage", "Unsubscribed", "Unsubscribed Percentage", "Spam", "Spam Percentage", "Total $", "Avg. $"]
+    ["Id","Created", "Sent At", "Blast", "Email", "Sent to", "Opens", "Opens Percentage", "Clicks", "Clicks Percentage", "Actions Taken", "Actions Taken Percentage", "New Members", "New Members Percentage", "Unsubscribed", "Unsubscribed Percentage", "Spam", "Spam Percentage", "Total $", "Avg. $"]
   end
 
   def initialize(emails)
@@ -16,6 +16,7 @@ class EmailStatsTable < ReportTable
   def row_for(email)
     stats = load_stats[email.id]
     row   = [
+      email.id,
       email.created_at.to_date.to_s,
       email.sent_at.to_s,
       email.blast.name,
@@ -40,9 +41,7 @@ class EmailStatsTable < ReportTable
 
   def load_stats
     @load_stats ||= begin
-
-      stats = init_stats_hash([:email_sent, :email_viewed, :email_clicked, :action_taken, :subscribed, :unsubscribed, :email_spammed])
-
+      stats = init_stats_hash([:email_sent, :email_viewed, :email_clicked, :action_taken, :subscribed, :unsubscribed, :email_spammed, :email_bounced])
       stat_objects = UniqueActivityByEmail.where(:email_id => @emails.map(&:id))
 
       latest_date = get_latest_date(stat_objects)

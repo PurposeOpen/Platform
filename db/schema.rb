@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130327195212) do
+ActiveRecord::Schema.define(:version => 20130517173716) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -29,6 +29,20 @@ ActiveRecord::Schema.define(:version => 20130327195212) do
   end
 
   add_index "action_sequences", ["slug"], :name => "index_action_sequences_on_slug"
+
+  create_table "admin_reporting_deliverabilities", :force => true do |t|
+    t.date     "target_date"
+    t.text     "report"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "admin_reporting_provider_domains", :force => true do |t|
+    t.string   "domain"
+    t.string   "provider"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "autofire_emails", :force => true do |t|
     t.string   "subject"
@@ -172,6 +186,14 @@ ActiveRecord::Schema.define(:version => 20130327195212) do
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.text     "text"
+  end
+
+  create_table "email_recipient_details", :force => true do |t|
+    t.integer  "email_id"
+    t.integer  "recipients_count"
+    t.text     "sent_to_users_ids"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "emails", :force => true do |t|
@@ -400,6 +422,19 @@ ActiveRecord::Schema.define(:version => 20130327195212) do
     t.datetime "deleted_at"
   end
 
+  create_table "push_bounced_emails", :id => false, :force => true do |t|
+    t.integer  "movement_id", :null => false
+    t.integer  "user_id",     :null => false
+    t.integer  "push_id",     :null => false
+    t.integer  "email_id",    :null => false
+    t.datetime "created_at"
+  end
+
+  add_index "push_bounced_emails", ["movement_id", "email_id"], :name => "index_push_bounced_emails_on_movement_id_and_email_id"
+  add_index "push_bounced_emails", ["movement_id", "push_id"], :name => "index_push_bounced_emails_on_movement_id_and_push_id"
+  add_index "push_bounced_emails", ["push_id"], :name => "index_push_bounced_emails_on_push_id"
+  add_index "push_bounced_emails", ["user_id", "movement_id", "created_at"], :name => "idx_list_cutter"
+
   create_table "push_clicked_emails", :id => false, :force => true do |t|
     t.integer  "movement_id", :null => false
     t.integer  "user_id",     :null => false
@@ -501,24 +536,23 @@ ActiveRecord::Schema.define(:version => 20130327195212) do
   add_index "unique_activity_by_emails", ["email_id", "activity"], :name => "index_unique_activity_by_emails_on_email_id_and_activity", :unique => true
 
   create_table "user_activity_events", :force => true do |t|
-    t.integer  "user_id",                                :null => false
-    t.string   "activity",                 :limit => 64, :null => false
+    t.integer  "user_id",                           :null => false
+    t.string   "activity",            :limit => 64, :null => false
     t.integer  "campaign_id"
     t.integer  "action_sequence_id"
     t.integer  "page_id"
     t.integer  "content_module_id"
-    t.string   "content_module_type",      :limit => 64
+    t.string   "content_module_type", :limit => 64
     t.integer  "user_response_id"
-    t.string   "user_response_type",       :limit => 64
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
-    t.integer  "donation_amount_in_cents"
-    t.string   "donation_frequency"
+    t.string   "user_response_type",  :limit => 64
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.integer  "email_id"
     t.integer  "push_id"
     t.integer  "movement_id"
     t.string   "comment"
     t.boolean  "comment_safe"
+    t.string   "reason"
   end
 
   add_index "user_activity_events", ["action_sequence_id"], :name => "idx_uae_action_seq_id"

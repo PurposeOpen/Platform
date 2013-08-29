@@ -28,7 +28,6 @@
 #  is_admin                 :boolean          default(FALSE)
 #  created_by               :string(255)
 #  updated_by               :string(255)
-#  postcode_id              :integer
 #  is_volunteer             :boolean          default(FALSE)
 #  random                   :float
 #  movement_id              :integer          not null
@@ -171,31 +170,23 @@ class User < ActiveRecord::Base
     UserActivityEvent.subscribed!(self, email, page, page.ask_module_for_language(self.language)) unless is_already_subscribed?
   end
 
-  def unsubscribe!(email = nil)
+  def unsubscribe!(email = nil, reason=nil)
     unless self.new_record?
       self.transaction do
         self.is_member = false
-        UserActivityEvent.unsubscribed!(self, email)
+        UserActivityEvent.unsubscribed!(self,email,reason)
         self.save!
       end
     end
   end
 
-  def permanently_unsubscribe!(email = nil)
-    self.unsubscribe!(email)
+  def permanently_unsubscribe!(email = nil, reason = nil)
+    self.unsubscribe!(email,reason)
     self.update_attribute :permanently_unsubscribed, true
   end
 
   def can_subscribe?
     !self.permanently_unsubscribed
-  end
-
-  def recurring_donations
-    Donation.where(:user_id => self.id).where(:frequency => ["weekly", "monthly", "annual"])
-  end
-
-  def transactions
-    Transaction.includes(:donation => [:user, :action_page => [:action_sequence => [:campaign]]]).where("donations.user_id" => self.id)
   end
 
   def successful_transactions
@@ -208,12 +199,6 @@ class User < ActiveRecord::Base
 
   def self.umbrella_user
     find_by_email(AppConstants.umbrella_user_email_address)
-  end
-
-  def transaction_history(options={})
-    relation = Transaction.successful.joins(:donation).where(:donations => {:user_id => self.id}).order("created_at")
-    relation = relation.where(:transactions => {:created_at => (options[:from]..options[:to])}) unless options[:from].blank?
-    relation
   end
 
   def member?;

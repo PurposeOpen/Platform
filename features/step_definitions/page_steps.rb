@@ -84,12 +84,6 @@ When /^I preview the petition page$/ do |page_name|
    click_link("Log Out")
  end
 end
-When /^I wait for the page (.+)$/ do |page_name|
-  wait_until(10) do
-    module_name=find(:xpath,"//input[@id='action_page_name']").value
-    module_name.should have_content(page_name)
-  end
-end
 Then /^I check for errors$/ do
   sleep 5
   p page.has_xpath?("//ul[@class='module_errors error']")

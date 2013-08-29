@@ -28,7 +28,6 @@
 #  is_admin                 :boolean          default(FALSE)
 #  created_by               :string(255)
 #  updated_by               :string(255)
-#  postcode_id              :integer
 #  is_volunteer             :boolean          default(FALSE)
 #  random                   :float
 #  movement_id              :integer          not null

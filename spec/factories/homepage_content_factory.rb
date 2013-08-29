@@ -24,8 +24,8 @@ FactoryGirl.define do
     join_message         "Join Message"
     follow_links         Hash.new
     association         :language
-    after_create { |content|
+    after(:create) do |content|
       content.homepage = FactoryGirl.create(:movement).homepage
-    }
+    end
   end
 end

@@ -14,13 +14,12 @@
 #  user_response_type       :string(64)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  donation_amount_in_cents :integer
-#  donation_frequency       :string(255)
 #  email_id                 :integer
 #  push_id                  :integer
 #  movement_id              :integer
 #  comment                  :string(255)
 #  comment_safe             :boolean
+#  reason                   :string(255)
 #
 
 class UserActivityEvent < ActiveRecord::Base
@@ -53,6 +52,7 @@ class UserActivityEvent < ActiveRecord::Base
     EMAIL_SENT = :email_sent
     UNSUBSCRIBED = :unsubscribed
     EMAIL_SPAMMED = :email_spammed
+    EMAIL_BOUNCED = :email_bounced
   end
 
   scope :actions_taken, where(:activity => Activity::ACTION_TAKEN)
@@ -63,6 +63,7 @@ class UserActivityEvent < ActiveRecord::Base
   scope :emails_viewed, where(:activity => Activity::EMAIL_VIEWED)
   scope :emails_clicked, where(:activity => Activity::EMAIL_CLICKED)
   scope :emails_spammed, where(:activity => Activity::EMAIL_SPAMMED)
+  scope :emails_bounced, where(:activity => Activity::EMAIL_BOUNCED)
   scope :actions_taken_for_sequence, (proc do |action_sequence|
         actions_taken.includes([{:user => :language}, :page, :action_sequence]).where(:action_sequence_id => action_sequence.id)
       end)
@@ -159,6 +160,17 @@ class UserActivityEvent < ActiveRecord::Base
     )
   end
 
+  
+  def self.email_bounced!(user, email, reason)
+    Push.log_activity!(:email_bounced, user, email)
+    create!(
+      :activity => Activity::EMAIL_BOUNCED,
+      :user => user,
+      :email => email,
+      :reason => reason 
+    )
+  end
+  
   def self.email_viewed!(user, email)
     uae = UserActivityEvent.new(:activity => Activity::EMAIL_VIEWED,
       :user => user,
@@ -170,11 +182,12 @@ class UserActivityEvent < ActiveRecord::Base
     uae
   end
 
-  def self.unsubscribed!(user, email=nil)
+  def self.unsubscribed!(user, email=nil, reason=nil)
     create!(
       :activity => Activity::UNSUBSCRIBED,
       :user => user,
-      :email => email
+      :email => email,
+      :reason => reason
     )
   end
 
@@ -219,7 +232,7 @@ class UserActivityEvent < ActiveRecord::Base
   def to_row
     [created_at, action_sequence.name, page.name, content_module_type.to_s.sub('Module',''), user.language_iso_code,
       user.email, user.first_name, user.last_name, user.name_safe, user.country_iso_code, user.postcode, user.mobile_number,
-      comment, comment_safe, donation_amount_in_cents, donation_frequency]
+      comment, comment_safe]
   end
 
   private

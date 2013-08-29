@@ -1,4 +1,4 @@
-@admin
+@group4 @admin
 Feature: Managing modules
   In order to add content to the web site
   As a campaigner

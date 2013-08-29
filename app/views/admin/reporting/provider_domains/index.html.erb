@@ -1,0 +1,25 @@
+<h1>Listing admin_reporting_provider_domains</h1>
+
+<table>
+  <tr>
+    <th>Domain</th>
+    <th>Provider</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @admin_reporting_provider_domains.each do |admin_reporting_provider_domain| %>
+  <tr>
+    <td><%= admin_reporting_provider_domain.domain %></td>
+    <td><%= admin_reporting_provider_domain.provider %></td>
+    <td><%= link_to 'Show', admin_reporting_provider_domain %></td>
+    <td><%= link_to 'Edit', edit_admin_reporting_provider_domain_path(admin_reporting_provider_domain) %></td>
+    <td><%= link_to 'Destroy', admin_reporting_provider_domain, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Provider domain', new_admin_reporting_provider_domain_path %>

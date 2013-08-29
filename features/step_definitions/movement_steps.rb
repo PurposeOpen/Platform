@@ -87,7 +87,7 @@ end
 Then /^I check for (.+) button$/ do |button_name|
   assert_equal(find(:xpath,"//a[text()='"+button_name+"']").present?,true)
 end
-When /^I navigate to (.+)$/ do|movement_name|
+When /^I navigate to the (.+) movement$/ do|movement_name|
   find(:xpath,"//i[@class='icon icon-chevron-down']").click()
   find(:xpath,"//li[@class='ui-menu-item']/a[text()='"+movement_name+"']").click
 

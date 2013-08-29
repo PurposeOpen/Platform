@@ -1,7 +1,7 @@
-<div id="emails_list" class="list_group_item">
+<div id="pushes_list" class="list_group_item">
   <h3 class="tooltip" data-tip="pushes-tip">Pushes</h3>
   <% @pushes.each do |push| %>
-    <div class="push clearfix" id="email-<%= push.id %>">
+    <div class="push clearfix" id="push-<%= push.id %>">
       <%= link_to push.name, admin_movement_push_path(@movement, push) %>
       <%= link_to "Rename", edit_admin_movement_push_path(@movement, push), :class => 'right' %>
     </div>

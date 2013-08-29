@@ -51,7 +51,7 @@ class Movement < ActiveRecord::Base
   before_validation :assign_default_password
 
   after_initialize :ensure_homepage_exists
-  after_create ->{self.create_member_count_calculator}
+  after_create { MemberCountCalculator.init(self) }
 
   validates_presence_of :homepage
   validates_length_of :name, :maximum => 20, :minimum => 3

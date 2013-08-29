@@ -38,7 +38,7 @@ class List < ActiveRecord::Base
     end
   end
 
-  def count_by_rules(rules=self.rules, &block)
+  def count_by_rules_excluding_users_from_push(rules=self.rules, &block)
     final_result = execute_query(:select_all, self.count_by_language_relation, rules, &block)
     
     languages = Language.all.index_by(&:id)
@@ -48,42 +48,16 @@ class List < ActiveRecord::Base
     end
   end
 
-  # Yields to given block once per query executed with description, SQL, and elapsed time.
-  def execute_query(selection_type, relation, rules, &block)
-    create_tables! rules, &block
-
-    final_relation = rules.inject(relation) do |rel, rule|
-      rel.joins(rule.join_sql).where(rule.filter_sql)
-    end
-
-    sql = final_relation.to_sql
-
-    total_time, total_result = measure { ReadOnly.connection.send(selection_type, sql) }
-    block.call "Combined query", sql, total_time unless block.nil?
-    total_result
-  ensure
-    drop_tables! rules
-  end
-
-  def filter_by_rules(rules=self.rules, &block)
-    execute_query :select_values, self.list_relation, rules, &block
-  end
-
   def filter_by_rules_excluding_users_from_push(email, options={}, &block)
     options[:no_jobs]         ||= 1
-    options[:ignore_language] ||= false
 
     relation = self.list_relation
-    relation = partition_users_by_job_id(relation, options[:no_jobs], options[:current_job_id]) if options[:no_jobs] > 1
-    relation = filter_users_by_language(relation, email) unless options[:ignore_language]
+    relation = filter_users_by_language(relation, email)
 
     if options[:limit].is_a? Fixnum
       relation = relation.order(:random).limit(options[:limit])
     end
-
-    exclude_users_rule = ListCutter::ExcludeUsersRule.new push_id: email.blast.push.id, movement: movement
-
-    execute_query :select_values, relation, self.rules + [ exclude_users_rule ], &block
+    execute_query :select_values, relation, self.rules, &block
   end
 
   def count_by_language_relation
@@ -101,8 +75,27 @@ class List < ActiveRecord::Base
 
   private
 
-  def partition_users_by_job_id(relation, no_jobs, current_job_id)
-    relation.select("MOD(users.id, #{no_jobs}) modulus").having("modulus = #{current_job_id || 0}")
+  # Yields to given block once per query executed with description, SQL, and elapsed time.
+  def execute_query(selection_type, relation, rules, &block)
+    rules_with_excluded_users = []
+    begin
+      exclude_users_rule = ListCutter::ExcludeUsersRule.new push_id: self.blast.push.id, movement: movement
+      rules_with_excluded_users = rules + [ exclude_users_rule ]
+
+      create_tables! rules_with_excluded_users, &block
+
+      final_relation = rules_with_excluded_users.inject(relation) do |rel, rule|
+        rel.joins(rule.join_sql).where(rule.filter_sql)
+      end
+
+      sql = final_relation.to_sql
+
+      total_time, total_result = measure { ReadOnly.connection.send(selection_type, sql) }
+      block.call "Combined query", sql, total_time unless block.nil?
+      total_result
+    ensure
+      drop_tables! rules_with_excluded_users
+    end
   end
 
   def filter_users_by_language(relation, email)

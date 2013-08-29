@@ -33,7 +33,24 @@ begin
     end
   end
 
-rescue LoadError
+  task :travis do
+    if ENV['TRAVIS_ENV'] == 'specs'
+      ["jasmine:ci",:jslint, :spec].each do | t |
+        Rake::Task[t].invoke
+      end
+    else
+      group = ENV['TRAVIS_ENV']
+      ["cucumber -p #{group}"].each do |cmd|
+        puts "Starting to run #{cmd}..."
+        system("export DISPLAY=:99.0 && bundle exec #{cmd}")
+        raise "#{cmd} failed!" unless $?.exitstatus == 0
+      end
+    end
+  end
+
+rescue LoadError => exception 
+  puts "Rescued a Rakefile load error: "
+  puts exception
 end
 
 PurposePlatform::Application.load_tasks

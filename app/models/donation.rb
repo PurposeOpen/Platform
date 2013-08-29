@@ -10,19 +10,10 @@
 #  frequency              :string(32)       not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  card_type              :string(32)
-#  card_expiry_month      :integer
-#  card_expiry_year       :integer
-#  card_last_four_digits  :string(4)
-#  name_on_card           :string(255)
 #  active                 :boolean          default(TRUE)
 #  last_donated_at        :datetime
 #  page_id                :integer          not null
 #  email_id               :integer
-#  cheque_number          :string(128)
-#  cheque_name            :string(255)
-#  cheque_bank            :string(255)
-#  cheque_branch          :string(255)
 #  recurring_trigger_id   :string(255)
 #  last_tried_at          :datetime
 #  identifier             :string(255)
@@ -65,6 +56,11 @@ class Donation < ActiveRecord::Base
   def self.total_in_dollar_cents_by_action_page(action_page_id)
     result = Donation.select('COALESCE(SUM(amount_in_dollar_cents), 0) as total').where(:page_id => action_page_id).group('donations.page_id')
     result.empty? ? 0 : result[0].total
+  end
+
+  def self.stats_by_action_page(action_page_id)
+    result = Donation.select('COALESCE(COUNT(amount_in_dollar_cents), 0) as donations_count, COALESCE(SUM(amount_in_dollar_cents), 0) as total_money_collected').where(:page_id => action_page_id).group('donations.page_id')
+    result.empty? ? [0,0] : [result[0].donations_count, result[0].total_money_collected]
   end
 
   def made_to

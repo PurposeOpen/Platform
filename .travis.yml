@@ -1,0 +1,16 @@
+language: ruby
+rvm:
+  - 1.9.3
+script:
+  - RAILS_ENV=test bundle exec rake --trace db:migrate test
+  - RAILS_ENV=test bundle exec rake --trace db:test:prepare
+  - RAILS_ENV=test bundle exec rake travis
+
+before_script:
+  - mysql -e 'create database platform_test'
+  - "sh -e /etc/init.d/xvfb start"
+
+env:
+  - TRAVIS_ENV=group1
+  - TRAVIS_ENV=group2
+  - TRAVIS_ENV=specs

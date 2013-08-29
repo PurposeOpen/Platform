@@ -7,6 +7,7 @@ PurposePlatform::Application.configure do
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
+  config.action_controller.perform_caching = false if ENV['DISABLE_CACHE']=='false'
 
   config.action_controller.allow_forgery_protection    = true
 
@@ -34,8 +35,11 @@ PurposePlatform::Application.configure do
 
   # See everything in the log (default is :info)
   # config.log_level = :debug
-  config.logger = Logger.new(STDOUT)
-  config.logger.level = ENV['LOG_LEVEL'].blank? ? Logger::INFO : Logger.const_get(ENV['LOG_LEVEL'])
+
+  # config.logger = Logger.new(STDOUT)
+  # config.logger.level = ENV['LOG_LEVEL'].blank? ? Logger::INFO : Logger.const_get(ENV['LOG_LEVEL'])
+  
+  config.log_level = ENV['LOG_LEVEL'].blank? ? :info : ENV['LOG_LEVEL'].to_sym
 
   # Prepend all log lines with the following tags
   # config.log_tags = [ :subdomain, :uuid ]
@@ -45,7 +49,10 @@ PurposePlatform::Application.configure do
   
   # Use a different cache store in production
   # config.cache_store = :mem_cache_store
-  config.cache_store = :dalli_store
+
+  # Use a different cache store in production
+  redis_url = ENV['REDIS_URL']
+  config.cache_store = :redis_store, "#{redis_url}" #, { expires_in: 90.minutes }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
@@ -71,8 +78,8 @@ PurposePlatform::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5  
 
-  config.action_mailer.default_url_options = { :host => 'platform.yourdomain.com' }
-  config.action_controller.default_url_options = { :host => 'platform.yourdomain.com' }
+  config.action_mailer.default_url_options = { :host => "#{Rails.env}.platform.allout.org" }
+  #config.action_controller.default_url_options = { :host => 'platform.allout.org' }
 
   # config.action_controller.asset_host = "https://#{S3[:bucket]}.s3.amazonaws.com"
 

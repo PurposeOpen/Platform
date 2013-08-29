@@ -379,8 +379,7 @@ describe User do
     it "should change member status to false and add an unsubscribed activity event" do
       user = FactoryGirl.create(:user, :is_member => true)
       user.is_member?.should be_true
-      UserActivityEvent.should_receive("unsubscribed!").with(user, nil)
-
+      UserActivityEvent.should_receive("unsubscribed!").with(user, nil, nil)
       user.unsubscribe!
       user.is_member?.should be_false
     end
@@ -389,7 +388,7 @@ describe User do
       email = FactoryGirl.create(:email)
       user = FactoryGirl.create(:user, :is_member => true)
       user.is_member?.should be_true
-      UserActivityEvent.should_receive("unsubscribed!").with(user, email)
+      UserActivityEvent.should_receive("unsubscribed!").with(user, email, nil)
 
       user.unsubscribe!(email)
       user.is_member?.should be_false

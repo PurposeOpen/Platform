@@ -71,10 +71,10 @@ module SeedData
 
     # pattern for ids: movement-page-language-counter
     # example:
-    # walkfree = second movement
-    # learn page = second page in walkfree
-    # vi = 4th language in walkfree
-    # third module in vi for the learn page on walkfree = id 2243
+    # movement = second movement
+    # learn page = second page in movement
+    # vi = 4th language in movement
+    # third module in vi for the learn page on movement = id 2243
     def links_for_page_and_modules(page_id, opts = {})
       opts.map do |layout_container, module_ids|
         module_ids = Array(module_ids)

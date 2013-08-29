@@ -205,20 +205,6 @@ Given /^a default Email$/ do
     :language_id => push.campaign.movement.default_language.id
   )
 end
-When /^I send the mail for proofing to (.+)$/ do |proof_id|
-  fill_in("test_recipients",:with=>proof_id)
-  click_button("Save & Send proof")
-end
-When /^I send email and schedule it for next day$/ do
-    #find(:css,"a.selectBox").click
-    #sleep 5
-    #find(:css,"ul.selectBox-dropdown-menu li a").select(email_name)
-    sleep 4
-    date_tomorrow=Date.tomorrow
-    date_tomorrow=date_tomorrow.strftime('%m/%d/%Y')
-    fill_in("run_at_utc",:with=>date_tomorrow)
-    click_button("Send")
-end
 Given /^I print date$/ do
   p date=Date.yesterday
   p date.strftime('%m/%d/%Y')

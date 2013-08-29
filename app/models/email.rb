@@ -19,6 +19,7 @@
 #  alternate_key_a   :string(25)
 #  alternate_key_b   :string(25)
 #  sent              :boolean
+#  sent_at           :datetime
 #
 
 class Email < ActiveRecord::Base
@@ -94,16 +95,28 @@ class Email < ActiveRecord::Base
   end
 
   def deliver_blast_in_batches(user_ids, batch_size=1000)
-    user_ids.each_slice(batch_size) do |slice|
+    logger.debug "LDEBUG: Total user ids for email #{self.id} - #{user_ids.count}"
+    user_ids.each_slice(batch_size).with_index do |slice,i|
       begin
         recipients = User.select(:email).where(:id => slice).order(:email).map(&:email)
-        SendgridMailer.blast_email(self, :recipients => recipients).deliver
+        logger.debug "LDEBUG: User ids for email #{self.id} slice # #{i} - #{slice.count}"
+        
+        if i==0 && AppConstants.blast_cc_email.present?
+          recipients << AppConstants.blast_cc_email
+        end 
+        SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
+        EmailRecipientDetail.create_with(self, slice).save
         self.push.batch_create_sent_activity_event!(slice, self)
       rescue Exception => e
+        logger.error e.inspect
         self.update_attribute(:delayed_job_id, nil)
         PushLog.log_exception(self, slice, e)
       end
     end
+  end
+
+  def  sendgrid_interation_is_disabled?
+    ENV['DISABLE_SENDGRID_INTERACTION'] == "true"
   end
 
   def proofed?

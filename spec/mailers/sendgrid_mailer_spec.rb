@@ -4,16 +4,16 @@ describe SendgridMailer do
   it 'should process the email body, making token substitutions as necessary' do
     email = FactoryGirl.build(:email, :body => """Dear {NAME},
       click {PASSWORD_URL} to unsubscribe from {MOVEMENT_NAME}.
-      This email was sent to {FULLNAME} ({NAME}), {EMAIL}, {POSTCODE}, {COUNTRY}.""")
+      This email was sent to {FULLNAME} with ID:{USER_ID} ({NAME}), {EMAIL}, {POSTCODE}, {COUNTRY}.""")
 
     movement = FactoryGirl.create(:movement, :name => "Pinkpop")
-    user = FactoryGirl.build(:user, :first_name => "Guybrush", :last_name => "Bop", :email => "guybrush@example.com",
+    user = FactoryGirl.create(:user, :id=>8765, :first_name => "Guybrush", :last_name => "Bop", :email => "guybrush@example.com",
       :postcode => "10000", :country_iso => "us", :language => FactoryGirl.create(:english), :movement => movement)
 
     mailer = SendgridMailer.send(:new)
     mailer.pre_process_body(email.body, user)[:html].should == """Dear Guybrush,
       click #{new_user_password_url} to unsubscribe from Pinkpop.
-      This email was sent to Guybrush Bop (Guybrush), guybrush@example.com, 10000, United States."""
+      This email was sent to Guybrush Bop with ID:8765 (Guybrush), guybrush@example.com, 10000, United States."""
   end
 
   it 'should use URL from links on plain text' do
@@ -100,22 +100,5 @@ describe SendgridMailer do
       email_settings[:password].should == "password"
       email_settings[:domain].should == "yourdomain.org"
     end
-  end
-
-  xit 'should send subscription confirmation email' do
-    movement = FactoryGirl.create(:movement, :name => "Shake it")
-    user = FactoryGirl.create(:user, :first_name=>"Leo", :is_member => true, :movement => movement)
-
-    ActionMailer::Base.deliveries.size.should eql(1)
-    @delivered = ActionMailer::Base.deliveries.last
-    @delivered.parts.length.should be(2)
-
-    @delivered.parts[0].should have_body_text(/#{user.first_name}/)
-    @delivered.parts[0].should have_body_text(/#{user.movement.name}/)
-    @delivered.parts[1].should have_body_text(/#{user.first_name}/)
-    @delivered.parts[1].should have_body_text(/#{user.movement.name}/)
-
-    @delivered.should have_subject(/Welcome to Shake it!/)
-    @delivered.should deliver_to(user.email)
   end
 end

@@ -47,7 +47,15 @@ class Api::ActionPagesController < Api::BaseController
                 :next_page_identifier => @page.next.try(:slug),
                 :member_id => member.id
               }
+    rescue DuplicateActionTakenError => duplicated_action_taken
+      render :status => :bad_request,
+              :json => {
+                :success => false,
+                :next_page_identifier => @page.next.try(:slug),
+                :error => 'Member already took this action'
+              }
     rescue => error
+      logger.error error.inspect 
       render :status => :internal_server_error,
               :json => {
                 :success => false,
@@ -64,7 +72,7 @@ class Api::ActionPagesController < Api::BaseController
                                           .merge(params[:member_info] || {})).symbolize_keys!)
     PaymentErrorMailer.delay.report_error(donation_error)
 
-    render :json => { :success => true }
+    render :nothing => true, :status => :ok
   end
 
   def preview
@@ -73,6 +81,14 @@ class Api::ActionPagesController < Api::BaseController
     render :json => merge_join_and_member_count_attrs(page.as_json(language: language), page)
   rescue ActiveRecord::RecordNotFound
     render :status => :not_found, :text => "Can't find page/action with id #{params[:id]}"
+  end
+
+  def share_counts
+    page_id = params[:id]
+    
+    return 400 if page_id.blank?
+
+    render :json => Share.counts(page_id)
   end
 
   private

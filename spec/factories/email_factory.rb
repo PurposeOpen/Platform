@@ -19,6 +19,7 @@
 #  alternate_key_a   :string(25)
 #  alternate_key_b   :string(25)
 #  sent              :boolean
+#  sent_at           :datetime
 #
 
 FactoryGirl.define do

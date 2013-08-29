@@ -48,12 +48,13 @@ module ApplicationHelper
   end
 
   def navbar_item(key, title, opts={})
-    opts.assert_valid_keys :path, :icon, :requires_auth, :auth_key
+    opts.assert_valid_keys :path, :icon, :requires_auth, :auth_key, :target
     path = opts[:path] || "#"
+    target = opts[:target]
     is_active  = controller.active_nav?(key)
 
     content_tag :li, :class => is_active ? "active" : "" do
-      link_to(path) { content_tag(:i, "", class: "icon icon-#{opts[:icon]}") + title }
+      link_to(path, target.present? ? {:target=>target} : nil) { content_tag(:i, "", class: "icon icon-#{opts[:icon]}") + title }
     end
   end
 

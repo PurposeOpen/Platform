@@ -145,11 +145,10 @@ describe Admin::ContentModulesController do
       @allout_campaign = FactoryGirl.create(:campaign, :movement => @allout)
       @allout_action_sequence = FactoryGirl.create(:action_sequence, :campaign => @allout_campaign)
       @allout_page = FactoryGirl.create(:action_page, :name => "Join", :action_sequence => @allout_action_sequence)
-
-      @walkfree = FactoryGirl.create(:movement, :name => "Walk Free")
-      @walkfree_campaign = FactoryGirl.create(:campaign, :movement => @walkfree)
-      @walkfree_action_sequence = FactoryGirl.create(:action_sequence, :campaign => @walkfree_campaign)
-      @walkfree_page = FactoryGirl.create(:action_page, :name => "Join", :action_sequence => @walkfree_action_sequence)
+      @movement = FactoryGirl.create(:movement, :name => "Movement")
+      @movement_campaign = FactoryGirl.create(:campaign, :movement => @movement)
+      @movement_action_sequence = FactoryGirl.create(:action_sequence, :campaign => @movement_campaign)
+      @movement_page = FactoryGirl.create(:action_page, :name => "Join", :action_sequence => @movement_action_sequence)
     end
 
     it "should create modules on All Out's page" do
@@ -160,31 +159,31 @@ describe Admin::ContentModulesController do
       page.content_modules[0].should be_an_instance_of PetitionModule
     end
 
-    it "should create modules on Walk Free's page" do
-      post :create, :movement_id => @walkfree.friendly_id, :page_id => @walkfree_page.friendly_id, :page_type => ActionPage.to_s, :type => PetitionModule.to_s, :container => ContentModule::MAIN.to_s
+    it "should create modules on Movement's page" do
+      post :create, :movement_id => @movement.friendly_id, :page_id => @movement_page.friendly_id, :page_type => ActionPage.to_s, :type => PetitionModule.to_s, :container => ContentModule::MAIN.to_s
 
-      page = ActionPage.find(@walkfree_page.id)
+      page = ActionPage.find(@movement_page.id)
       page.modules_for_container_and_language(ContentModule::MAIN, FactoryGirl.create(:english)).size.should eql 1
       page.content_modules[0].should be_an_instance_of PetitionModule
     end
 
     it "should delete modules from All Out's page" do
       allout_module = FactoryGirl.create(:html_module, :pages => [@allout_page])
-      walkfree_module = FactoryGirl.create(:html_module, :pages => [@walkfree_page])
+      movement_module = FactoryGirl.create(:html_module, :pages => [@movement_page])
 
       delete :delete, :movement_id => @allout.id, :page_id => @allout_page.friendly_id, :id => allout_module.id, :content_module_id=>allout_module.id
 
       ActionPage.find(@allout_page.id).content_modules.size.should eql 0
-      ActionPage.find(@walkfree_page.id).content_modules.size.should eql 1
+      ActionPage.find(@movement_page.id).content_modules.size.should eql 1
     end
 
-    it "should delete modules from WalkFree's page" do
+    it "should delete modules from Movement's page" do
       allout_module = FactoryGirl.create(:html_module, :pages => [@allout_page])
-      walkfree_module = FactoryGirl.create(:html_module, :pages => [@walkfree_page])
+      movement_module = FactoryGirl.create(:html_module, :pages => [@movement_page])
 
-      delete :delete, :movement_id => @walkfree.id, :page_id => @walkfree_page.friendly_id, :id => walkfree_module.id, :content_module_id=>walkfree_module.id
+      delete :delete, :movement_id => @movement.id, :page_id => @movement_page.friendly_id, :id => movement_module.id, :content_module_id=>movement_module.id
 
-      ActionPage.find(@walkfree_page.id).content_modules.size.should eql 0
+      ActionPage.find(@movement_page.id).content_modules.size.should eql 0
       ActionPage.find(@allout_page.id).content_modules.size.should eql 1
     end
   end

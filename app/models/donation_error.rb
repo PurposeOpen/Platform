@@ -17,7 +17,7 @@ class DonationError
 		@member_last_name = attributes[:last_name] || ''
 		@member_email = attributes[:email] || ''
 		@member_country_iso = attributes[:country_iso] || ''
-		@member_language_iso = attributes[:language_iso] || 'en'
+		@member_language_iso = attributes[:locale] || 'en'
     @donation_payment_method = attributes[:donation_payment_method]
 		@donation_amount_in_cents = attributes[:donation_amount_in_cents]
 		@donation_currency = attributes[:donation_currency]

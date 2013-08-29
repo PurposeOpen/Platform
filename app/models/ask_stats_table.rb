@@ -31,9 +31,10 @@ class AskStatsTable < ReportTable
   private
 
   def total_and_average_donations_columns(stat)
-    total = Donation.total_in_dollar_cents_by_action_page(stat.page_id) / 100
+    donation_stats = Donation.stats_by_action_page(stat.page_id)
+    total_actions = donation_stats[0]
+    total = donation_stats[1] / 100
     formatted_total = number_to_currency(total)
-    total_actions = stat.actions_taken ? stat.actions_taken.to_i : 0
     average = total_actions > 0 ? number_to_currency(total / total_actions) : nil
     [formatted_total, average]
   end

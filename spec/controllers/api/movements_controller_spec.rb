@@ -1,12 +1,6 @@
 require "spec_helper"
 
-def setup_member_count_test_double(count, movement)
-  member_count = MemberCountCalculator.new(:movement => movement, :current => count)
-  MemberCountCalculator.stub(:for_movement).and_return(member_count)
-end
-
 describe Api::MovementsController do
-
   before do
     @english = FactoryGirl.create :english
     @us_locale = @english
@@ -28,13 +22,10 @@ describe Api::MovementsController do
     @allout.default_language = @us_locale
     @movement_locale = @allout.movement_locales.first
     @movement_language = @movement_locale.language
-
-    setup_member_count_test_double 10, @allout
   end
 
   describe 'Display language recommendations' do
     it "should not recommend languages which do not have complete homepage contents" do
-      english = FactoryGirl.create :english
       us_locale = @english
       spanish = create(:spanish)
       follow_links = {:facebook => 'facebook_url', :twitter => 'twitter_url', :youtube => 'youtube_url'}
@@ -66,7 +57,7 @@ describe Api::MovementsController do
           :footer_navbar => "<ul><li><a href=''>About</a></li></ul>",
           :header_navbar => "<ul><li><a href=''>More about us</a></li></ul>"
       )
-      get :show, :movement_id => bowled_out.id, :format => "json"
+      get :show, :locale => :en, :movement_id => bowled_out.id, :format => "json"
       data = ActiveSupport::JSON.decode(response.body)
       data["recommended_languages_to_display"].length.should == 1
       data["languages"].length.should == 2
@@ -74,18 +65,19 @@ describe Api::MovementsController do
   end
 
   describe 'featured content,' do
+    before do
+      @movement = FactoryGirl.create :movement, :languages => [@english]
+    end
 
     it 'should return featured content collection and module data' do
-      pending "This breaks under Ubuntu."
-
-      carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
+      carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @movement.homepage)
       carousel_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 0)
       carousel_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 1)
-      featured_actions = FactoryGirl.create(:featured_content_collection, :name => 'Featured Actions', :featurable => @allout_homepage)
+      featured_actions = FactoryGirl.create(:featured_content_collection, :name => 'Featured Actions', :featurable => @movement.homepage)
       featured_action_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => featured_actions, :position => 0)
       featured_action_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => featured_actions, :position => 1)
 
-      get :show, :id => @movement_language.iso_code, :locale => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
+      get :show, :id => @english.iso_code, :locale => @english.iso_code, :movement_id => @movement.id, :format => "json"
 
       data = ActiveSupport::JSON.decode(response.body)
 
@@ -121,8 +113,6 @@ describe Api::MovementsController do
     end
 
     it 'should return featured content modules sorted by position' do
-      pending "This breaks under Ubuntu."
-
       carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
       carousel_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 1)
       carousel_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 0)
@@ -136,19 +126,16 @@ describe Api::MovementsController do
     end
 
     it 'should only return featured content modules that are valid' do
-      pending "This breaks under Ubuntu."
-
       carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
       carousel_module_1 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel)
       carousel_module_2 = FactoryGirl.build(:featured_content_module, :language => @english, :featured_content_collection => carousel)
       carousel_module_2.title = nil
       carousel_module_2.save!(:validate => false)
-
       get :show, :id => @movement_language.iso_code, :locale => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
 
       data = ActiveSupport::JSON.decode(response.body)
 
-      carousel_module_2.valid?.should be_false
+      carousel_module_2.valid_with_warnings?.should be_false
       data["featured_contents"]["Carousel"].size.should eql 1
       data["featured_contents"]["Carousel"][0]['id'].should == carousel_module_1.id
     end
@@ -156,7 +143,7 @@ describe Api::MovementsController do
   end
 
   it "the returning json should contain Movement information" do
-    get :show, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
+    get :show, :locale => :en, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
 
     data = ActiveSupport::JSON.decode(response.body)
     data["banner_text"].should == @allout_homepage_content.banner_text
@@ -170,11 +157,10 @@ describe Api::MovementsController do
   end
 
   it "should replace the MEMBERCOUNT token with the current member count on the banner_text" do
-    english = FactoryGirl.create(:english)
     french = FactoryGirl.create(:french)
-    languages = [english, french]
+    languages = [@english, french]
     movement = FactoryGirl.create(:movement, :languages => languages)
-    movement.default_language = english
+    movement.default_language = @english
     MemberCountCalculator.init(movement, 1000000)
     languages.each do |lang|
       FactoryGirl.create(:homepage_content,
@@ -183,11 +169,11 @@ describe Api::MovementsController do
                      :banner_text => "OMG, {MEMBERCOUNT} members!",
       )
     end
-    get :show, :id => english.iso_code, :format => "json", :movement_id => movement.id
+    get :show, :id => @english.iso_code, :format => "json", :locale => :en, :movement_id => movement.id
     data = ActiveSupport::JSON.decode(response.body)
     data["banner_text"].should == "OMG, <span class='member_count'>1,000,000</span> members!"
 
-    get :show, :id => french.iso_code, :format => "json", :movement_id => movement.id
+    get :show, :id => french.iso_code, :format => "json", :locale => :en, :movement_id => movement.id
     data = ActiveSupport::JSON.decode(response.body)
     data["banner_text"].should == "OMG, <span class='member_count'>1 000 000</span> members!"
   end
@@ -198,7 +184,7 @@ describe Api::MovementsController do
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
 
-      get :show, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json",
+      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
           :t => tracking_hash, :page_type => "Homepage"
 
       UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
@@ -212,7 +198,7 @@ describe Api::MovementsController do
       FactoryGirl.create(:email_clicked_activity, :user => user, :email => email, :page_id => nil,
           :movement => @allout, :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s)
 
-      get :show, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json",
+      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
           :t => tracking_hash, :page_type => "Homepage"
 
       UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
@@ -232,7 +218,7 @@ describe Api::MovementsController do
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
 
-      get :show, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json",
+      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
           :t => tracking_hash, :page_type => "ActionPage", :page_id => @page.friendly_id
 
       UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
@@ -246,7 +232,7 @@ describe Api::MovementsController do
       FactoryGirl.create(:email_clicked_activity, :user => user, :email => email, :page_id => @page.id,
           :movement => @allout)
 
-      get :show, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json",
+      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
           :t => tracking_hash, :page_type => "ActionPage", :page_id => @page.friendly_id
 
       UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
@@ -265,7 +251,7 @@ describe Api::MovementsController do
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
 
-      get :show, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json",
+      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
           :t => tracking_hash, :page_type => "ContentPage", :page_id => @page.friendly_id
 
       UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
@@ -279,7 +265,7 @@ describe Api::MovementsController do
       FactoryGirl.create(:email_clicked_activity, :user => user, :email => email, :page_id => @page.id,
           :movement => @allout)
 
-      get :show, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json",
+      get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
           :t => tracking_hash, :page_type => "ContentPage", :page_id => @page.friendly_id
 
       UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
@@ -297,7 +283,7 @@ describe Api::MovementsController do
         @allout.homepage.featured_content_modules.first.id => {:title => 'Preview featured content title'}
       }}.with_indifferent_access)
 
-      get :show, :movement_id => @allout.id, :draft_homepage_id => draft.id, :format => "json"
+      get :show, :locale => :en, :movement_id => @allout.id, :draft_homepage_id => draft.id, :format => "json"
 
       data = ActiveSupport::JSON.decode(response.body).with_indifferent_access
       data[:join_headline].should ==  'Preview headline'

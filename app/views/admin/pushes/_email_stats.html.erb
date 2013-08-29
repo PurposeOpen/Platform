@@ -1,6 +1,7 @@
 <table class="email-statistics">
   <thead>
     <tr>
+      <th>Id</th>
       <th>Sent At</th>
       <th>Blast</th>
       <th>Email</th>
@@ -16,6 +17,7 @@
   <tbody>
     <% stats_table.full_rows.each do |row| %>
       <tr>
+        <td><%= row['Id'] %></td>
         <td><%= row['Sent At'] %></td>
         <td><%= row['Blast'] %></td>
         <td><%= row['Email'] %></td>
@@ -26,6 +28,9 @@
         <%= numerical_table_value row, "New Members" %>
         <%= numerical_table_value row, "Unsubscribed" %>
         <%= numerical_table_value row, "Spam" %>
+      </tr>
+      <tr>
+        <td colspan="11">From Sendgrid: <%= Net::HTTP.get(URI.parse("http://sendgrid.com/api/stats.get.json?aggregate=1&category=email_#{row['Id']}&api_user=#{AppConstants.sendgrid_api_user}&api_key=#{AppConstants.sendgrid_api_password}")) %></td>
       </tr>
     <% end %>
   </tbody>

@@ -96,25 +96,35 @@ describe Admin::BlastsController do
 
       it 'should schedule with default delay period if user has not chosen any time' do
         post :deliver, :id => @blast.id, :run_at_utc => '', :run_at_hour => '',
-             :email_id => "all", :movement_id => @movement.id
+             :email_id => "all", :movement_id => @movement.id, :member_count_select => Blast::ALL_MEMBERS
       end
 
       it 'should schedule with default delay period if user has not chosen any date' do
         post :deliver, :id => @blast.id, :run_at_utc => '', :run_at_hour => run_at_hour_param,
-             :email_id => "all", :movement_id => @movement.id
+             :email_id => "all", :movement_id => @movement.id, :member_count_select => Blast::ALL_MEMBERS
       end
 
       it 'should schedule with default delay period if user has not chosen any hour' do
         post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => '',
-             :email_id => "all", :movement_id => @movement.id
+             :email_id => "all", :movement_id => @movement.id, :member_count_select => Blast::ALL_MEMBERS
       end
+    end
+    
+    it "should require that user select a member count" do 
+      #@blast.should_receive(:send_proofed_emails!).with(:run_at_utc => run_at_utc)
+      
+      post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+                     :email_id => "all", :movement_id => @movement.id  # post does not contain a member_count_select param so should fail    
+      
+      response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
+      flash[:error].should == "Select all members or enter a limit"
     end
 
     it "should blast all proofed emails" do
       @blast.should_receive(:send_proofed_emails!).with(:run_at_utc => run_at_utc)
 
       post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
-                     :email_id => "all", :movement_id => @movement.id
+                     :email_id => "all", :movement_id => @movement.id, :member_count_select => Blast::ALL_MEMBERS
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
     end
@@ -132,7 +142,7 @@ describe Admin::BlastsController do
       @blast.should_receive(:send_proofed_emails!).with(email_ids: ["1"], :run_at_utc => run_at_utc)
 
       post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
-                     :email_id => "1", :movement_id => @movement.id
+                     :email_id => "1", :movement_id => @movement.id, :member_count_select => Blast::ALL_MEMBERS
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
     end
@@ -150,7 +160,7 @@ describe Admin::BlastsController do
       @blast.should_not_receive(:send_proofed_emails!)
       time = Time.now.utc+AppConstants.blast_job_delay - 1.minute
       post :deliver, :id => @blast.id, :run_at_utc => time.strftime('%m/%d/%Y'), :run_at_hour => time.strftime('%H:%M'),
-                     :email_id => "1", :movement_id => @movement.id
+                     :email_id => "1", :movement_id => @movement.id, :member_count_select => 0
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
       flash[:error].should == "Scheduled time should be in at least #{AppConstants.blast_job_delay} minutes later than current UTC time"
@@ -159,7 +169,7 @@ describe Admin::BlastsController do
     it "should return error for invalid date format" do
       @blast.should_not_receive(:send_proofed_emails!)
       post :deliver, :id => @blast.id, :run_at_utc => '12341234', :run_at_hour => '0:00',
-                     :email_id => "1", :movement_id => @movement.id
+                     :email_id => "1", :movement_id => @movement.id, :member_count_select => Blast::ALL_MEMBERS
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
       flash[:error].should == "Invalid date format"
     end

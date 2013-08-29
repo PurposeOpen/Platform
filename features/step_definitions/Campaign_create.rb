@@ -1,5 +1,7 @@
 When /^I create a (.+) campaign$/ do |campaign_name|
-  click_link("Campaigns")
+  within("#navbar") do
+    click_link("Campaigns")
+  end
   click_link("Create new campaign")
   fill_in("campaign_name",:with =>campaign_name)
   fill_in("campaign_description",:with =>"Regression Test")

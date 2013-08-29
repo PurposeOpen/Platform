@@ -81,8 +81,12 @@ class Image < ActiveRecord::Base
 
   searchable do
     time :created_at
-    text :image_file_name, :as => :image_file_name_text_substring
-    text :image_description, :as => :image_description_text_substring
+    text :image_file_name_text_substring do 
+      image_file_name
+    end
+    text :image_description_text_substring do 
+      image_description
+    end
     integer :movement_id
   end
   handle_asynchronously :solr_index

@@ -6,19 +6,11 @@ class Api::SharesController < Api::BaseController
 
     if valid?(share)
       share.save!
-      head :ok
+      head :created
     else
       head 400
     end
   end
-
-  def share_counts
-    page_id = params['page_id']
-
-    return 400 if page_id.blank?
-
-    render :json => Share.counts(page_id)
-  end 
 
   private
 

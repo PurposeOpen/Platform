@@ -1,6 +1,6 @@
 class ActivitiesReport < ReportTable
   def self.columns
-    ['Created','Action','Page','Action Type','User Language','Email','First Name','Last Name','Name Safe','Country','Postcode','Mobile','Comment','Comment Safe','Donation Amount In Cents', 'Donation Frequency']
+    ['Created','Action','Page','Action Type','User Language','Email','First Name','Last Name','Name Safe','Country','Postcode','Mobile','Comment','Comment Safe']
   end
 
   def initialize(user_activity_events)

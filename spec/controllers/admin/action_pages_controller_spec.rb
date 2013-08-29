@@ -234,16 +234,16 @@ describe Admin::ActionPagesController do
     describe "two movements have pages with the same name" do
       before do
         @allout = FactoryGirl.create(:movement, :name => "AllOut")
-        @walkfree = FactoryGirl.create(:movement, :name => "WalkFree")
+        @movement = FactoryGirl.create(:movement, :name => "Movement")
 
         @allout_campaign = FactoryGirl.create(:campaign, :movement => @allout)
-        @walkfree_campaign = FactoryGirl.create(:campaign, :movement => @walkfree)
+        @movement_campaign = FactoryGirl.create(:campaign, :movement => @movement)
 
         @allout_action_sequence = FactoryGirl.create(:action_sequence, :campaign => @allout_campaign)
-        @walkfree_action_sequence = FactoryGirl.create(:action_sequence, :campaign => @walkfree_campaign)
+        @movement_action_sequence = FactoryGirl.create(:action_sequence, :campaign => @movement_campaign)
 
         @allout_donate_page = FactoryGirl.create(:action_page, :name => 'Donate', :action_sequence => @allout_action_sequence)
-        @walkfree_donate_page = FactoryGirl.create(:action_page, :name => 'Donate', :action_sequence => @walkfree_action_sequence)
+        @movement_donate_page = FactoryGirl.create(:action_page, :name => 'Donate', :action_sequence => @movement_action_sequence)
       end
 
       it "should render the page that belongs to AllOut" do
@@ -257,15 +257,15 @@ describe Admin::ActionPagesController do
         assigns(:action_page).action_sequence.should eql @allout_action_sequence
       end
 
-      it "should render the page that belongs to WalkFree" do
+      it "should render the page that belongs to Movement" do
         get :edit, {
-          :movement_id => @walkfree.friendly_id,
-          :id => @walkfree_donate_page.friendly_id
+          :movement_id => @movement.friendly_id,
+          :id => @movement_donate_page.friendly_id
         }
 
         assigns(:action_page).name.should eql 'Donate'
-        assigns(:action_page).movement.should eql @walkfree
-        assigns(:action_page).action_sequence.should eql @walkfree_action_sequence
+        assigns(:action_page).movement.should eql @movement
+        assigns(:action_page).action_sequence.should eql @movement_action_sequence
       end
     end
 

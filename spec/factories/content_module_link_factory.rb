@@ -15,7 +15,9 @@ FactoryGirl.define do
     association :page, :factory => :action_page
     association :content_module, :factory => :html_module
     layout_container ContentModule::MAIN
-    after_create { |l| l.page.content_module_links << l }
+    after(:create) do |l|
+      l.page.content_module_links << l
+    end
   end
 
   factory :header_module_link, :parent => :content_module_link do

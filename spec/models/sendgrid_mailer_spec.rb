@@ -30,12 +30,16 @@ describe 'SendgridMailer' do
 
     before { AppConstants.stub(:enable_unfiltered_blasting) { false } }
 
-    it "should send the email to sendgrid, with the corresponding API headers" do
-      join_email = ENV['JOIN_EMAIL_TO']
+    it "should send the email to sendgrid in non-production, with the corresponding API headers" do
+      join_email = AppConstants.join_email_to
+
       donald_hash = Base64.urlsafe_encode64("userid=#{donald.id},emailid=#{email_to_send.id}")
       steve_hash = Base64.urlsafe_encode64("userid=#{steve.id},emailid=#{email_to_send.id}")
       AppConstants.stub(:enable_unfiltered_blasting) { true }
-      SendgridMailer.blast_email(email_to_send, :recipients => ['another@dude.com', 'leonardo@borges.com']).deliver
+      
+      recipients=['another@dude.com', 'leonardo@borges.com']
+
+      SendgridMailer.blast_email(email_to_send, :recipients => recipients).deliver
 
       ActionMailer::Base.deliveries.size.should eql(1)
 
@@ -50,11 +54,15 @@ describe 'SendgridMailer' do
       @delivered.html_part.body.should include %{Pls click <a href="{MOVEMENT_URL|}/?t={TRACKING_HASH|NOT_AVAILABLE}">{MOVEMENT_URL|}</a>}
       @delivered.text_part.body.should match /Pls click {MOVEMENT_URL|}t={TRACKING_HASH|NOT_AVAILABLE}/
 
-      @delivered.should have_subject(/Meltdown!/)
+
+      @delivered.should have_subject(/^\[TEST\] Meltdown!$/)
       @delivered.should deliver_to(join_email)
 
+
+      #recipients << AppConstants.blast_cc_email unless AppConstants.blast_cc_email.blank?
+
       expected_header = {
-        :to => ['another@dude.com', 'leonardo@borges.com'],
+        :to => recipients,
         :category => [
           "push_#{email_to_send.blast.push.id}",
           "blast_#{email_to_send.blast.id}",
@@ -67,17 +75,75 @@ describe 'SendgridMailer' do
              "{NAME|Friend}" => ["Steve", "Donald"],
              "{POSTCODE|Nowhere}" => ["9999", "9999"],
              "{EMAIL|}" => [steve.email, donald.email],
-             "{MOVEMENT_URL|}" => [ walkfree.url, walkfree.url ],
+             "{MOVEMENT_URL|}" => [ walkfree.url, walkfree.url],
              "{TRACKING_HASH|NOT_AVAILABLE}" => [steve_hash, donald_hash]
         },
         :unique_args => { :email_id => email_to_send.id }
       }.to_json
+
       @delivered.should have_header("X-SMTPAPI", expected_header)
       @delivered.should have_header("from", "Your Name <info@yourdomain.org>")
       @delivered.should have_header("reply-to", "Your Name <reply_to@yourdomain.org>")
+
       @delivered.should have_header("content-type", /multipart/)
     end
+    
+    it "should send the email to sendgrid in production, with the corresponding API headers" do
+      Rails.env.should_receive(:production?) { true }
+      donald_hash = Base64.urlsafe_encode64("userid=#{donald.id},emailid=#{email_to_send.id}")
+      steve_hash = Base64.urlsafe_encode64("userid=#{steve.id},emailid=#{email_to_send.id}")
+      AppConstants.stub(:enable_unfiltered_blasting) { true }
+      
+      recipients=['another@dude.com', 'leonardo@borges.com']
 
+      SendgridMailer.blast_email(email_to_send, :recipients => recipients).deliver
+
+      ActionMailer::Base.deliveries.size.should eql(1)
+
+      @delivered = ActionMailer::Base.deliveries.last
+      @delivered.should have_body_text(/\{NAME\|Friend\}/)
+      @delivered.should have_body_text(/\{POSTCODE\|Nowhere\}/)
+      @delivered.should have_body_text(/t=\{TRACKING_HASH\|NOT_AVAILABLE\}/)
+
+      @delivered.html_part.body.should include "<p>html footer</p>"
+      @delivered.text_part.body.should include "text footer"
+
+      @delivered.html_part.body.should include %{Pls click <a href="{MOVEMENT_URL|}/?t={TRACKING_HASH|NOT_AVAILABLE}">{MOVEMENT_URL|}</a>}
+      @delivered.text_part.body.should match /Pls click {MOVEMENT_URL|}t={TRACKING_HASH|NOT_AVAILABLE}/
+
+      @delivered.should have_subject(/^Meltdown!$/)
+      @delivered.should deliver_to("does-not-matter@purpose.org")
+
+      #recipients << AppConstants.blast_cc_email unless AppConstants.blast_cc_email.blank?
+
+      expected_header = {
+        :to => recipients,
+        :category => [
+          "push_#{email_to_send.blast.push.id}",
+          "blast_#{email_to_send.blast.id}",
+          "email_#{email_to_send.id}",
+          email_to_send.blast.push.campaign.movement.friendly_id,
+          Rails.env,
+          email_to_send.language.iso_code
+        ],
+        :sub => {
+             "{NAME|Friend}" => ["Steve", "Donald"],
+             "{POSTCODE|Nowhere}" => ["9999", "9999"],
+             "{EMAIL|}" => [steve.email, donald.email],
+             "{MOVEMENT_URL|}" => [ walkfree.url, walkfree.url],
+             "{TRACKING_HASH|NOT_AVAILABLE}" => [steve_hash, donald_hash]
+        },
+        :unique_args => { :email_id => email_to_send.id }
+      }.to_json
+ 
+      
+      #binding.pry
+      @delivered.header['X-SMTPAPI'].value.should==expected_header
+      @delivered.should have_header("from", "Your Name <info@yourdomain.org>")
+      @delivered.should have_header("reply-to", "Your Name <reply_to@yourdomain.org>")
+      @delivered.should have_header("content-type", /multipart/)
+    end    
+    
     it "enable_unfiltered_blasting environment variable determines whether emails are filtered for whitelisted domains" do
       recipients = ['leonardo@gmail.com',
                     'another@generic.org',
@@ -124,11 +190,14 @@ describe 'SendgridMailer' do
       ActionMailer::Base.deliveries.size.should eql(1)
 
       @delivered = ActionMailer::Base.deliveries.last
-      @delivered.should have_subject(/\[TEST\]Meltdown!/)
+      @delivered.should have_subject(/\[TEST\] \[PROOF\] Meltdown!/)
     end
 
     it "should raise a RuntimeError if the size of the tokens array doesn't match the number of recipients" do
-      expect {SendgridMailer.blast_email(email_to_send, :recipients => ['leonardo@borges.com','dave@mustaine.com', 'james@hetfield.com']).deliver}.to raise_error(RuntimeError)
+    
+      recipients = ['dave@megadeth.com', 'scott@anthrax.com', 'slash@slash.com']
+      #recipients << AppConstants.blast_cc_email unless AppConstants.blast_cc_email.blank?
+      expect {SendgridMailer.blast_email(email_to_send, :recipients => recipients).deliver}.to raise_error(RuntimeError)
     end
   end
 end

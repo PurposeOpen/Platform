@@ -9,19 +9,23 @@ When /^I select recipients$/ do
   find(:css,"ul.actions li a").click
 end
 When /^I select Country by (.+)$/ do|selected_by|
-  find(:css,"div.list-cutter-filter-type select").select("Country")
+  filter = find(:css, "div.list-filter")
+  within(filter) do
+    find(:css,"div.list-cutter-filter-type select").select("Country")
+  end
   sleep 2
-  filter_country=find(:css,"div.rule-details select")
-  sleep 2
-  #p filter_country[0]
-  filter_country.select(selected_by)
+  within(filter) do
+    find(:css,"div.rule-details select.selected_by").select(selected_by)
+  end
 end
 When /^I select Country Name as (.+)$/ do|country_name|
-  filter_country=page.all(:css,"div.rule-details select")
-  filter_country[1].select("is")
+  filter_details = find(:css, "div.rule-details")
+  within(filter_details) do
+    find(:css, ".filter-negate").select("is")
+  end
   find(:css,"button.ui-multiselectcheckbox").click
   find(:css,"div.ui-multiselectcheckbox-filter input").set(country_name)
-  find(:css,"a.ui-multiselectcheckbox-all span").click
+  find(:css,".ui-multiselectcheckbox-checkboxes input[value=#{country_name.upcase}]").click
 end
 When /^I check the member count$/ do
   click_button("Show count")

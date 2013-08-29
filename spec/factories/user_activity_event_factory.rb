@@ -18,10 +18,10 @@
 #  donation_frequency       :string(255)
 #  email_id                 :integer
 #  push_id                  :integer
-#  get_together_event_id    :integer
 #  movement_id              :integer
 #  comment                  :string(255)
 #  comment_safe             :boolean
+#  reason                   :string(255)
 #
 
 FactoryGirl.define do

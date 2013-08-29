@@ -5,42 +5,6 @@ describe Api::SharesController do
   before do
     @movement = FactoryGirl.create(:movement)
   end
-
-  describe 'share_counts' do
-
-    it 'should return share counts for all share types for a page' do
-      page = create(:action_page)
-
-      create(:twitter_share, :page_id => page.id)
-      create(:facebook_share, :page_id => page.id)
-      create(:email_share, :page_id => page.id)
-
-      get :share_counts, :movement_id => @movement.id, :id => page.id, :format=>:json, :page_id=>page.id 
-
-      ActiveSupport::JSON.decode(response.body).should == {'facebook' => 1,
-                                                           'twitter' => 1,
-                                                           'email' => 1}
-    end
-
-    context 'a share type has no shares' do
-
-      it 'should include the share type with zero shares' do
-        page = create(:action_page)
-
-        create(:twitter_share, :page_id => page.id)
-        create(:facebook_share, :page_id => page.id)
-
-        get :share_counts, :movement_id => @movement.id, :id => page.id, :format=>:json, :page_id=>page.id
-
-        ActiveSupport::JSON.decode(response.body).should == {'facebook' => 1,
-                                                             'twitter' => 1,
-                                                             'email' => 0}
-      end
-
-    end
-
-  end
-
   describe 'create' do
     before(:each) do
       @page = create(:action_page)
@@ -56,7 +20,7 @@ describe Api::SharesController do
                       :user_id            => @user.id,
                       :share_type         => share_type
 
-        response.should be_success
+        response.status.should == 201
 
         Share.count.should == 1
         share = Share.first
@@ -83,7 +47,7 @@ describe Api::SharesController do
                     :user_id            => nil,
                     :share_type         => Share::FACEBOOK
 
-      response.should be_success
+      response.status.should == 201
     end
 
     it 'should not create a share when the page passed is not a tell a friend' do

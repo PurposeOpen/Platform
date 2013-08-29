@@ -14,7 +14,12 @@
         <%= navbar_item :assets,                       "Assets",            path: admin_movement_downloadable_assets_path(@movement), icon: "book" if can?(:read, @movement) %>
         <%= navbar_header "Statistics" %>
         <%= navbar_item :home,                         "Snapshot",          path: admin_movement_path(@movement), icon: "bar-chart" if can?(:read, @movement) %>
-        <%= navbar_item :analytics,                    "Site Activity",     path: 'http://www.google.com/analytics/', icon: "external-link" %>
+        <%= navbar_item :reports,                      "Reports",           path: admin_movement_reporting_deliverabilities_path(@movement), icon: "bar-chart" %>
+        <%= navbar_item :analytics,                    "Site Activity",     path: 'http://www.google.com/analytics/', icon: "external-link", target: "_blank" %>
+        <%= navbar_header "Utilities" %>
+        <%= navbar_item :clear_cache,                  "Clear Cache",       path: "#{@movement.url}/utility/clear_cache", icon: "external-link", target: "_blank" %>
+        <%= navbar_item :job_queues,                    "Job Queues",       path: "/admin/resque", icon: "external-link", target: "_blank" %>
+        <%= navbar_item :chartbeat,                     "Chartbeat",        path: 'http://chartbeat.com/dashboard/?url=allout.org&k=f07ecf956214fef80cd18f75acc4ce32',  icon: "external-link", target: "_blank" %> 
       </ul>
     </div>
 

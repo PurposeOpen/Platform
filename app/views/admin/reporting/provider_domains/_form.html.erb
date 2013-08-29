@@ -1,0 +1,25 @@
+<%= form_for(@admin_reporting_provider_domain) do |f| %>
+  <% if @admin_reporting_provider_domain.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@admin_reporting_provider_domain.errors.count, "error") %> prohibited this admin_reporting_provider_domain from being saved:</h2>
+
+      <ul>
+      <% @admin_reporting_provider_domain.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :domain %><br />
+    <%= f.text_field :domain %>
+  </div>
+  <div class="field">
+    <%= f.label :provider %><br />
+    <%= f.text_field :provider %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

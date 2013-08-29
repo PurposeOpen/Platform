@@ -1,4 +1,4 @@
-@admin @search
+@group5 @admin @search
 Feature: Manage users
   In order to control access to the website
   As an admin

@@ -10,28 +10,6 @@ When /^I add a (.+) blast$/ do |blast_name|
   sleep 2
 end
 When /^I add new email (.+) to the blast$/ do|email_name|
-  #page.execute_script('$("ul.actions li span.button").trigger("mouseenter")')
- # p page.driver.methods
-  #p page.methods
-  #p page.driver.browser.methods
-  #p page.driver.browser.action.methods
-  #p page.driver.browser.mouse.methods
-  #mouse_over_element = page.driver.browser.find_element(:css => "ul.actions li span.button")
-  #p mouse_over_element
-  #page.driver.browser.action.move_to(mouse_over_element).perform()
-  #sleep 5
-  #find(:css,"ul.actions li span.button")
-  #sleep 5
-  #p find(:css,"ul.actions li span.button").methods
-  #p find(:xpath,"//ul[@class='actions']/li[2]//a")
-  #find(:xpath,"//ul[@class='actions']/li[2]").native.click
-  #email_create = page.driver.browser.find_element(:css => "ul.actions li ul li a")
-  #p email_create
-
-  #p email_create.size()
-  #p email_create[1]
-  #p email_create[1].methods
-  #email_create.click()
   page.execute_script('$("ul.actions li ul li a")[0].click()')
   sleep 2
   fill_in("email_name",:with=>email_name)
@@ -44,14 +22,14 @@ When /^I enter the details of the email$/ do
   page.execute_script('$("iframe")[0].contentDocument.documentElement.innerHTML="<html>This is creating a new test blast email</html>"')
   sleep 5
   click_button("Save")
-  sleep 10
+  sleep 5
 end
 
 When /^(?:|I )write in "([^"]*)" with "([^"]*)"$/ do |field, value|
   page.execute_script('$("iframe")[0].contentDocument.documentElement.innerHTML="<html>#{value}</html>"')
 end
 
-Then /^I goto the push (.+)$/ do|push_name|
+Then /^I goto the push (.+)$/ do |push_name|
   click_link(push_name)
 end
 
@@ -68,25 +46,30 @@ When /I expand Add an Email to click New Email/ do
   sleep 2
 end
 
-Then /^I check for the changed push name (.+)$/ do|push_name|
-  #sleep 30
-  push = Push.find_by_name(push_name)
-  element=page.all(:css,"div.push a")
-    assert_equal(element[0].present?,true)
-end
-When /^I press Rename$/ do
+Given /^there is a push "([^"]*)" in the "([^"]*)" campaign$/ do |push_name, campaign_name|
+  campaign = Campaign.find_by_name(campaign_name)
+  campaign.should_not be_nil
 
-  link=page.all(:css,"div.push a")
-   rename=find(:css,"div.push a.right")
-  p rename
-  #p link[1]
-  #link[1].click
-  rename.click()
-  sleep 20
+  FactoryGirl.create(:push, :campaign => campaign, :name => push_name)
 end
+
+When /^I click Rename for the push "([^"]*)"$/ do |push_name|
+  push = Push.find_by_name(push_name)
+  push.should_not be_nil
+  rename_link_selector = "#push-#{push.id} a.right"
+  page.find(rename_link_selector).click()
+end
+
 When /^I press Save Push button$/ do
   click_button("Save push")
 end
+
+Then /^I should see "([^"]*)" in the Pushes listing$/ do |push_name|
+  within(:css, "#pushes_list") do
+    page.should have_content(push_name)
+  end
+end
+
 When /^I check for Add an email$/ do
   find(:xpath,"//ul[@class='actions']/li/span[@class='button']").should have_content("Add an email")
 end

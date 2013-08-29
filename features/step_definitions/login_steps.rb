@@ -64,13 +64,6 @@ When /^I Save Page$/ do
   click_button "Save page"
   sleep 5
 end
-When /^I enter button name as(.+)$/ do |button_name|
-# p page.has_css? ("div[data-layout-type='sidebar'] input")
-  element = find(:css,"div[data-layout-type='sidebar'] input")
- # p element
-  #p element.methods
-   element.set(button_name)
-end
 When /^I check if am on the sequence page$/ do
   assert page.should have_content("Edit sequence")
 end

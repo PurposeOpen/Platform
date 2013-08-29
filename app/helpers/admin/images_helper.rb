@@ -7,8 +7,18 @@ module Admin
     end
 
     def image_url(image, format = :original)
-      S3[:enabled] ? "#{AppConstants.s3_bucket_uri}/#{image.name(format)}" :
+      url = S3[:enabled] ? "#{AppConstants.s3_bucket_uri}/#{image.name(format)}" :
           "//#{request.host_with_port}/system/#{image.name(format)}"
+      if url.start_with? 'http'
+        url
+      else
+        url = "#{protocol}:#{url}"
+      end
+      url
+    end
+
+    def protocol
+      Rails.env == ('development' || 'test') ? 'http' : 'https'
     end
 
     def hosted_image_tag(image, parms = {})

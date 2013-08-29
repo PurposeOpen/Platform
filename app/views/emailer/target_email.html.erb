@@ -1,7 +1,49 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
   <head>
-   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /> 		
+    <style type="text/css">
+					
+			p {
+				margin: 1em 0;
+			}
+
+			.appleLinks a {color: #707070; text-decoration: none;} 
+						
+			@media only screen and (max-device-width: 480px) {
+				
+				[class="body"] {
+					font-size: 16px !important;
+					line-height: 19px !important;
+					border: none !important;
+				}	 
+					
+			
+				table[class="sidebox-outer"] {
+					width:  50% !important;
+					max-width: 50% !important;     
+					height: auto !important;
+					padding: 5px  !important;
+				}
+				table[class="sidebox"] {
+					width:  100% !important;
+					max-width: 100% !important;     
+					height: auto !important;
+				} 
+				img[class="sidebox"] {
+					width: 98% !important;
+					max-width: 98% !important;
+					height: auto !important; ; 
+				}
+
+				img[class="sidebox-button"] {
+					width: 120px !important;
+					height: 22px !important;
+				} 
+
+	
+			}
+		</style>
   </head>
   <body>
     <%= @body_text.gsub(/\r\n?|\n/, "<br/>").html_safe %>

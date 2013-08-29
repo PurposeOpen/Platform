@@ -16,10 +16,7 @@ class Api::DonationsController < Api::BaseController
 		render :status => :not_found, :text => "Can't find donation with transaction id #{params[:transaction_id]}" and return if donation.nil?
 
 		donation.confirm
-
-		render :json => {
-			:success => true
-		}
+		render :nothing => true, :status => :ok
 	end
 
 	def add_payment
@@ -28,10 +25,7 @@ class Api::DonationsController < Api::BaseController
 		render :status => :not_found, :text => "Can't find donation with subscription id #{params[:subscription_id]}" and return if donation.nil?
 
 		donation.add_payment(params[:amount_in_cents].to_i, params[:transaction_id], params[:order_number])
-
-		render :json => {
-			:success => true
-		}
+		render :nothing => true, :status => :ok
 	end
 
   def handle_failed_payment
@@ -48,7 +42,7 @@ class Api::DonationsController < Api::BaseController
     donation_error.member_first_name = member.first_name
     donation_error.member_last_name = member.last_name
     donation_error.member_language_iso = member.language.iso_code
-
+    donation_error.member_country_iso = member.country_iso
     donation = Donation.find_by_subscription_id(params['subscription_id'])
     donation_error.donation_payment_method = donation.payment_method
     donation_error.donation_amount_in_cents = params['donation_amount_in_cents']
@@ -56,7 +50,7 @@ class Api::DonationsController < Api::BaseController
 
     PaymentErrorMailer.delay.report_error(donation_error)
 
-    render :json => { :success => true }
+    render :nothing => true, :status => :ok
   end
 
 end

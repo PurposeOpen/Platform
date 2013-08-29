@@ -38,18 +38,20 @@ end
 Then /^I should see the following statistics for the email "([^"]*)":$/ do |email_name, stats|
   email = Email.find_by_name(email_name)
   email.should_not be_nil
-  column_index = 0
-  tr_selector = "//td[text()=\"#{email_name}\"]/.."
-  within(:xpath, tr_selector) do
-    stats.hashes.first.each do |header, value|
-      index = column_index + 4
-      actual_value = page.find("td[#{index}]").text
-      if actual_value != "0"
-        actual_value = page.find("td[#{index}]/p").text
-      end
-      column_index += 1
-      raise "Expected #{value} #{header} but was #{actual_value}" if actual_value != value
-    end
+
+  column_offset = 3
+  ths = page.all(:css, 'table.email-statistics thead th')
+  table_row = "//td[text()=\"#{email_name}\"]/.."
+  tds = []
+  within(:xpath, table_row) { page.all(:css, 'td').each {|element| tds << element} }
+
+  stats.hashes.first.each_with_index do |(header, value), index|
+    position = index + column_offset
+
+    th = ths[position].text
+    td = tds[position].text
+
+    [th, td].should == [header, value]
   end
 end
 

@@ -33,6 +33,8 @@ class Push < ActiveRecord::Base
       PushClickedEmail
     when :email_spammed
       PushSpammedEmail
+    when :email_bounced
+      PushBouncedEmail
     else
       nil
     end

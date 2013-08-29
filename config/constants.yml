@@ -1,6 +1,7 @@
 # Enter your per-environment constants below
 
 development: &default
+  platform_name: "All Out Platform"
   host_uri: "localhost:3000"
   blast_job_delay: <%= 5.seconds %>
   financial_contact_name: Kieran
@@ -11,10 +12,22 @@ development: &default
   umbrella_user_email_address: "offlinedonations@yourdomain.org"
   facebook_admin_id: 520340587 #Kelsey's facebook profile id
   send_grid_health_check_uri: "http://sendgrid.com/api/stats.get.json?api_user=<%= ENV["SENDGRID_USERNAME"] %>&api_key=<%= ENV["SENDGRID_PASSWORD"] %>&days=1"
-  s3_bucket_uri: "//<%= ENV['S3_BUCKET_NAME'] %>.s3.amazonaws.com"
+  s3_bucket_uri: "https://<%= ENV['S3_BUCKET_NAME'] %>.s3.amazonaws.com"
   enable_unfiltered_blasting: <%= ENV['ENABLE_UNFILTERED_BLASTING'] || false %>
   authenticate_api_calls: <%= ENV["AUTHENTICATE_API_CALLS"] || false %>
-  readonly_database_url: <%= ENV["READONLY_DATABASE_URL"] %>
+  readonly_database_url: <%= ENV["READONLY_DATABASE_URL"] %> 
+  blast_cc_email: "blasts@allout.org"
+  join_email_to: <%= ENV['JOIN_EMAIL_TO'] || 'does-not-matter@purpose.org' %>
+  sendgrid_api_user: systems@allout.org
+  sendgrid_api_password: <%= ENV['SENDGRID_API_PASSWORD'] %>
+  devise_from_email: <%= ENV['DEVISE_MAIL_SENDER_ADDRESS'] || 'info@allout.org' %>
+  whitelisted_email_test_domains: 
+    - thoughtworks.com
+    - purpose.com
+    - purpose.org
+    - allout.org
+    - niedfeldt.com
+    
 
 production:
   <<: *default
@@ -29,7 +42,15 @@ test:
   google_maps_api_key: "AIzaSyD5j7OTcBwQFT1M_brBeVvI8pSFN2K7-7k"
   send_grid_health_check_uri: ""
   s3_bucket_uri: "//xyz.s3.amazonaws.com"
-
+  whitelisted_email_test_domains: 
+    - thoughtworks.com
+    - purpose.com
+    - purpose.org
+    - allout.org
+    - niedfeldt.com 
+    - generic.org
+    - yourdomain.org
+    - yourotherdomain.com
 showcase:
   <<: *default
 

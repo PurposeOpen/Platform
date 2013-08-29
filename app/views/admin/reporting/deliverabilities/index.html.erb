@@ -1,0 +1,27 @@
+<h1>Deliverability Reports</h1>
+
+<%= link_to 'New Deliverability Report', new_admin_movement_reporting_deliverability_path(@movement) %>
+
+<table>
+  <tr>
+    <th>Target date</th>
+    <th>Report</th>
+    <th></th>
+<!--     <th></th> -->
+    <th></th>
+  </tr>
+
+<% @admin_reporting_deliverabilities.each do |admin_reporting_deliverability| %>
+  <tr>
+    <td><%= admin_reporting_deliverability.target_date %></td>
+    <td><%= truncate strip_tags admin_reporting_deliverability.report %></td>
+    <td><%= link_to 'Show',  admin_movement_reporting_deliverability_path(@movement,admin_reporting_deliverability) %></td>
+<!--     <td><%= link_to 'Edit', edit_admin_movement_reporting_deliverability_path(@movement, admin_reporting_deliverability) %></td> -->
+    <td><%= link_to 'Destroy', admin_movement_reporting_deliverability_path(@movement,admin_reporting_deliverability), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Deliverability Report', new_admin_movement_reporting_deliverability_path(@movement) %>

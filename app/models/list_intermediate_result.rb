@@ -14,8 +14,6 @@
 class ListIntermediateResult < ActiveRecord::Base
   include RulesSerializable
 
-  TIMEOUT = 2.minutes
-
   belongs_to :list
   serialize :data, JSON
   serialize :rules, JSON
@@ -38,21 +36,29 @@ class ListIntermediateResult < ActiveRecord::Base
   end
 
   def update_results!
-    Timeout.timeout(TIMEOUT) do
-      results_table = []
 
-      languages_hash = list.count_by_rules(rules) do |description, sql, time|
-        results_table << [ description, sql, time ]
-      end
+    results_table = []
 
-      self.update_attributes!(ready: true, data: {
-        sql: list.count_by_language_relation.to_sql,
-        results_table: results_table,
-        number_of_selected_users: languages_hash.values.sum,
-        number_of_selected_users_by_language: languages_hash
-      })
+    languages_hash = list.count_by_rules_excluding_users_from_push(rules) do |description, sql, time|
+      results_table << [ description, sql, time ]
     end
+
+    self.update_attributes!(ready: true, data: {
+      sql: list.count_by_language_relation.to_sql,
+      results_table: results_table,
+      number_of_selected_users: languages_hash.values.sum,
+      number_of_selected_users_by_language: languages_hash
+    })
   rescue => e
     self.update_attributes! ready: true, data: { error_message: e.message, error_backtrace: e.backtrace }
+  end
+
+  def update_results_from_sent_email!(email, members_sent_count)
+    if data
+      data['number_of_selected_users'] -= members_sent_count
+      data['number_of_selected_users_by_language'][email.language.name] -= members_sent_count if data['number_of_selected_users_by_language'][email.language.name]
+
+      self.save
+    end
   end
 end

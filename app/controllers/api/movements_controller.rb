@@ -1,9 +1,12 @@
 class Api::MovementsController < Api::BaseController
   include InlineTokenReplacement
+  #before_filter :homepage_content, :only => [:show]
 
-  before_filter :homepage_content, :only => [:show]
+  caches_action :show, :expires_in => AppConstants.default_cache_timeout, :race_condition_ttl => 30.seconds, :cache_path => Proc.new {|c| "#{I18n.locale}#{c.request.path}" }
+  cache_sweeper Api::MovementSweeper
 
   def show
+    homepage_content 
     languages = movement.languages.map do |lang|
       {:iso_code => lang.iso_code, :name => lang.name, :native_name => lang.native_name, :is_default => (lang == movement.default_language)}
     end

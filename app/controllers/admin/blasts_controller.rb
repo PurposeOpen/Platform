@@ -50,6 +50,10 @@ module Admin
     end
 
     def invalid_limit?
+      if params[:member_count_select].blank?
+        flash[:error] = "Select all members or enter a limit"
+        return true
+      end
       if (params[:member_count_select] == Blast::LIMIT_MEMBERS)
         @limit = params[:limit].blank? ? nil : params[:limit].to_i
         if (@limit.nil? || @limit <= 0)

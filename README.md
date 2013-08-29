@@ -12,3 +12,4 @@ The Purpose Platform is a global open source project committed to building multi
 ### Community
 - [Developer Discussion Group](http://groups.google.com/group/purpose-platform-dev)
 - [General Discussion Group](http://groups.google.com/group/purpose-platform-general)
+

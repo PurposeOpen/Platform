@@ -52,8 +52,12 @@ class DownloadableAsset < ActiveRecord::Base
 
   searchable do
     time :created_at
-    text :asset_file_name, :as => :asset_file_name_text_substring
-    text :link_text, :as => :link_text_text_substring
+    text :asset_file_name_text_substring do 
+      asset_file_name
+    end
+    text :link_text_text_substring do 
+      link_text
+    end
     integer :movement_id
   end
   handle_asynchronously :solr_index

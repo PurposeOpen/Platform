@@ -11,7 +11,9 @@ PurposePlatform::Application.configure do
 
                                                            # Show full error reports and disable caching
   config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = false
+  
+  config.action_controller.perform_caching = true
+  #onfig.cache_store = :redis_store
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
@@ -35,6 +37,9 @@ PurposePlatform::Application.configure do
   config.action_mailer.default_url_options = { :host => 'localhost' }
 
   Paperclip.options[:command_path] = "/usr/local/bin/"
+
+  
+  #config.autoload_paths += %W(#{Rails.root}/app/jobs)
 
   # config.after_initialize do
   #   Bullet.enable = true

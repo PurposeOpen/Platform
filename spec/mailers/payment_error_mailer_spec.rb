@@ -33,7 +33,8 @@ describe PaymentErrorMailer do
 			:email => 'john.smith@example.com', 
 			:first_name => 'John', 
 			:last_name => 'Smith', 
-			:country_iso => 'ar'
+			:country_iso => 'ar',
+			:locale => 'es'
 		})
 
 		PaymentErrorMailer.report_error(donation_error).deliver
@@ -53,6 +54,7 @@ describe PaymentErrorMailer do
 		delivered.should have_body_text(/#{donation_error.member_first_name}/)
 		delivered.should have_body_text(/#{donation_error.member_last_name}/)
 		delivered.should have_body_text(/#{donation_error.member_country_iso}/)
+		delivered.should have_body_text(/#{donation_error.member_language_iso}/)
 	end
 
 	it "should not include Error Code field if it's empty" do

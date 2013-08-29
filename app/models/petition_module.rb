@@ -72,8 +72,8 @@ class PetitionModule < ContentModule
   end
 
   def crowdring_member_count(crowdring_url, crowdring_campaign_name)
-    get_count_uri = URI.parse("#{crowdring_url}/campaign/#{crowdring_campaign_name}/campaign-member-count")
-    Rails.cache.fetch( get_count_uri, :expires_in => 30.minutes) do
+    get_count_uri = crowdring_campaign_endpoint(crowdring_url, crowdring_campaign_name)
+    Rails.cache.fetch(get_count_uri, :expires_in => 30.minutes) do
       fetch_count_from_crowdring(get_count_uri)
     end
   end
@@ -95,6 +95,11 @@ class PetitionModule < ContentModule
   end
 
   private
+
+  def crowdring_campaign_endpoint(crowdring_url, crowdring_campaign_name)
+    encoded_uri = URI::encode("#{crowdring_url}/campaign/#{crowdring_campaign_name}/campaign-member-count")
+    URI.parse(encoded_uri)
+  end
 
   def fetch_count_from_crowdring(get_count_uri)
     ActiveSupport::JSON.decode(open(get_count_uri))["count"]

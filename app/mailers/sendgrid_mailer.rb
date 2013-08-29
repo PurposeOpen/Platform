@@ -5,9 +5,8 @@ class SendgridMailer < ActionMailer::Base
 
     @body_text = pre_process_body(email.body, user, tokens)
     @footer = email.footer
-
-    join_email = ENV['JOIN_EMAIL_TO']
-    raise "ENV JOIN_EMAIL_TO is empty!" if join_email.blank?
+    join_email = AppConstants.join_email_to
+    raise "AppConstants.join_email_to is empty!" if join_email.blank?
 
     options = {
       :to => join_email,
@@ -24,19 +23,26 @@ class SendgridMailer < ActionMailer::Base
   def blast_email(email, options)
     @body_text = { :html => email.html_body, :text => email.plain_text_body }
     @footer = email.footer.present? ? { :html => email.footer.html_with_beacon, :text => email.footer.text } : {}
-    options[:recipients] = clean_recipient_list(options[:recipients])
 
+    logger.debug "LDEBUG: #{email.id} - #{email.subject} - recipient count before clean #{options[:recipients].count}"    
+    options[:recipients] = clean_recipient_list(options[:recipients])
+    logger.debug "LDEBUG: #{email.id} - #{email.subject} - recipient count after clean #{options[:recipients].count}" 
     prepare(email, options)
   end
 
 
   def prepare(email, options)
-    headers['X-SMTPAPI'] = prepare_sendgrid_headers(email, options)
+    sendgrid_headers = prepare_sendgrid_headers(email, options)
+    
+    logger.debug "LDEBUG: sendgrid headers for #{email.id} - #{email.subject}"
+    logger.debug sendgrid_headers
+    
+    headers['X-SMTPAPI'] = sendgrid_headers
     headers['List-Unsubscribe' ] = "<mailto:#{email.from}>"
     subject = get_subject(email, options)
-    #binding.pry
-    join_email = ENV['JOIN_EMAIL_TO']
-    raise "ENV JOIN_EMAIL_TO is empty!" if join_email.blank?
+
+    join_email = AppConstants.join_email_to
+    raise "AppConstants.join_email_to is empty!" if join_email.blank?
 
     mail(:to => join_email, :from => email.from, :reply_to => (email.reply_to || email.from), :subject => subject) do |format|
       format.text { render 'sendgrid_mailer/text_email' }
@@ -50,6 +56,7 @@ class SendgridMailer < ActionMailer::Base
       "NAME" => user.greeting,
       "FULLNAME" => user.full_name,
       "EMAIL" => user.email,
+      "USER_ID" => user.id,
       "POSTCODE" => user.postcode,
       "COUNTRY" => country_name(user.country_iso, user.language.iso_code.to_s),
       "PASSWORD_URL" => new_user_password_url,
@@ -101,15 +108,25 @@ protected
   end
 
   def get_subject(email_to_send, options)
-    options[:test] ? "[TEST]#{email_to_send.subject}" : email_to_send.subject
+    subject = email_to_send.subject
+    
+    if options[:test]
+      subject = "[PROOF] " + subject
+    end
+    
+    if !Rails.env.production?
+      subject = "[#{Rails.env.upcase}] " + subject  
+    end  
+
+    subject    
   end
 
   def clean_recipient_list(recipients=[])
     if AppConstants.enable_unfiltered_blasting
       recipients
     else
-      w_emails_test_domains = ENV['WHITELISTED_EMAIL_TEST_DOMAINS'].blank? ? [] : ENV['WHITELISTED_EMAIL_TEST_DOMAINS'].split(",")
-      recipients.select {|email| w_emails_test_domains.any? {|domain| email.ends_with?(domain) } }
+      whitelisted_email_test_domains = AppConstants.whitelisted_email_test_domains.blank? ? [] : AppConstants.whitelisted_email_test_domains
+      recipients.select {|email| whitelisted_email_test_domains.any? {|domain| email.ends_with?(domain) } }
     end
   end
 
