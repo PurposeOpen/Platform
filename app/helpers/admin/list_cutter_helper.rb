@@ -13,7 +13,8 @@ module Admin::ListCutterHelper
         {label: "Originating Action", class: ListCutter::OriginatingActionRule},
         {label: "Member Email Activity", class: ListCutter::MemberEmailActivityRule},
         {label: "Donation frequency", class: ListCutter::DonorRule},
-        {label: "Donation amount", class: ListCutter::DonationAmountRule}
+        {label: "Donation amount", class: ListCutter::DonationAmountRule},
+        {label: "User has no country", class: ListCutter::NoCountryRule}
     ]
   end
 
