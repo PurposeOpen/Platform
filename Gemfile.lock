@@ -154,6 +154,7 @@ GEM
       capybara (>= 1.1.1)
       cucumber (>= 1.1.1)
       nokogiri (>= 1.5.0)
+    dalli (2.6.4)
     database_cleaner (0.9.1)
     debug_inspector (0.0.2)
     debugger (1.6.1)
@@ -242,6 +243,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jslint_on_rails (1.1.1)
     json (1.7.7)
+    kgio (2.8.0)
     launchy (2.2.0)
       addressable (~> 2.3)
     libv8 (3.11.8.13)
@@ -497,6 +499,7 @@ DEPENDENCIES
   compass-rails
   cucumber
   cucumber-rails
+  dalli
   database_cleaner
   debugger (>= 1.4.0)
   deep_cloneable
@@ -522,6 +525,7 @@ DEPENDENCIES
   jquery-rails
   jslint_on_rails
   json (~> 1.7.7)
+  kgio
   launchy
   money
   mysql2 (= 0.3.11)
