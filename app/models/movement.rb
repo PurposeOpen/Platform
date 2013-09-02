@@ -102,7 +102,9 @@ class Movement < ActiveRecord::Base
 
   def find_published_page(query)
     Rails.cache.fetch("/movement_find_published_page_/#{query}", expires_in: 48.hours) do
-      self.action_pages.published.find(query)
+      page = self.action_pages.published.find(query)
+      page.action_sequence.reload
+      return page
     end
   end
 

@@ -53,7 +53,7 @@ class Api::ActionPagesController < Api::BaseController
                 :error => 'Member already took this action'
               }
     rescue => error
-      logger.error error.inspect 
+      Rails.logger.error error.inspect 
       render :status => :internal_server_error,
               :json => {
                 :success => false,

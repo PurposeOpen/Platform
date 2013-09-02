@@ -23,9 +23,8 @@ class Language < ActiveRecord::Base
 
   def self.find_by_iso_code_cache(locale)
     cache_key = "language_#{locale}"
-    Rails.logger.debug "MOVEMENT_PAGE_DEBUG Language cache key: #{cache_key}"
   	Rails.cache.fetch(cache_key, expires_in: 48.hours) do
-  	  Language.find_by_iso_code(locale)
+      Language.find_by_iso_code(locale)
   	end
   end
 end

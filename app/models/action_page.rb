@@ -205,7 +205,8 @@ class ActionPage < Page
   end
 
   def language_enabled?(language)
-    if action_sequence.blank? then raise Errors::NotFound end
+    if action_sequence.blank? then return false end
+    if action_sequence.published == false then return Errors::NotFound end
     action_sequence.language_enabled? language
   end
 
