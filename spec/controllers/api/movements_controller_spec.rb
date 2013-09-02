@@ -179,10 +179,13 @@ describe Api::MovementsController do
   end
 
   context "registering click events on the homepage" do
-    it "should create a user activity event for the click event on a link to the homepage" do
+    #porpoise now handles this on its own. 
+    xit "should create a user activity event for the click event on a link to the homepage" do
       user = FactoryGirl.create(:user, :movement => @allout)
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
+
+      puts "Email Tracking Hash Decoded: #{EmailTrackingHash.decode(tracking_hash)}"
 
       get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
           :t => tracking_hash, :page_type => "Homepage"
@@ -191,7 +194,8 @@ describe Api::MovementsController do
           :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => nil).count.should == 1
     end
 
-    it "should allow the creation of duplicate user activity events for the click event on a link to the homepage" do
+    #porpoise now handles this
+    xit "should allow the creation of duplicate user activity events for the click event on a link to the homepage" do
       user = FactoryGirl.create(:user, :movement => @allout)
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
@@ -213,7 +217,8 @@ describe Api::MovementsController do
       @page = FactoryGirl.create(:action_page, :action_sequence => @action_sequence, :name => "Pretty page")
     end
 
-    it "should create a user activity event for the click event on a link to an action page" do
+    #now handled by porpoise
+    xit "should create a user activity event for the click event on a link to an action page" do
       user = FactoryGirl.create(:user, :movement => @allout)
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
@@ -225,7 +230,8 @@ describe Api::MovementsController do
           :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => @page.id).count.should == 1
     end
 
-    it "should allow the creation of duplicate user activity events for the click event on a link to an action page" do
+    #handled by porpoise
+    xit "should allow the creation of duplicate user activity events for the click event on a link to an action page" do
       user = FactoryGirl.create(:user, :movement => @allout)
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
@@ -246,7 +252,8 @@ describe Api::MovementsController do
       @page = FactoryGirl.create(:content_page, :content_page_collection => @content_page_collection, :name => "About")
     end
 
-    it "should create a user activity event for the click event on a link to a content page" do
+    #handled by porpoise now
+    xit "should create a user activity event for the click event on a link to a content page" do
       user = FactoryGirl.create(:user, :movement => @allout)
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
@@ -257,8 +264,9 @@ describe Api::MovementsController do
       UserActivityEvent.where(:movement_id => @allout.id, :user_id => user.id, :email_id => email.id,
           :activity => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :page_id => @page.id).count.should == 1
     end
-
-    it "should allow the creation of duplicate user activity events for the click event on a link to a content page" do
+    
+    #handled by porpoise now
+    xit "should allow the creation of duplicate user activity events for the click event on a link to a content page" do
       user = FactoryGirl.create(:user, :movement => @allout)
       email = FactoryGirl.create(:email)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
