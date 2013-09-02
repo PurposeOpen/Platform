@@ -102,6 +102,7 @@ RSpec.configure do |config|
     Resque.inline = true 
   end
   config.include SunspotMatchers
+  config.include BackgroundJobs
 end
 
 def read_fixture(name)

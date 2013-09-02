@@ -410,8 +410,11 @@ describe User do
   end
 
   describe "After creation" do
+    Resque.inline = true
     it "should update its random column" do
       u = FactoryGirl.create(:user)
+      #we look up again so we can grab the random column, which is set via resque
+      u = User.find(u.id)
       u.random.should_not be_nil
     end
   end
