@@ -36,7 +36,7 @@ describe Admin::ActionPagesHelper do
 			donation_page.content_modules << build(:donation_module)
 			join_page = create(:action_page, name: 'Join', action_sequence: action_sequence)
 			join_page.content_modules << build(:join_module)
-
+			action_sequence.reload
 			options_for_pages_with_counter(action_sequence).should == [['Select an Action Page', nil], [petition_page.name, petition_page.id], [donation_page.name, donation_page.id]]
     end
   end

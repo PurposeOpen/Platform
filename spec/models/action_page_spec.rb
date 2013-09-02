@@ -742,7 +742,7 @@ describe ActionPage do
       petition_page = create(:action_page, :action_sequence => action_sequence)
       donation_page = create(:action_page, :action_sequence => action_sequence)
       taf_page = create(:action_page, :action_sequence => action_sequence)
-
+      action_sequence.reload
       taf_page.sibling_pages.should =~ [petition_page, donation_page]
       petition_page.sibling_pages.should =~ [taf_page, donation_page]
       donation_page.sibling_pages.should =~ [taf_page, petition_page]
