@@ -1,6 +1,7 @@
 require "spec_helper"
 
 describe Admin::ImagesHelper do
+  Cocaine::CommandLine.runner = Cocaine::CommandLine::BackticksRunner.new
   before do
     @image = Image.create(
       :id => 123, 

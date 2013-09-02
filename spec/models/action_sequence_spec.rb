@@ -77,7 +77,7 @@ describe ActionSequence do
     taf.update_attributes(:language => english)
     action_sequence = taf_module_link.page.action_sequence
     html_module_link = FactoryGirl.create(:sidebar_module_link, :page => FactoryGirl.create(:action_page, :name => "Petition Page", :action_sequence => action_sequence))
-
+    action_sequence.reload
     action_sequence.first_taf(english).should == taf
   end
 
@@ -126,8 +126,7 @@ describe ActionSequence do
       create(:autofire_email, action_page: action_page_1, from: "abcd@abcd.com")
       create(:action_page, action_sequence: action_sequence, name: page_name_2, views: 0)
       2.times { create(:content_module_link, page: action_page_1) }
-
-      duplicated_action_sequence = action_sequence.duplicate
+      duplicated_action_sequence = action_sequence.reload.duplicate
       duplicated_action_sequence.name.should == "Action Sequence(2)"
       duplicated_action_sequence.published.should be_false
 
@@ -152,14 +151,14 @@ describe ActionSequence do
 
   describe "action_pages_with_counter" do
     it "should return pages which have counters" do
-      action_sequence = create(:action_sequence)
+      action_sequence = create(:action_sequence, name: "Action Sequence")
       petition_page = create(:action_page, name: 'Petition', action_sequence: action_sequence)
       petition_page.content_modules << build(:petition_module)
       donation_page = create(:action_page, name: 'Donation', action_sequence: action_sequence)
       donation_page.content_modules << build(:donation_module)
       join_page = create(:action_page, name: 'Join', action_sequence: action_sequence)
       join_page.content_modules << build(:join_module)
-
+      action_sequence.reload
       action_sequence.action_pages_with_counter.should == [petition_page, donation_page]
     end
   end
