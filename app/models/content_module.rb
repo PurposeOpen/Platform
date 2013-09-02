@@ -91,7 +91,7 @@ class ContentModule < ActiveRecord::Base
       "COUNTRY" => user.country_iso ? country_name(user.country_iso, language.try(:iso_code)).titleize : '',
       "HEADER" =>  replacement_for_header_token(page, language)
     )
-    html.gsub /\[(.*)\]/, %{<a data-action-name="#{page.action_sequence.friendly_id}" data-page-name="#{page.action_sequence.action_pages.first.friendly_id}">\\1</a>}
+    html.gsub /\[(.*)\]/, %{<a data-action-name="#{page.action_sequence.friendly_id}" data-page-name="#{page.action_sequence.action_pages.friendly_id}">\\1</a>}
   end
 
   def first_image
