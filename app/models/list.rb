@@ -89,7 +89,6 @@ class List < ActiveRecord::Base
       end
 
       sql = final_relation.to_sql
-
       total_time, total_result = measure { ReadOnly.connection.send(selection_type, sql) }
       block.call "Combined query", sql, total_time unless block.nil?
       total_result

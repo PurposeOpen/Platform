@@ -129,11 +129,9 @@ describe List do
 
   it "should return distinct users based on the user activities" do
     user = create(:leo, :movement => movement, :language => movement.default_language)
-    activity = create(:activity, :user => user, :page_id => 1)
-    activity1 = create(:activity, :user => user, :page_id => 1)
-
-    list.add_rule(:action_taken_rule, :page_ids => ["1"])
-
+    activity = create(:action_taken_activity, :user => user, :movement => movement)
+    activity2 = create(:action_taken_activity, :user => user, :movement => movement)
+    list.add_rule(:action_taken_rule, :page_ids => ["#{activity.page.id}"])
     users = list.filter_by_rules_excluding_users_from_push(email, :no_jobs => 1)
     users.size.should == 1
     users[0].should == activity.user.id
