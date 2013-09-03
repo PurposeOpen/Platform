@@ -107,6 +107,13 @@ module Admin::ListCutterHelper
     options_for_select(GeoData.group(:country_iso).map{|gd| [gd.country_name, gd.country_iso]})
   end
 
+  def google_maps_js
+    maps_js_url = AppConstants.google_api_key.blank? ? AppConstants.google_maps_js_url :
+                                                       AppConstants.keyed_google_maps_js_url
+
+    javascript_include_tag maps_js_url
+  end
+
   private
   def construct_group_options_hash(values_for_opt_groups, value_for_options, &include_condition )
     hash = {}
