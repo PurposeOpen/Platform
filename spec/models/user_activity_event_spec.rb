@@ -96,6 +96,7 @@ describe UserActivityEvent do
         event.page.should == @page
         event.action_sequence.should == @page.action_sequence
         event.campaign.should == @page.action_sequence.campaign
+        event.reload
         event.public_stream_html.should == "Someone signed!"
         event.movement.should == @page.movement
       end
@@ -112,6 +113,7 @@ describe UserActivityEvent do
         event.page.should == @page
         event.action_sequence.should == @page.action_sequence
         event.campaign.should == @page.action_sequence.campaign
+        event.reload
         event.public_stream_html.should == "Someone signed!"
         event.movement.should == @user.movement
       end
