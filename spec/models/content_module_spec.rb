@@ -81,6 +81,7 @@ describe ContentModule do
       dm = FactoryGirl.create(:dummy_module, :public_activity_stream_template => "{NAME|Someone} is AWESOME", :language => @page.movement.default_language)
       @page.content_modules << dm
       user = FactoryGirl.create(:user, :first_name => "rick")
+      @page.reload
       dm.public_activity_stream_html(user, @page).should == "<span class=\"name\">Rick</span> is AWESOME"
       user.first_name = nil
       dm.public_activity_stream_html(user, @page).should == "<span class=\"name\">Someone</span> is AWESOME"
@@ -99,7 +100,8 @@ describe ContentModule do
         create(:header_module_link, page: @page, content_module: dm )
         create(:header_module_link, page: @page, content_module: dm2 )
         @link = create(:content_module_link, page: create(:action_page), content_module: dm3)
-
+        @link.page.reload
+        @page.reload
       end
       it "substitutes HEADER in the language specified" do
         dm.public_activity_stream_html(user, @page, language_for_module).should == "My content is I am the Header"
@@ -122,6 +124,7 @@ describe ContentModule do
 
       before(:each) do
         @page.content_modules << dm
+        @page.reload
       end
 
       it "substitutes $COUNTRY for user's country in english by default" do
@@ -141,7 +144,6 @@ describe ContentModule do
     it "links [linked text] to the first page in the sequence" do
       first_page = FactoryGirl.create(:action_page)
       @page.action_sequence.action_pages.unshift(first_page)
-
       dm = FactoryGirl.create(:dummy_module, :public_activity_stream_template => "This is a [link]", :language => @movement.default_language)
       @page.content_modules << dm
       href = Rails.application.routes.url_helpers.page_path(@page.action_sequence.campaign.friendly_id, @page.action_sequence.friendly_id, first_page.friendly_id)
@@ -165,7 +167,7 @@ describe ContentModule do
 
       page.content_modules << m1
       page.content_modules << m2
-
+      page.reload
       m1.public_activity_stream_html(user, page, l2).should == "Second language"
     end
   end

@@ -78,10 +78,10 @@ class ContentModule < ActiveRecord::Base
   def public_activity_stream_html(user, page, language = nil)
     return nil unless is_ask?
 
-    content_module = if language.nil?
-      page.ask_module
+    if language.nil?
+      content_module = page.ask_module
     else
-      page.ask_module_for_language(language)
+      content_module = page.ask_module_for_language(language)
     end
 
     # This is mostly for backwards compatibility.
@@ -91,7 +91,7 @@ class ContentModule < ActiveRecord::Base
       "COUNTRY" => user.country_iso ? country_name(user.country_iso, language.try(:iso_code)).titleize : '',
       "HEADER" =>  replacement_for_header_token(page, language)
     )
-    html.gsub /\[(.*)\]/, %{<a data-action-name="#{page.action_sequence.friendly_id}" data-page-name="#{page.action_sequence.action_pages.friendly_id}">\\1</a>}
+    html.gsub /\[(.*)\]/, %{<a data-action-name="#{page.action_sequence.friendly_id}" data-page-name="#{page.action_sequence.action_pages.first.friendly_id}">\\1</a>}
   end
 
   def first_image
