@@ -66,7 +66,6 @@ describe ActionSequence do
       action_sequence.email_subject.should == "Check out this campaign"
       action_sequence.email_body.should == "Why don't you check out this?"
       action_sequence.facebook_image.should == "http://localhost:3000/images/blank_logo.png"
-      action_sequence.html_meta_description.should == "An independent movement to build a progressive Australia and bring participation back into our democracy."
     end
   end
 

@@ -18,7 +18,7 @@
 class TellAFriendAskModule < ContentModule
   TWITTER_MAXIMUM = 125
 
-  option_fields :email_body, :email_subject, :tweet_text, :html_meta_description
+  option_fields :email_body, :email_subject, :tweet_text
 
   after_initialize :defaults
 

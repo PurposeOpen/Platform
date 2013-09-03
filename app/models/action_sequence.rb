@@ -32,7 +32,7 @@ class ActionSequence < ActiveRecord::Base
   friendly_id :name, use: :slugged
 
   include SerializedOptions
-  option_fields :email_body, :email_subject, :tweet_text, :html_meta_description, :facebook_image
+  option_fields :email_body, :email_subject, :tweet_text, :facebook_image
 
   after_initialize :defaults
 
@@ -109,7 +109,6 @@ class ActionSequence < ActiveRecord::Base
     self.email_subject ||= ENV['ACTION_SEQUENCE_DEFAULT_EMAIL_SUBJECT']
     self.email_body ||= ENV['ACTION_SEQUENCE_DEFAULT_EMAIL_BODY']
     self.tweet_text ||= ENV['ACTION_SEQUENCE_DEFAULT_EMAIL_TWEET_TEXT']
-    self.html_meta_description ||= AppConstants.default_page_description
     self.facebook_image ||= "http://#{AppConstants.host_uri}/#{ENV['ACTION_SEQUENCE_DEFAULT_EMAIL_FACEBOOK_IMAGE']}"
     self.enabled_languages ||= []
   end
