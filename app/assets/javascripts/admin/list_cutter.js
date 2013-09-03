@@ -247,57 +247,55 @@ Purpose.ListCutter.country_rule_selected = {
   }
 }
 
-Purpose.ListCutter.maps = {
-  settings: {
-    center: new google.maps.LatLng(10, 1.75),
-    zoom: 2,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    styles: [ 
-      { 
-        featureType: "poi.business", 
-        elementType: "labels", 
-        stylers: [ 
-          { visibility: "off" } 
-        ] 
-      },
-      { 
-        featureType: "poi.place_of_worship", 
-        elementType: "labels", 
-        stylers: [ 
-          { visibility: "off" } 
-        ] 
-      },
-      { 
-        featureType: "poi.attraction", 
-        elementType: "labels", 
-        stylers: [ 
-          { visibility: "off" } 
-        ] 
-      },
-      { 
-        featureType: "poi.school", 
-        elementType: "labels", 
-        stylers: [ 
-          { visibility: "off" } 
-        ] 
-      },
-      { 
-        featureType: "poi.sports_complex", 
-        elementType: "labels", 
-        stylers: [ 
-          { visibility: "off" } 
-        ]
-      }
-    ]
-  }
-}
-
 Purpose.ListCutter.distance_from_point_rule_selected = {
   init: function(filter){
     this.bind(filter, true);
   },
 
-  bind: function(filter, set_up_existing_filter){ 
+  bind: function(filter, set_up_existing_filter){
+    var map_settings = {
+      center: new google.maps.LatLng(10, 1.75),
+      zoom: 2,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      styles: [ 
+        { 
+          featureType: "poi.business", 
+          elementType: "labels", 
+          stylers: [ 
+            { visibility: "off" } 
+          ] 
+        },
+        { 
+          featureType: "poi.place_of_worship", 
+          elementType: "labels", 
+          stylers: [ 
+            { visibility: "off" } 
+          ] 
+        },
+        { 
+          featureType: "poi.attraction", 
+          elementType: "labels", 
+          stylers: [ 
+            { visibility: "off" } 
+          ] 
+        },
+        { 
+          featureType: "poi.school", 
+          elementType: "labels", 
+          stylers: [ 
+            { visibility: "off" } 
+          ] 
+        },
+        { 
+          featureType: "poi.sports_complex", 
+          elementType: "labels", 
+          stylers: [ 
+            { visibility: "off" } 
+          ]
+        }
+      ]
+    }
+
     var gmap, marker, circle;
 
     var distance_from_point_rule_inputs = $(filter).find('.distance_from_point_rule_inputs');
@@ -370,7 +368,7 @@ Purpose.ListCutter.distance_from_point_rule_selected = {
     }
 
     function createMap() {
-      gmap = new google.maps.Map($(filter).find('.distance_from_point_rule_map')[0], Purpose.ListCutter.maps.settings);
+      gmap = new google.maps.Map($(filter).find('.distance_from_point_rule_map')[0], map_settings);
 
       google.maps.event.addListener(gmap, 'click', function(event) {
         placeMarker(event.latLng);
