@@ -1,9 +1,8 @@
 module ListCutter
   class DistanceFromPostcodeRule < Rule
-    fields :postcode, :country_iso, :distance, :distance_unit
+    include ListCutter::DistanceRules
 
-    EARTH_RADIUS = {miles: 3956, kilometers: 6371}
-    DISTANCE_UNITS = ['kilometers', 'miles']
+    fields :postcode, :country_iso, :distance, :distance_unit
 
     validates_presence_of :postcode, :distance
     validates_presence_of :country_iso, message: 'Please specify the country iso'
@@ -34,14 +33,6 @@ module ListCutter
 
     def to_human_sql
       "Members are within #{self.distance} #{self.distance_unit} of #{self.postcode}, #{self.country_iso.upcase}"
-    end
-
-    def active?
-      true
-    end
-
-    def can_negate?
-      false
     end
 
   end

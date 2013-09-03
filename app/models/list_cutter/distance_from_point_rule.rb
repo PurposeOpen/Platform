@@ -1,9 +1,8 @@
 module ListCutter
   class DistanceFromPointRule < Rule
-    fields :lat, :lng, :distance, :distance_unit
+    include ListCutter::DistanceRules
 
-    EARTH_RADIUS = {miles: 3956, kilometers: 6371}
-    DISTANCE_UNITS = ['kilometers', 'miles']
+    fields :lat, :lng, :distance, :distance_unit
 
     validates_presence_of :lat, :lng, :distance
     validates_inclusion_of :distance_unit, in: DISTANCE_UNITS
@@ -22,14 +21,6 @@ module ListCutter
 
     def to_human_sql
       "Members are within #{self.distance} #{self.distance_unit} of [lat: #{self.lat}, lng: #{self.lng}]"
-    end
-
-    def active?
-      true
-    end
-
-    def can_negate?
-      false
     end
 
   end
