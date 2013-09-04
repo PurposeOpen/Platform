@@ -71,7 +71,6 @@ class EmailTargetsModule < ContentModule
 
   def take_action(user, action_info, page)
     raise DuplicateActionTakenError if UserEmail.where(:page_id => page, :user_id => user).count > 0
-
     user_email = UserEmail.new(:content_module => self,
       :subject => default_subject,
       :body => default_body,
@@ -85,7 +84,7 @@ class EmailTargetsModule < ContentModule
     user_email.body = action_info[:body] || default_body if allow_editing
     user_email.body += body_signature(user,page)
 
-    return false unless user_email.save
+    return false unless user_email.save!
     user_email.send!
     user_email
   end

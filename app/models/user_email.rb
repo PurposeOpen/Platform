@@ -26,12 +26,16 @@ class UserEmail < ActiveRecord::Base
   validates_presence_of :body
   validates_presence_of :targets, :message => "should be selected"
   
-  def send!
+  def async_send!
     Emailer.target_email(page.movement, user.email, user.email, subject, body).deliver if cc_me
     Emailer.target_email(page.movement, targets, user.email, subject, body).deliver
     true
   end
-  handle_asynchronously(:send!) unless Rails.env.test?
+
+  def send!
+    self.save
+    Resque.enqueue(Jobs::SendUserEmail, self.id)
+  end
 
   def comment; nil; end
 end

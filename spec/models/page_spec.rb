@@ -98,7 +98,7 @@ describe Page do
         as = create(:action_sequence)
         ap1 = create(:action_page, :live_page_id => nil, :action_sequence => as)
         ap2 = create(:action_page, :live_page_id => ap1.id, :action_sequence => as)
-        as.reload!
+        as.reload
         as.action_pages.should include ap1
         as.action_pages.should_not include ap2
       end
