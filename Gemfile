@@ -10,9 +10,10 @@ gem 'uuid'
 
 gem 'json', '~> 1.7.7'
 
+gem 'rubyzip',  "~> 0.9.9"
 gem 'yui-compressor', :git => "git://github.com/oleander/ruby-yui-compressor.git", :require  => "yui/compressor"
 gem 'will_paginate' #, '~>3.0.3'
-gem 'paranoia', :git => 'git://github.com/leonardoborges/paranoia.git'
+gem 'paranoia'
 gem 'acts_as_list'
 gem 'delayed_job_active_record' #, "~>0.3.3"
 gem 'delayed_job'#, "~>3.0.1"
