@@ -58,7 +58,6 @@ gem 'foreigner'
 gem 'roo'
 gem 'recurly'
 gem 'font-awesome-rails'
-gem 'rack-timeout'
 gem 'resque'
 
 
