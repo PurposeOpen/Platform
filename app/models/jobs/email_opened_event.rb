@@ -9,7 +9,7 @@ module Jobs
         email = email_tracking_hash.email
         UserActivityEvent.email_viewed!(user, email)
       else
-        raise "Invalid tracking hash"
+        raise "Invalid tracking hash: #{t}"
       end
     end  
   end

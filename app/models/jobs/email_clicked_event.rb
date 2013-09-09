@@ -11,9 +11,8 @@ module Jobs
         email = email_tracking_hash.email
         page.register_click_from email, user
       else
-        raise "Invalid tracking hash"
+        raise "Invalid tracking hash: #{t}"
       end             
     end
-  
   end
 end
