@@ -53,8 +53,11 @@ PurposePlatform::Application.configure do
   # Use a different cache store in production
   #redis_url = ENV['REDIS_URL']
   #config.cache_store = :redis_store, "#{redis_url}" #, { expires_in: 90.minutes }
-
-  memcache_servers = ENV['MEMCACHE_SERVERS'].split(",")
+  if ENV['MEMCACHE_SERVERS']
+    memcache_servers = ENV['MEMCACHE_SERVERS'].split(",")
+  else
+    memcache_servers = "127.0.0.1:11211"
+  end
   config.cache_store = :dalli_store, memcache_servers, { :namespace => "allout_platform_production", :expires_in => 10.days, :compress => true, :username => ENV['MEMCACHE_USERNAME'], :password => ENV['MEMCACHE_PASSWORD'] }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
