@@ -54,10 +54,8 @@ PurposePlatform::Application.configure do
   #redis_url = ENV['REDIS_URL']
   #config.cache_store = :redis_store, "#{redis_url}" #, { expires_in: 90.minutes }
 
-  memcache_servers = ENV['MEMCACHE_SERVERS']
-  config.cache_store = :dalli_store, memcache_servers, 
-  { :namespace => "allout_platform_production", :expires_in => 10.days, :compress => true }
-
+  memcache_servers = ENV['MEMCACHE_SERVERS'].split(",")
+  config.cache_store = :dalli_store, memcache_servers, { :namespace => "allout_platform_production", :expires_in => 10.days, :compress => true, :username => ENV['MEMCACHE_USERNAME'], :password => ENV['MEMCACHE_PASSWORD'] }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"

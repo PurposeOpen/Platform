@@ -54,7 +54,7 @@ PurposePlatform::Application.configure do
   else
     memcache_servers = "127.0.0.1:11211"
   end
-  config.cache_store = :dalli_store, memcache_servers, { :namespace => "allout_platform_staging", :expires_in => 10.days, :compress => true, :username => ENV['COUCHBASE_BUCKETNAME'], :password => ENV['MEMCACHE_PASSWORD'] }
+  config.cache_store = :dalli_store, memcache_servers, { :namespace => "allout_platform_staging", :expires_in => 10.days, :compress => true, :username => ENV['MEMCACHE_USERNAME'], :password => ENV['MEMCACHE_PASSWORD'] }
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
 

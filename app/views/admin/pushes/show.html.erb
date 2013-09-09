@@ -20,7 +20,9 @@
   <h3 class="tooltip" tip="stats-tip">Email Statistics
     <span class="info">(<%= last_updated_at_msg(@stats_table.load_stats[:last_updated_at]) %>)</span>
   </H3>
-  <%= render :partial => "email_stats", :locals => {:stats_table => @stats_table} %>
+  <% cache("#{@push.name}/#{@stats_table.load_stats[:last_updated_at]}") do %>
+    <%= render :partial => "email_stats", :locals => {:stats_table => @stats_table} %>
+  <% end %>
   <% if can? :export, EmailStatsTable %>
     <div class="right_buttons">
       <%= link_to icon("download") + "Download CSV", email_stats_report_admin_movement_push_path(@movement, @push), :class=>'download-csv button' %>
