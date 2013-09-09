@@ -43,11 +43,11 @@ Devise.setup do |config|
   # from others authentication tools as :clearance_sha1, :authlogic_sha512 (then
   # you should set stretches above to 20 for default behavior) and :restful_authentication_sha1
   # (then you should set stretches to 10, and copy REST_AUTH_SITE_KEY to pepper)
-  config.encryptor = :bcrypt
+  #config.encryptor = :bcrypt
 
   # Setup a pepper to generate the encrypted password.
   config.pepper = "53ef3f26aaeac7f07a07b1b21380df20e457f0e5d532896adbdb5c7b69e71c47556908c18f359d685d089be3cfee3d69159e5f4b428b88ca7f435220ad40ce7d"
-
+  config.secret_key = 'e0006f3aeb72ac986571ed8f4f7a2e577564d62fcbd51457010dcbe9a15f6c685f1f258568746483227398549231d4a2ec37b765c5348e1798a24abcde9ef3ba'
   #Set due to this warning
   #[DEVISE] Devise.case_insensitive_keys is false which is no longer supported.
   #Recent Devise versions automatically downcase the e-mail before saving it to the database but your app isn't using this feature. You can solve this issue by either:
@@ -56,7 +56,7 @@ Devise.setup do |config|
   #Set due to this warning
   #[DEVISE] Devise.use_salt_as_remember_token is false which is no longer supported.
   #Devise now only uses the salt as remember token and the remember_token column can be removed from your models.
-  Devise.use_salt_as_remember_token = true
+  #Devise.use_salt_as_remember_token = true
 
   #Set due to this warning
   #[DEVISE] Devise.reset_password_within is nil. Please set this value to an interval (for example, 6.hours)

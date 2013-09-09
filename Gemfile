@@ -47,7 +47,7 @@ gem 'money'
 gem 'google_currency'
 gem 'profanalyzer', :git => 'git://github.com/purposecampaigns/profanalyzer.git'
 gem 'tinymce-rails', '~>3.5'
-gem 'bcrypt-ruby' #, '~> 3.0.1'
+gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'compass-rails' #, '~> 1.0.1'
 gem 'compass-960-plugin'
 gem 'sass-rails' #, "~> 3.2.4"
