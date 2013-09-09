@@ -36,4 +36,4 @@ Feature: Manage Movements
     And I choose "Portuguese" as the default language
     And I save the movement
     Then I should be on the "Shake it!" movement page
-    Then I should see "3 languages: Portuguese (default), English, and Spanish"
+    Then I should see "3 Languages: Portuguese (default), English, and Spanish"

@@ -1,25 +1,3 @@
 <%= page_header "Snapshot" %>
-<div class='stats'>
-  <p class='desc'>
-    <span class='number'><%= MemberCountCalculator.last_member_count(@movement, I18n.locale) %></span>
-    active members
-  </p>
-  <p class="desc">
-    <span class="number"><%= number_with_delimiter(@movement.members.count, :locale => I18n.locale) %></span>
-    total joins
-  </p>
-  <p class="desc">
-    <span class="number"><%= number_with_delimiter(@movement.unsubscribed_members.count, :locale => I18n.locale) %></span>
-    total unsubscribed
-  </p>
-</div>
-<div class='stats'>
-  <p class='desc'>
-    <span class='number'><%= number_with_delimiter(UserActivityEvent.actions_taken.where(:movement_id => @movement.id).where("created_at > ?", 1.week.ago).count, :locale => I18n.locale) %></span>
-    actions in the last week
-  </p>
-  <p class='desc'>
-    <span class='number'><%= @movement.languages.count %></span>
-    languages: <%= movement_languages(@movement) %>
-  </p>
-</div>
+<%= member_stats %>
+<%= miscellaneous_stats %>
