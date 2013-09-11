@@ -71,7 +71,7 @@ describe SendgridMailer do
       mailer = SendgridMailer.send(:new)
       options = {:recipients => ['bob@generic.org']}
       returnEmail = mailer.blast_email(@email, options)
-      returnEmail.header['List-Unsubscribe'].value.should == "<mailto:Your Name <from@yourdomain.org>>"
+      returnEmail.header['List-Unsubscribe'].value.should == "<mailto:info@allout.org>"
     end
 
 

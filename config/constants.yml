@@ -21,6 +21,7 @@ development: &default
   sendgrid_api_user: systems@allout.org
   sendgrid_api_password: <%= ENV['SENDGRID_API_PASSWORD'] %>
   devise_from_email: <%= ENV['DEVISE_MAIL_SENDER_ADDRESS'] || 'info@allout.org' %>
+  unsubscribe_email: <%= ENV['UNSUBSCRIBE_EMAIL'] || 'info@allout.org' %>
   whitelisted_email_test_domains: 
     - thoughtworks.com
     - purpose.com

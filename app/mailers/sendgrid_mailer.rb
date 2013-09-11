@@ -40,7 +40,7 @@ class SendgridMailer < ActionMailer::Base
     end
     
     headers['X-SMTPAPI'] = sendgrid_headers
-    headers['List-Unsubscribe' ] = "<mailto:#{email.from}>"
+    headers['List-Unsubscribe' ] = "<mailto:#{AppConstants.unsubscribe_email}>"
     subject = get_subject(email, options)
 
     join_email = AppConstants.join_email_to
