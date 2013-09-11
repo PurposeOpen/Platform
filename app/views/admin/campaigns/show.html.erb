@@ -1,6 +1,6 @@
 <%= page_header @campaign.name  do %>
   <%= link_to icon("edit") + "Edit", edit_admin_movement_campaign_path(@movement, @campaign) %>
-  <%= link_to icon("trash") + "Delete", admin_movement_campaign_path(@movement, @campaign), :method => :delete, :confirm => "Delete '#{@campaign.name}'?" if can?(:manage, @campaign) %>
+  <%= link_to icon("trash") + "Delete", admin_movement_campaign_path(@movement, @campaign), method: :delete, confirm: "Delete '#{@campaign.name}'?" if can?(:manage, @campaign) %>
 <% end %>
 
 <div class="description">
@@ -8,19 +8,19 @@
 </div>
 
 <div class="list_group">
-  <%= render :partial => "admin/campaigns/action_sequences" %>
-  <%= render :partial => "admin/campaigns/pushes" %>
+  <%= render partial: "admin/campaigns/action_sequences" %>
+  <%= render partial: "admin/campaigns/pushes" %>
 
   <div id="ask-stats" class="stats-table list_group_item">
     <h3>Ask Statistics</h3>
-    <%= render :partial => "ask_stats", :locals => {:stats => @stats} %>
+    <%= render partial: "ask_stats", locals: {stats: @stats} %>
     <%= will_paginate @stats %>
   </div>
   <div id="taf-stats" class="stats-table list_group_item">
     <h3>TAF Statistics</h3>
-    <%= render :partial => "taf_stats", :locals => {:stats => @share_stats} %>
+    <%= render partial: "taf_stats", locals: {stats: @share_stats} %>
   </div>
 </div>
 
-<%= render :partial => '/admin/shared/history', :locals => {:entity => @campaign} %>
-<%= render :partial => "admin/campaigns/tooltips" %>
+<%= render partial: '/admin/shared/history', locals: {entity: @campaign} %>
+<%= render partial: "admin/campaigns/tooltips" %>

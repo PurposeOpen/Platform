@@ -31,17 +31,17 @@ class Page < ActiveRecord::Base
   acts_as_paranoid
 
   has_many :content_module_links
-  has_many :content_modules, :through => :content_module_links
+  has_many :content_modules, through: :content_module_links, dependent: :delete_all
 
-  friendly_id :name, :use => :scoped, :scope => :movement_id
+  friendly_id :name, use: :scoped, scope: :movement_id
   before_validation :update_movement_id_column
   validates_presence_of :movement_id
 
-  validates_length_of :name, :maximum => 64, :minimum => 3
+  validates_length_of :name, maximum: 64, minimum: 3
   validate :unique_slug_within_movement
 
-  default_scope where(:live_page_id => nil)
-  scope :for_preview, ->(movement_id){ where(:deleted_at => nil, :movement_id => movement_id)}
+  default_scope where(live_page_id: nil)
+  scope :for_preview, ->(movement_id){ where(deleted_at: nil, movement_id: movement_id) }
 
   belongs_to :movement
 
@@ -64,9 +64,9 @@ class Page < ActiveRecord::Base
     end
 
     ContentModule.all(:include => [:content_module_links, :language],
-                      :conditions => "languages.iso_code = '#{language.iso_code}' and
+                      conditions: "languages.iso_code = '#{language.iso_code}' and
                                       content_module_links.page_id = #{self.id} and content_module_links.layout_container='#{container}'",
-                      :order => 'content_module_links.position')
+                      order: 'content_module_links.position')
   end
 
   def all_modules_valid?(language)
@@ -79,12 +79,12 @@ class Page < ActiveRecord::Base
     default_language_module_links.map do |old_module_link|
       old_module = old_module_link.content_module
       new_module = old_module.class.new(:language => new_language)
-      new_module.save! :validate => false
+      new_module.save! validate: false
 
       new_module_link = self.content_module_links.create!(
-        :position => old_module_link.position,
-        :layout_container => old_module_link.layout_container,
-        :content_module => new_module
+        position: old_module_link.position,
+        layout_container: old_module_link.layout_container,
+        content_module: new_module
       )
 
       new_module
@@ -172,9 +172,9 @@ class Page < ActiveRecord::Base
 
   def module_links_by_language(language)
     ContentModuleLink.where(
-      :page_id => self.id,
-        :languages => {
-          :iso_code => language.iso_code
+      page_id: self.id,
+        languages: {
+          iso_code: language.iso_code
         }
     ).joins(:content_module => :language)
   end

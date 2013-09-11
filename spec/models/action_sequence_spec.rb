@@ -26,34 +26,34 @@ describe ActionSequence do
 
   describe "validations" do
     it "should require a name between 3 and 64 characters" do
-      ActionSequence.new(:name => "Save the kittens!", :campaign => @campaign).should be_valid
-      ActionSequence.new(:name => "12", :campaign => @campaign).should_not be_valid
-      ActionSequence.new(:name => "X" * 65, :campaign => @campaign).should_not be_valid
-      ActionSequence.new(:name => nil, :campaign => @campaign).should_not be_valid
+      ActionSequence.new(name: "Save the kittens!", campaign: @campaign).should be_valid
+      ActionSequence.new(name: "12", campaign: @campaign).should_not be_valid
+      ActionSequence.new(name: "X" * 65, campaign: @campaign).should_not be_valid
+      ActionSequence.new(name: nil, campaign: @campaign).should_not be_valid
     end
   end
 
   it "knows that it is static pages if campaign is nil" do
-    FactoryGirl.build(:action_sequence, :campaign => @campaign, :name => "Not Static").should_not be_static
-    FactoryGirl.build(:action_sequence, :campaign => nil, :name => "Static").should be_static
+    FactoryGirl.build(:action_sequence, campaign: @campaign, name: "Not Static").should_not be_static
+    FactoryGirl.build(:action_sequence, campaign: nil, name: "Static").should be_static
   end
 
   it "should not allow a duplicate name" do
-    original = ActionSequence.create(:name => "Original Name", :campaign => @campaign)
-    ActionSequence.new(:name => "Original Name", :campaign => @campaign).should_not be_valid
+    original = ActionSequence.create(name: "Original Name", campaign: @campaign)
+    ActionSequence.new(name: "Original Name", campaign: @campaign).should_not be_valid
   end
 
   it "should allow a duplicate name if the original has been deleted" do
-    original = ActionSequence.create(:name => "Original Name", :campaign => @campaign)
+    original = ActionSequence.create(name: "Original Name", campaign: @campaign)
     original.destroy
-    duplicate = ActionSequence.new(:name => "Original Name", :campaign => @campaign)
+    duplicate = ActionSequence.new(name: "Original Name", campaign: @campaign)
     duplicate.should be_valid
   end
 
   it "should return a reference to the first page in the sequence" do
-    original = ActionSequence.create(:name => "Original Name", :campaign => @campaign)
-    first_page = FactoryGirl.create(:action_page, :name => "page1", :action_sequence => original)
-    second_page = FactoryGirl.create(:action_page, :name => "page2", :action_sequence => original)
+    original = ActionSequence.create(name: "Original Name", campaign: @campaign)
+    first_page = FactoryGirl.create(:action_page, name: "page1", action_sequence: original)
+    second_page = FactoryGirl.create(:action_page, name: "page2", action_sequence: original)
 
     original.reload
     original.landing_page.should eql first_page
@@ -73,9 +73,9 @@ describe ActionSequence do
     english = FactoryGirl.create(:english)
     taf_module_link = FactoryGirl.create(:taf_module_link)
     taf = taf_module_link.content_module
-    taf.update_attributes(:language => english)
+    taf.update_attributes(language: english)
     action_sequence = taf_module_link.page.action_sequence
-    html_module_link = FactoryGirl.create(:sidebar_module_link, :page => FactoryGirl.create(:action_page, :name => "Petition Page", :action_sequence => action_sequence))
+    html_module_link = FactoryGirl.create(:sidebar_module_link, page: FactoryGirl.create(:action_page, name: "Petition Page", action_sequence: action_sequence))
 
     action_sequence.first_taf(english).should == taf
   end
@@ -83,8 +83,8 @@ describe ActionSequence do
   describe "cache behavior" do
     before(:each) do
       Rails.cache.clear
-      @campaign = FactoryGirl.create(:campaign, :name => 'sign this')
-      @action_sequence = FactoryGirl.create(:action_sequence, :name => 'begin here', :campaign => @campaign)
+      @campaign = FactoryGirl.create(:campaign, name: 'sign this')
+      @action_sequence = FactoryGirl.create(:action_sequence, name: 'begin here', campaign: @campaign)
     end
 
     it "should load the action sequence from cache if found" do
@@ -181,17 +181,17 @@ describe ActionSequence do
 
   describe 'update campaign' do
     let(:sometime_in_the_past) { Time.zone.parse '2001-01-01 01:01:01' }
-    let(:campaign) { create(:campaign, :updated_at => sometime_in_the_past) }
+    let(:campaign) { create(:campaign, updated_at: sometime_in_the_past) }
 
     it 'should touch campaign when added' do
-      @action_sequence = create(:action_sequence, :campaign => campaign)
+      @action_sequence = create(:action_sequence, campaign: campaign)
       campaign.reload.updated_at.should > sometime_in_the_past
     end
 
     it 'should touch campaign when updated' do
-      @action_sequence = create(:action_sequence, :campaign => campaign)
+      @action_sequence = create(:action_sequence, campaign: campaign)
       campaign.update_column(:updated_at, 3.days.ago)
-      @action_sequence.update_attributes(:name => 'A new updated action sequence')
+      @action_sequence.update_attributes(name: 'A new updated action sequence')
       campaign.reload.updated_at.should > sometime_in_the_past
     end
   end

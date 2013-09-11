@@ -15,9 +15,9 @@ class Push < ActiveRecord::Base
   acts_as_paranoid
 
   belongs_to :campaign
-  has_many :blasts
+  has_many :blasts, dependent: :destroy
 
-  validates_length_of :name, :maximum => 64, :minimum => 3
+  validates_length_of :name, maximum: 64, minimum: 3
 
   after_save ->{campaign.touch}
 
@@ -55,12 +55,12 @@ class Push < ActiveRecord::Base
 
   def count_by_activity(activity)
     event_class = Push.activity_class_for activity
-    event_class.where(:push_id => self.id).count
+    event_class.where(push_id: self.id).count
   end
 
   def self.log_activity!(activity, user, email)
     event_class = Push.activity_class_for activity
-    event_class.create :movement_id => email.movement.id, :user_id => user.id, :email_id => email.id, :push_id => email.blast.push.id
+    event_class.create movement_id: email.movement.id, user_id: user.id, email_id: email.id, push_id: email.blast.push.id
   end
 
   def has_pending_jobs?

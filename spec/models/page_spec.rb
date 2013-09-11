@@ -30,22 +30,22 @@ describe Page do
 
   describe 'validations' do
     before do
-      @action_page = create(:action_page, :name => 'Duplicate')
+      @action_page = create(:action_page, name: 'Duplicate')
       @movement = @action_page.movement
     end
 
     it 'should validate uniqueness of name within movement' do
-      content_page_collection = create(:content_page_collection, :movement => @movement)
-      content_page = build(:content_page, :name => 'Duplicate', :content_page_collection => content_page_collection)
+      content_page_collection = create(:content_page_collection, movement: @movement)
+      content_page = build(:content_page, name: 'Duplicate', content_page_collection: content_page_collection)
       content_page.should_not be_valid
       content_page.errors.messages[:name].should == ["must be unique within movement."]
       @action_page.should be_valid
     end
 
     it 'should ensure unique slug while updating' do
-      content_page_collection = create(:content_page_collection, :movement => @movement)
-      content_page = create(:content_page, :name => 'Some Name', :content_page_collection => content_page_collection)
-      @action_page.update_attributes(:name => 'Some Name')
+      content_page_collection = create(:content_page_collection, movement: @movement)
+      content_page = create(:content_page, name: 'Some Name', content_page_collection: content_page_collection)
+      @action_page.update_attributes(name: 'Some Name')
       @action_page.errors.messages[:name].should == ["must be unique within movement."]
     end
   end
@@ -77,7 +77,7 @@ describe Page do
 
     context 'click was already registered' do
       it 'should create another click event' do
-        PushClickedEmail.create(:movement_id => @email.movement.id, :push_id => @email.blast.push.id, :email_id => @email.id, :user_id => @user.id)
+        PushClickedEmail.create(movement_id: @email.movement.id, push_id: @email.blast.push.id, email_id: @email.id, user_id: @user.id)
         @page.register_click_from(@email, @user)
 
         PushClickedEmail.count.should == 2
@@ -87,17 +87,17 @@ describe Page do
     describe 'default scope' do
       it "should return action pages with live_page_id = nil by default" do
         as = create(:action_sequence)
-        ap1 = create(:action_page, :live_page_id => nil, :action_sequence => as)
-        ap2 = create(:action_page, :live_page_id => ap1.id, :action_sequence => as)
+        ap1 = create(:action_page, live_page_id: nil, action_sequence: as)
+        ap2 = create(:action_page, live_page_id: ap1.id, action_sequence: as)
         as.action_pages.should include ap1
         as.action_pages.should_not include ap2
       end
 
       it "should return content pages with live_page_id = nil by default" do
         movement = create(:movement)
-        content_page_collection = create(:content_page_collection, :movement => movement)
-        cp1 = create(:content_page, :live_page_id => nil, :content_page_collection => content_page_collection, :name => 'name1')
-        cp2 = create(:content_page, :live_page_id => cp1.id, :content_page_collection => content_page_collection, :name => 'name2')
+        content_page_collection = create(:content_page_collection, movement: movement)
+        cp1 = create(:content_page, live_page_id: nil, content_page_collection: content_page_collection, name: 'name1')
+        cp2 = create(:content_page, live_page_id: cp1.id, content_page_collection: content_page_collection, name: 'name2')
         movement.content_page_collections.first.content_pages.should include cp1
         movement.content_page_collections.first.content_pages.should_not include cp2
       end
@@ -106,7 +106,7 @@ describe Page do
     describe "for_preview scope" do
       it "should only include conditions deleted_at is nil and movement when called with unscoped" do
         movement = create(:movement)
-        Page.unscoped.for_preview(movement.id).to_sql.should == Page.unscoped.where(:deleted_at => nil, :movement_id => movement.id).to_sql
+        Page.unscoped.for_preview(movement.id).to_sql.should == Page.unscoped.where(deleted_at: nil, movement_id: movement.id).to_sql
       end
     end
 

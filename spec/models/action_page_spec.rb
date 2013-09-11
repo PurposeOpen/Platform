@@ -49,12 +49,12 @@ describe ActionPage do
     it "should be scoped to the containing action_sequence" do
       action_sequence = create(:action_sequence)
       another_action_sequence = create(:action_sequence)
-      create(:action_page, :action_sequence => another_action_sequence, :name => "page1")
-      create(:action_page, :action_sequence => another_action_sequence, :name => "page2")
-      create(:action_page, :action_sequence => another_action_sequence, :name => "page3")
+      create(:action_page, action_sequence: another_action_sequence, name: "page1")
+      create(:action_page, action_sequence: another_action_sequence, name: "page2")
+      create(:action_page, action_sequence: another_action_sequence, name: "page3")
 
-      first_page = create(:action_page, :action_sequence => action_sequence, :name => "page4")
-      second_page = create(:action_page, :action_sequence => action_sequence, :name => "page5")
+      first_page = create(:action_page, action_sequence: action_sequence, name: "page4")
+      second_page = create(:action_page, action_sequence: action_sequence, name: "page5")
 
       first_page.position.should == 1
       second_page.position.should == 2
@@ -63,10 +63,10 @@ describe ActionPage do
     it "should not consider deleted pages when validating the pages' positions" do
       action_sequence = create(:action_sequence)
 
-      page1 = create(:action_page, :action_sequence => action_sequence, :name => "page1", :position => 1)
-      page2 = create(:action_page, :action_sequence => action_sequence, :name => "page2", :position => 2)
-      page3 = create(:action_page, :action_sequence => action_sequence, :name => "page3", :position => 3)
-      page4 = build(:action_page, :action_sequence => action_sequence, :name => "page4", :position => 1)
+      page1 = create(:action_page, action_sequence: action_sequence, name: "page1", position: 1)
+      page2 = create(:action_page, action_sequence: action_sequence, name: "page2", position: 2)
+      page3 = create(:action_page, action_sequence: action_sequence, name: "page3", position: 3)
+      page4 = build(:action_page, action_sequence: action_sequence, name: "page4", position: 1)
 
       page2.destroy
       page3.position = 2
@@ -77,19 +77,19 @@ describe ActionPage do
 
     it "should not allow creation of pages with blank movement attribute" do
       action_sequence = create(:action_sequence)
-      page5 = build(:action_page, :action_sequence => action_sequence, :name => "page5", :position => 1, :movement_id => nil)
+      page5 = build(:action_page, action_sequence: action_sequence, name: "page5", position: 1, movement_id: nil)
       page5.valid?.should be_false
       page5.errors.messages.should have_key(:movement_id)
     end
 
     it "should not consider preview pages when validating the pages' positions" do
       action_sequence = create(:action_sequence)
-      page1 = create(:action_page, :action_sequence => action_sequence, :name => "page1", :position => 1)
-      page2 = create(:action_page, :action_sequence => action_sequence, :name => "page2", :position => 2)
-      page3 = create(:action_page, :action_sequence => action_sequence, :name => "page3", :position => 3)
-      page4 = create(:action_page, :action_sequence => action_sequence, :name => "page4", :position => 3, :live_action_page => page3)
-      page5 = create(:action_page, :action_sequence => action_sequence, :name => "page5", :position => 4, :live_action_page => page4)
-      page6 = create(:action_page, :action_sequence => action_sequence, :name => "page6", :position => 6)
+      page1 = create(:action_page, action_sequence: action_sequence, name: "page1", position: 1)
+      page2 = create(:action_page, action_sequence: action_sequence, name: "page2", position: 2)
+      page3 = create(:action_page, action_sequence: action_sequence, name: "page3", position: 3)
+      page4 = create(:action_page, action_sequence: action_sequence, name: "page4", position: 3, live_action_page: page3)
+      page5 = create(:action_page, action_sequence: action_sequence, name: "page5", position: 4, live_action_page: page4)
+      page6 = create(:action_page, action_sequence: action_sequence, name: "page6", position: 6)
       page1.valid?.should be_true
       page2.valid?.should be_true
       page3.valid?.should be_true
@@ -111,45 +111,45 @@ describe ActionPage do
 
     it "should require a name between 3 and 64 characters" do
       build(:action_page).should be_valid
-      build(:action_page, :name => "Save the kittens!", :action_sequence => @ps).should be_valid
-      build(:action_page, :name => "12",                :action_sequence => @ps).should have(1).error_on(:name)
-      build(:action_page, :name => "X" * 65,            :action_sequence => @ps).should have(1).error_on(:name)
-      build(:action_page, :name => nil,                 :action_sequence => @ps).should have(1).error_on(:name)
-      build(:action_page, :name => 'Sally',             :action_sequence => nil).should have(1).error_on(:action_sequence)
+      build(:action_page, name: "Save the kittens!", action_sequence: @ps).should be_valid
+      build(:action_page, name: "12",                action_sequence: @ps).should have(1).error_on(:name)
+      build(:action_page, name: "X" * 65,            action_sequence: @ps).should have(1).error_on(:name)
+      build(:action_page, name: nil,                 action_sequence: @ps).should have(1).error_on(:name)
+      build(:action_page, name: 'Sally',             action_sequence: nil).should have(1).error_on(:action_sequence)
     end
 
     it "should allow any characters for campaign pages" do
-      create(:action_page, :name => "This really ? would=not work well as a http:// URL", :action_sequence => @ps).should be_valid
+      create(:action_page, name: "This really ? would=not work well as a http:// URL", action_sequence: @ps).should be_valid
     end
 
     it "should not allow a duplicate name" do
-      original = create(:action_page, :name => "Original Name", :action_sequence => @ps)
-      build(:action_page, :name => "Original Name", :action_sequence => @ps).should_not be_valid
+      original = create(:action_page, name: "Original Name", action_sequence: @ps)
+      build(:action_page, name: "Original Name", action_sequence: @ps).should_not be_valid
     end
 
     it "should allow a duplicate name if the original has been deleted" do
-      original = create(:action_page, :name => "Original Name", :action_sequence => @ps)
+      original = create(:action_page, name: "Original Name", action_sequence: @ps)
       original.destroy
-      duplicate = create(:action_page, :name => "Original Name", :action_sequence => @ps)
+      duplicate = create(:action_page, name: "Original Name", action_sequence: @ps)
       duplicate.should be_valid
     end
 
     it "should allow a page to have a name that was previously used by another page" do
-      page1 = create(:action_page, :name => "Blank page", :action_sequence => @ps)
+      page1 = create(:action_page, name: "Blank page", action_sequence: @ps)
       page1.save!
 
-      page1.update_attributes :name => "Important page"
+      page1.update_attributes name: "Important page"
 
-      page2 = create(:action_page, :name => "Blank page", :action_sequence => @ps)
+      page2 = create(:action_page, name: "Blank page", action_sequence: @ps)
       page2.should be_valid
     end
 
     it "should have unique position within the action sequence if live_action_page is nil" do
       action_sequence = create(:action_sequence)
-      action_page = create(:action_page, :live_action_page => nil, :position => 1, :action_sequence => action_sequence)
-      action_page1 = build(:action_page, :live_action_page => nil, :position => 1, :action_sequence => action_sequence)
+      action_page = create(:action_page, live_action_page: nil, position: 1, action_sequence: action_sequence)
+      action_page1 = build(:action_page, live_action_page: nil, position: 1, action_sequence: action_sequence)
       action_page1.should_not be_valid
-      action_page_with_live_action_page = build(:action_page, :live_action_page => action_page, :position => 1, :action_sequence => action_sequence)
+      action_page_with_live_action_page = build(:action_page, live_action_page: action_page, position: 1, action_sequence: action_sequence)
       action_page_with_live_action_page.should be_valid
     end
   end
@@ -166,16 +166,16 @@ describe ActionPage do
 
     it "knows about the ask module for the movement's default language and specific languages" do
       l1, l2 = create(:language), create(:language)
-      movement = create(:movement, :languages => [l1, l2])
+      movement = create(:movement, languages: [l1, l2])
       movement.default_language = l2
 
       page = create(:action_page,
-        :action_sequence => create(:action_sequence,
-          :campaign => create(:campaign,
-            :movement => movement)))
+        action_sequence: create(:action_sequence,
+          campaign: create(:campaign,
+            movement: movement)))
 
-      m1 = create(:petition_module, :language => l1)
-      m2 = create(:petition_module, :language => l2)
+      m1 = create(:petition_module, language: l1)
+      m2 = create(:petition_module, language: l2)
 
       page.content_modules << m1
       page.content_modules << m2
@@ -244,7 +244,7 @@ describe ActionPage do
   describe "required user details" do
     it "should always store values as symbols" do
       page = create(:action_page)
-      page.required_user_details = {:first_name => "hidden"}
+      page.required_user_details = {first_name: "hidden"}
       page.required_user_details[:first_name].should == :hidden
     end
   end
@@ -262,9 +262,9 @@ describe ActionPage do
 
       non_hidden_fields = fields.dup.delete_if {|key, value| value == "hidden" }
 
-      page = create(:action_page, :required_user_details => fields)
+      page = create(:action_page, required_user_details: fields)
 
-      page.non_hidden_user_details.should == non_hidden_fields.merge(:email => :required)
+      page.non_hidden_user_details.should == non_hidden_fields.merge(email: :required)
     end
   end
 
@@ -276,25 +276,25 @@ describe ActionPage do
       @portuguese = create(:portuguese)
       @french = create(:french)
 
-      @page.movement.movement_locales.create! :language => @english, :default => true
-      @page.movement.movement_locales.create! :language => @portuguese, :default => false
-      @page.movement.movement_locales.create! :language => @french, :default => false
+      @page.movement.movement_locales.create! language: @english, default: true
+      @page.movement.movement_locales.create! language: @portuguese, default: false
+      @page.movement.movement_locales.create! language: @french, default: false
 
-      @m1 = create(:html_module, :language => @english)
-      @m2 = create(:html_module, :language => @portuguese)
-      @m3 = create(:html_module, :language => @french)
-      @m4 = create(:html_module, :language => @french)
-      @m5 = create(:html_module, :language => @english)
-      @m6 = create(:html_module, :language => @french)
-      @m7 = create(:html_module, :language => @portuguese)
+      @m1 = create(:html_module, language: @english)
+      @m2 = create(:html_module, language: @portuguese)
+      @m3 = create(:html_module, language: @french)
+      @m4 = create(:html_module, language: @french)
+      @m5 = create(:html_module, language: @english)
+      @m6 = create(:html_module, language: @french)
+      @m7 = create(:html_module, language: @portuguese)
 
-      @page.content_module_links.create! :content_module => @m1, :layout_container => ContentModule::MAIN
-      @page.content_module_links.create! :content_module => @m2, :layout_container => ContentModule::MAIN
-      @page.content_module_links.create! :content_module => @m3, :layout_container => ContentModule::SIDEBAR
-      @page.content_module_links.create! :content_module => @m4, :layout_container => ContentModule::MAIN
-      @page.content_module_links.create! :content_module => @m5, :layout_container => ContentModule::SIDEBAR
-      @page.content_module_links.create! :content_module => @m6, :layout_container => ContentModule::HEADER
-      @page.content_module_links.create! :content_module => @m7, :layout_container => ContentModule::HEADER
+      @page.content_module_links.create! content_module: @m1, layout_container: ContentModule::MAIN
+      @page.content_module_links.create! content_module: @m2, layout_container: ContentModule::MAIN
+      @page.content_module_links.create! content_module: @m3, layout_container: ContentModule::SIDEBAR
+      @page.content_module_links.create! content_module: @m4, layout_container: ContentModule::MAIN
+      @page.content_module_links.create! content_module: @m5, layout_container: ContentModule::SIDEBAR
+      @page.content_module_links.create! content_module: @m6, layout_container: ContentModule::HEADER
+      @page.content_module_links.create! content_module: @m7, layout_container: ContentModule::HEADER
     end
 
     it "should not fail to retrieve modules if the page has no modules at all" do
@@ -325,7 +325,7 @@ describe ActionPage do
       new_language = create(:language)
       def_language = @page.movement.default_language
 
-      @page.movement.movement_locales.create! :language => new_language, :default => false
+      @page.movement.movement_locales.create! language: new_language, default: false
 
       @page.modules_for_container_and_language(ContentModule::MAIN, new_language).count.should ==
         @page.modules_for_container_and_language(ContentModule::MAIN, def_language).count
@@ -348,17 +348,17 @@ describe ActionPage do
 
   describe "#valid_main_content_modules" do
     it "should returns all main content modules that pass ActiveRecord validations" do
-      page = create(:action_page, :content_modules => [create(:html_module)])
-      page.content_module_links.create!(:layout_container => :main_content, :content_module => create(:past_campaign_module))
-      page.content_module_links.create!(:layout_container => :main_content, :content_module => create(:past_campaign_module))
+      page = create(:action_page, content_modules: [create(:html_module)])
+      page.content_module_links.create!(layout_container: :main_content, content_module: create(:past_campaign_module))
+      page.content_module_links.create!(layout_container: :main_content, content_module: create(:past_campaign_module))
 
       page.valid_main_content_modules.size.should eql 2
     end
 
     it "should returns all header content modules that pass ActiveRecord validations" do
-      page = create(:action_page, :content_modules => [create(:html_module)])
-      page.content_module_links.create!(:layout_container => :header_content, :content_module => create(:past_campaign_module))
-      page.content_module_links.create!(:layout_container => :header_content, :content_module => create(:past_campaign_module))
+      page = create(:action_page, content_modules: [create(:html_module)])
+      page.content_module_links.create!(layout_container: :header_content, content_module: create(:past_campaign_module))
+      page.content_module_links.create!(layout_container: :header_content, content_module: create(:past_campaign_module))
 
       page.valid_header_content_modules.size.should eql 2
     end
@@ -373,8 +373,8 @@ describe ActionPage do
       english = create(:english)
       spanish = create(:spanish)
 
-      @page.autofire_emails.create!(:action_page_id => @page.id, :language_id => english.id)
-      @page.autofire_emails.create!(:action_page_id => @page.id, :language_id => spanish.id)
+      @page.autofire_emails.create!(action_page_id: @page.id, language_id: english.id)
+      @page.autofire_emails.create!(action_page_id: @page.id, language_id: spanish.id)
 
       @page.autofire_email_for_language(spanish).should eql AutofireEmail.find_by_action_page_id_and_language_id(@page.id, spanish.id)
     end
@@ -382,8 +382,8 @@ describe ActionPage do
 
   describe "#cache_key" do
     it "should generate different cache keys even if different pages have the same friendly id" do
-      page_1 = create(:action_page, :name=> "the page")
-      page_2 = create(:action_page, :name=> "the page")
+      page_1 = create(:action_page, name: "the page")
+      page_2 = create(:action_page, name: "the page")
 
       page_1.cache_key.should_not eql page_2.cache_key
     end
@@ -394,10 +394,10 @@ describe ActionPage do
       page = create(:action_page)
       default_language = page.movement.default_language
 
-      petition = create(:petition_module, :language => default_language)
+      petition = create(:petition_module, language: default_language)
       html = create(:html_module)
-      member = create(:user, :language => default_language)
-      email = create(:autofire_email, :enabled => false, :action_page => page, :language => default_language)
+      member = create(:user, language: default_language)
+      email = create(:autofire_email, enabled: false, action_page: page, language: default_language)
 
       page.content_modules = [html, petition]
       page.save
@@ -413,9 +413,9 @@ describe ActionPage do
       it "should not be sent from non-ask pages" do
         page = create(:action_page)
         language = page.movement.languages.first
-        tell_a_friend = create(:tell_a_friend_module, :language => language, :pages => [page])
-        member = create(:user, :language => language)
-        email = create(:autofire_email, :enabled => true, :action_page => page, :language => language)
+        tell_a_friend = create(:tell_a_friend_module, language: language, pages: [page])
+        member = create(:user, language: language)
+        email = create(:autofire_email, enabled: true, action_page: page, language: language)
 
         ActionMailer::Base.deliveries.size.should == 0
         SendgridMailer.should_not_receive(:user_email)
@@ -425,14 +425,14 @@ describe ActionPage do
 
       it "when enabled should deliver an email to the user taking an action" do
         petition = create(:petition_module)
-        page = create(:action_page, :content_modules => [petition])
-        member = create(:user, :language => page.movement.languages.first)
+        page = create(:action_page, content_modules: [petition])
+        member = create(:user, language: page.movement.languages.first)
         email = create(:autofire_email,
-            :enabled => true,
-            :subject => "Autofire email",
-            :action_page => page,
-            :language => page.movement.languages.first,
-            :from => "noreply@yourdomain.com")
+            enabled: true,
+            subject: "Autofire email",
+            action_page: page,
+            language: page.movement.languages.first,
+            from: "noreply@yourdomain.com")
 
         page.process_action_taken_by(member)
 
@@ -445,9 +445,9 @@ describe ActionPage do
 
       it "when disabled should not deliver an email to the user taking an action" do
         petition = create(:petition_module)
-        page = create(:action_page, :content_modules => [petition])
-        member = create(:user, :language => page.movement.languages.first)
-        email = create(:autofire_email, :enabled => false, :action_page => page, :language => page.movement.languages.first)
+        page = create(:action_page, content_modules: [petition])
+        member = create(:user, language: page.movement.languages.first)
+        email = create(:autofire_email, enabled: false, action_page: page, language: page.movement.languages.first)
 
         ActionMailer::Base.deliveries.size.should == 0
         SendgridMailer.should_not_receive(:user_email)
@@ -464,19 +464,19 @@ describe ActionPage do
         donation_module = create(:donation_module)
         DonationModule.any_instance.stub(:take_action).and_return(donation)
 
-        page = create(:action_page, :content_modules => [donation_module])
+        page = create(:action_page, content_modules: [donation_module])
         language = page.movement.default_language
-        donation_module.update_attributes(:language => language)
-        member = create(:user, :language => language)
+        donation_module.update_attributes(language: language)
+        member = create(:user, language: language)
         email = create(:autofire_email,
-            :enabled => true,
-            :subject => "Autofire email",
-            :action_page => page,
-            :language => language,
-            :from => "noreply@yourdomain.com",
-            :body => "Here's your receipt: {RECEIPT|}")
+            enabled: true,
+            subject: "Autofire email",
+            action_page: page,
+            language: language,
+            from: "noreply@yourdomain.com",
+            body: "Here's your receipt: {RECEIPT|}")
 
-        page.process_action_taken_by(member, {:currency => :usd, :payment_method => :paypal, :amount => 1000})
+        page.process_action_taken_by(member, {currency: :usd, payment_method: :paypal, amount: 1000})
 
         ActionMailer::Base.deliveries.size.should == 1
         mail = ActionMailer::Base.deliveries.first
@@ -494,7 +494,7 @@ describe ActionPage do
     end
     context 'join page,' do
       it 'should not set up autofire emails' do
-        join_module = create(:join_module, :pages => [@page])
+        join_module = create(:join_module, pages: [@page])
         @page.content_modules(true) # reload association to avoid cache issues
 
         @page.set_up_autofire_emails
@@ -504,7 +504,7 @@ describe ActionPage do
 
     context 'not a join page' do
       it 'should set up autofire emails for each language' do
-        create(:petition_module, :pages => [@page])
+        create(:petition_module, pages: [@page])
         spanish = create(:spanish)
         french = create(:french)
 
@@ -519,7 +519,7 @@ describe ActionPage do
 
   describe "gets pre-seeded with a module" do
     it "should create the module in the sidebar container when the page itself is created" do
-      page = create(:action_page, :seeded_module => "petition_module")
+      page = create(:action_page, seeded_module: "petition_module")
       modules = page.reload.content_modules
       modules.size.should == 1
 
@@ -531,8 +531,8 @@ describe ActionPage do
     end
 
     it "should not pre-seed any modules if the given seeded_module string is blank" do
-      create(:action_page, :seeded_module => "").content_modules.should be_empty
-      create(:action_page, :seeded_module => nil).content_modules.should be_empty
+      create(:action_page, seeded_module: "").content_modules.should be_empty
+      create(:action_page, seeded_module: nil).content_modules.should be_empty
     end
   end
 
@@ -540,15 +540,15 @@ describe ActionPage do
     before :each do
       @english = create(:english)
       portuguese = create(:portuguese)
-      movement = create(:movement, :languages => [portuguese, @english])
+      movement = create(:movement, languages: [portuguese, @english])
 
-      @page = create(:action_page, :name => "Cool page", :movement => movement)
-      @page.action_sequence.campaign.update_attributes(:movement => movement)
+      @page = create(:action_page, name: "Cool page", movement: movement)
+      @page.action_sequence.campaign.update_attributes(movement: movement)
 
-      header_module_in_english = create(:html_module, :content => "html content", :language => @english)
-      header_module_in_portuguese = create(:html_module, :content => "conteudo html", :language => portuguese)
-      create(:content_module_link, :page => @page, :content_module => header_module_in_english, :layout_container => ContentModule::HEADER)
-      create(:content_module_link, :page => @page, :content_module => header_module_in_portuguese, :layout_container => ContentModule::HEADER)
+      header_module_in_english = create(:html_module, content: "html content", language: @english)
+      header_module_in_portuguese = create(:html_module, content: "conteudo html", language: portuguese)
+      create(:content_module_link, page: @page, content_module: header_module_in_english, layout_container: ContentModule::HEADER)
+      create(:content_module_link, page: @page, content_module: header_module_in_portuguese, layout_container: ContentModule::HEADER)
     end
 
     it "should use movement's default language if no language is specified when retrieving page's content" do
@@ -564,7 +564,7 @@ describe ActionPage do
     end
 
     it "should use specified language when retrieving page's content" do
-      json = @page.as_json :language => "en"
+      json = @page.as_json language: "en"
 
       json[:id].should eql @page.id
       json[:name].should eql "Cool page"
@@ -576,13 +576,13 @@ describe ActionPage do
 
     it "should include TellAFriend facebook information" do
       taf_module_in_english = create(:tell_a_friend_module,
-                                                 :facebook_title => "Facebook Share!",
-                                                 :facebook_description => "Share with friends",
-                                                 :facebook_image_url => "image url",
-                                                 :language => @english)
-      create(:content_module_link, :page => @page, :content_module => taf_module_in_english, :layout_container => ContentModule::SIDEBAR)
+                                                 facebook_title: "Facebook Share!",
+                                                 facebook_description: "Share with friends",
+                                                 facebook_image_url: "image url",
+                                                 language: @english)
+      create(:content_module_link, page: @page, content_module: taf_module_in_english, layout_container: ContentModule::SIDEBAR)
 
-      json = @page.as_json :language => "en"
+      json = @page.as_json language: "en"
 
       json[:sidebar_content_modules].first['options']['facebook_title'].should eql "Facebook Share!"
       json[:sidebar_content_modules].first['options']['facebook_description'].should eql "Share with friends"
@@ -590,25 +590,25 @@ describe ActionPage do
     end
 
     it "should include the target number of signatures goal and thermometer threshold for a Petition module" do
-      petition = create(:petition_module, :signatures_goal => 100, :thermometer_threshold => 25)
-      create(:content_module_link, :page => @page, :content_module => petition, :layout_container => ContentModule::SIDEBAR)
+      petition = create(:petition_module, signatures_goal: 100, thermometer_threshold: 25)
+      create(:content_module_link, page: @page, content_module: petition, layout_container: ContentModule::SIDEBAR)
 
-      json = @page.as_json :language => "en"
+      json = @page.as_json language: "en"
 
       json[:sidebar_content_modules].first['options']['signatures_goal'].should eq 100
       json[:sidebar_content_modules].first['options']['thermometer_threshold'].should eq 25
     end
 
     it 'should footer content modules' do
-      footer_content_module = create(:html_module, :content => 'This is the footer content')
+      footer_content_module = create(:html_module, content: 'This is the footer content')
       create(:content_module_link, content_module: footer_content_module, page: @page, layout_container: ContentModule::FOOTER)
-      json = @page.as_json :language => "en"
+      json = @page.as_json language: "en"
       json[:footer_content_modules].size.should == 1
       json[:footer_content_modules][0]['content'].should == 'This is the footer content'
     end
 
     it "includes required field information with the page" do
-      @page.required_user_details = { :first_name => :required }
+      @page.required_user_details = { first_name: :required }
       @page.save
       json = @page.as_json
 
@@ -620,11 +620,11 @@ describe ActionPage do
       english = create(:language)
       portuguese = create(:language)
       page = create(:action_page)
-      petition_in_english = create(:petition_module, :language => english, :pages => [page])
-      petition_in_portuguese = create(:petition_module, :language => portuguese, :pages => [page])
-      american_user = create(:user, :email => "john@us.com", :movement => page.movement, :language => english)
-      british_user = create(:user, :email => "john@uk.co.uk", :movement => page.movement, :language => english)
-      brazilian_user = create(:user, :email => "joao@br.com.br",  :movement => page.movement, :language => portuguese)
+      petition_in_english = create(:petition_module, language: english, pages: [page])
+      petition_in_portuguese = create(:petition_module, language: portuguese, pages: [page])
+      american_user = create(:user, email: "john@us.com", movement: page.movement, language: english)
+      british_user = create(:user, email: "john@uk.co.uk", movement: page.movement, language: english)
+      brazilian_user = create(:user, email: "joao@br.com.br",  movement: page.movement, language: portuguese)
 
       petition_in_english.take_action(american_user, {}, page)
       petition_in_english.take_action(british_user, {}, page)
@@ -636,15 +636,15 @@ describe ActionPage do
 
     it "should include share counts for a taf module" do
       taf = create(:tell_a_friend_module)
-      create(:content_module_link, :page => @page, :content_module => taf, :layout_container => ContentModule::SIDEBAR)
+      create(:content_module_link, page: @page, content_module: taf, layout_container: ContentModule::SIDEBAR)
       @page.content_modules(true)
 
-      create(:facebook_share, :page_id => @page.id)
-      create(:twitter_share, :page_id => @page.id)
-      create(:email_share, :page_id => @page.id)
-      create(:email_share, :page_id => @page.id)
+      create(:facebook_share, page_id: @page.id)
+      create(:twitter_share, page_id: @page.id)
+      create(:email_share, page_id: @page.id)
+      create(:email_share, page_id: @page.id)
 
-      json = @page.as_json :language => "en"
+      json = @page.as_json language: "en"
 
       json[:shares].should == { 'facebook' => 1,
                                 'twitter'  => 1,
@@ -658,14 +658,14 @@ describe ActionPage do
       spanish = create(:spanish)
 
       action_page = create(:action_page)
-      create(:header_module_link, :page => action_page)
-      create(:sidebar_module_link, :page => action_page)
+      create(:header_module_link, page: action_page)
+      create(:sidebar_module_link, page: action_page)
 
-      portuguese_taf_module_link = create(:taf_module_link, :page => action_page)
-      portuguese_taf_module_link.content_module.update_attributes(:language => portuguese)
+      portuguese_taf_module_link = create(:taf_module_link, page: action_page)
+      portuguese_taf_module_link.content_module.update_attributes(language: portuguese)
 
-      spanish_taf_module_link = create(:taf_module_link, :page => action_page)
-      spanish_taf_module_link.content_module.update_attributes(:language => spanish)
+      spanish_taf_module_link = create(:taf_module_link, page: action_page)
+      spanish_taf_module_link.content_module.update_attributes(language: spanish)
 
       action_page.tafs_for_locale(portuguese).should =~ [portuguese_taf_module_link.content_module]
     end
@@ -693,9 +693,9 @@ describe ActionPage do
     let!(:image_html_module) { create(:html_module) }
     let!(:text_html_module) { create(:html_module) }
     let!(:petition_module) { create(:petition_module) }
-    let!(:petition_image_html_module_link) { create(:header_module_link, :page => petition_page, :content_module => image_html_module) }
-    let!(:petition_text_html_module_link) { create(:header_module_link, :page => petition_page, :content_module => text_html_module) }
-    let!(:petition_action_module_link) { create(:sidebar_module_link, :page => petition_page, :content_module => petition_module) }
+    let!(:petition_image_html_module_link) { create(:header_module_link, page: petition_page, content_module: image_html_module) }
+    let!(:petition_text_html_module_link) { create(:header_module_link, page: petition_page, content_module: text_html_module) }
+    let!(:petition_action_module_link) { create(:sidebar_module_link, page: petition_page, content_module: petition_module) }
     let!(:taf_page) { create(:action_page) }
 
     it "should return the newly linked content modules" do
@@ -704,8 +704,8 @@ describe ActionPage do
 
     it "should link all of the source page container's content modules that are not yet linked to the target page's container" do
       already_shared_html_module = create(:html_module)
-      create(:header_module_link, :page => petition_page, :content_module => already_shared_html_module)
-      create(:header_module_link, :page => taf_page, :content_module => already_shared_html_module)
+      create(:header_module_link, page: petition_page, content_module: already_shared_html_module)
+      create(:header_module_link, page: taf_page, content_module: already_shared_html_module)
       taf_page.content_modules(true)
 
       petition_page.link_existing_modules_to taf_page, ContentModule::HEADER
@@ -718,9 +718,9 @@ describe ActionPage do
   describe "#sibling_pages" do
     it "should find all sibling pages under the same action sequence" do
       action_sequence = create(:action_sequence)
-      petition_page = create(:action_page, :action_sequence => action_sequence)
-      donation_page = create(:action_page, :action_sequence => action_sequence)
-      taf_page = create(:action_page, :action_sequence => action_sequence)
+      petition_page = create(:action_page, action_sequence: action_sequence)
+      donation_page = create(:action_page, action_sequence: action_sequence)
+      taf_page = create(:action_page, action_sequence: action_sequence)
 
       taf_page.sibling_pages.should =~ [petition_page, donation_page]
       petition_page.sibling_pages.should =~ [taf_page, donation_page]
@@ -730,26 +730,27 @@ describe ActionPage do
 
   describe 'update campaign' do
     let(:sometime_in_the_past) { Time.zone.parse '2001-01-01 01:01:01' }
-    let(:campaign) { create(:campaign, :updated_at => sometime_in_the_past) }
-    let(:action_sequence) { create(:action_sequence, :campaign => campaign) }
+    let(:campaign) { create(:campaign, updated_at: sometime_in_the_past) }
+    let(:action_sequence) { create(:action_sequence, campaign: campaign) }
 
     it 'should touch campaign when added' do
-      action_page = create(:action_page, :action_sequence => action_sequence)
+      action_page = create(:action_page, action_sequence: action_sequence)
       campaign.reload.updated_at.should > sometime_in_the_past
     end
 
     it 'should touch campaign when updated' do
-      action_page = create(:action_page, :action_sequence => action_sequence)
+      action_page = create(:action_page, action_sequence: action_sequence)
       campaign.update_column(:updated_at, sometime_in_the_past)
-      action_page.update_attributes(:name => 'A new updated action page')
+      action_page.update_attributes(name: 'A new updated action page')
       campaign.reload.updated_at.should > sometime_in_the_past
     end
 
     it 'should not touch campaign for a cloned action page' do
-      action_page = create(:action_page, :action_sequence => action_sequence)
+      action_page = create(:action_page, action_sequence: action_sequence)
       campaign.update_column(:updated_at, sometime_in_the_past)
-      cloned_action_page = create(:action_page, :action_sequence => action_sequence, :live_action_page => action_page)
+      cloned_action_page = create(:action_page, action_sequence: action_sequence, live_action_page: action_page)
       campaign.reload.updated_at.should == sometime_in_the_past
     end
   end
+
 end

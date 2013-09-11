@@ -15,13 +15,13 @@
 class Blast < ActiveRecord::Base
   acts_as_paranoid
   belongs_to :push
-  has_many :emails
-  has_one :list
+  has_many :emails, dependent: :destroy
+  has_one :list, dependent: :destroy
 
   LIMIT_MEMBERS = 'limit_members'
   ALL_MEMBERS = 'all_members'
 
-  validates_length_of :name, :maximum => 64, :minimum => 3
+  validates_length_of :name, maximum: 64, minimum: 3
 
   delegate :movement, :campaign, to: :push, allow_nil: true
   delegate :proofed_emails, to: :emails
@@ -58,7 +58,7 @@ class Blast < ActiveRecord::Base
   end
 
   def latest_sent_user_count
-    @latest_sent_user_count ||= UniqueActivityByEmail.where(:activity => 'email_sent', :email_id => proofed_emails.pluck(:id)).sum(:total_count)
+    @latest_sent_user_count ||= UniqueActivityByEmail.where(activity: 'email_sent', email_id: proofed_emails.pluck(:id)).sum(:total_count)
   end
 
   def latest_unsent_user_count
@@ -72,7 +72,7 @@ class Blast < ActiveRecord::Base
 
   def cancel
     return false if self.delayed_job_id.blank?
-    Delayed::Job.where(:id => self.delayed_job_id, :locked_at => nil).destroy_all
+    Delayed::Job.where(id: self.delayed_job_id, locked_at: nil).destroy_all
     self.update_attribute(:delayed_job_id, nil)
     true
   rescue Exception => e
@@ -82,7 +82,7 @@ class Blast < ActiveRecord::Base
 
   def remaining_time_for_existing_jobs
     job_ids = [self.delayed_job_id]
-    jobs = Delayed::Job.where(:id => job_ids).order("run_at desc").limit(1)
+    jobs = Delayed::Job.where(id: job_ids).order("run_at desc").limit(1)
     return 0 if jobs.blank?
     seconds = jobs.first.run_at - Time.now
     seconds < 0 ? 0 : (seconds * 100).round.to_f / 100

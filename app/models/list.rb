@@ -18,7 +18,7 @@ class List < ActiveRecord::Base
   validate :internal_rules
   validates_presence_of :blast_id
 
-  has_many :list_intermediate_results
+  has_many :list_intermediate_results, dependent: :destroy
   belongs_to :saved_intermediate_result, class_name: 'ListIntermediateResult'
   belongs_to :blast
 

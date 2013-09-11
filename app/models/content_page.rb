@@ -27,7 +27,7 @@
 class ContentPage < Page
   include QuickGoable
   belongs_to :content_page_collection
-  has_many :featured_content_collections, :as => :featurable
+  has_many :featured_content_collections, as: :featurable, dependent: :destroy
 
   def as_json(opts={})
     language = language_option(opts)

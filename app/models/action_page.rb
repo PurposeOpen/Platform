@@ -29,21 +29,21 @@ class ActionPage < Page
   include QuickGoable
   acts_as_paranoid
   belongs_to :action_sequence
-  has_many :autofire_emails
+  has_many :autofire_emails, dependent: :destroy
 
 
-  has_many :drafts, :class_name => "ActionPage", :foreign_key => "live_page_id"
-  belongs_to :live_action_page, :class_name => "ActionPage", :foreign_key => "live_page_id"
+  has_many :drafts, class_name: "ActionPage", foreign_key: "live_page_id"
+  belongs_to :live_action_page, class_name: "ActionPage", foreign_key: "live_page_id"
 
-  acts_as_list :scope => :action_sequence
+  acts_as_list scope: :action_sequence
   serialize :required_user_details, JSON
 
   validates_presence_of :action_sequence
-  validates_uniqueness_of :position, :scope => [:action_sequence_id, :live_page_id, :deleted_at], :if => Proc.new { |page| page.live_action_page.nil? }
+  validates_uniqueness_of :position, scope: [:action_sequence_id, :live_page_id, :deleted_at], if: Proc.new { |page| page.live_action_page.nil? }
 
-  scope :published, ->{where(:action_sequences => { :published => true }).joins(:action_sequence)}
+  scope :published, ->{where(action_sequences: { published: true }).joins(:action_sequence)}
 
-  delegate :campaign, :to => :action_sequence
+  delegate :campaign, to: :action_sequence
 
   after_create :seed_initial_module
   after_save ->{campaign.touch if !live_page_id}
@@ -54,14 +54,14 @@ class ActionPage < Page
   attr_accessible :seeded_module, :name, :action_sequence, :position, :required_user_details, :no_wrappers, :movement_id, :crowdring_campaign_name
 
   DEFAULT_REQUIRED_USER_DETAILS = [
-      {:field => "first_name", :default => "required", :label => "First Name"},
-      {:field => "last_name", :default => "required", :label => "Last Name"},
-      {:field => "country", :default => "required", :label => "Country"},
-      {:field => "postcode", :default => "required", :label => "Postcode"},
-      {:field => "mobile_number", :default => "hidden", :label => "Mobile"},
-      {:field => "home_number", :default => "hidden", :label => "Home"},
-      {:field => "suburb", :default => "hidden", :label => "Suburb"},
-      {:field => "street_address", :default => "hidden", :label => "Street Address"}
+      {field: "first_name", default: "required", label: "First Name"},
+      {field: "last_name", default: "required", label: "Last Name"},
+      {field: "country", default: "required", label: "Country"},
+      {field: "postcode", default: "required", label: "Postcode"},
+      {field: "mobile_number", default: "hidden", label: "Mobile"},
+      {field: "home_number", default: "hidden", label: "Home"},
+      {field: "suburb", default: "hidden", label: "Suburb"},
+      {field: "street_address", default: "hidden", label: "Street Address"}
   ]
 
   scope :with_content_modules, lambda { |content_module_types| includes(:content_modules).where("content_modules.type IN (?)", content_module_types) }
@@ -86,7 +86,7 @@ class ActionPage < Page
   def required_user_details
     serialized = read_attribute(:required_user_details)
     write_attribute(:required_user_details, serialized = {}) if serialized.nil?
-    serialized.merge(:email => :required) # TODO Add a migration to formalize this.
+    serialized.merge(email: :required) # TODO Add a migration to formalize this.
   end
 
   def non_hidden_user_details
@@ -115,7 +115,7 @@ class ActionPage < Page
   end
 
   def ask_module_for_language(language)
-    self.content_modules.where(:language_id => language).to_a.find { |cm| cm.is_ask? }
+    self.content_modules.where(language_id: language).to_a.find { |cm| cm.is_ask? }
   end
 
   def is_donation?
@@ -173,7 +173,7 @@ class ActionPage < Page
   end
 
   def tafs_for_locale(language)
-    content_modules.where(:type => 'TellAFriendModule', :language_id => language).all
+    content_modules.where(type: 'TellAFriendModule', language_id: language).all
   end
 
   def should_have_autofire_emails?
@@ -181,20 +181,20 @@ class ActionPage < Page
   end
 
   def autofire_email_for_language(language)
-    autofire_emails.where(:language_id => language).first
+    autofire_emails.where(language_id: language).first
   end
 
   def set_up_autofire_emails
     if should_have_autofire_emails?
       self.possible_languages.each do |language|
-        autofire_emails.where(:action_page_id => self.id, :language_id => language.id).first_or_create(:action_page => self)
+        autofire_emails.where(action_page_id: self.id, language_id: language.id).first_or_create(action_page: self)
       end
     end
   end
 
   def link_existing_modules_to(target_page, container)
     find_modules_for_container(container).select { |cm| not target_page.content_modules.include? cm }.each do |cm|
-      target_page.content_module_links.create!(:layout_container => container, :content_module => cm)
+      target_page.content_module_links.create!(layout_container: container, content_module: cm)
     end
   end
 
@@ -231,15 +231,15 @@ class ActionPage < Page
   end
 
   def count_actions
-    UserActivityEvent.where(:activity => UserActivityEvent::Activity::ACTION_TAKEN, :page_id => self.id).count
+    UserActivityEvent.where(activity: UserActivityEvent::Activity::ACTION_TAKEN, page_id: self.id).count
   end
 
   def seed_initial_module
     return if self.seeded_module.blank?
     module_class = self.seeded_module.classify.constantize
-    mod = module_class.new :language => self.movement.default_language
-    mod.save(:validate => false)
-    self.content_module_links.create :content_module => mod, :layout_container => ContentModule::SIDEBAR
+    mod = module_class.new language: self.movement.default_language
+    mod.save(validate: false)
+    self.content_module_links.create content_module: mod, layout_container: ContentModule::SIDEBAR
   end
 
   def has_module_of_type?(module_type)

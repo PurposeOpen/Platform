@@ -23,12 +23,12 @@ class ActionSequence < ActiveRecord::Base
   include QuickGoable
 
   acts_as_paranoid
-  has_many :action_pages, :order => :position
-  belongs_to :campaign, :touch => true
-  delegate :movement, :to => :campaign, :allow_nil => true #TODO allow_nil should become false after data cleanup with foreign keys
+  has_many :action_pages, order: :position, dependent: :destroy
+  belongs_to :campaign, touch: true
+  delegate :movement, to: :campaign, allow_nil: true #TODO allow_nil should become false after data cleanup with foreign keys
   serialize :enabled_languages, JSON
 
-  scope :static, where(:campaign_id => nil)
+  scope :static, where(campaign_id: nil)
   friendly_id :name, use: :slugged
 
   include SerializedOptions
@@ -37,7 +37,7 @@ class ActionSequence < ActiveRecord::Base
   after_initialize :defaults
 
   validate :unique_name_within_campaign
-  validates_length_of :name, :maximum => 64, :minimum => 3
+  validates_length_of :name, maximum: 64, minimum: 3
 
   def static?
     self.campaign.nil?
@@ -48,7 +48,7 @@ class ActionSequence < ActiveRecord::Base
   end
 
   def duplicate
-    self.dup(:include => {:action_pages => [:autofire_emails, {:content_module_links => :content_module}]}) do |original, copy|
+    self.dup(include: {action_pages: [:autofire_emails, {content_module_links: :content_module}]}) do |original, copy|
       copy.initialize_defaults! if copy.respond_to?(:initialize_defaults!)
     end
   end
@@ -62,8 +62,8 @@ class ActionSequence < ActiveRecord::Base
     key = generate_cache_key(a_campaign, sequence_friendly_id)
     sequence = Rails.cache.read(key)
     if sequence.nil?
-      sequence = find(sequence_friendly_id, :conditions => ["campaign_id = #{a_campaign.id}"])
-      Rails.cache.write(sequence.cache_key, sequence, :expires_in => AppConstants.default_cache_timeout) if sequence
+      sequence = find(sequence_friendly_id, conditions: ["campaign_id = #{a_campaign.id}"])
+      Rails.cache.write(sequence.cache_key, sequence, expires_in: AppConstants.default_cache_timeout) if sequence
     end
     sequence
   end
@@ -100,7 +100,7 @@ class ActionSequence < ActiveRecord::Base
 
   def unique_name_within_campaign
     if campaign
-      match = ActionSequence.where(:campaign_id => campaign.id, :name => name)
+      match = ActionSequence.where(campaign_id: campaign.id, name: name)
       self.errors.add(:name, "must be unique within a campaign") if match && match.any? { |m| m.id != id }
     end
   end

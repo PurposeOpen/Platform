@@ -24,20 +24,20 @@ class Campaign < ActiveRecord::Base
   acts_as_paranoid
   acts_as_user_stampable
   belongs_to :movement
-  has_many :action_sequences
-  has_many :pushes
+  has_many :action_sequences, dependent: :destroy
+  has_many :pushes, dependent: :destroy
   has_many :get_togethers
 
-  friendly_id :name, :use => :slugged
+  friendly_id :name, use: :slugged
 
-  validates_length_of :name, :maximum => 64, :minimum => 3
+  validates_length_of :name, maximum: 64, minimum: 3
 
   def cache_key
     self.class.generate_cache_key(self.friendly_id)
   end
 
   def self.select_options(movement)
-    self.select("id, name").where(:movement_id => movement.id).inject([]) do |acc, campaign|
+    self.select("id, name").where(movement_id: movement.id).inject([]) do |acc, campaign|
       acc << [campaign.name, campaign.id]
       acc
     end
@@ -46,11 +46,11 @@ class Campaign < ActiveRecord::Base
   def build_stats_query
     ask_content_modules  = ['NonTaxDeductibleDonationModule', 'TaxDeductibleDonationModule', 'DonationModule', 'PetitionModule', 'JoinModule', 'EmailMPModule', 'EmailTargetsModule']
     reported_activities  = ["action_taken", "subscribed"]
-    action_sequences     = Arel::Table.new(:action_sequences, :as => 'action_sequences')
-    pages                = Arel::Table.new(:pages, :as => 'pages')
-    content_module_links = Arel::Table.new(:content_module_links, :as => 'content_module_links')
-    content_modules      = Arel::Table.new(:content_modules, :as => 'content_modules')
-    user_activity_events = Arel::Table.new(:user_activity_events, :as => 'user_activity_events')
+    action_sequences     = Arel::Table.new(:action_sequences, as: 'action_sequences')
+    pages                = Arel::Table.new(:pages, as: 'pages')
+    content_module_links = Arel::Table.new(:content_module_links, as: 'content_module_links')
+    content_modules      = Arel::Table.new(:content_modules, as: 'content_modules')
+    user_activity_events = Arel::Table.new(:user_activity_events, as: 'user_activity_events')
 
     projections = [
       content_modules[:created_at],
