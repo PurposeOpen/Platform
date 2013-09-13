@@ -15,6 +15,7 @@
 #
 
 class AutofireEmail < ActiveRecord::Base
+  acts_as_paranoid
   belongs_to :action_page
   belongs_to :language
 

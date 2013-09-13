@@ -31,6 +31,15 @@ describe List do
   }
 
   let(:default_relation) { User.where(:is_member => true).where(:movement_id => movement.id) }
+
+  context 'list is destroyed' do
+    it 'paranoia should preserve the record and set deleted_at' do
+      list = create(:list)
+      list.destroy
+
+      List.with_deleted.find(list.id).should == list
+    end
+  end
   
   it "should return users whose email belong to gmail" do
     user = create(:user, :email => "foo@borges.com", :movement => movement, :language => movement.default_language)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130906144644) do
+ActiveRecord::Schema.define(:version => 20130913150541) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(:version => 20130906144644) do
     t.datetime "updated_at",     :null => false
     t.string   "from"
     t.string   "reply_to"
+    t.datetime "deleted_at"
   end
 
   create_table "blasts", :force => true do |t|
@@ -375,6 +376,7 @@ ActiveRecord::Schema.define(:version => 20130906144644) do
     t.datetime "updated_at",                   :null => false
     t.integer  "blast_id"
     t.integer  "saved_intermediate_result_id"
+    t.datetime "deleted_at"
   end
 
   add_index "lists", ["saved_intermediate_result_id"], :name => "lists_saved_intermediate_result_id_fk"

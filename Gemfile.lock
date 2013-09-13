@@ -7,13 +7,6 @@ GIT
       rails (~> 3.0)
 
 GIT
-  remote: git://github.com/leonardoborges/paranoia.git
-  revision: e7e2ea7c219bc011dd1c281bbfc36f8b5899669b
-  specs:
-    paranoia (0.0.1)
-      activerecord (>= 3.0.0)
-
-GIT
   remote: git://github.com/oleander/ruby-yui-compressor.git
   revision: 644218d2bb7a80295317c26b54f071f5090de6b1
   specs:
@@ -269,6 +262,8 @@ GEM
     parallel (0.6.2)
     parallel_tests (0.10.0)
       parallel
+    paranoia (1.3.1)
+      activerecord (~> 3.2)
     pdfkit (0.5.2)
     polyglot (0.3.3)
     pr_geohash (1.0.0)
@@ -490,7 +485,7 @@ DEPENDENCIES
   oink
   paperclip
   parallel_tests
-  paranoia!
+  paranoia
   pdfkit
   profanalyzer!
   puma

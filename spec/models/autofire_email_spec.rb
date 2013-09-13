@@ -18,6 +18,15 @@ require 'spec_helper'
 
 describe AutofireEmail do
 
+  context 'autofire email is destroyed' do
+    it 'paranoia should preserve the record and set deleted_at' do
+      autofire_email = create(:autofire_email)
+      autofire_email.destroy
+
+      AutofireEmail.with_deleted.find(autofire_email.id).should == autofire_email
+    end
+  end
+
   context 'set defaults' do
     it "should set page's default autofire subject and body when initialized" do
       action_page = create(:action_page)

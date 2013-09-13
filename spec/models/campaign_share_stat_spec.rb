@@ -73,7 +73,7 @@ describe CampaignShareStat do
       CampaignShareStat.update!
       CampaignShareStat.where(:taf_page_id => taf_page.id).first.actions_before_share.should == 2
 
-      action_page2.delete
+      action_page2.destroy
       CampaignShareStat.update!
       CampaignShareStat.where(:taf_page_id => taf_page.id).first.actions_before_share.should == 1
     end
