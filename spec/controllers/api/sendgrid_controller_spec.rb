@@ -13,6 +13,7 @@ describe Api::SendgridController do
     User.stub(:find_by_movement_id_and_email).with(allout.id, 'member@movement.com').and_return(allout_member)
     User.stub(:find_by_movement_id_and_email).with(therules.id, 'member-not-found@movement.com').and_return(nil)
     Email.stub(:find).with(default_email.id.to_s).and_return(default_email)
+    Email.stub(:find).with(nil).and_return(nil)
   end
 
   context '#event_handler' do
@@ -39,6 +40,11 @@ describe Api::SendgridController do
         post :event_handler, :movement_id => allout.id, :email => 'member@movement.com', :event => 'bounce', :email_id=>default_email.id, :reason=>"Blocked"        
         allout_member.should be_member
         allout_member.can_subscribe?.should be_true        
+      end
+      it 'should fail if no email_id provided' do
+        expect { 
+          post :event_handler, :movement_id => allout.id, :email => 'member@movement.com', :event => 'bounce', :reason=>"Blocked" 
+         }.to raise_error           
       end
     end
 
@@ -70,6 +76,12 @@ describe Api::SendgridController do
       it 'should unsubscribe the user and register an unsubscribe event' do 
         UserActivityEvent.should_receive(:unsubscribed!).with(allout_member, default_email,nil)
         post :event_handler, :movement_id => allout.id, :email => allout_member.email, :event => 'unsubscribe', :email_id => default_email.id        
+        allout_member.should_not be_member
+        allout_member.can_subscribe?.should be_true
+      end    
+      it 'should unsubscribe the user and register an unsubscribe event without an email_id' do 
+        UserActivityEvent.should_receive(:unsubscribed!).with(allout_member, nil,nil)
+        post :event_handler, :movement_id => allout.id, :email => allout_member.email, :event => 'unsubscribe'    
         allout_member.should_not be_member
         allout_member.can_subscribe?.should be_true
       end    

@@ -7,8 +7,10 @@ module Jobs
       
       member = User.find_by_movement_id_and_email(movement_id, params['email'])
       raise "Sendgrid submitted an event for a non-member: #{params['email']}" if !member
-      blast_email = Email.find(params['email_id'])
-      raise "Sendgrid submitted an event for an invalid email_id: #{params['email_id']}" if !blast_email       
+      unless params['event'] == "unsubscribe" && params['email_id'].blank?
+        blast_email = Email.find(params['email_id'])
+      end
+      raise "Sendgrid submitted an event for an invalid email_id: #{params['email_id']}" if !blast_email  && params['event'] != "unsubscribe"     
       
       case params['event'] 
         when 'bounce'
