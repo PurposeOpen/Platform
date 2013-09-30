@@ -1,7 +1,7 @@
 class Api::ActionPagesController < Api::BaseController
   include CountryHelper
   include Errors
-  
+
   def show
     page = movement.find_published_page(params[:id])
     language = Language.find_by_iso_code_cache(params[:locale])
@@ -46,14 +46,13 @@ class Api::ActionPagesController < Api::BaseController
                 :member_id => member.id
               }
     rescue DuplicateActionTakenError => duplicated_action_taken
-      render :status => :bad_request,
+      render :status => :created,
               :json => {
-                :success => false,
-                :next_page_identifier => @page.next.try(:slug),
-                :error => 'Member already took this action'
+                :success => true,
+                :next_page_identifier => @page.next.try(:slug)
               }
     rescue => error
-      Rails.logger.error error.inspect 
+      Rails.logger.error error.inspect
       render :status => :internal_server_error,
               :json => {
                 :success => false,
@@ -83,7 +82,7 @@ class Api::ActionPagesController < Api::BaseController
 
   def share_counts
     page_id = params[:id]
-    
+
     return 400 if page_id.blank?
 
     render :json => Share.counts(page_id)

@@ -510,8 +510,8 @@ describe Api::ActionPagesController do
           :campaign_id => @campaign.id, :action_sequence_id => @action_sequence.id, :content_module_id => @petition_module.id,
           :activity => UserActivityEvent::Activity::ACTION_TAKEN.to_s, :email_id => email.id, :push_id => email.blast.push.id,
           :user_id => user.id).all
-          
-      #binding.pry    
+
+      #binding.pry
       activity_events.count.should == 1
       data = ActiveSupport::JSON.decode(response.body)
       data["success"].should eql true
@@ -552,7 +552,7 @@ describe Api::ActionPagesController do
       response.status.should eql 201
     end
 
-    it "should sign unsuccessful action and error code on DuplicateActionTakenError" do
+    it "should sign duplicate action as 201 code on DuplicateActionTakenError" do
       bad_user = double
       bad_user.stub!(:take_action_on!).and_raise DuplicateActionTakenError
       User.stub_chain(:for_movement, :where).and_return [bad_user]
@@ -563,8 +563,7 @@ describe Api::ActionPagesController do
           :action_info => ""
 
       data = ActiveSupport::JSON.decode(response.body)
-      response.status.should eql 400
-      data["error"].should eql "Member already took this action"
+      response.status.should eql 201
     end
 
     it "should sign unsuccessful action and error code on generic error" do
