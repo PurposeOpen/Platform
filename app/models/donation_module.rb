@@ -26,7 +26,7 @@ class DonationModule < ContentModule
                 :frequency_options, :receipt_frequency, :commence_donation_at,
                 :active, :disabled_title, :disabled_content
 
-  after_initialize :defaults
+  after_initialize :donation_defaults
   before_save :remove_whitespace_from_suggested_amounts,
               :remove_whitespace_from_recurring_suggested_amounts,
               :make_all_configured_frequencies_optional
@@ -68,6 +68,8 @@ class DonationModule < ContentModule
     :usd => Money::Currency.new('USD')
   }
 
+  placeable_in SIDEBAR
+
   FREQUENCIES = [:one_off, :weekly, :monthly, :annual]
   FREQUENCY_LABELS = {
     :one_off => "Donate Once",
@@ -75,8 +77,6 @@ class DonationModule < ContentModule
     :monthly => "Donate Monthly",
     :annual => "Donate Annually"
   }
-
-  placeable_in SIDEBAR
 
   def as_json(options={})
     super(options).tap do |json|
@@ -219,7 +219,7 @@ class DonationModule < ContentModule
 
   private
 
-  def defaults
+  def donation_defaults
     self.button_text = I18n.t('models.donation_module.default_donate_text', :locale => (self.language.nil? ? :en : self.language.iso_code.to_sym)) unless self.button_text
     self.suggested_amounts = {} if self.suggested_amounts.blank?
     self.default_amount = {} if self.default_amount.blank?

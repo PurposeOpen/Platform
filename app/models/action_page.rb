@@ -132,6 +132,14 @@ class ActionPage < Page
     has_module_of_type? NonTaxDeductibleDonationModule
   end
 
+  def is_tax_deductible_taf_donation?
+    has_module_of_type? TaxDeductibleTafDonationModule
+  end
+
+  def is_non_tax_deductible_taf_donation?
+    has_module_of_type? NonTaxDeductibleTafDonationModule
+  end
+
   def is_join?
     has_module_of_type? JoinModule
   end
@@ -142,6 +150,10 @@ class ActionPage < Page
 
   def is_tell_a_friend?
     has_module_of_type? TellAFriendModule
+  end
+
+  def has_a_tell_a_friend?
+    (is_non_tax_deductible_taf_donation? || is_tell_a_friend? || is_tax_deductible_taf_donation?)
   end
 
   def subscribes_user?
@@ -247,10 +259,10 @@ class ActionPage < Page
   private
 
   def share_counts
-    Share.counts(self.id) if self.is_tell_a_friend?
+    Share.counts(self.id) if self.has_a_tell_a_friend?
   end
 
-
+  
   def seed_initial_module
     return if self.seeded_module.blank?
     module_class = self.seeded_module.classify.constantize

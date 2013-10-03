@@ -22,6 +22,14 @@
     <% else %>
     <%= action_page_type_radio f, DonationModule %>
   <% end %>
+  <% if ENV['ENABLE_DONATION_TYPES'] %>
+      <% if ENV['ENABLE_501C3_DONATIONS'] == "true" %>
+        <%= action_page_type_radio f, TaxDeductibleTafDonationModule %>
+      <% end %>
+      <%= action_page_type_radio f, NonTaxDeductibleTafDonationModule %>
+  <% else %>
+    <%= action_page_type_radio f, TafDonationModule %>
+  <% end %>
   <%= action_page_type_radio f, EmailTargetsModule %>
   <%= action_page_type_radio f, JoinModule %>
   <%= action_page_type_radio f, UnsubscribeModule %>

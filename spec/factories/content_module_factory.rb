@@ -94,10 +94,31 @@ FactoryGirl.define do
     default_currency      "usd"
   end
 
+  factory :taf_donation_module, :parent => :content_module, :class => TafDonationModule do
+    type                  TafDonationModule.name
+    content               "<p>Lorem ipsum dolor sit amet</p>" * 5
+    title                 "Lorem Ipsum"
+    thermometer_threshold 1000
+    default_currency      "usd"
+    headline      'Thank you!'
+    message       'Your act of sharing is much appreciated.'
+    email_subject 'This is the email subject'
+    email_body    'This is the email message'
+    tweet         'Some Tweet'
+    share_url     'http://this.is.a.share_url'
+    facebook_image_url 'http://this.is.facebook_image_url'
+  end
+
   factory :tax_deductible_donation_module, :parent => :donation_module, :class => TaxDeductibleDonationModule do
   end
 
   factory :non_tax_deductible_donation_module, :parent => :donation_module, :class => NonTaxDeductibleDonationModule do
+  end
+
+  factory :tax_deductible_taf_donation_module, :parent => :taf_donation_module, :class => TaxDeductibleTafDonationModule do
+  end
+
+  factory :non_tax_deductible_taf_donation_module, :parent => :taf_donation_module, :class => NonTaxDeductibleTafDonationModule do
   end
 
   factory :tell_a_friend_module, :parent => :content_module, :class => TellAFriendModule do

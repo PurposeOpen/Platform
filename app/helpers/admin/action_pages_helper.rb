@@ -8,6 +8,12 @@ module Admin::ActionPagesHelper
         :locals => { :f => f, :content_module => content_module }
   end
 
+  def render_taf_donation_module_partial(content_module, f)
+    render :partial => 'admin/content_modules/content_module_types/taf_donation_module',
+        :locals => { :f => f, :content_module => content_module }
+  end
+
+
   def add_content_module_link(page, module_type, container, text)
     link_to(text, admin_movement_content_module_path(@movement, :type => module_type, :container => container, :page_id => page.id, :page_type => page.class.name), :method => :post, :remote => true, :class => "button add-module-link #{module_type.name.underscore}")
   end

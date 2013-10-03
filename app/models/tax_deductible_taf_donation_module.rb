@@ -15,7 +15,20 @@
 #  live_content_module_id          :integer
 #
 
-class TellAFriendModule < ContentModule
-  include TellAFriend::TellAFriendAttributes
-  placeable_in SIDEBAR
+class TaxDeductibleTafDonationModule < TafDonationModule
+
+  DONATION_CLASSIFICATION = '501(c)3'
+
+  def self.label
+    "#{DONATION_CLASSIFICATION} - #{name.titleize}"
+  end
+
+  def self.classification
+  	DONATION_CLASSIFICATION
+  end
+
+  def classification
+    TaxDeductibleTafDonationModule.classification
+  end
+
 end
