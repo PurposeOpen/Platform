@@ -15,7 +15,7 @@ class Api::SharesController < Api::BaseController
   private
 
   def valid?(share)
-    return share.valid? && Page.find(share.page_id).is_tell_a_friend?
+    return share.valid? && Page.find(share.page_id).has_a_tell_a_friend?
   end
 
 end
