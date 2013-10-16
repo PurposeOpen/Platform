@@ -34,6 +34,15 @@ describe TellAFriendModule do
     end
   end
 
+  it "should allow include_action_counter to be updated" do
+    taf = TellAFriendModule.new
+    taf.options.should include({:include_action_counter => false})
+    taf.include_action_counter = true
+    taf.options["include_action_counter"].should equal true
+    taf.options[:include_action_counter].should equal true
+  end
+
+
   it "should set facebook, twitter, and email to 'enabled' by default" do
     taf = TellAFriendModule.new
 

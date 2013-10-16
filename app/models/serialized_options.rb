@@ -24,14 +24,29 @@ module SerializedOptions
 
   module InstanceMethods
     def write_option_field_value(field, value)
-      self.options = {} if self.options.blank?
+      self.options = new_options if self.options.blank?
+      make_options_indifferent
       self.options[field.to_s] = value
       self.updated_at = Time.now
     end
 
     def read_option_field_value(field)
-      self.options = {} if self.options.blank?
+      self.options = new_options if self.options.blank?
       self.options[field.to_s]
+    end
+
+    def set_default_options(defaults = {})
+      unless self.options then self.options = new_options end
+      self.options = self.options.stringify_keys.with_indifferent_access.reverse_merge(defaults.stringify_keys)
+      self.updated_at = Time.now
+    end
+
+    def new_options
+      HashWithIndifferentAccess.new
+    end
+
+    def make_options_indifferent
+      self.options = HashWithIndifferentAccess.new(self.options)
     end
 
     #def options

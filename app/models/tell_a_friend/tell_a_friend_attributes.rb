@@ -52,11 +52,12 @@ module TellAFriend::TellAFriendAttributes
 
   private
   def taf_defaults
-    self.options ||= {}
-    self.options[:facebook_enabled] = true
-    self.options[:twitter_enabled]= true
-    self.options[:email_enabled] =  true
-    self.options[:include_action_counter] = false
+    self.set_default_options({
+      :facebook_enabled => true,
+      :twitter_enabled => true,
+      :email_enabled =>  true,
+      :include_action_counter => false,
+    })
   end
 
   def trim_strings
