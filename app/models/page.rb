@@ -143,7 +143,8 @@ class Page < ActiveRecord::Base
       type: type,
       header_content_modules: modules_as_json(modules_for_container_and_language(ContentModule::HEADER, language), opts),
       main_content_modules: modules_as_json(modules_for_container_and_language(ContentModule::MAIN, language), opts),
-      sidebar_content_modules: modules_as_json(modules_for_container_and_language(ContentModule::SIDEBAR, language), opts)
+      sidebar_content_modules: modules_as_json(modules_for_container_and_language(ContentModule::SIDEBAR, language), opts),
+      footer_content_modules: modules_as_json(modules_for_container_and_language(ContentModule::FOOTER, language), opts)
     }
   end
 

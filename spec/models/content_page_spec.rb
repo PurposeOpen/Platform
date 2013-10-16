@@ -74,6 +74,22 @@ describe ContentPage do
       json[:sidebar_content_modules].should eql []
     end
 
+    it 'should include header, main, sidebar, and footer modules' do
+      main_module = FactoryGirl.create(:html_module, content: "main content", language: @english)
+      FactoryGirl.create(:content_module_link, page: @page, content_module: main_module, layout_container: ContentModule::MAIN)
+      sidebar_module = FactoryGirl.create(:html_module, content: "sidebar content", language: @english)
+      FactoryGirl.create(:content_module_link, page: @page, content_module: sidebar_module, layout_container: ContentModule::SIDEBAR)
+      footer_module = FactoryGirl.create(:html_module, content: "footer content", language: @english)
+      FactoryGirl.create(:content_module_link, page: @page, content_module: footer_module, layout_container: ContentModule::FOOTER)
+
+      json = @page.as_json language: "en"
+
+      json[:header_content_modules].first['content'].should eql "html content"
+      json[:main_content_modules].first['content'].should eql "main content"
+      json[:sidebar_content_modules].first['content'].should eql "sidebar content"
+      json[:footer_content_modules].first['content'].should eql "footer content"
+    end
+
     describe 'featured content' do
       it "should include featured content modules in the resulting json" do
         featured_actions = FactoryGirl.create(:featured_content_collection, name: "Featured Actions", featurable: @page)
