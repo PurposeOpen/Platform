@@ -52,3 +52,6 @@ role :db,  "localhost:2222", :primary => true # This is where Rails migrations w
 
  after 'deploy:setup', 'deploy:fix_owner'
  after 'deploy:update', 'deploy:precompile_assets'
+
+        require './config/boot'
+        require 'honeybadger/capistrano'

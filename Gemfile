@@ -75,6 +75,9 @@ group :development do
   gem 'annotate'
 end
 
+#exceptionhandling
+gem 'honeybadger'
+
 group :production, :staging do
   gem 'dalli'
   gem 'kgio'
@@ -94,7 +97,7 @@ group :development, :test do
   gem 'selenium-webdriver' #, "~> 2.27.2"
   gem 'capybara'#, '1.1.2'
   gem 'database_cleaner' #, "~> 0.7.1"
-  gem 'cucumber-rails', :require => false #'1.2.0', 
+  gem 'cucumber-rails', :require => false #'1.2.0',
   gem 'cucumber'#, '1.1.2'
   gem 'launchy'
   gem 'factory_girl_rails', "~> 4.2.0"
