@@ -77,6 +77,7 @@ end
 
 #exceptionhandling
 gem 'honeybadger'
+gem 'resque-honeybadger'
 
 group :production, :staging do
   gem 'dalli'
