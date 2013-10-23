@@ -1,3 +1,6 @@
+class List < ActiveRecord::Base
+end
+
 class MigrateActionTakenRulePageIds < ActiveRecord::Migration
   def up
     List.find_each(:batch_size => 100) do |list|
