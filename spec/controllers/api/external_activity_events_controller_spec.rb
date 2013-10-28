@@ -274,6 +274,17 @@ describe Api::ExternalActivityEventsController do
 
     end
 
+    context 'user hash not sent:' do
+
+      it 'should return validation errors and status 422' do
+        post :create, @event_params.merge(movement_id: @movement.slug), format: :json
+
+        JSON.parse(response.body).should == {"email" => ["can't be blank", "is invalid"]}
+        response.status.should == 422
+      end
+
+    end
+
     context 'invalid external activity event:' do
 
       it 'should return validation error details and status 422' do

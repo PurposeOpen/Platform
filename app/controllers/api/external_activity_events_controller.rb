@@ -42,7 +42,8 @@ class Api::ExternalActivityEventsController < Api::BaseController
   end
 
   def user_params
-    params['user'].slice(*USER_PARAMS)
+    all_user_params = params['user'] || {}
+    all_user_params.slice(*USER_PARAMS)
   end
 
   def user_attributes
