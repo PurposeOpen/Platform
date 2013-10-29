@@ -1,14 +1,17 @@
 module SerializedOptions
-  def self.included(mod)
-    mod.class_eval do
+
+  def self.included(klass)
+    klass.class_eval do
       serialize :options, JSON
+
+      validate :symbol_string_key_collision?
     end
-    mod.send :extend, ClassMethods
-    mod.send :include, InstanceMethods
+    klass.send :extend, ClassMethods
+    klass.send :include, InstanceMethods
   end
 
+
   module ClassMethods
-    # expose serialized options as attributes
     def option_fields(*fields)
       fields = fields.map(&:to_sym)
       fields.each do |field|
@@ -22,34 +25,53 @@ module SerializedOptions
     end
   end
 
+
   module InstanceMethods
     def write_option_field_value(field, value)
-      self.options = {} if self.options.blank?
-      self.options[field.to_s] = value
-      self.updated_at = Time.now
+      existing_options = self.options.clone
+
+      begin
+        self.options[field] = value
+        self.options = self.options
+      rescue
+        self.options = existing_options
+      end
     end
 
     def read_option_field_value(field)
-      self.options = {} if self.options.blank?
-      self.options[field.to_s]
+      self.options[field]
     end
 
-    #def options
-    #  @options ||= begin
-    #    result = read_attribute(:options)
-    #    p "unserializing: #{result.unserialize}"
-    #    p "unserializing-1: #{result}"
-    #    p "read_attribute: #{result.inspect}"
-    #    if result.respond_to?(:unserialized_value) && result.unserialized_value.nil?
-    #      result.value = {}
-    #    end
-    #    if result.nil?
-    #      write_attribute(:options, result = {})
-    #    end
-    #    result
-    #    p "RETURNING #{result.inspect}"
-    #    result
-    #  end
-    #end
+    def options
+      @options ||= begin
+        result = read_attribute(:options)
+
+        if result.blank?
+          result = {}
+          write_attribute(:options, result)
+        end
+
+        result.with_indifferent_access
+      end
+    end
+
+    def options=(hash)
+      write_attribute(:options, hash)
+      @options = hash.with_indifferent_access
+    end
+
+    def options_with_discerning_access
+      result = read_attribute(:options)
+      result.blank? ? {} : result
+    end
+
+    def symbol_string_key_collision?
+      key_names = options_with_discerning_access.keys.collect { |key| key.to_sym }
+
+      unless key_names.length == key_names.uniq.length
+        errors.add(:options, "a string key and symbol key in the options hash have the same 'name'")
+      end
+    end
   end
+
 end

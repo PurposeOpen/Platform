@@ -64,6 +64,7 @@ class TellAFriendModule < ContentModule
   end
 
   private
+
   def defaults
     if self.options.blank?
       self.options = {
