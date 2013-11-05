@@ -2,6 +2,22 @@
 
 The Purpose Platform is a global open source project committed to building multilingual campaigning and organizing tools for social good.
 
+### Try it!
+
+Try a demo of the Purpose Platform and a movement site running on it here:
+
+Platform:  
+[https://platform-dev-demo.herokuapp.com](https://platform-dev-demo.herokuapp.com)  
+login: `admin@example.com`  
+password: `developers3x`
+
+Movement:  
+[https://movement-dev-demo.herokuapp.com](http://movement-dev-demo.herokuapp.com)
+
+The movement site is running a [movement site template](https://github.com/PurposeOpen/Movement) that you can use and customize however you like!
+
+These apps may need a minute to warm up on your first request because they are running on Heroku's free tier.
+
 ### [Developers](https://github.com/PurposeOpen/Platform/wiki/Developers)
 - [Learn](https://github.com/PurposeOpen/Platform/wiki/Developers) how to run the Purpose Platform.
 
