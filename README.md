@@ -2,6 +2,14 @@
 
 The Purpose Platform is a global open source project committed to building multilingual campaigning and organizing tools for social good.
 
+#### Some of the organizations running the Purpose Platform are:  
+
+[AllOut](https://allout.org/en)  
+[TheRules](http://www.therules.org/)  
+[United Nations Human Rights Office](https://www.unfe.org/en)  
+[Jhatkaa](http://www.jhatkaa.org/)  
+[Fight for the Future](http://www.fightforthefuture.org/)
+
 ### Try it!
 
 Try a demo of the Purpose Platform and a movement site running on it here:
