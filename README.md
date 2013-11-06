@@ -12,7 +12,7 @@ The Purpose Platform is a global open source project committed to building multi
 
 ### Try it!
 
-Try a demo of the Purpose Platform and a movement site running on it here:
+Try a demo of the Purpose Platform and a [movement site](https://github.com/PurposeOpen/Movement) running on it here:
 
 Platform:  
 [https://platform-dev-demo.herokuapp.com](https://platform-dev-demo.herokuapp.com)  
