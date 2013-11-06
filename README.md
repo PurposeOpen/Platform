@@ -1,4 +1,4 @@
-## The Purpose Platform
+## ![](https://purpose-platform.s3.amazonaws.com/github.wiki.images/logo.png) Purpose Platform
 
 The Purpose Platform is a global open source project committed to building multilingual campaigning and organizing tools for social good.
 
