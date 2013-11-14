@@ -56,6 +56,7 @@ module SerializedOptions
     end
 
     def options=(hash)
+      hash = hash.to_h
       write_attribute(:options, hash)
       @options = hash.with_indifferent_access
     end
