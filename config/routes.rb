@@ -96,15 +96,15 @@ PurposePlatform::Application.routes.draw do
       end
 
       resources :users
-      
+
       namespace :reporting do
         resources :provider_domains
       end
-      
+
       namespace :reporting do
         resources :deliverabilities
       end
-      
+
       resources :join_emails, :only => [:index]
       post "join_emails" => "join_emails#update"
       resources :email_footers, :only => [:index]
@@ -121,6 +121,9 @@ PurposePlatform::Application.routes.draw do
   end
 
   scope 'api', :module => "api" do
+
+    post 'utility/unsubscribe_permanently' => "utility#unsubscribe_permanently"
+
     scope "/:locale", :locale => /(..){1}/ do
       match 'movements/:movement_id' => 'movements#show'
 

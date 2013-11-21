@@ -35,11 +35,11 @@ describe Api::SendgridController do
     end    
 
     context 'with a bounce event' do
-      it 'should register a new user activity for bounce but not unsubscribe' do
+      it 'should register a new user activity for bounce and unsubscribe' do
         UserActivityEvent.should_receive(:email_bounced!).with(allout_member, default_email,"Blocked")        
         post :event_handler, :movement_id => allout.id, :email => 'member@movement.com', :event => 'bounce', :email_id=>default_email.id, :reason=>"Blocked"        
-        allout_member.should be_member
-        allout_member.can_subscribe?.should be_true        
+        allout_member.should_not be_member
+        allout_member.can_subscribe?.should be_false        
       end
       it 'should fail if no email_id provided' do
         expect { 

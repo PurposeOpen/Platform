@@ -1,24 +1,25 @@
 module Jobs
   class SendgridEvent
     @queue = :event_tracking
-  
+
     def self.perform(movement_id,params)
       Resque.logger.debug "Starting sendgrid event handler with params: #{params.inspect}"
-      
+
       member = User.find_by_movement_id_and_email(movement_id, params['email'])
       raise "Sendgrid submitted an event for a non-member: #{params['email']}" if !member
       unless params['event'] == "unsubscribe" && params['email_id'].blank?
         blast_email = Email.find(params['email_id'])
       end
-      raise "Sendgrid submitted an event for an invalid email_id: #{params['email_id']}" if !blast_email  && params['event'] != "unsubscribe"     
-      
-      case params['event'] 
+      raise "Sendgrid submitted an event for an invalid email_id: #{params['email_id']}" if !blast_email  && params['event'] != "unsubscribe"
+
+      case params['event']
         when 'bounce'
           UserActivityEvent.email_bounced!(member, blast_email, params['reason']) #record but take no action
+          member.permanently_unsubscribe!(nil,params['reason'])
         when 'spamreport'
           member.permanently_unsubscribe!(blast_email)
-          UserActivityEvent.email_spammed!(member, blast_email)        
-        when 'dropped' 
+          UserActivityEvent.email_spammed!(member, blast_email)
+        when 'dropped'
           case params['reason']
             when 'Invalid SMTPAPI header'
               #do nothing, probably a system error
@@ -27,19 +28,20 @@ module Jobs
             when 'Unsubscribed Address'
               member.unsubscribe! #unsubscribe member but do not attribute to current blast_email, as it was from previos
             when 'Bounced Address'
-              UserActivityEvent.email_bounced!(member, blast_email, "Dropped: #{params['reason']}") #record event but don't attribute (blast_email is nil)       
+              member.permanently_unsubscribe!(nil,params['reason'])
+              UserActivityEvent.email_bounced!(member, blast_email, "Dropped: #{params['reason']}") #record event but don't attribute (blast_email is nil)
             when 'Spam Reporting Address'
-              member.permanently_unsubscribe!(nil,params['reason']) #permanently unsubscribe member, but don't attribute to blast_email 
+              member.permanently_unsubscribe!(nil,params['reason']) #permanently unsubscribe member, but don't attribute to blast_email
             when 'Invalid'
-              member.permanently_unsubscribe!(nil,params['reason']) #permanently unsubscribe member, email address is invalid but don't attribute to blast_email            
+              member.permanently_unsubscribe!(nil,params['reason']) #permanently unsubscribe member, email address is invalid but don't attribute to blast_email
           end
         when 'unsubscribe'
           member.unsubscribe!(blast_email)
       end
-    
-    
 
-    end  
+
+
+    end
   end
 end
 
