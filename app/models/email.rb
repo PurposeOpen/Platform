@@ -48,25 +48,23 @@ class Email < ActiveRecord::Base
   scope :for_ids, lambda { |email_ids| where(id: email_ids) }
   scope :for_movement_id, lambda { |movement_id| joins(:blast => {:push => :campaign}).where('campaigns.movement_id' => movement_id) }
 
-  DEFAULT_TEST_EMAIL_RECIPIENT = ENV['DEFAULT_TEST_EMAIL_RECIPIENT'] || 'test@platform.youdomain.org'
+  DEFAULT_TEST_EMAIL_RECIPIENT = ENV['DEFAULT_TEST_EMAIL_RECIPIENT'] || 'systems@allout.org'
 
   def send_test!(recipients=[])
-    recipients << DEFAULT_TEST_EMAIL_RECIPIENT
-    self.touch(:test_sent_at)
-    SendgridMailer.blast_email(self, {:recipients => recipients, :test => true}).deliver
+    Resque.enqueue(Jobs::SendProofEmail, self.id, DEFAULT_TEST_EMAIL_RECIPIENT, recipients)
   end
 
   def self.page_options(movement_id)
     Email.for_movement_id(movement_id).order("emails.updated_at desc").collect { |email| [email.name, email.id] }
   end
 
-  handle_asynchronously(:send_test!) unless Rails.env.test?
+  #handle_asynchronously(:send_test!) unless Rails.env.test?
 
   def html_body
     add_tracking_hash_to_html_links(self.body)
   end
-  
-  def sent_at    
+
+  def sent_at
     if sent && self[:sent_at].blank?
       self[:updated_at]
     else
@@ -103,10 +101,10 @@ class Email < ActiveRecord::Base
       begin
         recipients = User.select(:email).where(:id => slice).order(:email).map(&:email)
         logger.debug "LDEBUG: User ids for email #{self.id} slice # #{i} - #{slice.count}. Recipients: #{recipients.count}"
-        
+
         if i==0 && AppConstants.blast_cc_email.present?
           recipients << AppConstants.blast_cc_email
-        end 
+        end
         SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
         #might be good to compare email_sent to slice here?
         self.push.batch_create_sent_activity_event!(slice, self)
