@@ -64,7 +64,6 @@ class DonationModule < ContentModule
     :cad => Money::Currency.new('CAD'),
     :eur => Money::Currency.new('EUR'),
     :gbp => Money::Currency.new('GBP'),
-    :jpy => Money::Currency.new('JPY'),
     :usd => Money::Currency.new('USD')
   }
 
