@@ -285,7 +285,6 @@ ActiveRecord::Schema.define(:version => 20130913150541) do
   end
 
   add_index "geo_data", ["country_iso", "postcode"], :name => "index_geo_data_on_country_iso_and_postcode"
-  add_index "geo_data", ["postcode"], :name => "index_postcodes_on_zip", :unique => true
 
   create_table "homepage_contents", :force => true do |t|
     t.string   "banner_image"
@@ -499,6 +498,7 @@ ActiveRecord::Schema.define(:version => 20130913150541) do
   end
 
   add_index "push_sent_emails", ["movement_id", "email_id"], :name => "idx_emails"
+  add_index "push_sent_emails", ["movement_id", "push_id", "email_id", "user_id"], :name => "idx_unique_sent", :unique => true
   add_index "push_sent_emails", ["movement_id", "push_id"], :name => "idx_pushes"
   add_index "push_sent_emails", ["push_id"], :name => "index_push_sent_emails_on_push_id"
   add_index "push_sent_emails", ["user_id", "movement_id", "created_at"], :name => "idx_list_cutter"
