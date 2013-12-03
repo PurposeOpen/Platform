@@ -60,7 +60,7 @@ describe ActionPage do
       second_page.position.should == 2
     end
 
-    it "should not consider deleted pages when validating the pages' positions" do
+    it "should not consider deleted pages when setting the pages' positions" do
       action_sequence = create(:action_sequence)
 
       page1 = create(:action_page, action_sequence: action_sequence, name: "page1", position: 1)
@@ -69,10 +69,27 @@ describe ActionPage do
       page4 = build(:action_page, action_sequence: action_sequence, name: "page4", position: 1)
 
       page2.destroy
-      page3.position = 2
-      page3.valid?.should be_true
+      page2.reload
+      page2.deleted_at.should_not be_nil
+      page2.position.should == 2
+      page3.reload
+      page3.position.should == 2
       page4.valid?.should be_false
+    end
 
+    it "should reorder pages in the actions sequence after a page is destroyed" do
+      action_sequence = create(:action_sequence)
+
+      page1 = create(:action_page, action_sequence: action_sequence, name: "page1", position: 1)
+      page2 = create(:action_page, action_sequence: action_sequence, name: "page2", position: 2)
+      page3 = create(:action_page, action_sequence: action_sequence, name: "page3", position: 3)
+      page4 = create(:action_page, action_sequence: action_sequence, name: "page4", position: 4)
+
+      page2.destroy
+
+      page1.reload.position.should == 1
+      page3.reload.position.should == 2
+      page4.reload.position.should == 3
     end
 
     it "should not allow creation of pages with blank movement attribute" do
