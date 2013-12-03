@@ -44,7 +44,7 @@ class Campaign < ActiveRecord::Base
   end
 
   def build_stats_query
-    ask_content_modules  = ['NonTaxDeductibleDonationModule', 'TaxDeductibleDonationModule', 'DonationModule', 'PetitionModule', 'JoinModule', 'EmailMPModule', 'EmailTargetsModule']
+    ask_content_modules  = ['NonTaxDeductibleDonationModule', 'TaxDeductibleDonationModule', 'NonTaxDeductibleTafDonationModule', 'TaxDeductibleTafDonationModule','TafDonationModule','DonationModule', 'PetitionModule', 'JoinModule', 'EmailMPModule', 'EmailTargetsModule']
     reported_activities  = ["action_taken", "subscribed"]
     action_sequences     = Arel::Table.new(:action_sequences, :as => 'action_sequences')
     pages                = Arel::Table.new(:pages, :as => 'pages')
