@@ -65,7 +65,7 @@ module ListCutter
     end
 
     def to_human_sql
-      "Donation amount #{query_operator} #{amount}"
+      "Donation amount #{is_clause} #{query_operator} #{amount}"
     end
 
   end
