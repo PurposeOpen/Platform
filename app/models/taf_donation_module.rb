@@ -26,18 +26,19 @@ class TafDonationModule < DonationModule
 	                :headline, :message,
 	                :facebook_enabled, :facebook_title, :facebook_description, :facebook_image_url,
 	                :twitter_enabled, :tweet,
-	                :email_enabled, :email_subject, :email_body
+	                :email_enabled, :email_subject, :email_body, :show_taf
 
 	  option_fields :include_action_counter, :action_counter_page_id
-	
+
 	after_initialize :taf_defaults
-	
+
 	def taf_defaults
     self.options ||= {}
     self.options[:facebook_enabled] = true
     self.options[:twitter_enabled]= true
     self.options[:email_enabled] =  true
     self.options[:include_action_counter] = false
+    self.options[:show_taf] = true
   end
 
   def classification
