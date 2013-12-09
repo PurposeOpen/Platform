@@ -128,7 +128,7 @@ class Donation < ActiveRecord::Base
   end
 
   def ensure_amount_is_also_stored_in_dollars
-    return unless self.amount_in_dollar_cents.nil?
+    return unless self.amount_in_dollar_cents.nil? || self.amount_in_dollar_cents == 0
 
     update_amount_in_dollar_cents
   end
