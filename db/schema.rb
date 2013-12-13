@@ -335,20 +335,6 @@ ActiveRecord::Schema.define(:version => 20130801173251) do
 
   add_index "lists", ["saved_intermediate_result_id"], :name => "lists_saved_intermediate_result_id_fk"
 
-  create_table "mc_data_members_activity", :id => false, :force => true do |t|
-    t.integer  "user_id"
-    t.string   "email",                      :null => false
-    t.datetime "action_date",                :null => false
-    t.string   "action",      :limit => 128, :null => false
-    t.integer  "mc_web_id",                  :null => false
-    t.integer  "email_id"
-    t.integer  "campaign_id"
-  end
-
-  add_index "mc_data_members_activity", ["action"], :name => "idx_actions"
-  add_index "mc_data_members_activity", ["email", "action_date", "action", "mc_web_id", "email_id", "campaign_id"], :name => "idx_all", :unique => true
-  add_index "mc_data_members_activity", ["email_id"], :name => "idx_emails"
-
   create_table "member_count_calculators", :force => true do |t|
     t.integer  "current"
     t.integer  "last_member_count"
@@ -401,7 +387,6 @@ ActiveRecord::Schema.define(:version => 20130801173251) do
   end
 
   add_index "pages", ["live_page_id", "deleted_at", "type", "action_sequence_id", "position"], :name => "pages_index_live_lpid_type_asid_pos"
-  add_index "pages", ["live_page_id"], :name => "live_page_id_fk"
   add_index "pages", ["slug"], :name => "index_pages_on_slug"
 
   create_table "petition_signatures", :force => true do |t|
@@ -416,7 +401,6 @@ ActiveRecord::Schema.define(:version => 20130801173251) do
   end
 
   add_index "petition_signatures", ["page_id"], :name => "index_petition_signatures_on_page_id"
-  add_index "petition_signatures", ["user_id"], :name => "idx_petition_sign_cm_id"
 
   create_table "platform_users", :force => true do |t|
     t.string   "email",                  :limit => 256,                    :null => false
@@ -648,8 +632,10 @@ ActiveRecord::Schema.define(:version => 20130801173251) do
   end
 
   add_index "users", ["created_at"], :name => "created_at_idx"
+  add_index "users", ["deleted_at", "is_member"], :name => "member_status"
   add_index "users", ["deleted_at", "movement_id", "is_member"], :name => "index_users_on_deleted_at_and_movement_id_and_is_member"
   add_index "users", ["deleted_at", "movement_id", "source"], :name => "index_users_on_deleted_at_and_movement_id_and_source"
+  add_index "users", ["deleted_at"], :name => "idx_deleted_at"
   add_index "users", ["email", "movement_id"], :name => "index_users_on_email_and_movement_id", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email"
   add_index "users", ["movement_id", "language_id"], :name => "index_users_on_movement_id_and_language_id"
