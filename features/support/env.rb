@@ -30,8 +30,6 @@ Capybara.app_host = "http://localhost:#{Capybara.server_port}"
 
 Capybara.default_wait_time = 150
 
-Capybara.server_boot_timeout = 30 
-
 Capybara.register_driver :selenium do |app|
   http_client = Selenium::WebDriver::Remote::Http::Default.new
   http_client.timeout = 300
