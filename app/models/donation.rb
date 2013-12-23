@@ -91,10 +91,12 @@ class Donation < ActiveRecord::Base
 
   def comment; nil; end
 
+  # formerly called on callback from Recurly
   def confirm
     self.active = true
     Donation.transaction do
-      transaction = create_transaction(self.transaction_id, self.order_id, self.amount_in_cents)
+      external_id, invoice_id = self.transaction_id, self.order_id
+      transaction = create_transaction(external_id, invoice_id, self.amount_in_cents)
       transaction.save!
       self.save!
     end
