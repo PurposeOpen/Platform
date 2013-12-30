@@ -232,7 +232,7 @@ class DonationModule < ContentModule
     self.default_amount = {} if self.default_amount.blank?
     self.recurring_suggested_amounts = {} if self.recurring_suggested_amounts.blank?
     self.recurring_default_amount = {} if self.recurring_default_amount.blank?
-    self.frequency_options = {'one_off' => 'default', 'weekly' => 'hidden', 'monthly' => 'optional', 'annual' => 'hidden'} unless self.frequency_options
+    self.frequency_options = {'one_off' => 'default', 'weekly' => 'optional', 'monthly' => 'optional', 'annual' => 'optional'} unless self.frequency_options
     self.receipt_frequency = :once unless self.receipt_frequency
     self.public_activity_stream_template = "{NAME|A member}, {COUNTRY|}<br/>[{HEADER}]" unless self.public_activity_stream_template
     self.active = 'true' unless self.active

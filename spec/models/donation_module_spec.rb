@@ -168,7 +168,7 @@ describe DonationModule do
 
     it "sets default frequency options with once as selected" do
       donation_module = DonationModule.new
-      options = {'one_off' => 'default', 'weekly' => 'hidden', 'monthly' => 'optional', 'annual' => 'hidden'}
+      options = {'one_off' => 'default', 'weekly' => 'optional', 'monthly' => 'optional', 'annual' => 'optional'}
       donation_module.frequency_options.should == options
     end
 
@@ -250,6 +250,16 @@ describe DonationModule do
   end
 
   describe "taking an action" do
+    let(:action_info) {{
+      :confirmed => true,
+      :currency => 'USD',
+      :amount => '100',
+      :payment_method => 'credit_card',
+      :email => @email,
+      :order_id => '111111',
+      :transaction_id => '222222'
+    }}
+
     before(:each) do
       @user = FactoryGirl.create(:user, :email => 'noone@example.com')
       @ask = FactoryGirl.create(:donation_module)
@@ -257,39 +267,93 @@ describe DonationModule do
       @email = FactoryGirl.create(:email)
     end
 
-    it "should allow multiple donations from a single user" do
-      lambda { 3.times { @ask.take_action(@user, @page) } }.should_not raise_error(DuplicateActionTakenError)
+    # taking an action
+    describe "a one_off donation" do
+      before :each do
+        action_info[:frequency] = 'one_off'
+      end
+
+      it "should allow multiple donations from a single user" do
+        lambda { 3.times { @ask.take_action(@user, @page) } }.should_not raise_error(DuplicateActionTakenError)
+      end
+
+      it "should create the donation with the correct values" do
+        donation = @ask.take_action(@user, action_info, @page)
+
+        donation.content_module.should == @ask
+        donation.action_page.should == @page
+        donation.user.should == @user
+        donation.frequency.should == :one_off
+        donation.currency.should == 'USD'
+        donation.amount_in_cents.should == 100
+        donation.payment_method.should == :credit_card
+        donation.email.should == @email
+        donation.order_id.should == '111111'
+        donation.transaction_id.should == '222222'
+        donation.payment_method_token.should == nil
+        donation.card_last_four_digits.should == nil
+        donation.card_exp_month.should == nil
+        donation.card_exp_year.should == nil
+      end
+
+      it "should create the donation with credit card information when provided" do
+        action_info[:payment_method_token] = 'payment_method_token'
+        action_info[:card_last_four_digits] = '1111'
+        action_info[:card_exp_month] = '06'
+        action_info[:card_exp_year] = '2016'
+        donation = @ask.take_action(@user, action_info, @page)
+
+        donation.content_module.should == @ask
+        donation.action_page.should == @page
+        donation.user.should == @user
+        donation.frequency.should == :one_off
+        donation.currency.should == 'USD'
+        donation.amount_in_cents.should == 100
+        donation.payment_method.should == :credit_card
+        donation.email.should == @email
+        donation.order_id.should == '111111'
+        donation.transaction_id.should == '222222'
+        donation.payment_method_token.should == 'payment_method_token'
+        donation.card_last_four_digits.should == '1111'
+        donation.card_exp_month.should == '06'
+        donation.card_exp_year.should == '2016'
+      end
     end
 
-    it "should create the donation with the correct values" do
-      action_info = { :confirmed => true, :frequency => 'one_off', :currency => 'USD', :amount => '100', :payment_method => 'credit_card', :email => @email, :order_id => '111111', :transaction_id => '222222' }
-      donation = @ask.take_action(@user, action_info, @page)
+    describe "a recurring donation" do
+      before :each do
+        action_info[:frequency] = 'monthly'
+        action_info[:subscription_id] = "#{@page}--#{action_info[:frequency]}"
+      end
 
-      donation.content_module.should == @ask
-      donation.action_page.should == @page
-      donation.user.should == @user
-      donation.frequency.should == :one_off
-      donation.currency.should == 'USD'
-      donation.amount_in_cents.should == 100
-      donation.payment_method.should == :credit_card
-      donation.email.should == @email
-      donation.order_id.should == '111111'
-      donation.transaction_id.should == '222222'
-    end
+      it "should set a subscription_id of type monthly on the donation" do
+        action_info[:frequency] = 'monthly'
+        donation = @ask.take_action(@user, action_info, @page)
 
-    it "should create an incomplete recurring donation" do
-      action_info = { :payment_method => 'credit_card', :subscription_id => '222222', :frequency => 'monthly', :currency => 'USD', :confirmed => false }
+        donation.subscription_id.should == "#{@page}--monthly"
+      end
 
-      donation = @ask.take_action(@user, action_info, @page)
+      it "should set a subscription_id of type weekly on the donation" do
+        action_info[:frequency] = 'weekly'
+        action_info[:subscription_id] = "#{@page}--#{action_info[:frequency]}"
+        donation = @ask.take_action(@user, action_info, @page)
 
-      donation.content_module.should == @ask
-      donation.action_page.should == @page
-      donation.user.should == @user
-      donation.payment_method.should == :credit_card
-      donation.subscription_id.should == '222222'
-      donation.frequency.should == :monthly
-      donation.currency.should == 'USD'
-      donation.active.should be_false
+        donation.subscription_id.should == "#{@page}--weekly"
+      end
+
+      it "should create an incomplete recurring donation when confirmed is false" do
+        action_info[:confirmed] = false
+        donation = @ask.take_action(@user, action_info, @page)
+
+        donation.active.should be_false
+      end
+
+      it "should create an active recurring donation when confirmed is true" do
+        action_info[:confirmed] = true
+        donation = @ask.take_action(@user, action_info, @page)
+
+        donation.active.should be_true
+      end
     end
   end
 
