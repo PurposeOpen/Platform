@@ -109,12 +109,11 @@ class DonationModule < ContentModule
         :active => action_info[:confirmed],
         :frequency => action_info[:frequency].to_sym)
 
-    byebug
     if action_info[:payment_method_token]
-        donation.payment_method_token = action_info[:payment_method_token],
-        donation.card_last_four_digits = action_info[:card_last_four_digits],
-        donation.card_exp_month = action_info[:card_exp_month],
-        donation.card_exp_year = action_info[:card_exp_year]
+      donation.payment_method_token = action_info[:payment_method_token]
+      donation.card_last_four_digits = action_info[:card_last_four_digits]
+      donation.card_exp_month = action_info[:card_exp_month]
+      donation.card_exp_year = action_info[:card_exp_year]
     end
 
     donation.save!

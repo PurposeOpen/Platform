@@ -59,6 +59,7 @@ gem 'roo'
 gem 'recurly'
 gem 'font-awesome-rails'
 gem 'resque'
+gem 'byebug'
 
 
 group :assets do
