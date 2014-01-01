@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(:version => 20131223202657) do
     t.string   "transaction_id"
     t.string   "subscription_id"
     t.integer  "subscription_amount"
+    t.string   "classification"
     t.string   "payment_method_token"
     t.string   "card_last_four_digits"
     t.string   "card_exp_month"

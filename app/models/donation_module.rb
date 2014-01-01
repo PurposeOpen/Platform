@@ -98,6 +98,7 @@ class DonationModule < ContentModule
     donation = Donation.new(:content_module => self,
         :action_page => page,
         :user => user,
+        :classification => action_info[:classification],
         :currency => action_info[:currency],
         :amount_in_cents => action_info[:amount].to_i,
         :payment_method => action_info[:payment_method].to_sym,
@@ -117,6 +118,7 @@ class DonationModule < ContentModule
     end
 
     donation.save!
+    donation.confirm
     donation
   end
 

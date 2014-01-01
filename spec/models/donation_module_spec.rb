@@ -341,13 +341,6 @@ describe DonationModule do
         donation.subscription_id.should == "#{@page}--weekly"
       end
 
-      it "should create an incomplete recurring donation when confirmed is false" do
-        action_info[:confirmed] = false
-        donation = @ask.take_action(@user, action_info, @page)
-
-        donation.active.should be_false
-      end
-
       it "should create an active recurring donation when confirmed is true" do
         action_info[:confirmed] = true
         donation = @ask.take_action(@user, action_info, @page)

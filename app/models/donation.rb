@@ -91,23 +91,24 @@ class Donation < ActiveRecord::Base
 
   def comment; nil; end
 
-  # formerly called on callback from Recurly
+  # called for one_off donations
   def confirm
     self.active = true
     Donation.transaction do
-      external_id, invoice_id = self.transaction_id, self.order_id
-      transaction = create_transaction(external_id, invoice_id, self.amount_in_cents)
+      external_id, order_id = self.transaction_id, self.order_id
+      transaction = create_transaction(external_id, order_id, self.amount_in_cents)
       transaction.save!
       self.save!
     end
   end
 
-  def add_payment(amount_in_cents, transaction_id, order_id)
+  # called for recurring donations
+  def add_payment(amount_in_cents, external_id, order_id)
     self.amount_in_cents += amount_in_cents
     self.active = true
     update_amount_in_dollar_cents
     Donation.transaction do
-      transaction = create_transaction(transaction_id, order_id, amount_in_cents)
+      transaction = create_transaction(external_id, order_id, amount_in_cents)
       transaction.save!
       self.save!
     end
@@ -117,7 +118,7 @@ class Donation < ActiveRecord::Base
 
   def create_transaction(external_id, invoice_id, amount_in_cents)
     transaction = Transaction.new(:donation => self,
-        :external_id => external_id,
+        :external_id => external_id, # spreedly transaction_token
         :invoice_id => invoice_id,
         :amount_in_cents => amount_in_cents,
         :currency => self.currency,
