@@ -50,7 +50,6 @@ class Donation < ActiveRecord::Base
   validate :validate_content_module_is_a_donation_ask
   validate :validate_payment_method
   validate :validate_amounts
-  validate :validate_subscription_id
   validate :validate_transaction_id
 
   def self.total_in_dollar_cents_by_action_page(action_page_id)
