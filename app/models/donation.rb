@@ -101,13 +101,46 @@ class Donation < ActiveRecord::Base
     end
   end
 
+  def make_payment_on_recurring_donation
+    return if self.frequency == :one_off
+    transaction = purchase_on_spreedly
+
+    if transaction.succeeded?
+      transaction.respond_to?(:gateway_transaction_id) ? order_id = transaction.gateway_transaction_id : order_id = nil
+      add_payment(transaction.amount, transaction.token, order_id)
+      #TODO: email_confirming_payment
+    else
+      handle_failed_recurring_payment
+    end
+  end
+
+  def purchase_on_spreedly
+    if self.classification == '501-c-3'
+      spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C3_ENV_KEY'], ENV['SPREEDLY_501C3_APP_ACCESS_SECRET'])
+    else
+      spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C4_ENV_KEY'], ENV['SPREEDLY_501C4_APP_ACCESS_SECRET'])
+    end
+
+    gateway_token = determine_gateway_token
+    spreedly.purchase_on_gateway(gateway_token, self.payment_method_token, self.subscription_amount)
+  end
+
+  def determine_gateway_token
+    # determine gateway based off of currency
+    case self.currency.downcase
+    when 'usd'
+      # TODO: remove hard-coded test gateway token
+      'DWqZNx7SyOHZyrscU7p5gzORxky'
+    end
+  end
+
   # called for recurring donations
-  def add_payment(amount_in_cents, external_id, order_id)
-    self.amount_in_cents += amount_in_cents
+  def add_payment(transaction_amount_in_cents, external_id, order_id)
+    self.amount_in_cents += transaction_amount_in_cents
     self.active = true
     update_amount_in_dollar_cents
     Donation.transaction do
-      transaction = create_transaction(external_id, order_id, amount_in_cents)
+      transaction = create_transaction(external_id, order_id, transaction_amount_in_cents)
       transaction.save!
       self.save!
     end

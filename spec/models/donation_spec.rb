@@ -131,11 +131,6 @@ describe Donation do
       validated_donation(:amount_in_cents => 100, :active => true).should be_valid
     end
 
-    it "must have subscription_id if recurring" do
-      validated_donation(:frequency => :monthly, :subscription_id => '123456').should be_valid
-      validated_donation(:frequency => :monthly, :subscription_id => nil).should_not be_valid
-    end
-
     it "must have transaction_id if one off" do
       validated_donation(:frequency => :one_off, :transaction_id => '123456').should be_valid
       validated_donation(:frequency => :one_off, :transaction_id => nil).should_not be_valid
@@ -320,6 +315,92 @@ describe Donation do
       donation.add_payment(100, transaction_id, invoice_id)
 
       donation.active.should be_true
+    end
+  end
+
+  describe "#make_payment_on_recurring_donation" do
+    it "should call #add_payment for a successful payment" do
+      donation = FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token')
+      donation.confirm
+      donation.transactions.count.should == 1
+
+      successful_spreedly_purchase_response = <<-XML
+<transaction>
+  <amount type="integer">#{donation.subscription_amount}</amount>
+  <on_test_gateway type="boolean">true</on_test_gateway>
+  <created_at type="datetime">2013-12-12T22:47:05Z</created_at>
+  <updated_at type="datetime">2013-12-12T22:47:05Z</updated_at>
+  <currency_code>USD</currency_code>
+  <succeeded type="boolean">true</succeeded>
+  <state>succeeded</state>
+  <token>#{donation.transaction_id}</token>
+  <transaction_type>Purchase</transaction_type>
+  <order_id nil="true"/>
+  <ip nil="true"/>
+  <description nil="true"/>
+  <email nil="true"/>
+  <merchant_name_descriptor nil="true"/>
+  <merchant_location_descriptor nil="true"/>
+  <gateway_specific_fields nil="true"/>
+  <gateway_specific_response_fields nil="true"/>
+  <gateway_transaction_id nil="true" />
+  <message key="messages.transaction_succeeded">Succeeded!</message>
+  <gateway_token>7V55R2Y8oZvY1u797RRwMDakUzK</gateway_token>
+  <response>
+    <success type="boolean">true</success>
+    <message>Successful purchase</message>
+    <avs_code nil="true"/>
+    <avs_message nil="true"/>
+    <cvv_code nil="true"/>
+    <cvv_message nil="true"/>
+    <pending type="boolean">false</pending>
+    <error_code></error_code>
+    <error_detail nil="true"/>
+    <cancelled type="boolean">false</cancelled>
+    <created_at type="datetime">2013-12-12T22:47:05Z</created_at>
+    <updated_at type="datetime">2013-12-12T22:47:05Z</updated_at>
+  </response>
+  <payment_method>
+    <token>#{donation.payment_method_token}</token>
+    <created_at type="datetime">2013-11-06T18:28:14Z</created_at>
+    <updated_at type="datetime">2013-12-12T22:47:05Z</updated_at>
+    <email nil="true"/>
+    <data nil="true"/>
+    <storage_state>retained</storage_state>
+    <last_four_digits>1111</last_four_digits>
+    <card_type>visa</card_type>
+    <first_name>Gia</first_name>
+    <last_name>Hammes</last_name>
+    <month type="integer">4</month>
+    <year type="integer">2020</year>
+    <address1 nil="true"/>
+    <address2 nil="true"/>
+    <city nil="true"/>
+    <state nil="true"/>
+    <zip nil="true"/>
+    <country nil="true"/>
+    <phone_number nil="true"/>
+    <full_name>Gia Hammes</full_name>
+    <payment_method_type>credit_card</payment_method_type>
+    <errors>
+    </errors>
+    <verification_value></verification_value>
+    <number>XXXX-XXXX-XXXX-1111</number>
+  </payment_method>
+  <api_urls>
+  </api_urls>
+</transaction>
+      XML
+
+      donation.stub(:purchase_on_spreedly) { Spreedly::Transaction.new_from(Nokogiri::XML(successful_spreedly_purchase_response)) }
+      donation.make_payment_on_recurring_donation
+
+      donation.transactions.count.should == 2
+      transaction = Transaction.find_by_external_id(donation.transaction_id)
+      transaction.donation_id.should == donation.id
+      transaction.successful.should == true
+      transaction.amount_in_cents.should == donation.subscription_amount
+      transaction.invoice_id.should == nil
     end
   end
 end
