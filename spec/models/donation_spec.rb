@@ -440,4 +440,16 @@ describe Donation do
       donation.enqueue_recurring_payment
     end
   end
+
+  describe "#deactivate" do
+    let(:donation) { FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token') }
+
+    it "sets the active attribute to false for a donation" do
+      donation.confirm
+      donation.active.should == true
+      donation.deactivate
+
+      donation.active.should == false
+    end
+  end
 end

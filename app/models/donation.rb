@@ -164,6 +164,10 @@ class Donation < ActiveRecord::Base
     end
   end
 
+  def deactivate
+    self.update_attribute(:active, false)
+  end
+
   private
 
   def create_transaction(external_id, invoice_id, amount_in_cents)
