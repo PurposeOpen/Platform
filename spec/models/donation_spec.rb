@@ -319,6 +319,15 @@ describe Donation do
   end
 
   describe "#make_payment_on_recurring_donation" do
+    it "should not call #purchase_on_spreedly if the donation is inactive" do
+      donation = FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token')
+      donation.confirm
+
+      donation.update_attribute(:active, false)
+      donation.should_not_receive(:purchase_on_spreedly)
+      donation.make_payment_on_recurring_donation
+    end
+
     it "should call #add_payment for a successful payment" do
       donation = FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token')
       donation.confirm
@@ -393,6 +402,7 @@ describe Donation do
       XML
 
       donation.stub(:purchase_on_spreedly) { Spreedly::Transaction.new_from(Nokogiri::XML(successful_spreedly_purchase_response)) }
+      Resque.should_receive(:enqueue)
       donation.make_payment_on_recurring_donation
 
       donation.transactions.count.should == 2
@@ -401,6 +411,33 @@ describe Donation do
       transaction.successful.should == true
       transaction.amount_in_cents.should == donation.subscription_amount
       transaction.invoice_id.should == nil
+    end
+  end
+
+  describe "equeue_recurring_payment" do
+    let(:donation) { FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token') }
+
+    before do
+      donation.confirm
+    end
+
+    it "calls Resque.enqueue when a monthly recurring donation is active" do
+      donation.active.should == true
+      Resque.should_receive(:enqueue)
+      donation.enqueue_recurring_payment
+    end
+
+    it "does not call Resque.enqueue when a recurring donation is inactive" do
+      donation.update_attribute(:active, false)
+      donation.active.should == false
+      Resque.should_not_receive(:enqueue)
+      donation.enqueue_recurring_payment
+    end
+
+    it "does not call Resque.enqueue for a one_off donation" do
+      donation.update_attribute(:frequency, :one_off)
+      Resque.should_not_receive(:enqueue)
+      donation.enqueue_recurring_payment
     end
   end
 end

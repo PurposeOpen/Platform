@@ -101,16 +101,35 @@ class Donation < ActiveRecord::Base
     end
   end
 
+  def self.perform(donation_id)
+    donation = Donation.find(donation_id)
+    donation.make_payment_on_recurring_donation
+  end
+
   def make_payment_on_recurring_donation
-    return if self.frequency == :one_off
+    return if self.frequency == :one_off || self.active == false
     transaction = purchase_on_spreedly
 
     if transaction.succeeded?
       transaction.respond_to?(:gateway_transaction_id) ? order_id = transaction.gateway_transaction_id : order_id = nil
       add_payment(transaction.amount, transaction.token, order_id)
       #TODO: email_confirming_payment
+      enqueue_recurring_payment
     else
       handle_failed_recurring_payment
+    end
+  end
+
+  def enqueue_recurring_payment
+    if self.active? && frequency != :one_off
+      case frequency
+      when :weekly
+        Resque.enqueue(1.week, self.class, self.id)
+      when :monthly
+        Resque.enqueue(1.month, self.class, self.id)
+      when :annual
+        Resque.enqueue(1.year, self.class, self.id)
+      end
     end
   end
 
@@ -126,7 +145,6 @@ class Donation < ActiveRecord::Base
   end
 
   def determine_gateway_token
-    # determine gateway based off of currency
     case self.currency.downcase
     when 'usd'
       # TODO: remove hard-coded test gateway token
