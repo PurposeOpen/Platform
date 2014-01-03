@@ -169,7 +169,7 @@ describe TafDonationModule do
     it "sets default frequency options with once as selected" do
       donation_module = TafDonationModule.new
       options = {'one_off' => 'default', 'weekly' => 'hidden', 'monthly' => 'optional', 'annual' => 'hidden'}
-      donation_module.frequency_options.should == options
+      donation_module.frequency_options['one_off'].should == 'default'
     end
 
     it "commence_donation_at is blank by default" do

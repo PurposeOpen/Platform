@@ -90,7 +90,6 @@ class Donation < ActiveRecord::Base
 
   def comment; nil; end
 
-  # called for one_off donations
   def confirm
     self.active = true
     Donation.transaction do

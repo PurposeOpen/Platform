@@ -319,9 +319,28 @@ describe Donation do
   end
 
   describe "#make_payment_on_recurring_donation" do
+    let(:user) { FactoryGirl.create(:user, :email => 'noone@example.com') }
+    let(:ask) { FactoryGirl.create(:donation_module) }
+    let(:page) { FactoryGirl.create(:action_page) }
+    let(:email) { FactoryGirl.create(:email) }
+    let(:action_info) do { 
+      :confirmed => true,
+      :frequency => :monthly,
+      :currency => 'USD',
+      :amount => 1000,
+      :payment_method => 'credit_card',
+      :email => @email,
+      :transaction_id => 'transaction_token',
+      :subscription_amount => 1000,
+      :payment_method_token =>'payment_method_token',
+      :card_last_four_digits => '1111',
+      :card_exp_month => '01',
+      :card_exp_year => '2020'
+    } end
+
     it "should not call #purchase_on_spreedly if the donation is inactive" do
-      donation = FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token')
-      donation.confirm
+      action_info['confirmed'] = false
+      donation = ask.take_action(user, action_info, page)
 
       donation.update_attribute(:active, false)
       donation.should_not_receive(:purchase_on_spreedly)
@@ -329,8 +348,8 @@ describe Donation do
     end
 
     it "should call #add_payment for a successful payment" do
-      donation = FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token')
-      donation.confirm
+      donation = ask.take_action(user, action_info, page)
+
       donation.transactions.count.should == 1
 
       successful_spreedly_purchase_response = <<-XML
@@ -414,28 +433,73 @@ describe Donation do
     end
   end
 
-  describe "equeue_recurring_payment" do
-    let(:donation) { FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token') }
-
-    before do
-      donation.confirm
-    end
+  describe "enqueue_recurring_payment" do
+    let(:user) { FactoryGirl.create(:user, :email => 'noone@example.com') }
+    let(:ask) { FactoryGirl.create(:donation_module) }
+    let(:page) { FactoryGirl.create(:action_page) }
+    let(:email) { FactoryGirl.create(:email) }
 
     it "calls Resque.enqueue when a monthly recurring donation is active" do
+      action_info = {
+        :confirmed => true,
+        :frequency => :monthly,
+        :currency => 'USD',
+        :amount => 1000,
+        :payment_method => 'credit_card',
+        :email => @email,
+        :transaction_id => 'transaction_token',
+        :subscription_amount => 1000,
+        :payment_method_token =>'payment_method_token',
+        :card_last_four_digits => '1111',
+        :card_exp_month => '01',
+        :card_exp_year => '2020'
+      }
+      donation = ask.take_action(user, action_info, page)
+
       donation.active.should == true
       Resque.should_receive(:enqueue)
       donation.enqueue_recurring_payment
     end
 
     it "does not call Resque.enqueue when a recurring donation is inactive" do
-      donation.update_attribute(:active, false)
+      action_info = {
+        :confirmed => false,
+        :frequency => :monthly,
+        :currency => 'USD',
+        :amount => 1000,
+        :payment_method => 'credit_card',
+        :email => @email,
+        :transaction_id => 'transaction_token',
+        :subscription_amount => 1000,
+        :payment_method_token =>'payment_method_token',
+        :card_last_four_digits => '1111',
+        :card_exp_month => '01',
+        :card_exp_year => '2020'
+      }
+      donation = ask.take_action(user, action_info, page)
+
       donation.active.should == false
       Resque.should_not_receive(:enqueue)
       donation.enqueue_recurring_payment
     end
 
     it "does not call Resque.enqueue for a one_off donation" do
-      donation.update_attribute(:frequency, :one_off)
+      action_info = {
+        :confirmed => true,
+        :frequency => :one_off,
+        :currency => 'USD',
+        :amount => 1000,
+        :payment_method => 'credit_card',
+        :email => @email,
+        :transaction_id => 'transaction_token',
+        :subscription_amount => 1000,
+        :payment_method_token =>'payment_method_token',
+        :card_last_four_digits => '1111',
+        :card_exp_month => '01',
+        :card_exp_year => '2020'
+      }
+      donation = ask.take_action(user, action_info, page)
+
       Resque.should_not_receive(:enqueue)
       donation.enqueue_recurring_payment
     end

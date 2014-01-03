@@ -118,7 +118,7 @@ class DonationModule < ContentModule
     end
 
     donation.save!
-    donation.confirm
+    donation.confirm if donation.active
     donation
   end
 
