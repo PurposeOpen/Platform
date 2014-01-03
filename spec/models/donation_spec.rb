@@ -506,14 +506,35 @@ describe Donation do
   end
 
   describe "#deactivate" do
-    let(:donation) { FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :subscription_amount => 1000, :payment_method_token =>'payment_method_token', :transaction_id => 'transaction_token') }
+    let(:user) { FactoryGirl.create(:user, :email => 'noone@example.com') }
+    let(:ask) { FactoryGirl.create(:donation_module) }
+    let(:page) { FactoryGirl.create(:action_page) }
+    let(:email) { FactoryGirl.create(:email) }
 
     it "sets the active attribute to false for a donation" do
-      donation.confirm
+      action_info = {
+        :confirmed => true,
+        :frequency => :one_off,
+        :currency => 'USD',
+        :amount => 1000,
+        :payment_method => 'credit_card',
+        :email => @email,
+        :transaction_id => 'transaction_token',
+        :subscription_amount => 1000,
+        :payment_method_token =>'payment_method_token',
+        :card_last_four_digits => '1111',
+        :card_exp_month => '01',
+        :card_exp_year => '2020'
+      }
+      donation = ask.take_action(user, action_info, page)
       donation.active.should == true
       donation.deactivate
 
       donation.active.should == false
     end
   end
+
+  # describe "handle_failed_recurring_payment" do
+    
+  # end
 end
