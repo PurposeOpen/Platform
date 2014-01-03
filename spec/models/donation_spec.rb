@@ -534,7 +534,95 @@ describe Donation do
     end
   end
 
-  # describe "handle_failed_recurring_payment" do
-    
-  # end
+  describe "handle_failed_recurring_payment" do
+    let(:failed_spreedly_purchase_response) do
+<<-XML
+<transaction>
+  <amount type="integer">100</amount>
+  <on_test_gateway type="boolean">false</on_test_gateway>
+  <created_at type="datetime">2013-12-21T12:51:49Z</created_at>
+  <updated_at type="datetime">2013-12-21T12:51:49Z</updated_at>
+  <currency_code>USD</currency_code>
+  <succeeded type="boolean">false</succeeded>
+  <state>failed</state>
+  <token>Hj5BPvWQJ0EPH6egV8hIztWMCOY</token>
+  <transaction_type>Purchase</transaction_type>
+  <order_id nil="true"/>
+  <ip nil="true"/>
+  <description nil="true"/>
+  <email nil="true"/>
+  <merchant_name_descriptor nil="true"/>
+  <merchant_location_descriptor nil="true"/>
+  <gateway_specific_fields nil="true"/>
+  <gateway_specific_response_fields nil="true"/>
+  <gateway_transaction_id nil="true"/>
+  <message key="messages.payment_method_invalid">The payment method is invalid.</message>
+  <gateway_token>GnWTB6GhqChi7VHGQSCgKDUZvNF</gateway_token>
+  <payment_method>
+    <token>Klrks0iaZLWbKQnDwiB4nBZYob5</token>
+    <created_at type="datetime">2013-12-21T12:51:48Z</created_at>
+    <updated_at type="datetime">2013-12-21T12:51:48Z</updated_at>
+    <email nil="true"/>
+    <data nil="true"/>
+    <storage_state>cached</storage_state>
+    <last_four_digits></last_four_digits>
+    <card_type nil="true"/>
+    <first_name></first_name>
+    <last_name></last_name>
+    <month nil="true"/>
+    <year nil="true"/>
+    <address1 nil="true"/>
+    <address2 nil="true"/>
+    <city nil="true"/>
+    <state nil="true"/>
+    <zip nil="true"/>
+    <country nil="true"/>
+    <phone_number nil="true"/>
+    <full_name></full_name>
+    <payment_method_type>credit_card</payment_method_type>
+    <errors>
+      <error attribute="first_name" key="errors.blank">First name can't be blank</error>
+      <error attribute="last_name" key="errors.blank">Last name can't be blank</error>
+      <error attribute="month" key="errors.invalid">Month is invalid</error>
+      <error attribute="year" key="errors.expired">Year is expired</error>
+      <error attribute="year" key="errors.invalid">Year is invalid</error>
+      <error attribute="number" key="errors.blank">Number can't be blank</error>
+    </errors>
+    <verification_value></verification_value>
+    <number></number>
+  </api_urls>
+  </payment_method>
+  <api_urls>
+</transaction>
+XML
+    end
+
+    let(:user) { FactoryGirl.create(:user, :email => 'noone@example.com') }
+    let(:ask) { FactoryGirl.create(:donation_module) }
+    let(:page) { FactoryGirl.create(:action_page) }
+    let(:email) { FactoryGirl.create(:email) }
+    let(:action_info) do
+      {
+        :confirmed => true,
+        :frequency => :one_off,
+        :currency => 'USD',
+        :amount => 1000,
+        :payment_method => 'credit_card',
+        :email => @email,
+        :transaction_id => 'transaction_token',
+        :subscription_amount => 1000,
+        :payment_method_token =>'payment_method_token',
+        :card_last_four_digits => '1111',
+        :card_exp_month => '01',
+        :card_exp_year => '2020'
+      }
+    end
+    let(:donation) { ask.take_action(user, action_info, page)}
+    let(:transaction) { Spreedly::Transaction.new_from(Nokogiri::XML(failed_spreedly_purchase_response)) }
+
+    it "should call deactivate on the donation" do
+      donation.should_receive(:deactivate)
+      donation.handle_failed_recurring_payment(transaction)
+    end
+  end
 end

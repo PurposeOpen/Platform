@@ -115,8 +115,13 @@ class Donation < ActiveRecord::Base
       #TODO: email_confirming_payment
       enqueue_recurring_payment
     else
-      handle_failed_recurring_payment
+      handle_failed_recurring_payment(transaction)
     end
+  end
+
+  def handle_failed_recurring_payment(transaction)
+    deactivate
+    # TODO: email_payment_failure(transaction)
   end
 
   def enqueue_recurring_payment
