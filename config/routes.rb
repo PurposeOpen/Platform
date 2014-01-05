@@ -160,8 +160,9 @@ PurposePlatform::Application.routes.draw do
       post 'action_pages/:id/donation_payment_error' => 'action_pages#donation_payment_error'
 
       get 'donations' => 'donations#show'
-      post 'donations/confirm_payment' => "donations#confirm_payment"
       post 'donations/add_payment' => "donations#add_payment"
+      post 'donations/confirm_payment' => "donations#confirm_payment"
+      post 'donations/create_spreedly_payment_method_and_donation' => "donations#create_spreedly_payment_method_and_donation"
       post 'donations/handle_failed_payment' => "donations#handle_failed_payment"
     end
   end
