@@ -435,13 +435,13 @@ describe Donation do
 
   describe "enqueue_recurring_payment" do
     let(:user) { FactoryGirl.create(:user, :email => 'noone@example.com') }
-    let(:ask) { FactoryGirl.create(:donation_module) }
+    let(:donation_module) { FactoryGirl.create(:donation_module) }
     let(:page) { FactoryGirl.create(:action_page) }
     let(:email) { FactoryGirl.create(:email) }
 
     it "calls Resque.enqueue when a monthly recurring donation is active" do
       action_info = {
-        :confirmed => true,
+        :confirmed => false,
         :frequency => :monthly,
         :currency => 'USD',
         :amount => 1000,
@@ -454,7 +454,7 @@ describe Donation do
         :card_exp_month => '01',
         :card_exp_year => '2020'
       }
-      donation = ask.take_action(user, action_info, page)
+      donation = donation_module.take_action(user, action_info, page)
 
       donation.active.should == true
       Resque.should_receive(:enqueue)
@@ -476,9 +476,11 @@ describe Donation do
         :card_exp_month => '01',
         :card_exp_year => '2020'
       }
-      donation = ask.take_action(user, action_info, page)
+      donation = donation_module.take_action(user, action_info, page)
 
+      donation.deactivate
       donation.active.should == false
+
       Resque.should_not_receive(:enqueue)
       donation.enqueue_recurring_payment
     end

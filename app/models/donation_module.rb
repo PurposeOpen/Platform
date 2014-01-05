@@ -118,7 +118,7 @@ class DonationModule < ContentModule
     end
 
     donation.save!
-    donation.confirm if donation.active
+    donation.confirm unless action_info[:transaction_id].blank?
     donation
   end
 

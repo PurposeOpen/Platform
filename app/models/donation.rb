@@ -152,7 +152,6 @@ class Donation < ActiveRecord::Base
     payment_method
   end
 
-
   def confirm
     self.active = true
     Donation.transaction do
