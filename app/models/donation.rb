@@ -90,66 +90,8 @@ class Donation < ActiveRecord::Base
 
   def comment; nil; end
 
-
   def self.create_spreedly_payment_method_and_donation(classification, spreedly_payment_method_token)
-    spreedly = determine_spreedly_env(classification)
-    payment_method = retrieve_payment_method(spreedly, spreedly_payment_method_token)
-    payment_method = classify_payment_method(payment_method, classification)
-
-    transaction = purchase_via_spreedly(spreedly, payment_method)
-    transaction = transaction_to_hash(transaction, classification)
-    transaction
-  end
-
-  def self.purchase_via_spreedly(spreedly, payment_method)
-    gateway_token = get_gateway_token(payment_method[:data][:currency])
-    spreedly.purchase_on_gateway(gateway_token, payment_method[:token], payment_method[:data][:amount], retain_on_success: true)
-  end
-
-  def self.get_gateway_token(currency)
-    case currency.downcase
-    when 'usd'
-      # TODO: remove hard-coded test gateway token
-      'DWqZNx7SyOHZyrscU7p5gzORxky'
-    end
-  end
-
-  def self.determine_spreedly_env(classification)
-    if classification == '501-c-3'
-      spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C3_ENV_KEY'], ENV['SPREEDLY_501C3_APP_ACCESS_SECRET'])
-    else
-      spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C4_ENV_KEY'], ENV['SPREEDLY_501C4_APP_ACCESS_SECRET'])
-    end
-  end
-
-  def self.retrieve_payment_method(spreedly, spreedly_token)
-    payment_method = spreedly.find_payment_method(spreedly_token)
-    payment_method = payment_method_to_hash(payment_method)
-  end
-
-  def self.transaction_to_hash(transaction, classification)
-    payment_method = payment_method_to_hash(transaction.payment_method)
-    payment_method = classify_payment_method(payment_method, classification)
-    transaction = transaction.field_hash
-    transaction[:payment_method] = payment_method
-    transaction
-  end
-
-  def self.payment_method_to_hash(payment_method)
-    payment_method_data = Nokogiri::XML("<root>#{payment_method.data}</root>")
-    payment_method_data = payment_method_data.children.first.children.map {|x| { x.name.to_sym => x.text }}.inject({}){|hash, curr_hash| hash.merge curr_hash}
-    payment_method = payment_method.field_hash
-    payment_method[:data] = payment_method_data
-    payment_method
-  end
-
-  def self.classify_payment_method(payment_method, classification)
-    if classification == '501-c-3'
-      payment_method[:data][:classification] = '501-c-3'
-    else
-      payment_method[:data][:classification] = '501-c-4'
-    end
-    payment_method
+    SpreedlyClient.create_payment_method_and_donation(classification, spreedly_payment_method_token)
   end
 
   def confirm
@@ -200,22 +142,9 @@ class Donation < ActiveRecord::Base
   end
 
   def purchase_on_spreedly
-    if self.classification == '501-c-3'
-      spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C3_ENV_KEY'], ENV['SPREEDLY_501C3_APP_ACCESS_SECRET'])
-    else
-      spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C4_ENV_KEY'], ENV['SPREEDLY_501C4_APP_ACCESS_SECRET'])
-    end
-
-    gateway_token = determine_gateway_token
-    spreedly.purchase_on_gateway(gateway_token, self.payment_method_token, self.subscription_amount)
-  end
-
-  def determine_gateway_token
-    case self.currency.downcase
-    when 'usd'
-      # TODO: remove hard-coded test gateway token
-      'DWqZNx7SyOHZyrscU7p5gzORxky'
-    end
+    spreedly_client = SpreedlyClient.new(self.classification)
+    gateway_token = SpreedlyClient.get_gateway_token(self.currency)
+    spreedly_client.purchase_on_gateway(gateway_token, self.payment_method_token, self.subscription_amount)
   end
 
   # called for recurring donations
