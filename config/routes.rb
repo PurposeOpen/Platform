@@ -162,7 +162,7 @@ PurposePlatform::Application.routes.draw do
       get 'donations' => 'donations#show'
       post 'donations/add_payment' => "donations#add_payment"
       post 'donations/confirm_payment' => "donations#confirm_payment"
-      post 'donations/create_spreedly_payment_method_and_donation' => "donations#create_spreedly_payment_method_and_donation"
+      post 'donations/create_spreedly_payment_method_and_purchase' => "donations#create_spreedly_payment_method_and_purchase"
       post 'donations/handle_failed_payment' => "donations#handle_failed_payment"
     end
   end

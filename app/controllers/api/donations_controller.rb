@@ -9,11 +9,12 @@ class Api::DonationsController < Api::BaseController
     end
   end
 
-  def create_spreedly_payment_method_and_donation
-    transaction = Donation.create_spreedly_payment_method_and_donation(params[:classification], params[:token])
-    if transaction[:state] == 'succeeded'
-      render :json => transaction.to_json
+  def create_spreedly_payment_method_and_purchase
+    purchase = SpreedlyClient.create_payment_method_and_purchase(params[:classification], params[:token])
+    if purchase[:state] == 'succeeded'
+      render :json => purchase.to_json
     else
+      # Build out transaction for ActionsController#handle_failed_payment
       render :status => :unprocessable_entity
     end
   end

@@ -90,10 +90,6 @@ class Donation < ActiveRecord::Base
 
   def comment; nil; end
 
-  def self.create_spreedly_payment_method_and_donation(classification, spreedly_payment_method_token)
-    SpreedlyClient.create_payment_method_and_donation(classification, spreedly_payment_method_token)
-  end
-
   def confirm
     self.active = true
     Donation.transaction do
@@ -125,6 +121,7 @@ class Donation < ActiveRecord::Base
 
   def handle_failed_recurring_payment(transaction)
     deactivate
+    # TODO: review ActionsController#handle_failed_payment
     # TODO: email_payment_failure(transaction)
   end
 

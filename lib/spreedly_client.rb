@@ -1,24 +1,33 @@
 class SpreedlyClient
-  def initialize(classification)
+  def self.create_environment(classification)
     if classification == '501-c-3'
-      @spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C3_ENV_KEY'], ENV['SPREEDLY_501C3_APP_ACCESS_SECRET'])
+      spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C3_ENV_KEY'], ENV['SPREEDLY_501C3_APP_ACCESS_SECRET'])
     else
-      @spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C4_ENV_KEY'], ENV['SPREEDLY_501C4_APP_ACCESS_SECRET'])
+      spreedly = Spreedly::Environment.new(ENV['SPREEDLY_501C4_ENV_KEY'], ENV['SPREEDLY_501C4_APP_ACCESS_SECRET'])
     end
   end
 
-  def self.create_payment_method_and_donation(classification, payment_method_token)
-    @spreedly = self.initialize(classification)
+  def self.create_payment_method_and_purchase(classification, payment_method_token)
+    @spreedly = self.create_environment(classification)
+    payment_method = self.retrieve_and_hash_payment_method(classification, payment_method_token)
+    return payment_method if payment_method[:errors]
+    self.retrieve_and_hash_purchase(payment_method)
+  end
 
+  def self.retrieve_and_hash_payment_method(classification, payment_method_token)
     payment_method = @spreedly.find_payment_method(payment_method_token)
     payment_method = self.payment_method_to_hash(payment_method)
     payment_method = self.classify_payment_method(payment_method, classification)
+  rescue Spreedly::Error => e
+    { :code => 404, :errors => e.errors.first }
+  end
 
+  def self.retrieve_and_hash_purchase(payment_method)
     gateway_token = self.get_gateway_token(payment_method[:data][:currency])
     transaction = @spreedly.purchase_on_gateway(gateway_token, payment_method[:token], payment_method[:data][:amount], retain_on_success: true)
-    transaction = self.transaction_to_hash(transaction, classification)
-
-    transaction
+    transaction = self.transaction_to_hash(transaction, payment_method[:data][:classification])
+  rescue Spreedly::Error => e
+    { :code => 422, :errors => e.errors.first, :payment_method => payment_method }
   end
 
   def self.get_gateway_token(currency)
