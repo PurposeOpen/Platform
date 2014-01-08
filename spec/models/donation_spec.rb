@@ -505,6 +505,35 @@ describe Donation do
         donation.should_receive(:deactivate)
         donation.handle_failed_recurring_payment(transaction)
       end
+
+      it "should call DonationError.new with the correct attributes" do
+        PaymentErrorMailer.stub(:delay)
+        PaymentErrorMailer.delay.stub(:report_error)
+
+        donation_error = {
+          :movement => user.movement,
+          :action_page => page.id,
+          :error_code => 422,
+          :message => "First name can't be blank",
+          :member_first_name => nil,
+          :member_last_name => nil,
+          :member_email => 'frederick@example.com',
+          :member_country_iso => nil,
+          :member_language_iso => user.language.iso_code,
+          :donation_payment_method => :credit_card,
+          :donation_amount_in_cents => 100,
+          :donation_currency => 'USD'
+        }
+
+        DonationError.should_receive(:new).with(donation_error)
+        donation.handle_failed_recurring_payment(failed_purchase)
+      end
+
+      it "should call PaymentErrorMailer.delay.report_error" do
+        PaymentErrorMailer.stub(:delay)
+        PaymentErrorMailer.delay.should_receive(:report_error)
+        donation.handle_failed_recurring_payment(failed_purchase)
+      end
     end
   end
 end

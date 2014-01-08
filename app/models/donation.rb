@@ -121,8 +121,23 @@ class Donation < ActiveRecord::Base
 
   def handle_failed_recurring_payment(transaction)
     deactivate
-    # TODO: review ActionsController#handle_failed_payment
-    # TODO: email_payment_failure(transaction)
+
+    donation_error = DonationError.new(
+      { :movement => user.movement,
+        :action_page => page_id,
+        :error_code => transaction[:code],
+        :message => transaction[:errors][:message],
+        :member_first_name => user.first_name,
+        :member_last_name => user.last_name,
+        :member_email => transaction[:payment_method][:email],
+        :member_country_iso => user.country_iso,
+        :member_language_iso => user.language.iso_code,
+        :donation_payment_method => self.payment_method,
+        :donation_amount_in_cents => self.amount_in_cents,
+        :donation_currency => self.currency }
+    )
+
+    PaymentErrorMailer.delay.report_error(donation_error)
   end
 
   def enqueue_recurring_payment
