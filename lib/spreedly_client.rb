@@ -11,7 +11,7 @@ class SpreedlyClient
     @spreedly = self.create_environment(classification)
     payment_method = self.retrieve_and_hash_payment_method(classification, payment_method_token)
     return payment_method if payment_method[:errors]
-    self.retrieve_and_hash_purchase(payment_method)
+    self.purchase_and_hash_response(payment_method)
   end
 
   def self.retrieve_and_hash_payment_method(classification, payment_method_token)
@@ -22,7 +22,7 @@ class SpreedlyClient
     { :code => 404, :errors => e.errors.first }
   end
 
-  def self.retrieve_and_hash_purchase(payment_method)
+  def self.purchase_and_hash_response(payment_method)
     gateway_token = self.get_gateway_token(payment_method[:data][:currency])
     transaction = @spreedly.purchase_on_gateway(gateway_token, payment_method[:token], payment_method[:data][:amount], retain_on_success: true)
     transaction = self.transaction_to_hash(transaction, payment_method[:data][:classification])

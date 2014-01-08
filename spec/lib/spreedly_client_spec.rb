@@ -208,7 +208,7 @@ describe "spreedly_client" do
     end
   end
 
-  describe ".retrieve_and_hash_purchase" do
+  describe ".purchase_and_hash_response" do
     let(:payment_method) do
       {
         :token=>"CATQHnDh14HmaCrvktwNdngixMm",
@@ -236,9 +236,13 @@ describe "spreedly_client" do
       }
     end
 
+    before :each do
+      SpreedlyClient.stub(:create_environment) { nil }
+    end
+
     it "should return purchase as a hash with the payment_method" do
       @spreedly.stub(:purchase_on_gateway) { Spreedly::Transaction.new_from(Nokogiri::XML(successful_purchase_response)) }
-      purchase = SpreedlyClient.retrieve_and_hash_purchase(payment_method)
+      purchase = SpreedlyClient.purchase_and_hash_response(payment_method)
 
       purchase[:token].should == 'CtK2hq1rB9yvs0qYvQz4ZVUwdKh'
       purchase[:payment_method][:token] == 'CATQHnDh14HmaCrvktwNdngixMm'
@@ -246,7 +250,7 @@ describe "spreedly_client" do
 
     it "should return a hash with an error code, message, and payment method info on failure to purchase" do
       @spreedly.stub(:purchase_on_gateway).and_raise Spreedly::XmlErrorsList.new(Nokogiri::XML(failed_purchase_response))
-      purchase = SpreedlyClient.retrieve_and_hash_purchase(payment_method)
+      purchase = SpreedlyClient.purchase_and_hash_response(payment_method)
 
       purchase[:code].should == 422
       purchase[:errors][:message].should == "First name can't be blank"
@@ -263,7 +267,7 @@ describe "spreedly_client" do
       @spreedly.stub(:find_payment_method).and_raise Spreedly::XmlErrorsList.new(Nokogiri::XML(failed_payment_method_response))
       payment_method = SpreedlyClient.retrieve_and_hash_payment_method('501-c-3', 'nonexistent_payment_method_token')
 
-      SpreedlyClient.should_not_receive(:retrieve_and_hash_purchase)
+      SpreedlyClient.should_not_receive(:purchase_and_hash_response)
       result = SpreedlyClient.create_payment_method_and_purchase('501-c-3', 'nonexistent_payment_method_token')
       result.should == payment_method
     end
@@ -272,7 +276,7 @@ describe "spreedly_client" do
       @spreedly.stub(:find_payment_method) { Spreedly::PaymentMethod.new_from(Nokogiri::XML(successful_payment_method_response)) }
       SpreedlyClient.retrieve_and_hash_payment_method('501-c-3', 'CATQHnDh14HmaCrvktwNdngixMm')
 
-      SpreedlyClient.should_receive(:retrieve_and_hash_purchase)
+      SpreedlyClient.should_receive(:purchase_and_hash_response)
       SpreedlyClient.create_payment_method_and_purchase('501-c-3', 'CATQHnDh14HmaCrvktwNdngixMm')
     end
   end

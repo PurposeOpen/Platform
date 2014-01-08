@@ -107,11 +107,11 @@ class Donation < ActiveRecord::Base
 
   def make_payment_on_recurring_donation
     return if self.frequency == :one_off || self.active == false
-    transaction = purchase_on_spreedly
+    transaction = SpreedlyClient.create_payment_method_and_purchase(self.classification, self.payment_method_token)
 
-    if transaction.succeeded?
-      transaction.respond_to?(:gateway_transaction_id) ? order_id = transaction.gateway_transaction_id : order_id = nil
-      add_payment(transaction.amount, transaction.token, order_id)
+    if transaction[:state] == 'succeeded'
+      transaction.respond_to?(:gateway_transaction_id) ? order_id = transaction[:gateway_transaction_id] : order_id = nil
+      add_payment(transaction[:amount], transaction[:token], order_id)
       #TODO: email_confirming_payment
       enqueue_recurring_payment
     else
@@ -136,12 +136,6 @@ class Donation < ActiveRecord::Base
         Resque.enqueue(1.year, self.class, self.id)
       end
     end
-  end
-
-  def purchase_on_spreedly
-    spreedly_client = SpreedlyClient.new(self.classification)
-    gateway_token = SpreedlyClient.get_gateway_token(self.currency)
-    spreedly_client.purchase_on_gateway(gateway_token, self.payment_method_token, self.subscription_amount)
   end
 
   # called for recurring donations

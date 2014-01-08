@@ -323,139 +323,6 @@ describe Donation do
     let(:ask) { FactoryGirl.create(:donation_module) }
     let(:page) { FactoryGirl.create(:action_page) }
     let(:email) { FactoryGirl.create(:email) }
-
-    let(:successful_purchase_response) do
-      <<-XML
-        <transaction>
-          <amount type="integer">100</amount>
-          <on_test_gateway type="boolean">true</on_test_gateway>
-          <created_at type="datetime">2013-12-12T22:47:05Z</created_at>
-          <updated_at type="datetime">2013-12-12T22:47:05Z</updated_at>
-          <currency_code>USD</currency_code>
-          <succeeded type="boolean">true</succeeded>
-          <state>succeeded</state>
-          <token>CtK2hq1rB9yvs0qYvQz4ZVUwdKh</token>
-          <transaction_type>Purchase</transaction_type>
-          <order_id nil="true"/>
-          <ip nil="true"/>
-          <description nil="true"/>
-          <email nil="true"/>
-          <merchant_name_descriptor nil="true"/>
-          <merchant_location_descriptor nil="true"/>
-          <gateway_specific_fields nil="true"/>
-          <gateway_specific_response_fields nil="true"/>
-          <gateway_transaction_id>59</gateway_transaction_id>
-          <message key="messages.transaction_succeeded">Succeeded!</message>
-          <gateway_token>7V55R2Y8oZvY1u797RRwMDakUzK</gateway_token>
-          <response>
-            <success type="boolean">true</success>
-            <message>Successful purchase</message>
-            <avs_code nil="true"/>
-            <avs_message nil="true"/>
-            <cvv_code nil="true"/>
-            <cvv_message nil="true"/>
-            <pending type="boolean">false</pending>
-            <error_code></error_code>
-            <error_detail nil="true"/>
-            <cancelled type="boolean">false</cancelled>
-            <created_at type="datetime">2013-12-12T22:47:05Z</created_at>
-            <updated_at type="datetime">2013-12-12T22:47:05Z</updated_at>
-          </response>
-          <payment_method>
-            <token>SvVVGEsjBXRDhhPJ7pMHCnbSQuT</token>
-            <created_at type="datetime">2013-11-06T18:28:14Z</created_at>
-            <updated_at type="datetime">2013-12-12T22:47:05Z</updated_at>
-            <email nil="true"/>
-            <data nil="true"/>
-            <storage_state>retained</storage_state>
-            <last_four_digits>1111</last_four_digits>
-            <card_type>visa</card_type>
-            <first_name>Gia</first_name>
-            <last_name>Hammes</last_name>
-            <month type="integer">4</month>
-            <year type="integer">2020</year>
-            <address1 nil="true"/>
-            <address2 nil="true"/>
-            <city nil="true"/>
-            <state nil="true"/>
-            <zip nil="true"/>
-            <country nil="true"/>
-            <phone_number nil="true"/>
-            <full_name>Gia Hammes</full_name>
-            <payment_method_type>credit_card</payment_method_type>
-            <errors>
-            </errors>
-            <verification_value></verification_value>
-            <number>XXXX-XXXX-XXXX-1111</number>
-          </payment_method>
-          <api_urls>
-          </api_urls>
-        </transaction>
-      XML
-    end
-
-    let(:failed_purchase_response) do
-      <<-XML
-        <transaction>
-          <amount type="integer">100</amount>
-          <on_test_gateway type="boolean">false</on_test_gateway>
-          <created_at type="datetime">2013-12-21T12:51:49Z</created_at>
-          <updated_at type="datetime">2013-12-21T12:51:49Z</updated_at>
-          <currency_code>USD</currency_code>
-          <succeeded type="boolean">false</succeeded>
-          <state>failed</state>
-          <token>Hj5BPvWQJ0EPH6egV8hIztWMCOY</token>
-          <transaction_type>Purchase</transaction_type>
-          <order_id nil="true"/>
-          <ip nil="true"/>
-          <description nil="true"/>
-          <email nil="true"/>
-          <merchant_name_descriptor nil="true"/>
-          <merchant_location_descriptor nil="true"/>
-          <gateway_specific_fields nil="true"/>
-          <gateway_specific_response_fields nil="true"/>
-          <gateway_transaction_id nil="true"/>
-          <message key="messages.payment_method_invalid">The payment method is invalid.</message>
-          <gateway_token>GnWTB6GhqChi7VHGQSCgKDUZvNF</gateway_token>
-          <payment_method>
-            <token>Klrks0iaZLWbKQnDwiB4nBZYob5</token>
-            <created_at type="datetime">2013-12-21T12:51:48Z</created_at>
-            <updated_at type="datetime">2013-12-21T12:51:48Z</updated_at>
-            <email nil="true"/>
-            <data nil="true"/>
-            <storage_state>cached</storage_state>
-            <last_four_digits></last_four_digits>
-            <card_type nil="true"/>
-            <first_name></first_name>
-            <last_name></last_name>
-            <month nil="true"/>
-            <year nil="true"/>
-            <address1 nil="true"/>
-            <address2 nil="true"/>
-            <city nil="true"/>
-            <state nil="true"/>
-            <zip nil="true"/>
-            <country nil="true"/>
-            <phone_number nil="true"/>
-            <full_name></full_name>
-            <payment_method_type>credit_card</payment_method_type>
-            <errors>
-              <error attribute="first_name" key="errors.blank">First name can't be blank</error>
-              <error attribute="last_name" key="errors.blank">Last name can't be blank</error>
-              <error attribute="month" key="errors.invalid">Month is invalid</error>
-              <error attribute="year" key="errors.expired">Year is expired</error>
-              <error attribute="year" key="errors.invalid">Year is invalid</error>
-              <error attribute="number" key="errors.blank">Number can't be blank</error>
-            </errors>
-            <verification_value></verification_value>
-            <number></number>
-          </payment_method>
-          <api_urls>
-          </api_urls>
-        </transaction>
-      XML
-    end
-
     let(:action_info) do
       {
         :confirmed => false,
@@ -473,25 +340,102 @@ describe Donation do
       }
     end
 
+    let(:successful_purchase) do
+      { :token=>"CtK2hq1rB9yvs0qYvQz4ZVUwdKh",
+        :created_at=>'2013-12-12 22:47:05 UTC',
+        :updated_at=>'2013-12-12 22:47:05 UTC',
+        :state=>"succeeded",
+        :message=>"Succeeded!",
+        :succeeded=>true, :order_id=>"",
+        :ip=>"",
+        :description=>"",
+        :gateway_token=>"7V55R2Y8oZvY1u797RRwMDakUzK",
+        :merchant_name_descriptor=>"",
+        :merchant_location_descriptor=>"",
+        :on_test_gateway=>true,
+        :currency_code=>"USD",
+        :amount=>100,
+        :payment_method=>{
+          :token=>"SvVVGEsjBXRDhhPJ7pMHCnbSQuT",
+          :created_at=>"2013-11-06 18:28:14 UTC",
+          :updated_at=>"2013-12-12 22:47:05 UTC",
+          :email=>"",
+          :storage_state=>"retained",
+          :data=>{:classification=>"501-c-3"},
+          :first_name=>"Gia",
+          :last_name=>"Hammes",
+          :full_name=>"Gia Hammes",
+          :month=>"4", :year=>"2020",
+          :number=>"XXXX-XXXX-XXXX-1111",
+          :last_four_digits=>"1111",
+          :card_type=>"visa",
+          :verification_value=>"",
+          :address1=>"",
+          :address2=>"",
+          :city=>"",
+          :state=>"",
+          :zip=>"",
+          :country=>"",
+          :phone_number=>""} 
+      }
+    end
+
+    let(:failed_purchase) do
+      { :code=>422,
+        :errors=>{
+          :attribute=>"first_name",
+          :key=>"errors.blank",
+          :message=>"First name can't be blank" 
+        },
+        :payment_method=>{
+          :token=>"CATQHnDh14HmaCrvktwNdngixMm",
+          :created_at=>"2013-12-21 12:51:47 UTC",
+          :updated_at=>"2013-12-21 12:51:47 UTC",
+          :email=>"frederick@example.com",
+          :storage_state=>"cached",
+          :data=>{
+            :classification=>"501-c-3",
+            :currency=>"USD"
+          },
+          :first_name=>"Bob",
+          :last_name=>"Smith",
+          :full_name=>"Bob Smith",
+          :month=>"1",
+          :year=>"2020",
+          :number=>"XXXX-XXXX-XXXX-1111",
+          :last_four_digits=>"1111",
+          :card_type=>"visa",
+          :verification_value=>"XXX",
+          :address1=>"345 Main Street",
+          :address2=>"Apartment #7",
+          :city=>"Wanaque",
+          :state=>"NJ",
+          :zip=>"07465",
+          :country=>"United States",
+          :phone_number=>"201-332-2122"
+        }
+      }
+    end
+
     describe "#make_payment_on_recurring_donation" do
       let(:donation) { ask.take_action(user, action_info, page) }
 
-      it "should not call #purchase_on_spreedly if the frequency is :one_off" do
+      it "should not call SpreedlyClient.purchase_and_hash_response if the frequency is :one_off" do
         donation.update_attribute('frequency', :one_off)
         donation.make_payment_on_recurring_donation
-        donation.should_not_receive(:purchase_on_spreedly)
+        SpreedlyClient.should_not_receive(:purchase_and_hash_response)
       end
 
-      it "should not call #purchase_on_spreedly if the donation is inactive" do
+      it "should not call SpreedlyClient.purchase_and_hash_response if the donation is inactive" do
         donation.update_attribute(:active, false)
-        donation.should_not_receive(:purchase_on_spreedly)
+        SpreedlyClient.should_not_receive(:purchase_and_hash_response)
         donation.make_payment_on_recurring_donation
       end
 
       #make_payment_on_recurring_donation
       describe "a successful payment" do
         before :each do
-          donation.stub(:purchase_on_spreedly) { Spreedly::Transaction.new_from(Nokogiri::XML(successful_purchase_response)) }
+          SpreedlyClient.stub(:create_payment_method_and_purchase) { successful_purchase }
         end
 
         it "should call #add_payment" do
@@ -507,8 +451,11 @@ describe Donation do
       end
 
       describe "an unsuccessful payment" do
+        before :each do
+          SpreedlyClient.stub(:create_payment_method_and_purchase) { failed_purchase }
+        end
+
         it "should call #handle_failed_recurring_payment for an unsuccessful payment" do
-          donation.stub(:purchase_on_spreedly) { Spreedly::Transaction.new_from(Nokogiri::XML(failed_purchase_response)) }
           donation.should_receive(:handle_failed_recurring_payment)
           donation.make_payment_on_recurring_donation
         end
@@ -552,7 +499,7 @@ describe Donation do
     # a donation created via take action
     describe "#handle_failed_recurring_payment" do
       let(:donation) { ask.take_action(user, action_info, page) }
-      let(:transaction) { Spreedly::Transaction.new_from(Nokogiri::XML(failed_purchase_response)) }
+      let(:transaction) { failed_purchase }
 
       it "should call deactivate on the donation" do
         donation.should_receive(:deactivate)
