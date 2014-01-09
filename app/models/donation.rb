@@ -95,7 +95,7 @@ class Donation < ActiveRecord::Base
     Donation.transaction do
       external_id, order_id = self.transaction_id, self.order_id
       transaction = create_transaction(external_id, order_id, self.amount_in_cents)
-      transaction.save!
+      PaymentSuccessMailer.confirm_purchase(self, transaction) if transaction.save!
       self.save!
     end
   end
@@ -109,17 +109,20 @@ class Donation < ActiveRecord::Base
     return if self.frequency == :one_off || self.active == false
 
     spreedly_client = SpreedlyClient.new(self.classification)
-    transaction = spreedly_client.create_payment_method_and_purchase(self.payment_method_token)
+    spreedly_client_purchase = spreedly_client.create_payment_method_and_purchase(self.payment_method_token)
 
     if spreedly_client_purchase[:state] == 'succeeded'
-      spreedly_client_purchase.respond_to?(:gateway_transaction_id) ? order_id = spreedly_client_purchase[:gateway_transaction_id] : order_id = nil
-      transaction = add_payment(self.subscription_amount, spreedly_client_purchase[:token], order_id)
-      PaymentSuccessMailer.confirm_recurring_payment_purchase(self, transaction)
-      #TODO: email_confirming_payment
-      enqueue_recurring_payment
+      handle_successful_spreedly_purchase(spreedly_client_purchase)
     else
       handle_failed_recurring_payment(spreedly_client_purchase)
     end
+  end
+
+  def handle_successful_spreedly_purchase(spreedly_client_purchase)
+    spreedly_client_purchase.respond_to?(:gateway_transaction_id) ? order_id = spreedly_client_purchase[:gateway_transaction_id] : order_id = nil
+    transaction = add_payment(spreedly_client_purchase[:amount], spreedly_client_purchase[:token], order_id)
+    PaymentSuccessMailer.confirm_purchase(self, transaction)
+    enqueue_recurring_payment
   end
 
   def handle_failed_recurring_payment(transaction)
@@ -157,16 +160,16 @@ class Donation < ActiveRecord::Base
   end
 
   # called for recurring donations
-  def add_payment(transaction_amount_in_cents, external_id, order_id)
-    self.amount_in_cents += transaction_amount_in_cents
+  def add_payment(amount_in_cents, external_id, order_id)
+    self.amount_in_cents += amount_in_cents
     self.active = true
     update_amount_in_dollar_cents
-    Donation.transaction do
-      transaction = create_transaction(external_id, order_id, transaction_amount_in_cents)
+    transaction = Donation.transaction do
+      transaction = create_transaction(external_id, order_id, amount_in_cents)
       transaction.save!
       self.save!
+      transaction
     end
-    transaction
   end
 
   def deactivate

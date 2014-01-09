@@ -3,6 +3,8 @@
 
 en:
   hello: "Hello world"
+  successful_payment_email_subject: "Thank you for your gift to %{MOVEMENT_NAME}"
+  successful_recurring_payment_email_subject: "Thank you for your monthly gift to %{MOVEMENT_NAME}"
   failed_payment_email_subject: "Error: Your monthly gift to {MOVEMENT_NAME} did not process"
   date:
     formats:

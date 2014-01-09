@@ -244,29 +244,17 @@ describe Donation do
     }
   end
 
-  describe "confirm" do
-    it "should mark as active" do
-      donation = FactoryGirl.create(:donation, :active => false, :order_id => '1123789', :transaction_id => "23423434")
-
-      donation.active.should be_false
-
-      donation.confirm
-
-      donation.active.should be_true
-    end
-  end
-
   describe "add_payment" do
 
     it "should create transaction" do
 
-      donation = FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :amount_in_cents => 10, :currency => 'usd', :subscription_id => '12345', :order_id => '1123789', :transaction_id => "23423434")
+      donation = FactoryGirl.create(:donation, :active => false, :frequency => :monthly, :amount_in_cents => 10, :currency => 'usd', :subscription_id => '12345', :order_id => '1123789', :transaction_id => "23423434", :subscription_amount => 10)
 
       transaction = mock()
       Transaction.should_receive(:new).with(:donation => donation,
           :external_id => donation.transaction_id,
           :invoice_id => donation.order_id,
-          :amount_in_cents => 100,
+          :amount_in_cents => donation.amount_in_cents,
           :currency => donation.currency,
           :successful => true).and_return(transaction)
 
@@ -274,8 +262,7 @@ describe Donation do
 
       transaction_id = "23423434"
       invoice_id = "1123789"
-      donation.add_payment(100, transaction_id, invoice_id)
-
+      donation.add_payment(donation.amount_in_cents, transaction_id, invoice_id)
     end
 
     it "should add payment amount to donation when amount is zero" do
@@ -319,7 +306,7 @@ describe Donation do
   end
 
   describe "a donation created via take action" do
-    let(:user) { FactoryGirl.create(:user, :email => 'noone@example.com') }
+    let(:user) { FactoryGirl.create(:english_user, :email => 'noone@example.com') }
     let(:ask) { FactoryGirl.create(:donation_module) }
     let(:page) { FactoryGirl.create(:action_page) }
     let(:email) { FactoryGirl.create(:email) }
@@ -327,8 +314,28 @@ describe Donation do
     let(:successful_purchase) { successful_purchase_and_hash_response }
     let(:failed_purchase) { failed_purchase_and_hash_response }
 
+    describe "confirm" do
+      it "should mark as active" do
+        PaymentSuccessMailer.stub(:confirm_purchase) { nil }
+        donation = FactoryGirl.create(:donation, :active => false, :order_id => '1123789', :transaction_id => "23423434")
+        donation.active.should be_false
+
+        donation.confirm
+        donation.active.should be_true
+      end
+
+      it "should send payment confirmation email" do
+        donation = ask.take_action(user, action_info, page)
+        user = FactoryGirl.create(:english_user)
+        donation = FactoryGirl.create(:donation, :user => user, :active => false, :order_id => '1123789', :transaction_id => "23423434", :payment_method_token => 'spreedly_payment_method_token')
+        PaymentSuccessMailer.should_receive(:confirm_purchase)
+        donation.confirm
+      end
+    end
+
     describe "#make_payment_on_recurring_donation" do
       let(:donation) { ask.take_action(user, action_info, page) }
+      let(:stubbed_client) { SpreedlyClient.stub(:new) { nil } }
 
       it "should not call SpreedlyClient.purchase_and_hash_response if the frequency is :one_off" do
         donation.update_attribute('frequency', :one_off)
@@ -345,45 +352,67 @@ describe Donation do
       #make_payment_on_recurring_donation
       describe "a successful payment" do
         before :each do
-          stubbed_client = SpreedlyClient.stub(:new) { nil }
           stubbed_client.stub(:create_payment_method_and_purchase) { successful_purchase }
           SpreedlyClient.stub(:new) { stubbed_client }
         end
 
-        it "should call #add_payment" do
-          donation.stub(:enqueue_recurring_payment)
-          donation.should_receive(:add_payment)
+        it "should call #handle_successful_spreedly_purchase" do
+          donation.should_receive(:handle_successful_spreedly_purchase).with(successful_purchase)
           donation.make_payment_on_recurring_donation
-        end
-
-        it "should call #enqueue_recurring_payment" do
-          donation.should_receive(:enqueue_recurring_payment)
-          donation.make_payment_on_recurring_donation
-        end
-
-        it "should create transactions with the subscription amount and increment the donation amount" do
-          donation.stub(:enqueue_recurring_payment)
-          donation.transactions.count.should == 1
-
-          2.times { donation.make_payment_on_recurring_donation }
-
-          donation.transactions.count.should == 3
-          donation.subscription_amount.should == 100
-          donation.amount_in_cents.should == 300
-
-          donation.transactions.each { |t| t.amount_in_cents.should == 100 }
         end
       end
 
+      #make_payment_on_recurring_donation
       describe "an unsuccessful payment" do
         before :each do
-          SpreedlyClient.stub(:create_payment_method_and_purchase) { failed_purchase }
+          stubbed_client.stub(:create_payment_method_and_purchase) { failed_purchase }
+          SpreedlyClient.stub(:new) { stubbed_client }
         end
 
         it "should call #handle_failed_recurring_payment for an unsuccessful payment" do
           donation.should_receive(:handle_failed_recurring_payment)
           donation.make_payment_on_recurring_donation
         end
+      end
+    end
+
+    describe "#handle_successful_spreedly_purchase" do
+      let(:donation) { ask.take_action(user, action_info, page) }
+      let(:spreedly_client_purchase) { successful_purchase }
+
+      it "should call #add_payment" do
+        donation.stub(:enqueue_recurring_payment)
+        PaymentSuccessMailer.stub(:confirm_purchase)
+        donation.should_receive(:add_payment)
+        donation.handle_successful_spreedly_purchase(spreedly_client_purchase)
+      end
+
+      it "should call #enqueue_recurring_payment" do
+        PaymentSuccessMailer.stub(:confirm_purchase)
+        donation.should_receive(:enqueue_recurring_payment)
+        donation.handle_successful_spreedly_purchase(spreedly_client_purchase)
+      end
+
+      it "should send payment confirmation email" do
+        transaction = donation.add_payment(donation.amount_in_cents, donation.transaction_id, nil)
+        donation.stub(:enqueue_recurring_payment)
+        donation.stub(:add_payment) { transaction }
+        PaymentSuccessMailer.should_receive(:confirm_purchase).with(donation, transaction)
+        donation.handle_successful_spreedly_purchase(spreedly_client_purchase)
+      end
+
+      it "should create transactions with the subscription amount and increment the donation amount" do
+        donation.stub(:enqueue_recurring_payment)
+        PaymentSuccessMailer.stub(:confirm_purchase)
+        donation.transactions.count.should == 1
+
+        2.times { donation.handle_successful_spreedly_purchase(spreedly_client_purchase) }
+
+        donation.transactions.count.should == 3
+        donation.subscription_amount.should == 100
+        donation.amount_in_cents.should == 300
+
+        donation.transactions.each { |t| t.amount_in_cents.should == 100 }
       end
     end
 
@@ -443,7 +472,7 @@ describe Donation do
           :member_first_name => nil,
           :member_last_name => nil,
           :member_email => 'frederick@example.com',
-          :member_country_iso => nil,
+          :member_country_iso => user.country_iso,
           :member_language_iso => user.language.iso_code,
           :donation_payment_method => :credit_card,
           :donation_amount_in_cents => 100,

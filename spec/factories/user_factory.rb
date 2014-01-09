@@ -50,6 +50,11 @@ FactoryGirl.define do
     source          :movement
   end
 
+  factory :english_user, :parent => :user do
+    country_iso "US"
+    association :language, :factory => :english
+  end
+
   factory :leo, :parent => :user do
     email       "leonardo@borges.com"
     country_iso "BR"
