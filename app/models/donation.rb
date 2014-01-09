@@ -111,13 +111,14 @@ class Donation < ActiveRecord::Base
     spreedly_client = SpreedlyClient.new(self.classification)
     transaction = spreedly_client.create_payment_method_and_purchase(self.payment_method_token)
 
-    if transaction[:state] == 'succeeded'
-      transaction.respond_to?(:gateway_transaction_id) ? order_id = transaction[:gateway_transaction_id] : order_id = nil
-      add_payment(self.subscription_amount, transaction[:token], order_id)
+    if spreedly_client_purchase[:state] == 'succeeded'
+      spreedly_client_purchase.respond_to?(:gateway_transaction_id) ? order_id = spreedly_client_purchase[:gateway_transaction_id] : order_id = nil
+      transaction = add_payment(self.subscription_amount, spreedly_client_purchase[:token], order_id)
+      PaymentSuccessMailer.confirm_recurring_payment_purchase(self, transaction)
       #TODO: email_confirming_payment
       enqueue_recurring_payment
     else
-      handle_failed_recurring_payment(transaction)
+      handle_failed_recurring_payment(spreedly_client_purchase)
     end
   end
 
@@ -165,6 +166,7 @@ class Donation < ActiveRecord::Base
       transaction.save!
       self.save!
     end
+    transaction
   end
 
   def deactivate
