@@ -107,7 +107,9 @@ class Donation < ActiveRecord::Base
 
   def make_payment_on_recurring_donation
     return if self.frequency == :one_off || self.active == false
-    transaction = SpreedlyClient.create_payment_method_and_purchase(self.classification, self.payment_method_token)
+
+    spreedly_client = SpreedlyClient.new(self.classification)
+    transaction = spreedly_client.create_payment_method_and_purchase(self.payment_method_token)
 
     if transaction[:state] == 'succeeded'
       transaction.respond_to?(:gateway_transaction_id) ? order_id = transaction[:gateway_transaction_id] : order_id = nil

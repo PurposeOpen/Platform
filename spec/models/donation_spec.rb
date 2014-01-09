@@ -345,7 +345,9 @@ describe Donation do
       #make_payment_on_recurring_donation
       describe "a successful payment" do
         before :each do
-          SpreedlyClient.stub(:create_payment_method_and_purchase) { successful_purchase }
+          stubbed_client = SpreedlyClient.stub(:new) { nil }
+          stubbed_client.stub(:create_payment_method_and_purchase) { successful_purchase }
+          SpreedlyClient.stub(:new) { stubbed_client }
         end
 
         it "should call #add_payment" do
