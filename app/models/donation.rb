@@ -111,7 +111,7 @@ class Donation < ActiveRecord::Base
 
     if transaction[:state] == 'succeeded'
       transaction.respond_to?(:gateway_transaction_id) ? order_id = transaction[:gateway_transaction_id] : order_id = nil
-      add_payment(transaction[:amount], transaction[:token], order_id)
+      add_payment(self.subscription_amount, transaction[:token], order_id)
       #TODO: email_confirming_payment
       enqueue_recurring_payment
     else

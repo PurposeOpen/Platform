@@ -195,4 +195,95 @@ def login_as(user)
   request.env['warden'] = double(Warden, :authenticate => user, :authenticate! => user)
 end
 
+def successful_purchase_and_hash_response
+  { :token=>"CtK2hq1rB9yvs0qYvQz4ZVUwdKh",
+    :created_at=>'2013-12-12 22:47:05 UTC',
+    :updated_at=>'2013-12-12 22:47:05 UTC',
+    :state=>"succeeded",
+    :message=>"Succeeded!",
+    :succeeded=>true,
+    :order_id=>"",
+    :ip=>"",
+    :description=>"",
+    :gateway_token=>"7V55R2Y8oZvY1u797RRwMDakUzK",
+    :merchant_name_descriptor=>"",
+    :merchant_location_descriptor=>"",
+    :on_test_gateway=>true,
+    :currency_code=>"USD",
+    :amount=>100,
+    :payment_method=>{
+      :token=>"SvVVGEsjBXRDhhPJ7pMHCnbSQuT",
+      :created_at=>"2013-11-06 18:28:14 UTC",
+      :updated_at=>"2013-12-12 22:47:05 UTC",
+      :email=>"",
+      :storage_state=>"retained",
+      :data=>{:classification=>"501-c-3"},
+      :first_name=>"Gia",
+      :last_name=>"Hammes",
+      :full_name=>"Gia Hammes",
+      :month=>"4", :year=>"2020",
+      :number=>"XXXX-XXXX-XXXX-1111",
+      :last_four_digits=>"1111",
+      :card_type=>"visa",
+      :verification_value=>"",
+      :address1=>"",
+      :address2=>"",
+      :city=>"",
+      :state=>"",
+      :zip=>"",
+      :country=>"",
+      :phone_number=>""}
+  }
+end
 
+def failed_purchase_and_hash_response
+  { :code=>422,
+    :errors=>{
+    :attribute=>"first_name",
+    :key=>"errors.blank",
+    :message=>"First name can't be blank" 
+  },
+  :payment_method=>{
+    :token=>"CATQHnDh14HmaCrvktwNdngixMm",
+    :created_at=>"2013-12-21 12:51:47 UTC",
+    :updated_at=>"2013-12-21 12:51:47 UTC",
+    :email=>"frederick@example.com",
+    :storage_state=>"cached",
+    :data=>{
+      :classification=>"501-c-3",
+      :currency=>"USD"
+    },
+    :first_name=>"Bob",
+    :last_name=>"Smith",
+    :full_name=>"Bob Smith",
+    :month=>"1",
+    :year=>"2020",
+    :number=>"XXXX-XXXX-XXXX-1111",
+    :last_four_digits=>"1111",
+    :card_type=>"visa",
+    :verification_value=>"XXX",
+    :address1=>"345 Main Street",
+    :address2=>"Apartment #7",
+    :city=>"Wanaque",
+    :state=>"NJ",
+    :zip=>"07465",
+    :country=>"United States",
+    :phone_number=>"201-332-2122"
+  }
+  }
+end
+
+def valid_donation_action_info
+  { :confirmed => false,
+    :frequency => :monthly,
+    :currency => 'USD',
+    :amount => 100,
+    :payment_method => 'credit_card',
+    :email => @email,
+    :transaction_id => 'CtK2hq1rB9yvs0qYvQz4ZVUwdKh',
+    :subscription_amount => 100,
+    :payment_method_token =>'SvVVGEsjBXRDhhPJ7pMHCnbSQuT',
+    :card_last_four_digits => '1111',
+    :card_exp_month => '4',
+    :card_exp_year => '2020' }
+end

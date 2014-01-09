@@ -323,99 +323,9 @@ describe Donation do
     let(:ask) { FactoryGirl.create(:donation_module) }
     let(:page) { FactoryGirl.create(:action_page) }
     let(:email) { FactoryGirl.create(:email) }
-    let(:action_info) do
-      {
-        :confirmed => false,
-        :frequency => :monthly,
-        :currency => 'USD',
-        :amount => 100,
-        :payment_method => 'credit_card',
-        :email => @email,
-        :transaction_id => 'CtK2hq1rB9yvs0qYvQz4ZVUwdKh',
-        :subscription_amount => 100,
-        :payment_method_token =>'SvVVGEsjBXRDhhPJ7pMHCnbSQuT',
-        :card_last_four_digits => '1111',
-        :card_exp_month => '4',
-        :card_exp_year => '2020'
-      }
-    end
-
-    let(:successful_purchase) do
-      { :token=>"CtK2hq1rB9yvs0qYvQz4ZVUwdKh",
-        :created_at=>'2013-12-12 22:47:05 UTC',
-        :updated_at=>'2013-12-12 22:47:05 UTC',
-        :state=>"succeeded",
-        :message=>"Succeeded!",
-        :succeeded=>true, :order_id=>"",
-        :ip=>"",
-        :description=>"",
-        :gateway_token=>"7V55R2Y8oZvY1u797RRwMDakUzK",
-        :merchant_name_descriptor=>"",
-        :merchant_location_descriptor=>"",
-        :on_test_gateway=>true,
-        :currency_code=>"USD",
-        :amount=>100,
-        :payment_method=>{
-          :token=>"SvVVGEsjBXRDhhPJ7pMHCnbSQuT",
-          :created_at=>"2013-11-06 18:28:14 UTC",
-          :updated_at=>"2013-12-12 22:47:05 UTC",
-          :email=>"",
-          :storage_state=>"retained",
-          :data=>{:classification=>"501-c-3"},
-          :first_name=>"Gia",
-          :last_name=>"Hammes",
-          :full_name=>"Gia Hammes",
-          :month=>"4", :year=>"2020",
-          :number=>"XXXX-XXXX-XXXX-1111",
-          :last_four_digits=>"1111",
-          :card_type=>"visa",
-          :verification_value=>"",
-          :address1=>"",
-          :address2=>"",
-          :city=>"",
-          :state=>"",
-          :zip=>"",
-          :country=>"",
-          :phone_number=>""} 
-      }
-    end
-
-    let(:failed_purchase) do
-      { :code=>422,
-        :errors=>{
-          :attribute=>"first_name",
-          :key=>"errors.blank",
-          :message=>"First name can't be blank" 
-        },
-        :payment_method=>{
-          :token=>"CATQHnDh14HmaCrvktwNdngixMm",
-          :created_at=>"2013-12-21 12:51:47 UTC",
-          :updated_at=>"2013-12-21 12:51:47 UTC",
-          :email=>"frederick@example.com",
-          :storage_state=>"cached",
-          :data=>{
-            :classification=>"501-c-3",
-            :currency=>"USD"
-          },
-          :first_name=>"Bob",
-          :last_name=>"Smith",
-          :full_name=>"Bob Smith",
-          :month=>"1",
-          :year=>"2020",
-          :number=>"XXXX-XXXX-XXXX-1111",
-          :last_four_digits=>"1111",
-          :card_type=>"visa",
-          :verification_value=>"XXX",
-          :address1=>"345 Main Street",
-          :address2=>"Apartment #7",
-          :city=>"Wanaque",
-          :state=>"NJ",
-          :zip=>"07465",
-          :country=>"United States",
-          :phone_number=>"201-332-2122"
-        }
-      }
-    end
+    let(:action_info) { valid_donation_action_info }
+    let(:successful_purchase) { successful_purchase_and_hash_response }
+    let(:failed_purchase) { failed_purchase_and_hash_response }
 
     describe "#make_payment_on_recurring_donation" do
       let(:donation) { ask.take_action(user, action_info, page) }
@@ -447,6 +357,19 @@ describe Donation do
         it "should call #enqueue_recurring_payment" do
           donation.should_receive(:enqueue_recurring_payment)
           donation.make_payment_on_recurring_donation
+        end
+
+        it "should create transactions with the subscription amount and increment the donation amount" do
+          donation.stub(:enqueue_recurring_payment)
+          donation.transactions.count.should == 1
+
+          2.times { donation.make_payment_on_recurring_donation }
+
+          donation.transactions.count.should == 3
+          donation.subscription_amount.should == 100
+          donation.amount_in_cents.should == 300
+
+          donation.transactions.each { |t| t.amount_in_cents.should == 100 }
         end
       end
 
