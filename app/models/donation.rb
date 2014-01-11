@@ -112,13 +112,13 @@ class Donation < ActiveRecord::Base
     spreedly_client_purchase = spreedly_client.create_payment_method_and_purchase(self.payment_method_token)
 
     if spreedly_client_purchase[:state] == 'succeeded'
-      handle_successful_spreedly_purchase(spreedly_client_purchase)
+      handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase)
     else
       handle_failed_recurring_payment(spreedly_client_purchase)
     end
   end
 
-  def handle_successful_spreedly_purchase(spreedly_client_purchase)
+  def handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase)
     spreedly_client_purchase.respond_to?(:gateway_transaction_id) ? order_id = spreedly_client_purchase[:gateway_transaction_id] : order_id = nil
     transaction = add_payment(spreedly_client_purchase[:amount], spreedly_client_purchase[:token], order_id)
     PaymentSuccessMailer.confirm_recurring_purchase(self, transaction)
@@ -148,14 +148,17 @@ class Donation < ActiveRecord::Base
 
   def enqueue_recurring_payment
     if self.active? && frequency != :one_off
-      case frequency
+      case frequency.to_sym
       when :weekly
-        Resque.enqueue(1.week, self.class, self.id)
+        next_payment = DateTime.now + 1.week
       when :monthly
-        Resque.enqueue(1.month, self.class, self.id)
+        next_payment = DateTime.now + 1.month
       when :annual
-        Resque.enqueue(1.year, self.class, self.id)
+        next_payment = DateTime.now + 1.year
       end
+
+      Resque.enqueue(next_payment, self.class, self.id)
+      PaymentMailer.expiring_credit_card(self).deliver if card_expiration_date < next_payment.beginning_of_month
     end
   end
 
@@ -228,5 +231,9 @@ class Donation < ActiveRecord::Base
 
   def validate_subscription_id
     errors.add(:subscription_id, "is not valid") unless (!self.subscription_id.nil? && !self.subscription_id.empty?) || self.frequency.to_sym == :one_off
+  end
+
+  def card_expiration_date
+    DateTime.new(card_exp_year.to_i, card_exp_month.to_i)
   end
 end

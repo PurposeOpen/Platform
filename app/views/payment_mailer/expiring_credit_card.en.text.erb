@@ -1,0 +1,14 @@
+<% "Dear #{@member.first_name}," if @member.first_name.present? %>
+
+Your credit card is expiring soon and in order to keep giving to AllOut, you’ll need to create a new recurring donation. Go to allout.org/donate and setup a new donation. Thanks for your continuing support!
+
+Your existing recurring donation:
+<%= "Name: #{@member.first_name} #{@member.last_name}" if @member.first_name.present? && @member.last_name.present? %>
+<%= "Postcode: #{@member.postcode}" if @member.postcode.present? %>
+<%= "Country: #{@member_country}" unless @member_country.blank? %>
+E–mail: <%= @member.email %>
+Amount: <%= @donation_amount %>
+Date: <%= @donation.created_at.strftime("%F") %>
+Transaction #:  <%= @donation.payment_method_token %>
+
+Thank you from the All Out Team!

@@ -5,6 +5,7 @@ en:
   hello: "Hello world"
   confirm_purchase_email_subject: "Thank you for your gift to %{MOVEMENT_NAME}"
   confirm_recurring_purchase_email_subject: "Thank you for your %{FREQUENCY} gift to %{MOVEMENT_NAME}"
+  expiring_credit_card_email_subject: "Please continue supporting %{MOVEMENT_NAME}"
   failed_payment_email_subject: "Error: Your monthly gift to {MOVEMENT_NAME} did not process"
   date:
     formats:
