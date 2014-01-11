@@ -121,7 +121,7 @@ class Donation < ActiveRecord::Base
   def handle_successful_spreedly_purchase(spreedly_client_purchase)
     spreedly_client_purchase.respond_to?(:gateway_transaction_id) ? order_id = spreedly_client_purchase[:gateway_transaction_id] : order_id = nil
     transaction = add_payment(spreedly_client_purchase[:amount], spreedly_client_purchase[:token], order_id)
-    PaymentSuccessMailer.confirm_purchase(self, transaction)
+    PaymentSuccessMailer.confirm_recurring_purchase(self, transaction)
     enqueue_recurring_payment
   end
 

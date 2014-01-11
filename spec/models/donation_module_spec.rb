@@ -261,7 +261,8 @@ describe DonationModule do
     }}
 
     before(:each) do
-      @user = FactoryGirl.create(:user, :email => 'noone@example.com')
+      # @user = FactoryGirl.create(:user, :email => 'noone@example.com')
+      @user = FactoryGirl.create(:english_user)
       @ask = FactoryGirl.create(:donation_module)
       @page = FactoryGirl.create(:action_page)
       @email = FactoryGirl.create(:email)
@@ -408,7 +409,7 @@ describe DonationModule do
       donation_module_on_same_page = FactoryGirl.create(:donation_module, :pages => [page])
       donation_module_on_different_page = FactoryGirl.create(:donation_module, :pages => [another_page_on_the_same_movement])
 
-      user = FactoryGirl.create(:user, :movement => page.movement)
+      user = FactoryGirl.create(:english_user, :movement => page.movement)
       action_info = {:payment_method => :paypal, :amount => 1000, :currency => :usd, :frequency => :one_off, :confirmed => true}
       donation_module.take_action(user, action_info.merge(:order_id => 'order1', :transaction_id => 'transaction1'), page)
       donation_module_on_same_page.take_action(user, action_info.merge(:order_id => 'order2', :transaction_id => 'transaction2'), page)

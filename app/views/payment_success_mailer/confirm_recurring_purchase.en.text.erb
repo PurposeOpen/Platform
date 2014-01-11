@@ -1,8 +1,8 @@
 <% "Dear #{@member.first_name}," if @member.first_name.present? %>
 
-Thank you for your donation to All Out!
+Once again thank you for your continuing donation to All Out!
 
-Please note that this gift will appear on your credit card statement as ALLOUT.ORG. All Out is a program of Purpose Action, a 501(c)(4) nonprofit organization.
+<%= "Please note that this #{@donation.frequency.to_s} gift will appear on your credit card statement as ALLOUT.ORG. All Out is a program of Purpose Action, a 501(c)(4) nonprofit organization." %>
 
 Your contribution is not tax–deductible. This email certifies that you have made this donation as a charitable contribution and you are not receiving any goods or services in return.
 
@@ -15,6 +15,6 @@ Amount: <%= @transaction_amount %>
 Date: <%= @transaction.created_at.strftime("%F") %>
 Transaction #:  <%= @transaction.external_id %>
 
-<%= "To cancel or modify your recurring donation, email us at donate@allout.org" unless @donation.frequency.to_sym == :one_off %>
+To cancel or modify your recurring donation, email us at donate@allout.org
 
 Thank you from the All Out Team!

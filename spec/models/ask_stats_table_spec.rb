@@ -95,6 +95,8 @@ describe AskStatsTable do
       en_donation_module = FactoryGirl.create(:donation_module, :language => english, :pages => [page])
       pt_donation_module = FactoryGirl.create(:donation_module, :language => portuguese, :pages => [page])
 
+      # Stub out delivery so that platform does not try to mail out confirmation email for a language view that does not exist.
+      PaymentSuccessMailer.stub(:confirm_purchase) { nil }
       en_user = FactoryGirl.build(:user, :language => english, :movement => movement)
       pt_user = FactoryGirl.build(:user, :language => portuguese, :movement => movement)
       en_user.take_action_on!(page, {:payment_method => :paypal, :confirmed => true, :amount => 1000, :currency => :usd, :frequency => :one_off, :transaction_id => '1', :order_id => '1'})
