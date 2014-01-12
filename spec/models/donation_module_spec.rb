@@ -274,7 +274,7 @@ describe DonationModule do
         action_info[:frequency] = 'one_off'
         mailer = mock
         mailer.stub(:deliver)
-        PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+        PaymentMailer.stub(:confirm_purchase) { mailer }
       end
 
       it "should allow multiple donations from a single user" do
@@ -328,7 +328,7 @@ describe DonationModule do
       before :each do
         mailer = mock
         mailer.stub(:deliver)
-        PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+        PaymentMailer.stub(:confirm_purchase) { mailer }
         action_info[:frequency] = 'monthly'
         action_info[:subscription_id] = "#{@page}--#{action_info[:frequency]}"
       end
@@ -385,7 +385,7 @@ describe DonationModule do
     before do
       mailer = mock
       mailer.stub(:deliver)
-      PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+      PaymentMailer.stub(:confirm_purchase) { mailer }
 
       DonationModule::AVAILABLE_CURRENCIES = {
         :brl => Money::Currency.new('BRL'),

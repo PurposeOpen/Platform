@@ -5,7 +5,7 @@ describe Api::DonationsController do
 	before do
     mailer = mock
     mailer.stub(:deliver)
-    PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+    PaymentMailer.stub(:confirm_purchase) { mailer }
     PaymentMailer.stub(:confirm_recurring_purchase) { mailer }
 
 		@english = FactoryGirl.create(:english)

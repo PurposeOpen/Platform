@@ -253,7 +253,7 @@ describe TafDonationModule do
     before(:each) do
       mailer = mock
       mailer.stub(:deliver)
-      PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+      PaymentMailer.stub(:confirm_purchase) { mailer }
 
       @user = FactoryGirl.create(:english_user)
       @ask = FactoryGirl.create(:taf_donation_module)

@@ -97,7 +97,7 @@ describe AskStatsTable do
 
       mailer = mock
       mailer.stub(:deliver)
-      PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+      PaymentMailer.stub(:confirm_purchase) { mailer }
 
       en_user = FactoryGirl.build(:user, :language => english, :movement => movement)
       pt_user = FactoryGirl.build(:user, :language => portuguese, :movement => movement)
