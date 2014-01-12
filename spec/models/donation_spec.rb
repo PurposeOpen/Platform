@@ -309,12 +309,17 @@ describe Donation do
     let(:successful_purchase) { successful_purchase_and_hash_response }
     let(:failed_purchase) { failed_purchase_and_hash_response }
 
+    before :each do
+      mailer = mock
+      PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+      mailer.stub(:deliver)
+    end
+
     describe "confirm" do
       let(:donation) { FactoryGirl.create(:donation, :active => false) }
 
       before :each do
         donation.active.should be_false
-        PaymentSuccessMailer.stub(:confirm_purchase) { nil }
       end
 
       it "should mark as active" do
@@ -364,17 +369,22 @@ describe Donation do
     # a donation created via take_action
     describe "#handle_successful_spreedly_purchase_on_recurring_donation" do
       let(:donation) { ask.take_action(user, action_info, page) }
+      let(:mailer) { mock }
       let(:spreedly_client_purchase) { successful_purchase }
+
+      before :each do
+        mailer.stub(:deliver)
+      end
 
       it "should call #add_payment" do
         donation.stub(:enqueue_recurring_payment)
-        PaymentSuccessMailer.stub(:confirm_recurring_purchase)
+        PaymentSuccessMailer.stub(:confirm_recurring_purchase) { mailer }
         donation.should_receive(:add_payment)
         donation.handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase)
       end
 
       it "should call #enqueue_recurring_payment" do
-        PaymentSuccessMailer.stub(:confirm_recurring_purchase)
+        PaymentSuccessMailer.stub(:confirm_recurring_purchase) { mailer }
         donation.should_receive(:enqueue_recurring_payment)
         donation.handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase)
       end
@@ -383,13 +393,13 @@ describe Donation do
         transaction = donation.add_payment(donation.amount_in_cents, donation.transaction_id, nil)
         donation.stub(:enqueue_recurring_payment)
         donation.stub(:add_payment) { transaction }
-        PaymentSuccessMailer.should_receive(:confirm_recurring_purchase).with(donation, transaction)
+        PaymentSuccessMailer.should_receive(:confirm_recurring_purchase).with(donation, transaction).and_return(mailer)
         donation.handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase)
       end
 
       it "should create transactions with the subscription amount and increment the donation amount" do
         donation.stub(:enqueue_recurring_payment)
-        PaymentSuccessMailer.stub(:confirm_recurring_purchase)
+        PaymentSuccessMailer.stub(:confirm_recurring_purchase) { mailer }
         donation.transactions.count.should == 1
 
         2.times { donation.handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase) }

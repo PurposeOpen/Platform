@@ -272,6 +272,9 @@ describe DonationModule do
     describe "a one_off donation" do
       before :each do
         action_info[:frequency] = 'one_off'
+        mailer = mock
+        mailer.stub(:deliver)
+        PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
       end
 
       it "should allow multiple donations from a single user" do
@@ -323,6 +326,9 @@ describe DonationModule do
 
     describe "a recurring donation" do
       before :each do
+        mailer = mock
+        mailer.stub(:deliver)
+        PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
         action_info[:frequency] = 'monthly'
         action_info[:subscription_id] = "#{@page}--#{action_info[:frequency]}"
       end
@@ -377,6 +383,10 @@ describe DonationModule do
 
   describe "as json" do
     before do
+      mailer = mock
+      mailer.stub(:deliver)
+      PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+
       DonationModule::AVAILABLE_CURRENCIES = {
         :brl => Money::Currency.new('BRL'),
         :eur => Money::Currency.new('EUR'),

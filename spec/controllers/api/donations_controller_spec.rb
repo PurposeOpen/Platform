@@ -3,6 +3,11 @@ require "spec_helper"
 
 describe Api::DonationsController do
 	before do
+    mailer = mock
+    mailer.stub(:deliver)
+    PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+    PaymentMailer.stub(:confirm_recurring_purchase) { mailer }
+
 		@english = FactoryGirl.create(:english)
 		@movement = FactoryGirl.create(:movement, :name => "All Out", :languages => [@english])
 		@one_off_donation = FactoryGirl.create(:donation, :frequency => :one_off, :transaction_id => '1234567', :active => false)

@@ -251,6 +251,10 @@ describe TafDonationModule do
 
   describe "taking an action" do
     before(:each) do
+      mailer = mock
+      mailer.stub(:deliver)
+      PaymentSuccessMailer.stub(:confirm_purchase) { mailer }
+
       @user = FactoryGirl.create(:english_user)
       @ask = FactoryGirl.create(:taf_donation_module)
       @page = FactoryGirl.create(:action_page)
@@ -344,6 +348,7 @@ describe TafDonationModule do
     end
 
     it "should include the number of members who have donated to that action page" do
+      Donation.any_instance.stub(:confirm)
       page = FactoryGirl.create(:action_page)
       another_page_on_the_same_movement = FactoryGirl.create(:action_page, :action_sequence => page.action_sequence)
 
