@@ -1,0 +1,17 @@
+<% "Dear #{@member.first_name}," if @member.first_name.present? %>
+
+<%= "We’re sorry to report that your credit card was declined when we attempted to create your new recurring donation. Please contact your bank and #{link_to 'try again', @action_page_url}. We thank you for your support!" %>
+
+<%= @action_page_url %>
+
+Your recurring donation information:
+<%= "Name: #{@member.first_name} #{@member.last_name}" if @member.first_name.present? && @member.last_name.present? %>
+<%= "Postcode: #{@member.postcode}" if @member.postcode.present? %>
+<%= "Country: #{@member_country}" unless @member_country.blank? %>
+E–mail: <%= @member.email %>
+Amount: <%= @donation_amount %>
+Date: <%= @donation.created_at.strftime("%F") %>
+Transaction #:  <%= @donation.payment_method_token %>
+
+Thank you from the All Out Team!
+

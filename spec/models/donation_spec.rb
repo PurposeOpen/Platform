@@ -488,36 +488,16 @@ describe Donation do
       let(:transaction) { failed_purchase }
 
       it "should call deactivate on the donation" do
+        mailer = mock
+        mailer.stub(:recurring_donation_card_declined)
+        PaymentErrorMailer.stub(:delay) { mailer }
         donation.should_receive(:deactivate)
         donation.handle_failed_recurring_payment(transaction)
       end
 
-      it "should call DonationError.new with the correct attributes" do
+      it "should call PaymentErrorMailer.delay.recurring_donation_card_declined" do
         PaymentErrorMailer.stub(:delay)
-        PaymentErrorMailer.delay.stub(:report_error)
-
-        donation_error = {
-          :movement => user.movement,
-          :action_page => page.id,
-          :error_code => 422,
-          :message => "First name can't be blank",
-          :member_first_name => nil,
-          :member_last_name => nil,
-          :member_email => 'frederick@example.com',
-          :member_country_iso => user.country_iso,
-          :member_language_iso => user.language.iso_code,
-          :donation_payment_method => :credit_card,
-          :donation_amount_in_cents => 100,
-          :donation_currency => 'USD'
-        }
-
-        DonationError.should_receive(:new).with(donation_error)
-        donation.handle_failed_recurring_payment(failed_purchase)
-      end
-
-      it "should call PaymentErrorMailer.delay.report_error" do
-        PaymentErrorMailer.stub(:delay)
-        PaymentErrorMailer.delay.should_receive(:report_error)
+        PaymentErrorMailer.delay.should_receive(:recurring_donation_card_declined).with(donation)
         donation.handle_failed_recurring_payment(failed_purchase)
       end
     end
