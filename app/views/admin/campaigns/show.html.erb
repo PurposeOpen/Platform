@@ -20,6 +20,16 @@
     <h3>TAF Statistics</h3>
     <%= render :partial => "taf_stats", :locals => {:stats => @share_stats} %>
   </div>
+  <div class="stats-table list_group_item">
+    <h3>Donations Search</h3>
+    <%= form_tag admin_movement_campaign_donations_path(@movement, params[:id]), :method => :get do %>
+      <fieldset>
+        <%= label_tag "Search for a member's donations to #{@campaign.name}:" %>
+        <%= text_field_tag 'email', nil, :placeholder => "member@gmail.com" %>
+      </fieldset>
+      <%= submit_tag 'Search' %>
+    <% end %>
+  </div>
 </div>
 
 <%= render :partial => '/admin/shared/history', :locals => {:entity => @campaign} %>

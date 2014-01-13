@@ -1,0 +1,20 @@
+<div>
+  <h3><%= "Donations for #{params[:email]}" %></h3>
+  <% if @donations && @donations.any? %>
+    <table>
+      <thead>
+        <th>Created at</th>
+        <th>Frequency</th>
+        <th>Recurring amount</th>
+        <th>Recurring sum</th>
+        <th>Inactive since</th>
+      </thead>
+      <tbody>
+        <%= render @donations %>
+      </tbody>
+    </table>
+  <% else %>
+    <p><%= "No donations found." %></p>
+  <% end %>
+</div>
+</div>
