@@ -1,0 +1,4 @@
+<%= f.select :operator, [["Before", "before"], ["After", "after"], ["On", "on"]], :selected => rule.operator %>
+<div style="margin-left: 10px; display: inline-block;" data-tip="join-date">
+  <%= f.text_field "donation_date", :value => rule.donation_date, :class => "required datepicker", maxDate: minimum_blast_schedule_time %>
+</div>

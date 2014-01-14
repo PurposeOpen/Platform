@@ -14,6 +14,7 @@ module Admin::ListCutterHelper
         {label: "Member Email Activity", class: ListCutter::MemberEmailActivityRule},
         {label: "Donation frequency", class: ListCutter::DonorRule},
         {label: "Donation amount", class: ListCutter::DonationAmountRule},
+        {label: "Donation date", class: ListCutter::MostRecentDonationsRule},
         {label: "User has no country", class: ListCutter::NoCountryRule}
     ]
   end
