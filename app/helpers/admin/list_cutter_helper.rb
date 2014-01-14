@@ -12,10 +12,11 @@ module Admin::ListCutterHelper
         {label: "Source", class: ListCutter::MemberSourceRule},
         {label: "Originating Action", class: ListCutter::OriginatingActionRule},
         {label: "Member Email Activity", class: ListCutter::MemberEmailActivityRule},
-        {label: "Donation frequency", class: ListCutter::DonorRule},
-        {label: "Donation amount", class: ListCutter::DonationAmountRule},
-        {label: "Donation date", class: ListCutter::MostRecentDonationsRule},
-        {label: "Donation status", class: ListCutter::RecurringDonationsRule},
+        {label: "Donation Amount", class: ListCutter::DonationAmountRule},
+        {label: "Recurring Donation Amount", class: ListCutter::RecurringDonationAmountRule},
+        {label: "Donation Date", class: ListCutter::MostRecentDonationsRule},
+        {label: "Donation Frequency", class: ListCutter::DonorRule},
+        {label: "Donation Status", class: ListCutter::RecurringDonationsRule},
         {label: "User has no country", class: ListCutter::NoCountryRule}
     ]
   end
