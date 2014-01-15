@@ -15,7 +15,7 @@
 
 class Transaction < ActiveRecord::Base
   
-  belongs_to :donation
+  belongs_to :donation, touch: :last_donated_at
   
   scope :successful, where(:successful => true)
   def amount_in_dollars

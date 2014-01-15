@@ -298,6 +298,7 @@ describe DonationModule do
         donation.card_last_four_digits.should == nil
         donation.card_exp_month.should == nil
         donation.card_exp_year.should == nil
+        donation.last_donated_at.to_i.should == donation.transactions.last.created_at.to_i
       end
 
       it "should create the donation with credit card information when provided" do

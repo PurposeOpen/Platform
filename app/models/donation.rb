@@ -43,9 +43,7 @@ class Donation < ActiveRecord::Base
   before_validation :ensure_amount_is_also_stored_in_dollars
   before_validation :ensure_frequency_is_set
 
-  validates_presence_of :payment_method
-  validates_presence_of :currency
-  validates_presence_of :frequency
+  validates_presence_of :currency, :frequency, :payment_method
   validates_uniqueness_of :transaction_id, :allow_nil => true
   validate :validate_content_module_is_a_donation_ask
   validate :validate_payment_method

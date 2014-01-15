@@ -262,6 +262,12 @@ describe Donation do
       recurring_donation.add_payment(recurring_donation.amount_in_cents, transaction_id, invoice_id)
     end
 
+    it "should update the last_donated_at attribute on the donation" do
+      recurring_donation = FactoryGirl.create(:recurring_donation)
+      transaction = recurring_donation.add_payment(recurring_donation.subscription_amount, recurring_donation.transaction_id, nil)
+      recurring_donation.last_donated_at.to_i.should == transaction.created_at.to_i
+    end
+
     it "should add payment amount to donation when amount is zero" do
       donation = FactoryGirl.create(:donation)
       donation.update_attribute('amount_in_cents', 0)
