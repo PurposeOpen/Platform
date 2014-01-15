@@ -105,7 +105,6 @@ class DonationModule < ContentModule
         :email => action_info[:email],
         :order_id => action_info[:order_id],
         :transaction_id => action_info[:transaction_id],
-        :subscription_id => action_info[:subscription_id],
         :subscription_amount =>action_info[:subscription_amount].to_i,
         :active => action_info[:confirmed],
         :frequency => action_info[:frequency].to_sym)
@@ -115,6 +114,9 @@ class DonationModule < ContentModule
       donation.card_last_four_digits = action_info[:card_last_four_digits]
       donation.card_exp_month = action_info[:card_exp_month]
       donation.card_exp_year = action_info[:card_exp_year]
+      donation.subscription_id = action_info[:payment_method_token]
+    else
+      donation.subscription_id = action_info[:subscription_id]
     end
 
     donation.save!

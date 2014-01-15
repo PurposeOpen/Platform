@@ -47,6 +47,7 @@ FactoryGirl.define do
     classification '501-c-3'
     currency 'USD'
     payment_method_token 'SvVVGEsjBXRDhhPJ7pMHCnbSQuT'
+    subscription_id { payment_method_token }
     card_last_four_digits '1111'
     card_exp_month 4
     card_exp_year 2020

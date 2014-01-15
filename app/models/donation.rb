@@ -49,6 +49,7 @@ class Donation < ActiveRecord::Base
   validate :validate_payment_method
   validate :validate_amounts
   validate :validate_transaction_id
+  validate :validate_subscription_id
 
   def self.total_in_dollar_cents_by_action_page(action_page_id)
     result = Donation.select('COALESCE(SUM(amount_in_dollar_cents), 0) as total').where(:page_id => action_page_id).group('donations.page_id')

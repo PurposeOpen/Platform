@@ -257,7 +257,8 @@ describe DonationModule do
       :payment_method => 'credit_card',
       :email => @email,
       :order_id => '111111',
-      :transaction_id => '222222'
+      :transaction_id => '222222',
+      :subscription_id => 'subscription_id'
     }}
 
     before(:each) do
@@ -277,6 +278,11 @@ describe DonationModule do
         PaymentMailer.stub(:confirm_purchase) { mailer }
       end
 
+      it "should set a subscription_id when payment information is not in the action_info" do
+        donation = @ask.take_action(@user, action_info, @page)
+        donation.subscription_id.should == "subscription_id"
+      end
+
       it "should allow multiple donations from a single user" do
         lambda { 3.times { @ask.take_action(@user, @page) } }.should_not raise_error(DuplicateActionTakenError)
       end
@@ -293,6 +299,7 @@ describe DonationModule do
         donation.payment_method.should == :credit_card
         donation.email.should == @email
         donation.order_id.should == '111111'
+        donation.subscription_id.should == 'subscription_id'
         donation.transaction_id.should == '222222'
         donation.payment_method_token.should == nil
         donation.card_last_four_digits.should == nil
@@ -304,8 +311,8 @@ describe DonationModule do
       it "should create the donation with credit card information when provided" do
         action_info[:payment_method_token] = 'payment_method_token'
         action_info[:card_last_four_digits] = '1111'
-        action_info[:card_exp_month] = '06'
-        action_info[:card_exp_year] = '2016'
+        action_info[:card_exp_month] = '4'
+        action_info[:card_exp_year] = '2020'
         donation = @ask.take_action(@user, action_info, @page)
 
         donation.content_module.should == @ask
@@ -318,10 +325,13 @@ describe DonationModule do
         donation.email.should == @email
         donation.order_id.should == '111111'
         donation.transaction_id.should == '222222'
+        donation.last_donated_at.to_i.should == donation.transactions.last.created_at.to_i
+
+        donation.subscription_id.should == 'payment_method_token'
         donation.payment_method_token.should == 'payment_method_token'
         donation.card_last_four_digits.should == '1111'
-        donation.card_exp_month.should == '06'
-        donation.card_exp_year.should == '2016'
+        donation.card_exp_month.should == '4'
+        donation.card_exp_year.should == '2020'
       end
     end
 
@@ -330,29 +340,13 @@ describe DonationModule do
         mailer = mock
         mailer.stub(:deliver)
         PaymentMailer.stub(:confirm_purchase) { mailer }
+
         action_info[:frequency] = 'monthly'
-        action_info[:subscription_id] = "#{@page}--#{action_info[:frequency]}"
-      end
-
-      it "should set a subscription_id of type monthly on the donation" do
-        action_info[:frequency] = 'monthly'
-        donation = @ask.take_action(@user, action_info, @page)
-
-        donation.subscription_id.should == "#{@page}--monthly"
-      end
-
-      it "should set a subscription_id of type weekly on the donation" do
-        action_info[:frequency] = 'weekly'
-        action_info[:subscription_id] = "#{@page}--#{action_info[:frequency]}"
-        donation = @ask.take_action(@user, action_info, @page)
-
-        donation.subscription_id.should == "#{@page}--weekly"
       end
 
       it "should create an active recurring donation when confirmed is true" do
         action_info[:confirmed] = true
         donation = @ask.take_action(@user, action_info, @page)
-
         donation.active.should be_true
       end
     end
