@@ -5,7 +5,7 @@
     <%= submit_tag "Search" %>
   <% end %>
 
-  <h3><%= "Donations for #{params[:email]}" %></h3>
+  <h3><%= "Donations for #{params[:email]}" if params[:email] %></h3>
   <% if @donations && @donations.any? %>
     <table>
       <thead>
@@ -13,8 +13,8 @@
         <th>Frequency</th>
         <th>Recurring amount</th>
         <th>Recurring sum</th>
-        <th>Email preferences</th>
-        <th>Inactive since</th>
+        <th>Last payment</th>
+        <th>Actions</th>
       </thead>
       <tbody>
         <%= render partial: 'admin/donations/donation' , collection: @donations, :locals => { :movement => @movement } %>

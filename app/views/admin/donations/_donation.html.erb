@@ -3,10 +3,6 @@
   <td><%= donation.frequency.to_s.capitalize %></td>
   <td><%= number_to_currency(donation.subscription_amount / 100) %></td>
   <td><%= number_to_currency(donation.amount_in_cents / 100) %></td>
+  <td><%= donation.last_donated_at.strftime("%b %-d, %Y") unless donation.last_donated_at.nil? %></td>
   <td><%= link_to "Edit", edit_admin_movement_donation_path(movement, donation) %></td>
-  <% if donation.active? %>
-    <td><%= link_to "Deactivate", deactivate_admin_movement_donation_path(params[:movement_id], donation.id), :confirmation => "Are you sure you would like to end this recurring donation?" if donation.active == true %>
-  <% else %>
-    <td><%= donation.last_donated_at.strftime("%b %-d, %Y") unless donation.last_donated_at.nil? %></td>
-  <% end %>
 <% end %>
