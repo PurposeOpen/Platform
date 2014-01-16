@@ -1,0 +1,29 @@
+<h2><%= "Donation email preferences for #{@user.email}" %></h2>
+<%= form_for @donation, :url => admin_movement_donation_path(@movement, @donation), :method => :put do |f| %>
+  <fieldset>
+    <%= f.label :notify_of_payment_error %>
+    <%= f.check_box :notify_of_payment_error, checked: @donation.notify_of_payment_error? %>
+  </fieldset>
+
+  <fieldset>
+    <%= f.label :notify_of_recurring_payment_error %>
+    <%= f.check_box :notify_of_recurring_payment_error, checked: @donation.notify_of_recurring_payment_error? %>
+  </fieldset>
+
+  <fieldset>
+    <%= f.label :notify_of_donation_creation %>
+    <%= f.check_box :notify_of_donation_creation, checked: @donation.notify_of_donation_creation? %>
+  </fieldset>
+
+  <fieldset>
+    <%= f.label :notify_of_recurring_payment %>
+    <%= f.check_box :notify_of_recurring_payment, checked: @donation.notify_of_recurring_payment? %>
+  </fieldset>
+
+  <fieldset>
+    <%= f.label :notify_of_expiring_credit_card %>
+    <%= f.check_box :notify_of_expiring_credit_card, checked: @donation.notify_of_expiring_credit_card? %>
+  </fieldset>
+
+  <%= f.submit "Update" %>
+<% end %>

@@ -6,6 +6,7 @@
         <%= navbar_item :campaigns,                    "Campaigns",         path: admin_movement_campaigns_path(@movement), icon: "globe" if can?(:read, @movement) %>
         <%= navbar_item :settings,                     "Settings",          path: edit_admin_movement_path(@movement), icon: "cog" if can?(:edit, @movement) %>
         <%= navbar_item :users,                        "Users",             path: admin_movement_users_path(@movement), icon: "user" if can? :read, PlatformUser %>
+        <%= navbar_item :donations,                    "Donations",         path: admin_movement_donations_path(@movement) if can? :send, Blast %>
         <%= navbar_header "Content" %>
         <%= navbar_item :featured_content_collections, "Featured Items",    path: admin_movement_featured_content_collections_path(@movement), icon: "list-alt" if can?(:read, @movement) %>
         <%= navbar_item :content_pages,                "Content Pages",     path: admin_movement_content_pages_path(@movement), icon: "columns" if can?(:read, @movement) %>

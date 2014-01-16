@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131223202657) do
+ActiveRecord::Schema.define(:version => 20140115192932) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -139,16 +139,16 @@ ActiveRecord::Schema.define(:version => 20131223202657) do
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "donations", :force => true do |t|
-    t.integer  "user_id",                                                :null => false
-    t.integer  "content_module_id",                                      :null => false
-    t.integer  "amount_in_cents",                                        :null => false
-    t.string   "payment_method",         :limit => 32,                   :null => false
-    t.string   "frequency",              :limit => 32,                   :null => false
-    t.datetime "created_at",                                             :null => false
-    t.datetime "updated_at",                                             :null => false
-    t.boolean  "active",                               :default => true
+    t.integer  "user_id",                                                           :null => false
+    t.integer  "content_module_id",                                                 :null => false
+    t.integer  "amount_in_cents",                                                   :null => false
+    t.string   "payment_method",                    :limit => 32,                   :null => false
+    t.string   "frequency",                         :limit => 32,                   :null => false
+    t.datetime "created_at",                                                        :null => false
+    t.datetime "updated_at",                                                        :null => false
+    t.boolean  "active",                                          :default => true
     t.datetime "last_donated_at"
-    t.integer  "page_id",                                                :null => false
+    t.integer  "page_id",                                                           :null => false
     t.integer  "email_id"
     t.string   "recurring_trigger_id"
     t.datetime "last_tried_at"
@@ -168,6 +168,11 @@ ActiveRecord::Schema.define(:version => 20131223202657) do
     t.string   "card_last_four_digits"
     t.string   "card_exp_month"
     t.string   "card_exp_year"
+    t.boolean  "notify_of_payment_error",                         :default => true
+    t.boolean  "notify_of_recurring_payment_error",               :default => true
+    t.boolean  "notify_of_donation_creation",                     :default => true
+    t.boolean  "notify_of_recurring_payment",                     :default => true
+    t.boolean  "notify_of_expiring_credit_card",                  :default => true
   end
 
   add_index "donations", ["content_module_id"], :name => "donations_content_module_idx"

@@ -179,7 +179,7 @@ describe PaymentErrorMailer do
 
     it "should deliver email with the correct body" do
       delivered.should have_body_text("your credit card was declined")
-      delivered.should have_body_text("http://www.yourdomain.com/en/actions/unnamed-page-1")
+      delivered.should have_body_text("http://www.yourdomain.com/en/actions/#{donation.action_page.slug}")
       delivered.should have_body_text(/#{member.first_name}/) if member.first_name.present?
       delivered.should have_body_text(/#{member.last_name}/) if member.last_name.present?
       delivered.should have_body_text(/#{member.postcode}/) if member.postcode.present?

@@ -1,4 +1,10 @@
 <div>
+  <h2>Search for donations by email</h2>
+  <%= form_tag admin_movement_donations_path(@movement), :method => :get do %>
+    <%= text_field_tag :email, nil, :placeholder => 'member@example.com' %>
+    <%= submit_tag "Search" %>
+  <% end %>
+
   <h3><%= "Donations for #{params[:email]}" %></h3>
   <% if @donations && @donations.any? %>
     <table>
@@ -7,10 +13,11 @@
         <th>Frequency</th>
         <th>Recurring amount</th>
         <th>Recurring sum</th>
+        <th>Email preferences</th>
         <th>Inactive since</th>
       </thead>
       <tbody>
-        <%= render @donations %>
+        <%= render partial: 'admin/donations/donation' , collection: @donations, :locals => { :movement => @movement } %>
       </tbody>
     </table>
   <% else %>
