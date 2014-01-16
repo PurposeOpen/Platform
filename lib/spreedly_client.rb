@@ -33,8 +33,15 @@ class SpreedlyClient
   def get_gateway_token(currency)
     case currency.downcase
     when 'usd'
-      # TODO: remove hard-coded test gateway token; Store in constants.yml
-      'DWqZNx7SyOHZyrscU7p5gzORxky'
+      # TODO: remove hard-coded test gateway token in constants.yml
+      # AppConstants.spreedly_gateway_token_usd
+      AppConstants.spreedly_gateway_token_test
+    when 'cad'
+      AppConstants.spreedly_gateway_token_cad
+    when 'eur'
+      AppConstants.spreedly_gateway_token_eur
+    when 'gbp'
+      AppConstants.spreedly_gateway_token_gbp
     end
   end
 

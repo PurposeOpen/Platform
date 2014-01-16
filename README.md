@@ -20,16 +20,19 @@ supports international payment gateways.
 ### Environment variables
 Spreedly expects the following environment variables to be set:
 
-`SPREEDLY_501C3_ENV_KEY`
-`SPREEDLY_501C3_APP_ACCESS_SECRET`
-`SPREEDLY_501C4_ENV_KEY`
-`SPREEDLY_501C4_APP_ACCESS_SECRET`
+```
+SPREEDLY_501C3_ENV_KEY
+SPREEDLY_501C3_APP_ACCESS_SECRET
+SPREEDLY_501C4_ENV_KEY
+SPREEDLY_501C4_APP_ACCESS_SECRET
+```
 
 The Spreedly account should be built with 2 environments: one for 501-c-3 gateways and
 transactions and one for 501-c-4s. On the donation form, we check the
 `content_module.classification` attribute, and pass that value
 (`501-c-3` or `501-c-4`) to Spreedly as
-an additional parameter on the transaparent redirect.
+an additional parameter on the [transaparent
+redirect](http://docs.spreedly.com/payment-methods/adding-with-redirect#using-the-redirect-url) to determine which Spreedly environment to use.
 
 ### Payment Gateways
 Spreedly allows for multiple payment gateways. Each gateway has a token,
