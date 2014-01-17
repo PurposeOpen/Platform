@@ -1,8 +1,8 @@
 <%= content_tag :tr, donation do %>
   <td><%= donation.created_at.strftime("%b %-d, %Y") %></td>
   <td><%= donation.frequency.to_s.capitalize %></td>
-  <td><%= number_to_currency(donation.subscription_amount / 100) %></td>
-  <td><%= number_to_currency(donation.amount_in_cents / 100) %></td>
+  <td><%= number_to_currency(donation.subscription_amount / 100.0) %></td>
+  <td><%= number_to_currency(donation.amount_in_cents / 100.0) %></td>
   <td><%= donation.last_donated_at.strftime("%b %-d, %Y") unless donation.last_donated_at.nil? %></td>
   <td><%= link_to "Edit", edit_admin_movement_donation_path(movement, donation) %></td>
 <% end %>

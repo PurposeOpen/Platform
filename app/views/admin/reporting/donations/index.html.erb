@@ -1,0 +1,55 @@
+<h2>Donation Payments Report</h2>
+
+<%= form_tag admin_movement_reporting_donations_path(@movement), :method => :get do %>
+  <fieldset class="donation_report_date">
+    <%= label_tag 'Start date' %>
+    <%= date_select :start_date, :start_date %>
+  </fieldset>
+
+  <fieldset class="donation_report_date">
+    <%= label_tag 'End date' %>
+    <%= date_select :end_date, :end_date %>
+  </fieldset>
+
+  <%= submit_tag "View report" %>
+<% end %>
+
+<% if params[:start_date] && params[:end_date] %>
+  <h3><%= "Showing payments from #{params[:start_date]['start_date(1i)']}-#{params[:start_date]['start_date(2i)']}-#{params[:start_date]['start_date(3i)']} to #{params[:end_date]['end_date(1i)']}-#{params[:end_date]['end_date(2i)']}-#{params[:end_date]['end_date(3i)']}" %></h3>
+  <% if @transactions && @transactions.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Transaction ID</th>
+          <th>Created at</th>
+          <th>Donation ID</th>
+          <th>Donation frequency</th>
+          <th>Currency</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @transactions.each do |transaction| %>
+          <tr>
+            <td><%= transaction.id %></td>
+            <td><%= transaction.created_at.strftime("%b %-d, %Y") %></td>
+            <td><%= transaction.donation_id %></td>
+            <td><%= transaction.donation.frequency.to_s.capitalize %></td>
+            <td><%= transaction.currency.upcase %></td>
+            <td><%= number_to_currency(transaction.amount_in_cents / 100.0) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <% @transactions_by_currency.each do |transactions| %>
+          <tr>
+            <td colspan=5><%= "#{transactions[:count]} #{transactions[:currency].upcase} payments totaling" %></td>
+            <td><%= number_to_currency(transactions[:amount_in_cents] / 100.0) %></td>
+          </tr>
+        <% end %>
+      </tfoot>
+    </table>
+  <% else %>
+    <p>No donations found.</p>
+  <% end %>
+<% end %>
