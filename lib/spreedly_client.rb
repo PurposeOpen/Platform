@@ -29,7 +29,11 @@ class SpreedlyClient
 
   def purchase_and_hash_response(payment_method)
     gateway_token = get_gateway_token(payment_method[:data][:currency])
-    spreedly_transaction = @spreedly.purchase_on_gateway(gateway_token, payment_method[:token], payment_method[:data][:amount], retain_on_success: true)
+    spreedly_transaction = @spreedly.purchase_on_gateway(gateway_token, payment_method[:token], payment_method[:data][:amount], 
+                                                         retain_on_success: true,
+                                                         merchant_name_descriptor: "All Out",
+                                                         merchant_location_descriptor: "http://allout.org"
+                                                        )
     transaction_to_hash(spreedly_transaction)
   rescue Spreedly::TimeoutError
     { :code => 408, :errors => 'The payment system is not responding.' }
