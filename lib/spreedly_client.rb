@@ -17,9 +17,12 @@ class SpreedlyClient
   def retrieve_and_hash_payment_method(payment_method_token)
     spreedly_payment_method = @spreedly.find_payment_method(payment_method_token)
     payment_method = payment_method_to_hash(spreedly_payment_method)
+    if payment_method[:data][:amount].blank? || payment_method[:data][:frequency].blank?
+      return { :code => 422, :errors => 'The donation amount or frequency is not valid.' }
+    end
     classify_payment_method(payment_method)
   rescue Spreedly::TimeoutError
-    { :errors => 'The payment system is not responding.' }
+    { :code => 408, :errors => 'The payment system is not responding.' }
   rescue Spreedly::Error => e
     { :code => 404, :errors => e.errors.first }
   end
@@ -29,7 +32,7 @@ class SpreedlyClient
     spreedly_transaction = @spreedly.purchase_on_gateway(gateway_token, payment_method[:token], payment_method[:data][:amount], retain_on_success: true)
     transaction_to_hash(spreedly_transaction)
   rescue Spreedly::TimeoutError
-    { :errors => 'The payment system is not responding.' }
+    { :code => 408, :errors => 'The payment system is not responding.' }
   rescue Spreedly::Error => e
     { :code => 422, :errors => e.errors.first, :payment_method => payment_method }
   end

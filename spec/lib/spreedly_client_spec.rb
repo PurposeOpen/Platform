@@ -46,6 +46,22 @@ describe "spreedly_client" do
       payment_method[:code] == 422
       payment_method[:errors][:message].should == "Unable to find the specified payment method."
     end
+
+    it "should return with payment_errors if the payment_method amount is blank" do
+      @spreedly.stub(:find_payment_method) { Spreedly::PaymentMethod.new_from(Nokogiri::XML(successful_payment_method_response_without_amount_xml)) }
+      spreedly_client.should_not_receive(:classify_payment_method)
+      payment_method = spreedly_client.retrieve_and_hash_payment_method('CATQHnDh14HmaCrvktwNdngixMm')
+
+      payment_method[:errors].should == 'The donation amount or frequency is not valid.'
+    end
+
+    it "should return with payment_errors if the payment_method frequency is blank" do
+      @spreedly.stub(:find_payment_method) { Spreedly::PaymentMethod.new_from(Nokogiri::XML(successful_payment_method_response_without_frequency_xml)) }
+      spreedly_client.should_not_receive(:classify_payment_method)
+      payment_method = spreedly_client.retrieve_and_hash_payment_method('CATQHnDh14HmaCrvktwNdngixMm')
+
+      payment_method[:errors].should == 'The donation amount or frequency is not valid.'
+    end
   end
 
   describe ".purchase_and_hash_response" do

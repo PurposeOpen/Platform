@@ -231,6 +231,78 @@ def successful_payment_method_response_xml
   XML
 end
 
+def successful_payment_method_response_without_frequency_xml
+  <<-XML
+      <payment_method>
+        <token>CATQHnDh14HmaCrvktwNdngixMm</token>
+        <created_at type="datetime">2013-12-21T12:51:47Z</created_at>
+        <updated_at type="datetime">2013-12-21T12:51:47Z</updated_at>
+        <email>frederick@example.com</email>
+        <data>
+          <frequency></frequency>
+          <currency>usd</currency>
+          <amount>2000</amount>
+        </data>
+        <storage_state>cached</storage_state>
+        <last_four_digits>1111</last_four_digits>
+        <card_type>visa</card_type>
+        <first_name>Bob</first_name>
+        <last_name>Smith</last_name>
+        <month type="integer">1</month>
+        <year type="integer">2020</year>
+        <address1>345 Main Street</address1>
+        <address2>Apartment #7</address2>
+        <city>Wanaque</city>
+        <state>NJ</state>
+        <zip>07465</zip>
+        <country>United States</country>
+        <phone_number>201-332-2122</phone_number>
+        <full_name>Bob Smith</full_name>
+        <payment_method_type>credit_card</payment_method_type>
+        <errors>
+        </errors>
+        <verification_value>XXX</verification_value>
+        <number>XXXX-XXXX-XXXX-1111</number>
+      </payment_method>
+  XML
+end
+
+def successful_payment_method_response_without_amount_xml
+  <<-XML
+      <payment_method>
+        <token>CATQHnDh14HmaCrvktwNdngixMm</token>
+        <created_at type="datetime">2013-12-21T12:51:47Z</created_at>
+        <updated_at type="datetime">2013-12-21T12:51:47Z</updated_at>
+        <email>frederick@example.com</email>
+        <data>
+          <frequency>weekly</frequency>
+          <currency>usd</currency>
+          <amount></amount>
+        </data>
+        <storage_state>cached</storage_state>
+        <last_four_digits>1111</last_four_digits>
+        <card_type>visa</card_type>
+        <first_name>Bob</first_name>
+        <last_name>Smith</last_name>
+        <month type="integer">1</month>
+        <year type="integer">2020</year>
+        <address1>345 Main Street</address1>
+        <address2>Apartment #7</address2>
+        <city>Wanaque</city>
+        <state>NJ</state>
+        <zip>07465</zip>
+        <country>United States</country>
+        <phone_number>201-332-2122</phone_number>
+        <full_name>Bob Smith</full_name>
+        <payment_method_type>credit_card</payment_method_type>
+        <errors>
+        </errors>
+        <verification_value>XXX</verification_value>
+        <number>XXXX-XXXX-XXXX-1111</number>
+      </payment_method>
+  XML
+end
+
 def failed_payment_method_response_xml
   <<-XML
       <errors>
