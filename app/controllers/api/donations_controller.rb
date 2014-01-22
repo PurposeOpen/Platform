@@ -12,7 +12,11 @@ class Api::DonationsController < Api::BaseController
   def create_spreedly_payment_method_and_purchase
     spreedly_client = SpreedlyClient.new params[:classification]
     purchase = spreedly_client.create_payment_method_and_purchase(params[:token])
-    render :json => purchase.to_json
+    if purchase[:errors]
+      render :json => purchase.to_json, :status => purchase[:code]
+    else
+      render :json => purchase.to_json
+    end
   end
 
   def confirm_payment
