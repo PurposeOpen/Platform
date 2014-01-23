@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140115192932) do
+ActiveRecord::Schema.define(:version => 20140123190306) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -173,6 +173,7 @@ ActiveRecord::Schema.define(:version => 20140115192932) do
     t.boolean  "notify_of_donation_creation",                     :default => true
     t.boolean  "notify_of_recurring_payment",                     :default => true
     t.boolean  "notify_of_expiring_credit_card",                  :default => true
+    t.datetime "next_payment_at"
   end
 
   add_index "donations", ["content_module_id"], :name => "donations_content_module_idx"

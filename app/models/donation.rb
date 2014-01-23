@@ -121,7 +121,7 @@ class Donation < ActiveRecord::Base
     spreedly_client_purchase.respond_to?(:gateway_transaction_id) ? order_id = spreedly_client_purchase[:gateway_transaction_id] : order_id = nil
     transaction = add_payment(spreedly_client_purchase[:amount], spreedly_client_purchase[:token], order_id)
     PaymentMailer.confirm_recurring_purchase(self, transaction).deliver
-    enqueue_recurring_payment
+    enqueue_recurring_payment_from DateTime.now
   end
 
   def handle_failed_recurring_payment(transaction)
@@ -129,17 +129,18 @@ class Donation < ActiveRecord::Base
     PaymentErrorMailer.delay.recurring_donation_card_declined(self)
   end
 
-  def enqueue_recurring_payment
+  def enqueue_recurring_payment_from(datetime)
     if self.active? && frequency != :one_off
       case frequency.to_sym
       when :weekly
-        next_payment = DateTime.now + 1.week
+        next_payment = datetime + 1.week
       when :monthly
-        next_payment = DateTime.now + 1.month
+        next_payment = datetime + 1.month
       when :annual
-        next_payment = DateTime.now + 1.year
+        next_payment = datetime + 1.year
       end
 
+      self.update_attribute('next_payment_at', next_payment)
       Resque.enqueue(next_payment, self.class, self.id)
       PaymentMailer.expiring_credit_card(self).deliver if card_expiration_date < next_payment.beginning_of_month
     end

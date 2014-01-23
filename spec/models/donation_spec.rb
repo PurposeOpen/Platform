@@ -383,28 +383,31 @@ describe Donation do
       end
 
       it "should call #add_payment" do
-        donation.stub(:enqueue_recurring_payment)
+        donation.stub(:enqueue_recurring_payment_from)
         PaymentMailer.stub(:confirm_recurring_purchase) { mailer }
         donation.should_receive(:add_payment)
         donation.handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase)
       end
 
-      it "should call #enqueue_recurring_payment" do
+      it "should call #enqueue_recurring_payment_from" do
         PaymentMailer.stub(:confirm_recurring_purchase) { mailer }
-        donation.should_receive(:enqueue_recurring_payment)
+        datetime = DateTime.now
+        DateTime.stub(:now) { datetime }
+
+        donation.should_receive(:enqueue_recurring_payment_from).with(datetime)
         donation.handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase)
       end
 
       it "should send payment confirmation email" do
         transaction = donation.add_payment(donation.amount_in_cents, donation.transaction_id, nil)
-        donation.stub(:enqueue_recurring_payment)
+        donation.stub(:enqueue_recurring_payment_from)
         donation.stub(:add_payment) { transaction }
         PaymentMailer.should_receive(:confirm_recurring_purchase).with(donation, transaction).and_return(mailer)
         donation.handle_successful_spreedly_purchase_on_recurring_donation(spreedly_client_purchase)
       end
 
       it "should create transactions with the subscription amount and increment the donation amount" do
-        donation.stub(:enqueue_recurring_payment)
+        donation.stub(:enqueue_recurring_payment_from)
         PaymentMailer.stub(:confirm_recurring_purchase) { mailer }
         donation.transactions.count.should == 1
 
@@ -419,25 +422,32 @@ describe Donation do
     end
 
     # a donation created via take action
-    describe "enqueue_recurring_payment" do
+    describe "enqueue_recurring_payment_from" do
       let(:donation) { ask.take_action(user, action_info, page) }
 
       it "calls Resque.enqueue when a monthly recurring donation is active" do
+        donation.next_payment_at.should == nil
         donation.active.should == true
         Resque.should_receive(:enqueue)
-        donation.enqueue_recurring_payment
+        datetime = DateTime.now
+        DateTime.stub(:now) { datetime }
+
+        donation.enqueue_recurring_payment_from datetime
+        donation.next_payment_at.should == datetime + 1.month
       end
 
       it "does not call Resque.enqueue when a recurring donation is inactive" do
         donation.update_attribute('active', :false)
         Resque.should_not_receive(:enqueue)
-        donation.enqueue_recurring_payment
+        donation.enqueue_recurring_payment_from DateTime.now
+        donation.next_payment_at.should == nil
       end
 
       it "does not call Resque.enqueue for a one_off donation" do
         donation.update_attribute('frequency', :one_off)
         Resque.should_not_receive(:enqueue)
-        donation.enqueue_recurring_payment
+        donation.enqueue_recurring_payment_from DateTime.now
+        donation.next_payment_at.should == nil
       end
 
       it "should not call the expiring card email when the card will be valid for the next payment" do
@@ -448,14 +458,15 @@ describe Donation do
           :card_exp_year => card_expiring_this_month[:year]
         )
 
-        next_payment = DateTime.now.end_of_month - 1.week
-        DateTime.stub(:now) { next_payment }
+        datetime = DateTime.now
+        DateTime.stub(:now) { datetime }
         Resque.stub(:enqueue) { nil }
         mailer = mock
         mailer.stub(:deliver)
 
         PaymentMailer.should_not_receive(:expiring_credit_card).with(donation).and_return(mailer)
-        donation.enqueue_recurring_payment
+        donation.enqueue_recurring_payment_from datetime
+        donation.next_payment_at.should == datetime + 1.week
       end
 
       it "should call the expiring card email when the card expires before the next weekly payment" do
@@ -466,16 +477,22 @@ describe Donation do
           :card_exp_year => card_expiring_this_month[:year]
         )
 
-        next_payment = DateTime.now.end_of_month - 6.days
-        DateTime.stub(:now) { next_payment }
+        datetime = DateTime.now.end_of_month - 6.days
+        DateTime.stub(:now) { datetime }
         Resque.stub(:enqueue) { nil }
         mailer = mock
         mailer.stub(:deliver)
 
         PaymentMailer.should_receive(:expiring_credit_card).with(donation).and_return(mailer)
-        donation.enqueue_recurring_payment
+        donation.enqueue_recurring_payment_from datetime
+        donation.next_payment_at.should == datetime + 1.week
       end
     end
+
+    # describe ".enqueue_recurring_payment_froms_from_recurly" do
+      # it "should 
+      # Donation.enqueue_recurring_payment_froms_from_recurly
+    # end
 
     # a donation created via take action
     describe "#deactivate" do
