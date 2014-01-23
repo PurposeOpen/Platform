@@ -46,3 +46,43 @@ Each gateway requires different credentials. Spreedly provides
 [documentation](http://docs.spreedly.com/gateways/adding) for adding a new gateway to the
 application. The `gateway_token` that gets returned should be added to the
 `config/constants.yml` for the given currency.
+
+## Post-Recurly Migration
+Per Spreedly, when the credit cards are transferred from Recurly to
+Spreedly, the recurly_id will be retained and mapped to the Spreedly
+payment_method_token. This relationship will be made available via a
+JSON file that Spreedly will provide.
+
+All active, recurring donations should be updated with their respective
+Spreedly payment_method_tokens. 
+
+**Active, recurring donations for which you'd like to enqueue recurring
+payments for must have the following attributes set:**
+* `classification` - (`501-c-3` or `501-c-4`) is required by `SpreedlyClient#initialize` to create the correct Spreedly environment.
+* `currency` - will be required when the purchase is attempted on
+  Spreedly
+* `frequency` - `one_off`, `weekly`, `monthly`, `annual`
+* `last_donated_at` - will be used to que up the next recurring payment for the given donation.
+* `payment_method_token` - will be used to pull down the credit card
+  details and execute purchases
+* `subscription_amount` - the `amount_in_cents` of each recurring
+  payment
+
+
+### Donation#update_credit_card_via_spreedly
+Once the donation's `classification`, `last_updated_at`, and
+`payment_method_token` attributes are set, the donation's credit card
+information (which is required to execute a payment on a recurring
+donation) can be set via `Donation#update_credit_card_via_spreedly`.
+Once this is complete, a donation is ready to be enqueued for recurring
+payments.
+
+### Donation.enqueue_recurring_payments_from_recurly
+`Donation.enqueue_recurring_payments_from_recurly` is a temporary class
+method which can be called to schedule the next payment for donations
+which have been migrated from Recurly to Spreedly. For the donation to
+be enqueued for payment, it must be:
+* active
+* recurring
+* have `last_donated_at` set
+* have `payment_method_token` set

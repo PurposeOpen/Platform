@@ -531,6 +531,7 @@ end
 
 def valid_donation_action_info
   { :confirmed => false,
+    :classification => '501-c-3',
     :frequency => :monthly,
     :currency => 'USD',
     :amount => 100,

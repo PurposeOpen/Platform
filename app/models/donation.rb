@@ -105,8 +105,7 @@ class Donation < ActiveRecord::Base
   end
 
   def make_payment_on_recurring_donation
-    return if self.frequency == :one_off || self.active == false
-
+    return if self.frequency == :one_off || self.active == false || self.classification == nil
     spreedly_client = SpreedlyClient.new(self.classification)
     spreedly_client_purchase = spreedly_client.create_payment_method_and_purchase(self.payment_method_token)
 
@@ -143,6 +142,13 @@ class Donation < ActiveRecord::Base
       self.update_attribute('next_payment_at', next_payment)
       Resque.enqueue(next_payment, self.class, self.id)
       PaymentMailer.expiring_credit_card(self).deliver if card_expiration_date < next_payment.beginning_of_month
+    end
+  end
+
+  def self.enqueue_recurring_payments_from_recurly
+    recurly_donations = Donation.where('active = ? AND frequency != ? AND last_donated_at IS NOT NULL AND payment_method_token IS NOT NULL', true, 'one_off')
+    recurly_donations.each do |donation|
+      donation.enqueue_recurring_payment_from donation.last_donated_at
     end
   end
 

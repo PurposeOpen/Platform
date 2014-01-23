@@ -357,6 +357,12 @@ describe Donation do
         donation.make_payment_on_recurring_donation
       end
 
+      it "should not call SpreedlyClient.purchase_and_hash_response if the donation does not have a classification" do
+        donation.update_attribute(:classification, nil)
+        SpreedlyClient.should_not_receive(:purchase_and_hash_response)
+        donation.make_payment_on_recurring_donation
+      end
+
       it "should call #handle_successful_spreedly_purchase_on_recurring_donation after a successful purchase" do
         stubbed_client.stub(:create_payment_method_and_purchase) { successful_purchase }
         SpreedlyClient.stub(:new) { stubbed_client }
@@ -425,7 +431,7 @@ describe Donation do
     describe "enqueue_recurring_payment_from" do
       let(:donation) { ask.take_action(user, action_info, page) }
 
-      it "calls Resque.enqueue when a monthly recurring donation is active" do
+      it "calls Resque.enqueue and sets the next_payment_at attribute when a monthly recurring donation is active" do
         donation.next_payment_at.should == nil
         donation.active.should == true
         Resque.should_receive(:enqueue)
@@ -489,10 +495,37 @@ describe Donation do
       end
     end
 
-    # describe ".enqueue_recurring_payment_froms_from_recurly" do
-      # it "should 
-      # Donation.enqueue_recurring_payment_froms_from_recurly
-    # end
+    describe ".enqueue_recurring_payments_from_recurly" do
+      let(:valid_recurly_donations) do
+        [ FactoryGirl.create(:recurring_donation, :frequency => :monthly, :transaction_id => 'tran1', :subscription_id => 'recurly1', :last_donated_at => DateTime.now - 1.day),
+          FactoryGirl.create(:recurring_donation, :frequency => :weekly, :transaction_id => 'tran2', :subscription_id => 'recurly2', :last_donated_at => DateTime.now, :next_payment_at => DateTime.now + 1.week),
+          FactoryGirl.create(:recurring_donation, :frequency => :annual, :transaction_id => 'tran3', :subscription_id => 'recurly3', :last_donated_at => DateTime.now - 1.week) ]
+      end
+
+      let(:invalid_recurly_donations) do
+        [ FactoryGirl.create(:recurring_donation, :transaction_id => 'tran4', :subscription_id => 'recurly4', :last_donated_at => nil),
+          FactoryGirl.create(:recurring_donation, :transaction_id => 'tran5', :subscription_id => 'recurly5', :active => false),
+          FactoryGirl.create(:recurring_donation, :transaction_id => 'tran6', :subscription_id => 'recurly6', :payment_method_token => nil),
+          FactoryGirl.create(:recurring_donation, :transaction_id => 'tran7', :subscription_id => 'recurly7', :frequency => 'one_off') ]
+      end
+
+      let!(:donations) { valid_recurly_donations + invalid_recurly_donations }
+
+      it "should call Resque.enqueue on active recurring donations" do
+        Resque.should_receive(:enqueue).exactly(3).times
+        Donation.enqueue_recurring_payments_from_recurly
+
+        valid_recurly_donations.each do |donation|
+          donation.reload
+          donation.next_payment_at.should_not == nil
+        end
+
+        invalid_recurly_donations.each do |donation|
+          donation.reload
+          donation.next_payment_at.should == nil
+        end
+      end
+    end
 
     # a donation created via take action
     describe "#deactivate" do
