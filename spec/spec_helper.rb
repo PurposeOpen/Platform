@@ -543,3 +543,29 @@ def valid_donation_action_info
     :card_exp_month => '4',
     :card_exp_year => '2020' }
 end
+
+def found_payment_method
+  { :token=>"FiVwzY9orntKySuOGszbdiG16HW",
+    :created_at=>"2014-01-22T23:31:18Z",
+    :updated_at=>"2014-01-22T23:31:21Z",
+    :email=>"122q@example.com",
+    :storage_state=>"retained",
+    :data=>"<frequency>annual</frequency>\n    <currency>usd</currency>\n    <amount>2000</amount>",
+    :first_name=>"Q",
+    :last_name=>"Q",
+    :full_name=>"Q Q",
+    :month=>"5",
+    :year=>"2017",
+    :number=>"XXXX-XXXX-XXXX-1111",
+    :last_four_digits=>"1111",
+    :card_type=>"visa",
+    :verification_value=>"",
+    :address1=>"",
+    :address2=>"",
+    :city=>"",
+    :state=>"",
+    :zip=>"",
+    :country=>"",
+    :phone_number=>"",
+    :errors=>[] }
+end

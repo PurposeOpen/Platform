@@ -508,4 +508,22 @@ describe Donation do
       end
     end
   end
+
+  describe '#update_credit_card_via_spreedly' do
+    let(:donation) do
+      FactoryGirl.create(:recurring_donation,
+                         :card_exp_month => nil,
+                         :card_exp_year => nil)
+    end
+
+    it "should update donation credit card information with payment method retrieved from Spreedly" do
+      spreedly_client = mock
+      spreedly_client.stub(:retrieve_and_hash_payment_method) { found_payment_method }
+      SpreedlyClient.stub(:new) { spreedly_client }
+      donation.update_credit_card_via_spreedly
+
+      donation.card_exp_month.should == '5'
+      donation.card_exp_year.should == '2017'
+    end
+  end
 end

@@ -162,6 +162,16 @@ class Donation < ActiveRecord::Base
     self.update_attribute(:active, false)
   end
 
+  def update_credit_card_via_spreedly
+    return if self.classification.blank? || self.payment_method_token.blank?
+    spreedly_client = SpreedlyClient.new(classification)
+    payment_method = spreedly_client.retrieve_and_hash_payment_method(payment_method_token)
+    return payment_method[:errors][:message] if payment_method[:errors].any?
+    self.update_attributes( :card_last_four_digits => payment_method[:last_four_digits],
+                            :card_exp_month => payment_method[:month],
+                            :card_exp_year => payment_method[:year] )
+  end
+
   private
 
   def create_transaction(external_id, invoice_id, amount_in_cents)
