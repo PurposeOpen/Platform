@@ -43,8 +43,8 @@ describe "spreedly_client" do
       @spreedly.stub(:find_payment_method).and_raise Spreedly::XmlErrorsList.new(Nokogiri::XML(failed_payment_method_response))
       payment_method = spreedly_client.retrieve_and_hash_payment_method('nonexistent_payment_method_token')
 
-      payment_method[:code] == 422
-      payment_method[:errors][:message].should == "Unable to find the specified payment method."
+      payment_method[:code].should == 404
+      payment_method[:errors].first[:message].should == "Unable to find the specified payment method."
     end
 
     it "should return with payment_errors if the payment_method amount is blank" do
@@ -52,7 +52,8 @@ describe "spreedly_client" do
       spreedly_client.should_not_receive(:classify_payment_method)
       payment_method = spreedly_client.retrieve_and_hash_payment_method('CATQHnDh14HmaCrvktwNdngixMm')
 
-      payment_method[:errors].should == 'The donation amount or frequency is not valid.'
+      payment_method[:code].should == 422
+      payment_method[:errors].first[:message].should == 'The donation amount or frequency is not valid.'
     end
 
     it "should return with payment_errors if the payment_method frequency is blank" do
@@ -60,7 +61,8 @@ describe "spreedly_client" do
       spreedly_client.should_not_receive(:classify_payment_method)
       payment_method = spreedly_client.retrieve_and_hash_payment_method('CATQHnDh14HmaCrvktwNdngixMm')
 
-      payment_method[:errors].should == 'The donation amount or frequency is not valid.'
+      payment_method[:code].should == 422
+      payment_method[:errors].first[:message].should == 'The donation amount or frequency is not valid.'
     end
   end
 
@@ -108,7 +110,7 @@ describe "spreedly_client" do
       purchase = spreedly_client.purchase_and_hash_response(payment_method)
 
       purchase[:code].should == 422
-      purchase[:errors][:message].should == "First name can't be blank"
+      purchase[:errors].first[:message].should == "First name can't be blank"
       purchase[:payment_method][:email] == 'frederick@example.com'
     end
   end
