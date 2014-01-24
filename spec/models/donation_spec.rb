@@ -356,7 +356,7 @@ describe Donation do
       let(:stubbed_client) { SpreedlyClient.stub(:new) { nil } }
 
       before :each do
-        Resque.stub(:enqueue)
+        Resque.stub(:enqueue_at)
       end
 
       let(:donation) { ask.take_action(user, action_info, page) }
@@ -400,7 +400,7 @@ describe Donation do
       let(:spreedly_client_purchase) { successful_purchase }
 
       before :each do
-        Resque.stub(:enqueue) { nil }
+        Resque.stub(:enqueue_at) { nil }
         mailer.stub(:deliver)
       end
 
@@ -456,7 +456,7 @@ describe Donation do
       it "calls Resque.enqueue and sets the next_payment_at attribute when a monthly recurring donation is active" do
         donation.update_attribute('active', true)
         donation.next_payment_at.should == nil
-        Resque.should_receive(:enqueue)
+        Resque.should_receive(:enqueue_at)
         datetime = DateTime.now
         DateTime.stub(:now) { datetime }
 
@@ -466,14 +466,14 @@ describe Donation do
 
       it "does not call Resque.enqueue when a recurring donation is inactive" do
         donation.update_attribute('active', false)
-        Resque.should_not_receive(:enqueue)
+        Resque.should_not_receive(:enqueue_at)
         donation.enqueue_recurring_payment_from DateTime.now
         donation.next_payment_at.should == nil
       end
 
       it "does not call Resque.enqueue for a one_off donation" do
         donation.update_attributes(:active => true, :frequency => :one_off)
-        Resque.should_not_receive(:enqueue)
+        Resque.should_not_receive(:enqueue_at)
         donation.enqueue_recurring_payment_from DateTime.now
         donation.next_payment_at.should == nil
       end
@@ -489,7 +489,7 @@ describe Donation do
 
         datetime = DateTime.now
         DateTime.stub(:now) { datetime }
-        Resque.stub(:enqueue) { nil }
+        Resque.stub(:enqueue_at) { nil }
         mailer = mock
         mailer.stub(:deliver)
 
@@ -509,7 +509,7 @@ describe Donation do
 
         datetime = DateTime.now.end_of_month - 6.days
         DateTime.stub(:now) { datetime }
-        Resque.stub(:enqueue) { nil }
+        Resque.stub(:enqueue_at) { nil }
         mailer = mock
         mailer.stub(:deliver)
 
@@ -536,7 +536,7 @@ describe Donation do
       let!(:donations) { valid_recurly_donations + invalid_recurly_donations }
 
       it "should call Resque.enqueue on active recurring donations" do
-        Resque.should_receive(:enqueue).exactly(3).times
+        Resque.should_receive(:enqueue_at).exactly(3).times
         Donation.enqueue_recurring_payments_from_recurly
 
         valid_recurly_donations.each do |donation|
@@ -556,7 +556,7 @@ describe Donation do
       let(:donation) { ask.take_action(user, action_info, page) }
 
       before :each do
-        Resque.stub(:enqueue)
+        Resque.stub(:enqueue_at)
       end
 
       it "sets the active attribute to false for a donation" do
@@ -573,7 +573,7 @@ describe Donation do
       let(:transaction) { failed_purchase }
 
       before :each do
-        Resque.stub(:enqueue)
+        Resque.stub(:enqueue_at)
         PaymentErrorMailer.stub(:delay) { mailer }
       end
 

@@ -31,6 +31,8 @@
 
 class Donation < ActiveRecord::Base
   include ActsAsUserResponse
+  @queue = :recurring_donation
+
   after_create :create_activity_event
 
   PAYMENT_METHODS = [:paypal, :credit_card]
@@ -144,7 +146,7 @@ class Donation < ActiveRecord::Base
       end
 
       self.update_attribute('next_payment_at', next_payment)
-      Resque.enqueue(next_payment, self.class, self.id)
+      Resque.enqueue_at(next_payment, self.class, self.id)
       PaymentMailer.expiring_credit_card(self).deliver if card_expiration_date < next_payment.beginning_of_month
     end
   end
