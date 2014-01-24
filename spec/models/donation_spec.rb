@@ -323,6 +323,7 @@ describe Donation do
 
     describe "confirm" do
       let(:donation) { FactoryGirl.create(:donation, :active => false) }
+      let(:recurring_donation) { FactoryGirl.create(:recurring_donation, :active => false) }
 
       before :each do
         donation.active.should be_false
@@ -338,12 +339,27 @@ describe Donation do
         donation.confirm
         donation.transactions.count.should == 1
       end
+
+      it "should enqueue a payment for a recurring donation" do
+        recurring_donation.should_receive(:enqueue_recurring_payment_from)
+        recurring_donation.confirm
+      end
+
+      it "should not enqueue a payment one_off donation" do
+        donation.should_not_receive(:enqueue_recurring_payment_from)
+        donation.confirm
+      end
     end
 
     # a donation created via take_action
     describe "#make_payment_on_recurring_donation" do
-      let(:donation) { ask.take_action(user, action_info, page) }
       let(:stubbed_client) { SpreedlyClient.stub(:new) { nil } }
+
+      before :each do
+        Resque.stub(:enqueue)
+      end
+
+      let(:donation) { ask.take_action(user, action_info, page) }
 
       it "should not call SpreedlyClient.purchase_and_hash_response if the frequency is :one_off" do
         donation.update_attribute('frequency', :one_off)
@@ -380,13 +396,15 @@ describe Donation do
 
     # a donation created via take_action
     describe "#handle_successful_spreedly_purchase_on_recurring_donation" do
-      let(:donation) { ask.take_action(user, action_info, page) }
       let(:mailer) { mock }
       let(:spreedly_client_purchase) { successful_purchase }
 
       before :each do
+        Resque.stub(:enqueue) { nil }
         mailer.stub(:deliver)
       end
+
+      let(:donation) { ask.take_action(user, action_info, page) }
 
       it "should call #add_payment" do
         donation.stub(:enqueue_recurring_payment_from)
@@ -429,11 +447,15 @@ describe Donation do
 
     # a donation created via take action
     describe "enqueue_recurring_payment_from" do
+      before :each do
+        Donation.any_instance.stub(:confirm)
+      end
+
       let(:donation) { ask.take_action(user, action_info, page) }
 
       it "calls Resque.enqueue and sets the next_payment_at attribute when a monthly recurring donation is active" do
+        donation.update_attribute('active', true)
         donation.next_payment_at.should == nil
-        donation.active.should == true
         Resque.should_receive(:enqueue)
         datetime = DateTime.now
         DateTime.stub(:now) { datetime }
@@ -443,14 +465,14 @@ describe Donation do
       end
 
       it "does not call Resque.enqueue when a recurring donation is inactive" do
-        donation.update_attribute('active', :false)
+        donation.update_attribute('active', false)
         Resque.should_not_receive(:enqueue)
         donation.enqueue_recurring_payment_from DateTime.now
         donation.next_payment_at.should == nil
       end
 
       it "does not call Resque.enqueue for a one_off donation" do
-        donation.update_attribute('frequency', :one_off)
+        donation.update_attributes(:active => true, :frequency => :one_off)
         Resque.should_not_receive(:enqueue)
         donation.enqueue_recurring_payment_from DateTime.now
         donation.next_payment_at.should == nil
@@ -459,6 +481,7 @@ describe Donation do
       it "should not call the expiring card email when the card will be valid for the next payment" do
         card_expiring_this_month = { :month => DateTime.now.month, :year => DateTime.now.year }
         donation.update_attributes(
+          :active => true,
           :frequency => 'weekly',
           :card_exp_month => card_expiring_this_month[:month],
           :card_exp_year => card_expiring_this_month[:year]
@@ -478,6 +501,7 @@ describe Donation do
       it "should call the expiring card email when the card expires before the next weekly payment" do
         card_expiring_this_month = { :month => DateTime.now.month, :year => DateTime.now.year }
         donation.update_attributes(
+          :active => true,
           :frequency => 'weekly',
           :card_exp_month => card_expiring_this_month[:month],
           :card_exp_year => card_expiring_this_month[:year]
@@ -531,6 +555,10 @@ describe Donation do
     describe "#deactivate" do
       let(:donation) { ask.take_action(user, action_info, page) }
 
+      before :each do
+        Resque.stub(:enqueue)
+      end
+
       it "sets the active attribute to false for a donation" do
         donation.active.should == true
         donation.deactivate
@@ -545,6 +573,7 @@ describe Donation do
       let(:transaction) { failed_purchase }
 
       before :each do
+        Resque.stub(:enqueue)
         PaymentErrorMailer.stub(:delay) { mailer }
       end
 

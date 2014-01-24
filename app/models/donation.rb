@@ -94,7 +94,10 @@ class Donation < ActiveRecord::Base
     Donation.transaction do
       external_id, order_id = self.transaction_id, self.order_id
       transaction = create_transaction(external_id, order_id, self.amount_in_cents)
-      PaymentMailer.confirm_purchase(self, transaction).deliver if transaction.save!
+      if transaction.save!
+        self.enqueue_recurring_payment_from(transaction.created_at) unless self.frequency.to_sym == :one_off
+        PaymentMailer.confirm_purchase(self, transaction).deliver
+      end
       self.save!
     end
   end

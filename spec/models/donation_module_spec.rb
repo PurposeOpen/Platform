@@ -345,6 +345,7 @@ describe DonationModule do
       end
 
       it "should create an active recurring donation when confirmed is true" do
+        Donation.any_instance.stub(:enqueue_recurring_payment_from)
         action_info[:confirmed] = true
         donation = @ask.take_action(@user, action_info, @page)
         donation.active.should be_true
