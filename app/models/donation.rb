@@ -125,6 +125,7 @@ class Donation < ActiveRecord::Base
 
   def handle_failed_recurring_payment(transaction)
     deactivate
+    PaymentErrorMailer.delay.report_recurring_donation_error(self, transaction[:errors])
     PaymentErrorMailer.delay.recurring_donation_card_declined(self)
   end
 

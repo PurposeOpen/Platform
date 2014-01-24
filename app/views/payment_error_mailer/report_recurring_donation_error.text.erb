@@ -1,0 +1,13 @@
+Recurring donation payment errors:
+<%= "- Message: #{@error[:message]}" %>
+
+Member data:
+<%= "- Name: #{@member.first_name} #{@member.last_name}" unless @member.name.blank? %>
+ - Email: <%= @member.email %>
+ - Country: <%= @member.country_iso %>
+
+Donation data:
+ - Donation ID: <%= @donation.id %>
+ - Payment method: <%= @donation.payment_method %>
+ - Recurring donation amount in cents: <%= @donation.subscription_amount %>
+ - Currency: <%= @donation.currency %>

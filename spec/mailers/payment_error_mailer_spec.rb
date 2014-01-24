@@ -152,6 +152,33 @@ describe PaymentErrorMailer do
 
   end
 
+  describe "report_recurring_donation_error" do
+    let(:donation) { FactoryGirl.create(:recurring_donation) }
+    let(:member) { donation.user }
+    let(:movement) { donation.user.movement }
+    let(:transaction) { failed_purchase_and_hash_response }
+
+    before :each do
+      member.update_attributes( :first_name => 'Jane',
+                                       :last_name => 'Doe' )
+      ENV["#{movement.slug.upcase}_PAYPALERROR_EMAIL_RECIPIENTS"] = 'test@example.com'
+      PaymentErrorMailer.report_recurring_donation_error(donation, transaction[:errors]).deliver
+    end
+
+    let(:delivered) { ActionMailer::Base.deliveries.last }
+
+    it "should deliver email with the correct body" do
+      delivered.should have_body_text("Message: #{transaction[:errors][:message]}")
+      delivered.should have_body_text("Name: Jane Doe")
+      delivered.should have_body_text("Email: #{member.email}")
+      delivered.should have_body_text("Country: #{member.country_iso}")
+      delivered.should have_body_text("Donation ID: #{donation.id}")
+      delivered.should have_body_text("Payment method: #{donation.payment_method}")
+      delivered.should have_body_text("Recurring donation amount in cents: #{donation.subscription_amount}")
+      delivered.should have_body_text("Currency: #{donation.currency}")
+    end
+  end
+
   describe "recurring_donation_card_declined" do
     let(:donation) { FactoryGirl.create(:recurring_donation) }
     let(:member) { donation.user }

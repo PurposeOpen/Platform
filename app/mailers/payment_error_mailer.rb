@@ -33,6 +33,19 @@ class PaymentErrorMailer < ActionMailer::Base
     end.with_settings(blast_email_settings(donation_error.movement))
   end
 
+  def report_recurring_donation_error(donation, error)
+    @donation = donation
+    @error = error
+    @member = donation.user
+    movement = @member.movement
+		recipient_list = error_emails_recipient_list(movement) # using same list as PAYPALERRORS
+		return if recipient_list.nil? || recipient_list.empty?
+
+		mail(:to => recipient_list, :from => PurposeMailer::DEFAULT_FROM, :subject => DEFAULT_SUBJECT % movement.name) do |format|
+      format.text { render 'payment_error_mailer/report_recurring_donation_error' }
+    end.with_settings(blast_email_settings(movement))
+  end
+
   def recurring_donation_card_declined(donation)
     @donation = donation
     @member = donation.user

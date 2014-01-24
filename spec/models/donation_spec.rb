@@ -541,19 +541,29 @@ describe Donation do
     # a donation created via take action
     describe "#handle_failed_recurring_payment" do
       let(:donation) { ask.take_action(user, action_info, page) }
+      let(:mailer) { mock }
       let(:transaction) { failed_purchase }
 
-      it "should call deactivate on the donation" do
-        mailer = mock
-        mailer.stub(:recurring_donation_card_declined)
+      before :each do
         PaymentErrorMailer.stub(:delay) { mailer }
+      end
+
+      it "should call deactivate on the donation" do
+        mailer.stub(:recurring_donation_card_declined)
+        mailer.stub(:report_recurring_donation_error)
         donation.should_receive(:deactivate)
         donation.handle_failed_recurring_payment(transaction)
       end
 
       it "should call PaymentErrorMailer.delay.recurring_donation_card_declined" do
-        PaymentErrorMailer.stub(:delay)
+        mailer.stub(:report_recurring_donation_error)
         PaymentErrorMailer.delay.should_receive(:recurring_donation_card_declined).with(donation)
+        donation.handle_failed_recurring_payment(failed_purchase)
+      end
+
+      it "should call PaymentErrorMailer.delay.report_recurring_donation_error" do
+        mailer.stub(:recurring_donation_card_declined)
+        PaymentErrorMailer.delay.should_receive(:report_recurring_donation_error).with(donation, transaction[:errors])
         donation.handle_failed_recurring_payment(failed_purchase)
       end
     end
