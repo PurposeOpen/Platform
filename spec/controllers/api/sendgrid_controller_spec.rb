@@ -1,63 +1,90 @@
 require 'spec_helper'
 
 describe Api::SendgridController do
-  let(:walkfree)        { FactoryGirl.create(:movement, :name => 'WalkFree') }
-  let(:allout)          { FactoryGirl.create(:movement, :name => 'AllOut') }
-  let(:therules)        { FactoryGirl.create(:movement, :name => 'therules') }
-  let(:walkfree_member) { FactoryGirl.create(:user, :email => 'member@movement.com',:movement => walkfree) }
-  let(:allout_member)   { FactoryGirl.create(:user, :email => 'member@movement.com', :movement => allout) }
-  before do
-    User.stub(:find_by_movement_id_and_email).and_return(FactoryGirl.build(:user, :movement => walkfree))
-    User.stub(:find_by_movement_id_and_email).with(walkfree.id, 'member@movement.com').and_return(walkfree_member)
-    User.stub(:find_by_movement_id_and_email).with(allout.id, 'member@movement.com').and_return(allout_member)
-    User.stub(:find_by_movement_id_and_email).with(therules.id, 'member-not-found@movement.com').and_return(nil)
+  before(:all) do
+    Delayed::Worker.delay_jobs = false
   end
 
-  context '#event_handler' do
-    it 'should always respond success' do
-      post :event_handler, :movement_id => allout.id
-      response.code.should == '200'
+  before(:each) do
+    @action_page = FactoryGirl.create(:action_page)
+    @movement = @action_page.movement
+    @unsubscribe = FactoryGirl.create(:unsubscribe_module, pages: [@action_page])
+    @campaign = FactoryGirl.create(:campaign, movement: @movement)
+    @push = FactoryGirl.create(:push, campaign: @campaign)
+    @blast = FactoryGirl.create(:blast, push: @push)
+    @email = FactoryGirl.create(:email, blast: @blast)
+    @supporter = FactoryGirl.create(:user,
+                                    :email => "bob@example.com",
+                                    :movement => @movement, :is_member => true)
+  end
+
+
+  ## Helpers
+
+  def handle_events(json, user: AppConstants.sendgrid_user, password: AppConstants.sendgrid_password)
+    @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user, password)
+    @request.env['RAW_POST_DATA'] = json
+    @request.env['HTTP_ACCEPT'] = 'application/json'
+
+    post :event_handler, :movement_id => @movement.id
+  end
+
+  def quote(str)
+    "\"#{str}\""
+  end
+
+  def find_by_email(email)
+    User.find_by_email_and_movement_id(email, @movement.id)
+  end
+
+  def make_event(type, email_address, email_id)
+    %[{ "event": #{quote(type.to_s)}, "email": #{quote(email_address)}, "unique_args": {"email_id": #{quote(email_id.to_s)}} }]
+  end
+
+  def make_events(events)
+    "[#{events.map { |evt| make_event(*evt) }.join(',')}]"
+  end
+
+  def make_user(email)
+    FactoryGirl.create(:user,
+                       :email => email,
+                       :movement => @movement, :is_member => true)
+  end
+
+
+  ## Specs
+
+  describe '#event_handler' do
+    it 'prevents unauthorized access' do
+      handle_events("{}", password: "ff334444g")
+      expect(response.code).to eq("401")
     end
 
-    context 'with a bounce event' do
-      it 'should permanently unsubscribe the member from a specific movement' do
-        post :event_handler, :movement_id => allout.id, :email => 'member@movement.com', :event => 'bounce'
-        walkfree_member.should be_member
-        walkfree_member.can_subscribe?.should be_true
+    it 'always responds with success to authorized requests' do
+      handle_events("{}")
+      expect(response.code).to eq("200")
+    end
 
-        allout_member.should_not be_member
-        allout_member.can_subscribe?.should be_false
-      end
+    context 'with a list of events' do
+      let(:supporter1) { make_user('one@example.com') }
+      let(:supporter2) { make_user('two@example.com') }
 
-      it 'should return 200 if member is nil' do
-        post :event_handler, :movement_id => therules.id, :email => 'member-not-found@movement.com', :event => 'bounce'
-        response.code.should == '200'
+      it 'processes all events' do
+        expect(find_by_email(supporter1.email).is_member).to be_true
+        expect(find_by_email(supporter2.email).is_member).to be_true
+
+        events = make_events([
+                              [:bounce, supporter1.email, @email.id],
+                              [:spamreport, supporter2.email, @email.id]
+                             ])
+        handle_events(events)
+
+        expect(response.code).to eq("200")
+        expect(find_by_email(supporter1.email).is_member).to be_false
+        expect(find_by_email(supporter2.email).is_member).to be_false
       end
     end
 
-    context 'with a spamreport event' do
-      let(:spammed_email) { FactoryGirl.create(:email) }
-      before { Email.stub(:find).with(spammed_email.id.to_s).and_return(spammed_email) }
-
-      it 'should permanently unsubscribe the member from a specific movement' do
-        UserActivityEvent.stub(:email_spammed!).with(allout_member, spammed_email)
-        post :event_handler, :movement_id => allout.id, :email => 'member@movement.com', :event => 'spamreport', :email_id => spammed_email.id
-        walkfree_member.should be_member
-        walkfree_member.can_subscribe?.should be_true
-
-        allout_member.should_not be_member
-        allout_member.can_subscribe?.should be_false
-      end
-
-      it 'should report an email spammed event' do
-        UserActivityEvent.should_receive(:email_spammed!).with(allout_member, spammed_email)
-        post :event_handler, :movement_id => allout.id, :email => 'member@movement.com', :event => 'spamreport', :email_id => spammed_email.id
-      end
-
-      it 'should return 200 if member is nil' do
-        post :event_handler, :movement_id => therules.id, :email => 'member-not-found@movement.com', :event => 'spamreport'
-        response.code.should == '200'
-      end
-    end
+    # Correct handling of individual events is tested in the spec for SendgridEvents
   end
 end
