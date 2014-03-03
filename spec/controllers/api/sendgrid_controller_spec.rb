@@ -21,7 +21,7 @@ describe Api::SendgridController do
 
   ## Helpers
 
-  def handle_events(json, user: AppConstants.sendgrid_username, password: AppConstants.sendgrid_password)
+  def handle_events(json, user: AppConstants.sendgrid_events_username, password: AppConstants.sendgrid_events_password)
     @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user, password)
     @request.env['RAW_POST_DATA'] = json
     @request.env['HTTP_ACCEPT'] = 'application/json'

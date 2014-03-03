@@ -2,7 +2,7 @@ require 'json'
 
 class Api::SendgridController < Api::BaseController
 
-  http_basic_authenticate_with name: AppConstants.sendgrid_username, password: AppConstants.sendgrid_password
+  http_basic_authenticate_with name: AppConstants.sendgrid_events_username, password: AppConstants.sendgrid_events_password
 
   def event_handler
     events = JSON.parse(request.body.read)
