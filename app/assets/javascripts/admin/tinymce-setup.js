@@ -44,12 +44,22 @@ $(function() {
 
   $('textarea.html-full-editor').livequery(function() { $(this).tinymce($.extend(fullEditor, this.dataset));});
 
-  $('[data-script-directionality="left-to-right"] textarea.html-editor').livequery(function() { $(this).tinymce($.extend(regularEditor, this.dataset));});
-  $('[data-script-directionality="right-to-left"] textarea.html-editor').livequery(function() { $(this).tinymce($.extend(regularEditor, {skin: 'right_to_left'}, this.dataset));});
+  $('div[data-script-directionality="left-to-right"] textarea.html-editor').livequery(function() {
+    $(this).tinymce($.extend({}, regularEditor, this.dataset));
+  });
+  $('div[data-script-directionality="right-to-left"] textarea.html-editor').livequery(function() {
+    $(this).tinymce($.extend({}, regularEditor, {skin: 'right_to_left'}, this.dataset));
+  });
 
   $('[data-script-directionality="left-to-right"] textarea.html-compact-editor').livequery(function() { $(this).tinymce(compactEditor) });
-  $('[data-script-directionality="right-to-left"] textarea.html-compact-editor').livequery(function() { $(this).tinymce($.extend(compactEditor, {skin: 'right_to_left'})) });
+  $('[data-script-directionality="right-to-left"] textarea.html-compact-editor').livequery(function() {
+    $(this).tinymce($.extend({}, compactEditor, {skin: 'right_to_left'}));
+  });
 
-  $('[data-script-directionality="left-to-right"] textarea.html-minimal-editor').livequery(function() { $(this).tinymce(minimalEditor) });
-  $('[data-script-directionality="right-to-left"] textarea.html-minimal-editor').livequery(function() { $(this).tinymce($.extend(minimalEditor, {skin: 'right_to_left'})) });
+  $('[data-script-directionality="left-to-right"] textarea.html-minimal-editor').livequery(function() {
+    $(this).tinymce(minimalEditor);
+  });
+  $('[data-script-directionality="right-to-left"] textarea.html-minimal-editor').livequery(function() {
+    $(this).tinymce($.extend({}, minimalEditor, {skin: 'right_to_left'}));
+  });
 });
