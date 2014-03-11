@@ -38,7 +38,7 @@ describe Api::SendgridController do
   end
 
   def make_event(type, email_address, email_id)
-    %[{ "event": #{quote(type.to_s)}, "email": #{quote(email_address)}, "unique_args": {"email_id": #{quote(email_id.to_s)}} }]
+    %[{ "event": #{quote(type.to_s)}, "email": #{quote(email_address)}, "email_id": #{quote(email_id.to_s)} }]
   end
 
   def make_events(events)
