@@ -246,7 +246,7 @@ GEM
     multi_json (1.7.9)
     mysql2 (0.3.11)
     netrc (0.7.7)
-    newrelic_rpm (3.5.6.55)
+    newrelic_rpm (3.7.3.199)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
     oink (0.10.1)
@@ -480,7 +480,7 @@ DEPENDENCIES
   memcachier
   money
   mysql2 (= 0.3.11)
-  newrelic_rpm
+  newrelic_rpm (~> 3.7)
   nokogiri
   oink
   paperclip

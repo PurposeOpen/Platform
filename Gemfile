@@ -35,7 +35,7 @@ gem "pdfkit"
 gem 'enumerated_attribute'
 gem 'seed-fu'
 gem 'activerecord-import'
-gem 'newrelic_rpm'
+gem 'newrelic_rpm', '~> 3.7'
 gem 'redcarpet'
 gem 'activemodel-warnings'
 gem 'airbrake'

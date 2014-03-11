@@ -1,3 +1,5 @@
+require 'newrelic_rpm'
+
 module SendgridEvents
 
   class Event
@@ -14,6 +16,7 @@ module SendgridEvents
     # address, for instance, it will run succesfully but won't do
     # anything.
     def handle
+      NewRelic::Agent.increment_metric("Custom/SendgridEvent/@name", 1)
       # Do whatever this event needs to do
     end
 
@@ -54,6 +57,7 @@ module SendgridEvents
   class Bounce < Event
     @name = "Bounce"
     def handle
+      super
       # Could not deliver, so unsubscribe this user.
       member = User.find_by_movement_id_and_email(@movement_id, @email_address)
       if member
@@ -67,6 +71,7 @@ module SendgridEvents
   class Open < Event
     @name = "Open"
     def handle
+      super
       # Register an email_viewed event
       member = User.find_by_movement_id_and_email(@movement_id, @email_address)
       email = Email.find_by_id(@email_id)
@@ -81,6 +86,7 @@ module SendgridEvents
   class Click < Event
     @name = "Click"
     def handle
+      super
       # Register an email_clicked event if we don't have one already
       member = User.find_by_movement_id_and_email(@movement_id, @email_address)
       email = Email.find_by_id(@email_id)
@@ -95,6 +101,7 @@ module SendgridEvents
   class SpamReport < Event
     @name = "SpamReport"
     def handle
+      super
       member = User.find_by_movement_id_and_email(@movement_id, @email_address)
       email = Email.find_by_id(@email_id)
       if member and email
@@ -109,6 +116,7 @@ module SendgridEvents
   class Unsubscribe < Event
     @name = "Unsubscribe"
     def handle
+      super
       member = User.find_by_movement_id_and_email(@movement_id, @email_address)
       if member
         member.permanently_unsubscribe!
@@ -155,10 +163,12 @@ module SendgridEvents
       if handler
         handler.new(movement_id, email_address, email_id)
       else
+        NewRelic::Agent.increment_metric('Custom/SendgridEvent/NoHandler', 1)
         Rails.logger.warn "Could not find a handler to process SendGrid event #{evt}"
         @@the_noop
       end
     else
+      NewRelic::Agent.increment_metric('Custom/SendgridEvent/BadData', 1)
       Rails.logger.warn "Could not create a handler to process SendGrid event from #{evt}"
       @@the_noop
     end
