@@ -7,7 +7,7 @@ module Admin
     end
 
     def image_url(image, format = :original)
-      url = S3[:enabled] ? "#{AppConstants.s3_bucket_uri}/#{image.name(format)}" :
+      url = S3[:enabled] ? "#{AppConstants.uploaded_asset_host}/#{image.name(format)}" :
           "//#{request.host_with_port}/system/#{image.name(format)}"
       if url.start_with?'http'
         url

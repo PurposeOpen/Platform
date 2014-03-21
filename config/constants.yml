@@ -6,7 +6,7 @@ development: &default
   default_cache_timeout: <%= 0.minutes %>
   umbrella_user_email_address: "offlinedonations@yourdomain.org"
   send_grid_health_check_uri: "http://sendgrid.com/api/stats.get.json?api_user=<%= ENV["SENDGRID_USERNAME"] %>&api_key=<%= ENV["SENDGRID_PASSWORD"] %>&days=1"
-  s3_bucket_uri: "//<%= ENV['S3_BUCKET_NAME'] %>.s3.amazonaws.com"
+  uploaded_asset_host: <%= '//' << (ENV['CDN_HOST'] || "#{ENV['S3_BUCKET_NAME']}.s3.amazonaws.com") %>
   enable_unfiltered_blasting: <%= ENV['ENABLE_UNFILTERED_BLASTING'] || false %>
   authenticate_api_calls: <%= ENV["AUTHENTICATE_API_CALLS"] || false %>
   readonly_database_url: <%= ENV["READONLY_DATABASE_URL"] %>
@@ -26,7 +26,6 @@ test:
   default_cache_timeout: <%= 5.minutes %>
   blast_job_delay: <%= 0 %>
   send_grid_health_check_uri: ""
-  s3_bucket_uri: "//xyz.s3.amazonaws.com"
 
 showcase:
   <<: *default
