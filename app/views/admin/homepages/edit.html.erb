@@ -10,7 +10,7 @@
       </ul>
 
       <% @homepage_contents.each do |hpc| %>
-        <div id="homepage-<%= hpc.iso_code %>">
+        <div id="homepage-<%= hpc.iso_code %>" data-script-directionality=<%= script_directionality(hpc.iso_code)%>>
           <%= fields_for "homepage_content[#{hpc.iso_code}]", hpc do |fh| %>
             <%= form_errors hpc %>
 

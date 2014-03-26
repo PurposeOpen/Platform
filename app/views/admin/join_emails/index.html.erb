@@ -18,10 +18,10 @@
             <%= fields_for :join_emails, join_email, :index => join_email.id do |f| %>
               <div class="module_body">
                 <%= f.label :from %>
-                <%= f.text_field :from %>
+                <%= f.text_field :from, :class => 'email_sender' %>
 
                 <%= f.label :reply_to %>
-                <%= f.text_field :reply_to %>
+                <%= f.text_field :reply_to, :class => 'email_reply_to' %>
 
                 <%= f.label :subject %>
                 <%= f.text_field :subject %>

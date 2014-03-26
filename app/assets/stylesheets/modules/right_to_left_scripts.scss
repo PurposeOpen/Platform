@@ -1,0 +1,11 @@
+// Styles for Arabic
+
+#page-ar, #page-iw, #page-fa, #page-ur,
+#homepage-ar, #homepage-iw, #homepage-fa, #homepage-ur,
+#content-ar, #content-iw, #content-fa, #content-ur {
+  input[type=text]:not(.public_activity_stream_template):not(.email_sender):not(.email_reply_to),
+  textarea {
+    text-align: right;
+    font-size: 30px;
+  }
+}

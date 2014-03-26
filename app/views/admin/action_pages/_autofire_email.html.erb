@@ -17,10 +17,10 @@
 
   <div class="autofire_email_details">
     <%= label_tag "autofire_emails[#{iso_code}][from]", "Email Sender", :class => "tooltip #{error_class_if_invalid(autofire_email, :from)}", 'data-tip' => "autofire-email-from-tip" %>
-    <%= text_field_tag "autofire_emails[#{iso_code}][from]", autofire_email.try(:from) %>
+    <%= text_field_tag "autofire_emails[#{iso_code}][from]", autofire_email.try(:from), :class => 'email_sender' %>
 
     <%= label_tag "autofire_emails[#{iso_code}][from]", "Reply To", :class => "tooltip #{error_class_if_invalid(autofire_email, :reply_to)}", 'data-tip' => "autofire-email-from-tip" %>
-    <%= text_field_tag "autofire_emails[#{iso_code}][reply_to]", autofire_email.try(:reply_to) %>
+    <%= text_field_tag "autofire_emails[#{iso_code}][reply_to]", autofire_email.try(:reply_to), :class => 'email_reply_to' %>
 
     <%= label_tag "autofire_emails[#{iso_code}][subject]", "Email Subject", :class => "tooltip #{error_class_if_invalid(autofire_email, :subject)}", 'data-tip' => "autofire-email-subject-tip" %>
     <%= text_field_tag "autofire_emails[#{iso_code}][subject]", autofire_email.try(:subject) %>

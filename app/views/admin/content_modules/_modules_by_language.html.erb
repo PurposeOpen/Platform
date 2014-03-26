@@ -6,7 +6,7 @@
   </ul>
 
   <% page.possible_languages.each do |language| %>
-    <div id="page-<%= language.iso_code %>" class="tab_content all_module_containers" data-lang="<%= language.iso_code %>">
+    <div id="page-<%= language.iso_code %>" class="tab_content all_module_containers" data-lang="<%= language.iso_code %>" data-script-directionality=<%= script_directionality(language.iso_code) %>>
 
       <div class="row">
         <div class="container container-full" data-layout-type="<%= ContentModule::HEADER %>">

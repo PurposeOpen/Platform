@@ -62,6 +62,10 @@ module Admin
       crumbs_html.html_safe
     end
 
+    def script_directionality(iso_code)
+      ['ar', 'iw', 'fa', 'ur'].include?(iso_code) ? 'right-to-left' : 'left-to-right'
+    end
+
     private
 
     def identify_campaign

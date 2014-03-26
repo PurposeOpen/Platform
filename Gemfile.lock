@@ -19,6 +19,12 @@ GIT
     profanalyzer (0.1.2)
 
 GIT
+  remote: https://github.com/purposecampaigns/tinymce-rails
+  revision: 15acfc92cf2fa0a347eb23689fc784e252e9ccd9
+  specs:
+    tinymce-rails (3.5.9)
+
+GIT
   remote: https://purposetw-deploy:s3nseofpurpose@github.com/PurposeTW/purpose_country_select.git
   revision: 8b80e6d97bf619f8c2cb966d1ae6f342412c512f
   specs:
@@ -114,7 +120,6 @@ GEM
       sexp_processor
     coderay (1.0.8)
     colored (1.2)
-    columnize (0.3.6)
     compass (0.12.2)
       chunky_png (~> 1.2)
       fssm (>= 0.2.7)
@@ -136,12 +141,6 @@ GEM
     dalli (2.6.2)
     database_cleaner (0.9.1)
     debug_inspector (0.0.2)
-    debugger (1.6.1)
-      columnize (>= 0.3.1)
-      debugger-linecache (~> 1.2.0)
-      debugger-ruby_core_source (~> 1.2.3)
-    debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.2.3)
     deep_cloneable (1.5.1)
       activerecord (>= 3.1)
     delayed_job (3.0.5)
@@ -404,8 +403,6 @@ GEM
       ref
     thor (0.18.1)
     tilt (1.4.1)
-    tinymce-rails (3.5.8)
-      railties (>= 3.1.1)
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
@@ -450,7 +447,6 @@ DEPENDENCIES
   cucumber-rails
   dalli
   database_cleaner
-  debugger (>= 1.4.0)
   deep_cloneable
   delayed_job
   delayed_job_active_record (~> 0.3.3)
@@ -515,7 +511,7 @@ DEPENDENCIES
   sunspot_solr
   sunspot_test
   therubyracer
-  tinymce-rails
+  tinymce-rails (= 3.5.9)!
   uglifier (>= 1.0.3)
   uuid
   will_paginate
