@@ -32,7 +32,7 @@ These apps may need a minute to warm up on your first request because they are r
 ### [How to Contribute](https://github.com/PurposeOpen/Platform/wiki/How-to-Contribute)
 
 ### Platform Partners
-- If you're interested in using the Purpose Platform for your organization, contact <erika@purpose.com>.
+- If you're interested in using the Purpose Platform for your organization, contact <<platformsupport@purpose.com>>.
 
 ### Community
 - [Developer discussions](http://groups.google.com/group/purpose-platform-dev)
