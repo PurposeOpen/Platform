@@ -1,26 +1,21 @@
+require 'json'
+
 class Api::SendgridController < Api::BaseController
 
-  def event_handler
-    member = User.find_by_movement_id_and_email(@movement.id, params[:email])
-    head :ok and return if !member
-    member.permanently_unsubscribe! if should_unsubscribe?
+  http_basic_authenticate_with name: AppConstants.sendgrid_events_username, password: AppConstants.sendgrid_events_password
 
-    if spam?
-      email = Email.find(params[:email_id])
-      UserActivityEvent.email_spammed!(member, email)
+  def event_handler
+    events = JSON.parse(request.body.read)
+    events.each do |evt|
+      handle_event(@movement.id, evt)
     end
+
     head :ok
   end
 
-  def should_unsubscribe?
-    hard_bounce? || spam?
+  def handle_event(movement_id, event)
+    evt = SendgridEvents::create(movement_id, event)
+    evt.delay.handle
   end
 
-  def hard_bounce?
-    params[:event] == 'bounce'
-  end
-
-  def spam?
-    params[:event] == 'spamreport'
-  end
 end
