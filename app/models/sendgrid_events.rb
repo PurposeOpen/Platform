@@ -16,7 +16,7 @@ module SendgridEvents
     # address, for instance, it will run succesfully but won't do
     # anything.
     def handle
-      NewRelic::Agent.increment_metric("Custom/SendgridEvent/@name", 1)
+      NewRelic::Agent.increment_metric("Custom/SendgridEvent/#{@name}", 1)
       # Do whatever this event needs to do
     end
 
