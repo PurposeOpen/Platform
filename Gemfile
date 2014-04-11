@@ -107,4 +107,5 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'quiet_assets'
   gem 'subcontractor'
+  gem 'byebug'
 end

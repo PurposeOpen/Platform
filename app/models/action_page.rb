@@ -166,9 +166,11 @@ class ActionPage < Page
   end
 
   def process_action_taken_by(member, action_info = {})
-    if has_an_ask?
-      user_response = ask_module_for_language(member.language).take_action(member, action_info, self)
-      deliver_autofire_email_to(member, user_response)
+    if ask_module = ask_module_for_language(member.language)
+      user_response = ask_module.take_action(member, action_info, self)
+      email = autofire_email_for_language(member.language)
+
+      deliver_autofire_email_to(member, user_response, email) if (email && email.enabled_and_valid?)
     end
   end
 
@@ -245,10 +247,9 @@ class ActionPage < Page
     self.content_modules.any? { |cm| cm.is_a?(module_type) }
   end
 
-  def deliver_autofire_email_to(member, user_response)
-    email = AutofireEmail.find_by_action_page_id_and_language_id(self.id, member.language.id)
+  def deliver_autofire_email_to(member, user_response, email)
     additional_tokens = user_response.respond_to?(:autofire_tokens) ? user_response.autofire_tokens : nil
-    SendgridMailer.user_email(email, member, additional_tokens) if (email && email.enabled_and_valid?)
+    SendgridMailer.user_email(email, member, additional_tokens)
   end
   handle_asynchronously(:deliver_autofire_email_to) unless Rails.env == "test"
 

@@ -66,10 +66,7 @@ class ContentModule < ActiveRecord::Base
   def is_ask?
     self.respond_to?(:take_action)
   end
-
-  def subscribes_user_on_action?
-    self.is_ask?
-  end
+  alias_method :subscribes_user_on_action?, :is_ask?
 
   def linked?
     @is_linked ||= ContentModuleLink.where(:content_module_id => self.id).count > 1

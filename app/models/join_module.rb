@@ -68,6 +68,8 @@ class JoinModule < ContentModule
       user.update_attributes(:join_email_sent => true)
       send_join_email(user, page.movement)
     end
+
+    return false
   end
 
   def can_remove_from_page?
