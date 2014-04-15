@@ -48,7 +48,7 @@ gem 'compass-rails'
 gem 'compass-960-plugin'
 gem 'sass-rails'
 gem 'deep_cloneable'
-gem 'purpose_country_select', '~> 0.0.5', :git => "https://purposetw-deploy:s3nseofpurpose@github.com/PurposeTW/purpose_country_select.git"
+gem 'purpose_country_select', '0.1.0', :git => "https://github.com/PurposeOpen/country_select.git"
 gem 'hirefireapp'
 gem 'clockwork'
 gem 'foreigner'
