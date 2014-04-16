@@ -4,3 +4,4 @@
 --format RspecJunitFormatter --out reports/spec/spec.xml
 --format documentation
 --drb
+-r turnip/rspec

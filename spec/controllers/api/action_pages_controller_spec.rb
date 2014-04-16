@@ -510,7 +510,6 @@ describe Api::ActionPagesController do
           :activity => UserActivityEvent::Activity::ACTION_TAKEN.to_s, :email_id => email.id, :push_id => email.blast.push.id,
           :user_id => user.id).all
           
-      #binding.pry    
       activity_events.count.should == 1
       data = ActiveSupport::JSON.decode(response.body)
       response.status.should eql 201

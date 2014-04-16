@@ -422,6 +422,9 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
+    turnip (1.2.1)
+      gherkin (>= 2.5)
+      rspec (>= 2.0, < 4.0)
     tzinfo (0.3.39)
     uglifier (1.3.0)
       execjs (>= 0.3.0)
@@ -531,6 +534,7 @@ DEPENDENCIES
   sunspot_test
   therubyracer
   tinymce-rails (= 3.5.9)!
+  turnip
   uglifier (>= 1.0.3)
   uuid
   will_paginate

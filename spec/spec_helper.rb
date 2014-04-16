@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'spork'
+require 'turnip/capybara'
+require 'capybara/poltergeist'
+Dir.glob('spec/acceptance/steps/**/*steps.rb') { |f| load f, true }
 #uncomment the following line to use spork with the debugger
 #require 'spork/ext/ruby-debug'
 
@@ -174,6 +177,7 @@ RSpec::Matchers.define :be_valid do
 end
 
 RSpec.configure do |config|
+  config.use_transactional_fixtures = false
   config.around(:each, :caching => true) do |example|
     caching, ActionController::Base.perform_caching = ActionController::Base.perform_caching, true
     store, ActionController::Base.cache_store = ActionController::Base.cache_store, :memory_store
@@ -184,7 +188,34 @@ RSpec.configure do |config|
     ActionController::Base.cache_store = store
     ActionController::Base.perform_caching = caching
   end
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:each, type: :feature) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
 end
+
+Capybara.register_driver :poltergeist do |app|
+  options = { timeout: 120 }
+  options[:inspector] = true if ENV['DEBUG']
+  Capybara::Poltergeist::Driver.new(app, options)
+end
+Capybara.javascript_driver = :poltergeist
+Capybara.current_driver = :poltergeist
 
 def login_as(user)
   request.env['warden'] = double(Warden, :authenticate => user, :authenticate! => user)

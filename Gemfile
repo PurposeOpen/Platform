@@ -92,6 +92,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'cucumber-rails', require: false
   gem 'cucumber'
+  gem 'turnip'
   gem 'launchy'
   gem 'factory_girl_rails', '~> 4.2.0'
   gem 'email_spec'
