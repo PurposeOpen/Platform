@@ -519,7 +519,6 @@ DEPENDENCIES
   rspec_junit_formatter
   sass-rails
   seed-fu
-  selenium-webdriver
   sendgrid
   shoulda-matchers
   simplecov
