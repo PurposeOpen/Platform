@@ -50,9 +50,10 @@ class Movement < ActiveRecord::Base
   has_secure_password
   before_validation :assign_default_password
 
-  after_initialize :ensure_homepage_exists
+  after_initialize :default_fields, :ensure_homepage_exists
   after_create { MemberCountCalculator.init(self) }
 
+  validates :time_zone, inclusion: { in: ActiveSupport::TimeZone::MAPPING.values, message: 'must be a valid zone' }
   validates_presence_of :homepage
   validates_length_of :name, :maximum => 20, :minimum => 3
   validates_format_of :url, :with => %r[\b(([\w-]+://)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))], :message => "must be valid"
@@ -153,6 +154,10 @@ class Movement < ActiveRecord::Base
   end
 
   private
+
+  def default_fields
+    self.time_zone ||= 'Etc/UTC'
+  end
 
   def default_candidate(language_id)
     languages.find(language_id)

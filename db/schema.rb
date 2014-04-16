@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130913150541) do
+ActiveRecord::Schema.define(:version => 20140416075135) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -405,6 +405,7 @@ ActiveRecord::Schema.define(:version => 20130913150541) do
     t.string   "password_digest"
     t.string   "slug"
     t.string   "crowdring_url"
+    t.string   "time_zone"
   end
 
   add_index "movements", ["slug"], :name => "index_movements_on_slug"

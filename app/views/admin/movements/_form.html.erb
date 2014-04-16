@@ -17,6 +17,11 @@
   </p>
 
   <p>
+    <%= f.label :time_zone, :class => "req"%>
+    <%= f.select :time_zone, ActiveSupport::TimeZone::MAPPING %>
+  </p>
+
+  <p>
     <%= f.label :languages, :class => "req"%>
     <div id="languages-container">
       <%= select_tag 'movement[languages]', options_from_collection_for_select(Language.all, :id, :name, @movement.languages.map(&:id)), :multiple => true, :class => "multiselect" %>

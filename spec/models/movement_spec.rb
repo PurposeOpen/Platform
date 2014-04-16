@@ -72,6 +72,10 @@ describe Movement do
     end
   end
 
+  it 'sets UTC as the default timezone' do
+    Movement.new.time_zone.should == "Etc/UTC"
+  end
+
   it "should set a default language" do
     english = FactoryGirl.create(:english)
     portuguese = FactoryGirl.create(:portuguese)
@@ -111,6 +115,12 @@ describe Movement do
 
     let(:movement) { FactoryGirl.build(:movement) }
 
+    it 'ensures a valid time_zone' do
+      movement.time_zone = 'Outer Space'
+      movement.should_not be_valid
+      movement.errors[:time_zone].should include 'must be a valid zone'
+    end
+ 
     it "should make sure URL is valid" do
       movement.update_attributes(:url => "")
       movement.errors[:url].should_not be_empty
