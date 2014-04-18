@@ -1,4 +1,4 @@
-step 'I am a platform administrator with a primary movement' do
+step 'I am a Platform Administrator with a primary movement' do
   FactoryGirl.create(:movement)
   @user = FactoryGirl.create(:admin_platform_user, email: 'admin@admin.com',
                              first_name: "Admin", last_name: "User",
@@ -14,5 +14,10 @@ end
 
 step 'I am taken to my primary movement dashboard' do
   expect(current_path).to eq(admin_movement_path(Movement.first))
+end
+
+step 'I am signed in as a Platform Administrator' do
+  step 'I am a Platform Administrator with a primary movement' 
+  step 'I sign into the platform'
 end
 

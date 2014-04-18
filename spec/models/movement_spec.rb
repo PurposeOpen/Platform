@@ -72,8 +72,11 @@ describe Movement do
     end
   end
 
-  it 'sets UTC as the default timezone' do
-    Movement.new.time_zone.should == "Etc/UTC"
+
+  describe '#defaults' do
+    it 'sets UTC as the default timezone' do
+      Movement.new.time_zone.should == "Etc/UTC"
+    end
   end
 
   it "should set a default language" do

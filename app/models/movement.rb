@@ -50,7 +50,7 @@ class Movement < ActiveRecord::Base
   has_secure_password
   before_validation :assign_default_password
 
-  after_initialize :default_fields, :ensure_homepage_exists
+  after_initialize :defaults, :ensure_homepage_exists
   after_create { MemberCountCalculator.init(self) }
 
   validates :time_zone, inclusion: { in: ActiveSupport::TimeZone::MAPPING.values, message: 'must be a valid zone' }
@@ -155,7 +155,7 @@ class Movement < ActiveRecord::Base
 
   private
 
-  def default_fields
+  def defaults
     self.time_zone ||= 'Etc/UTC'
   end
 
