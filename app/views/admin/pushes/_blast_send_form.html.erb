@@ -22,6 +22,12 @@
         <label for='run_at_utc' class='left'>Send at</label>
         <input class="run_at_utc" type="text" name="run_at_utc">
         <%= select_tag :run_at_hour, '', {:class => 'hide run_at_time'} %>
+        <div class="timezone-options">
+          <input type="radio" name="timezone_option" value="specified" checked>
+          specified timezone (UTC) or
+          <input type="radio" name="timezone_option" value="relative">
+          relative to recipient timezone
+        </div>
         <label class='utc_notice'>
           All times are in UTC.
           <%= link_to "Click here for help with UTC", "http://www.worldtimeserver.com/current_time_in_UTC.aspx", :target => "_blank" %>
