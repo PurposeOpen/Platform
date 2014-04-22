@@ -25,6 +25,7 @@ FactoryGirl.define do
     name                  { generate(:movement_name) }
     url                   "http://www.yourdomain.com"
     languages             { [Language.find_by_name("English") || FactoryGirl.create(:english)] }
+    time_zone             "Etc/UTC"
 
     after(:create) do |m|
       m.default_iso_code = m.languages.first.iso_code unless m.languages.empty?

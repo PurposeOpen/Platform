@@ -71,32 +71,32 @@ describe Blast do
       @english_sent_email = create(:email, :test_sent_at => Time.now, :sent => true, :blast => @blast, :language => @english)
       @spanish_proofed_email = create(:email, :test_sent_at => Time.now, :blast => @blast, :language => @spanish)
       @limit = 100
-      @run_at_utc = 10.days.from_now.utc
+      @run_at = 10.days.from_now.utc
     end
 
     it "should enqueue only unsent proofed emails" do
       proofed_emails = [@english_proofed_emails[0], @english_sent_email]
       @blast.stub_chain(:proofed_emails, :all).and_return(proofed_emails)
-      proofed_emails[0].should_receive(:enqueue_job).with(1, 0, @limit, @run_at_utc)
+      proofed_emails[0].should_receive(:enqueue_job).with(1, 0, @limit, @run_at)
       proofed_emails[1].should_not_receive(:enqueue_job)
-      @blast.send_proofed_emails!(limit: @limit, :run_at_utc => @run_at_utc)
+      @blast.send_proofed_emails!(limit: @limit, :run_at => @run_at)
     end
 
     it "should enqueue proofed emails grouped by language" do
       proofed_emails = [*@english_proofed_emails, @spanish_proofed_email]
       @blast.stub_chain(:proofed_emails, :all).and_return(proofed_emails)
-      proofed_emails[0].should_receive(:enqueue_job).with(2, 0, @limit, @run_at_utc)
-      proofed_emails[1].should_receive(:enqueue_job).with(2, 1, @limit, @run_at_utc)
-      proofed_emails[2].should_receive(:enqueue_job).with(1, 0, @limit, @run_at_utc)
-      @blast.send_proofed_emails!(limit: @limit, :run_at_utc => @run_at_utc)
+      proofed_emails[0].should_receive(:enqueue_job).with(2, 0, @limit, @run_at)
+      proofed_emails[1].should_receive(:enqueue_job).with(2, 1, @limit, @run_at)
+      proofed_emails[2].should_receive(:enqueue_job).with(1, 0, @limit, @run_at)
+      @blast.send_proofed_emails!(limit: @limit, :run_at => @run_at)
     end
 
     it "should enqueue proofed emails grouped by language for given email ids" do
       proofed_emails = [@english_proofed_emails[0], @spanish_proofed_email]
       @blast.stub_chain(:proofed_emails, :for_ids, :all).and_return(proofed_emails)
-      proofed_emails[0].should_receive(:enqueue_job).with(1, 0, @limit, @run_at_utc)
-      proofed_emails[1].should_receive(:enqueue_job).with(1, 0, @limit, @run_at_utc)
-      @blast.send_proofed_emails!(limit: @limit, email_ids: proofed_emails.map(&:id), :run_at_utc => @run_at_utc)
+      proofed_emails[0].should_receive(:enqueue_job).with(1, 0, @limit, @run_at)
+      proofed_emails[1].should_receive(:enqueue_job).with(1, 0, @limit, @run_at)
+      @blast.send_proofed_emails!(limit: @limit, email_ids: proofed_emails.map(&:id), :run_at => @run_at)
     end
   end
 

@@ -18,7 +18,7 @@ module Admin
 
       email_ids = [params[:email_id]] unless params[:email_id] == 'all'
       options = {limit: @limit, email_ids: email_ids}.select{|k,v| v.present? }
-      @blast.send_proofed_emails!(options.merge(:run_at_utc => @run_at_utc || Time.now.utc+AppConstants.blast_job_delay))
+      @blast.send_proofed_emails!(options.merge(:run_at => @run_at || Time.now.utc+AppConstants.blast_job_delay))
       Rails.logger.info @blast.push.inspect
       redirect_to admin_movement_push_path(@movement, @blast.push)
     end
@@ -26,9 +26,10 @@ module Admin
     private
 
     def invalid_schedule_time_format?
-      if(params[:run_at_utc].present? && params[:run_at_hour].present?)
+      if(params[:run_now] != "true" && params[:run_at].present? && params[:run_at_hour].present?)
         begin
-          @run_at_utc = DateTime.strptime(params[:run_at_utc] + params[:run_at_hour], '%m/%d/%Y%H:%M').to_time.utc
+          zone = ActiveSupport::TimeZone[@blast.movement.time_zone]
+          @run_at = zone.parse("#{params[:run_at]} #{params[:run_at_hour]}").utc
         rescue
           flash[:error] = 'Invalid date format'
           return true
@@ -38,8 +39,8 @@ module Admin
     end
 
     def past_schedule_time?
-      return false unless(@run_at_utc && @run_at_utc < Time.now.utc+AppConstants.blast_job_delay)
-      flash[:error] = "Scheduled time should be in at least #{AppConstants.blast_job_delay} minutes later than current UTC time"
+      return false unless(@run_at && @run_at < Time.now.utc+AppConstants.blast_job_delay)
+      flash[:error] = "Scheduled time should be in at least #{AppConstants.blast_job_delay} minutes later than current time"
     end
 
     def list_errors?

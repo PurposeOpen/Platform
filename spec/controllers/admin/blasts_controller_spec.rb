@@ -74,9 +74,9 @@ describe Admin::BlastsController do
   end
 
   describe "responding to POST delivery" do
-    let(:run_at_utc_param) { "12/01/#{Time.now.year+1}" }
+    let(:run_at_param) { "#{Time.now.year+1}-12-01" }
     let(:run_at_hour_param) { "12:25" }
-    let(:run_at_utc) { DateTime.strptime("#{run_at_utc_param} #{run_at_hour_param}", '%m/%d/%Y %H:%M').to_time.utc }
+    let(:run_at) { DateTime.strptime("#{run_at_param} #{run_at_hour_param}", '%Y-%m-%d %H:%M').to_time.utc }
 
     before do
       Blast.stub(:find) { @blast }
@@ -86,7 +86,7 @@ describe Admin::BlastsController do
     describe "time parameters" do
       before(:each) do
         @blast.should_receive(:send_proofed_emails!) do |options|
-          options[:run_at_utc].should be_within(2).of(Time.now.utc+AppConstants.blast_job_delay)
+          options[:run_at].should be_within(2).of(Time.now.utc+AppConstants.blast_job_delay)
         end
       end
 
@@ -94,53 +94,72 @@ describe Admin::BlastsController do
         response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
       end
 
+      it 'schedules now regardless of time selection when selected to run now' do
+        post :deliver, id: @blast.id, run_now: "true", run_at: run_at_param, 
+             run_at_hour: run_at_hour_param, email_id: "all", movement_id: @movement.id 
+      end
+
       it 'should schedule with default delay period if user has not chosen any time' do
-        post :deliver, :id => @blast.id, :run_at_utc => '', :run_at_hour => '',
+        post :deliver, :id => @blast.id, :run_at => '', :run_at_hour => '',
              :email_id => "all", :movement_id => @movement.id
       end
 
       it 'should schedule with default delay period if user has not chosen any date' do
-        post :deliver, :id => @blast.id, :run_at_utc => '', :run_at_hour => run_at_hour_param,
+        post :deliver, :id => @blast.id, :run_at => '', :run_at_hour => run_at_hour_param,
              :email_id => "all", :movement_id => @movement.id
       end
 
       it 'should schedule with default delay period if user has not chosen any hour' do
-        post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => '',
+        post :deliver, :id => @blast.id, :run_at => run_at_param, :run_at_hour => '',
              :email_id => "all", :movement_id => @movement.id
       end
     end
 
-    it "should blast all proofed emails" do
-      @blast.should_receive(:send_proofed_emails!).with(:run_at_utc => run_at_utc)
+    context 'using the movement default timezone' do
+      before { @movement.update_attribute(:time_zone, 'America/New_York') }
 
-      post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+      it 'blasts the email at the given time for movement zone converted to UTC' do
+        @blast.should_receive(:send_proofed_emails!)
+              .with(:run_at => Time.parse('2015-12-01 17:25:00 UTC'))
+
+        post :deliver, id: @blast.id, run_at: run_at_param, run_at_hour: run_at_hour_param,
+                     email_id: "all", movement_id: @movement.id
+      end
+    end
+
+
+
+    it "should blast all proofed emails" do
+      @blast.should_receive(:send_proofed_emails!).with(:run_at => run_at)
+
+      post :deliver, :id => @blast.id, :run_at => run_at_param, :run_at_hour => run_at_hour_param,
                      :email_id => "all", :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
     end
 
     it "should blast all proofed emails up to a given limit" do
-      @blast.should_receive(:send_proofed_emails!).with(limit: 500, :run_at_utc => run_at_utc)
+      @blast.should_receive(:send_proofed_emails!).with(limit: 500, :run_at => run_at)
 
-      post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+      post :deliver, :id => @blast.id, :run_at => run_at_param, :run_at_hour => run_at_hour_param,
                      :email_id => "all", :member_count_select => Blast::LIMIT_MEMBERS, :limit => 500, :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
     end
 
     it "should blast a given email" do
-      @blast.should_receive(:send_proofed_emails!).with(email_ids: ["1"], :run_at_utc => run_at_utc)
+      @blast.should_receive(:send_proofed_emails!).with(email_ids: ["1"], :run_at => run_at)
 
-      post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+      post :deliver, :id => @blast.id, :run_at => run_at_param, :run_at_hour => run_at_hour_param,
                      :email_id => "1", :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
     end
 
     it "should blast a given email up to a given limit" do
-      @blast.should_receive(:send_proofed_emails!).with(limit: 500, email_ids: ["1"], :run_at_utc => run_at_utc)
+      @blast.should_receive(:send_proofed_emails!).with(limit: 500, email_ids: ["1"], :run_at => run_at)
 
-      post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+      post :deliver, :id => @blast.id, :run_at => run_at_param, :run_at_hour => run_at_hour_param,
                      :email_id => "1", :member_count_select => Blast::LIMIT_MEMBERS, :limit => 500, :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
@@ -149,23 +168,23 @@ describe Admin::BlastsController do
     it "should return an error if limit is selected and it is not a number greater than zero" do
       @blast.should_not_receive(:send_proofed_emails!)
       time = Time.now.utc+AppConstants.blast_job_delay - 1.minute
-      post :deliver, :id => @blast.id, :run_at_utc => time.strftime('%m/%d/%Y'), :run_at_hour => time.strftime('%H:%M'),
+      post :deliver, :id => @blast.id, :run_at => time.strftime('%Y-%m-%d'), :run_at_hour => time.strftime('%H:%M'),
                      :email_id => "1", :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
-      flash[:error].should == "Scheduled time should be in at least #{AppConstants.blast_job_delay} minutes later than current UTC time"
+      flash[:error].should == "Scheduled time should be in at least #{AppConstants.blast_job_delay} minutes later than current time"
     end
 
     it "should return error for invalid date format" do
       @blast.should_not_receive(:send_proofed_emails!)
-      post :deliver, :id => @blast.id, :run_at_utc => '12341234', :run_at_hour => '0:00',
+      post :deliver, :id => @blast.id, :run_at => '12341234', :run_at_hour => '0:00',
                      :email_id => "1", :movement_id => @movement.id
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
       flash[:error].should == "Invalid date format"
     end
 
     it "should return an error if limit is selected and it is not a number greater than zero" do
-      post :deliver, :id => @blast.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+      post :deliver, :id => @blast.id, :run_at => run_at_param, :run_at_hour => run_at_hour_param,
                      :email_id => "1", :member_count_select => Blast::LIMIT_MEMBERS, :limit => 'asdf', :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
@@ -176,7 +195,7 @@ describe Admin::BlastsController do
       blast_with_no_list = Blast.create!(@valid_params.merge(:push => @push))
       Blast.stub(:find) { blast_with_no_list }
 
-      post :deliver, :id => blast_with_no_list.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+      post :deliver, :id => blast_with_no_list.id, :run_at => run_at_param, :run_at_hour => run_at_hour_param,
                      :email_id => "1", :member_count_select => Blast::ALL_MEMBERS, :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
@@ -189,7 +208,7 @@ describe Admin::BlastsController do
       blast_with_no_list = Blast.create!(@valid_params.merge(:push => @push))
       Blast.stub(:find) { blast_with_no_list }
 
-      post :deliver, :id => blast_with_no_list.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+      post :deliver, :id => blast_with_no_list.id, :run_at => run_at_param, :run_at_hour => run_at_hour_param,
                      :email_id => "1", :member_count_select => Blast::ALL_MEMBERS, :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))
@@ -202,7 +221,7 @@ describe Admin::BlastsController do
       blast_with_no_list = Blast.create!(@valid_params.merge(:push => @push))
       Blast.stub(:find) { blast_with_no_list }
 
-      post :deliver, :id => blast_with_no_list.id, :run_at_utc => run_at_utc_param, :run_at_hour => run_at_hour_param,
+      post :deliver, :id => blast_with_no_list.id, :run_at => run_at_param, :run_at_hour => run_at_hour_param,
                      :email_id => "1", :member_count_select => Blast::ALL_MEMBERS, :movement_id => @movement.id
 
       response.should redirect_to(admin_movement_push_path(@movement, @blast.push))

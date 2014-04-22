@@ -3,17 +3,15 @@ $.fn.blasts = function () {
 
     scope.find("input[type=radio]").change(function () {
         var radio = $(this),
-            sendActions = radio.closest(".send-actions"),
-            someMembers = sendActions.find(".some-members"),
-            allMembers = sendActions.find(".all-members");
+            radioContainer = radio.closest(".radio-container"),
+            radioLabels = radioContainer.find(".radio-label");
 
-        if (radio.val() === "limit_members") {
-            allMembers.addClass("disabled");
-            someMembers.removeClass("disabled").find(".send-number").removeAttr("disabled").focus();
-        } else {
-            someMembers.addClass("disabled").find(".send-number").attr("disabled", "disabled");
-            allMembers.removeClass("disabled");
-        }
+        radioLabels.addClass("disabled").find(".radio-option-input").attr("disabled", "disabled");
+        radio.parent('.radio-label').removeClass("disabled").find(".radio-option-input").removeAttr("disabled").focus();
+    });
+
+    scope.find("[name=run_now]").change(function () {
+        toggleTimezoneOptions();
     });
 
     scope.find("li.blast .in-progress").each(function (index, elem) {
@@ -23,8 +21,9 @@ $.fn.blasts = function () {
         initBlastCountdown(countdownElem, abort, until);
     });
 
-    scope.find('.run_at_utc').each(function (index, element) {
+    scope.find('.run_at').each(function (index, element) {
         $(element).datepicker({
+            dateFormat: 'yy-mm-dd', 
             minDate: minimumBlastScheduleTime,
             onClose:function (dateText, inst) {
                 var timeSelector = $(inst.input).siblings('.run_at_time'),
@@ -43,6 +42,15 @@ $.fn.blasts = function () {
         });
     });
 };
+
+function toggleTimezoneOptions() {
+    if ($('[name=run_now]:checked').val() === "true") {
+        $('#timezone-options').hide();
+    } else {
+        $('#timezone-options').show();
+    }
+}
+
 
 function padZero(val) {
     return (val < 10 ? '0' + val.toString() : val.toString());
@@ -90,6 +98,7 @@ $.page("#pushes_show", function () {
 });
 
 $(document).ready(function () {
+    toggleTimezoneOptions();
     $(".send-options").selectBox();
     window.setInterval(function () {
         minimumBlastScheduleTime.setMinutes(minimumBlastScheduleTime.getMinutes() + 1);

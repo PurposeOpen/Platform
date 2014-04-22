@@ -30,15 +30,15 @@ class Blast < ActiveRecord::Base
 
   def send_proofed_emails!(options={})
     emails = (options[:email_ids] ? proofed_emails.for_ids(options[:email_ids]).all : proofed_emails.all).reject { |e| e.sent }
-    segment_user_ids_per_job(emails, options[:limit], options[:run_at_utc])
+    segment_user_ids_per_job(emails, options[:limit], options[:run_at])
   end
 
-  def segment_user_ids_per_job(emails_to_send, limit, run_at_utc)
+  def segment_user_ids_per_job(emails_to_send, limit, run_at)
     emails_by_language = emails_to_send.group_by(&:language)
     emails_by_language.each do |language, emails|
       no_jobs = emails.size
       emails.each_with_index do |email, current_job_index|
-        email.enqueue_job(no_jobs, current_job_index, limit, run_at_utc)
+        email.enqueue_job(no_jobs, current_job_index, limit, run_at)
       end
     end
   end

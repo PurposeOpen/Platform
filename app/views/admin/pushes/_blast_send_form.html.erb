@@ -6,8 +6,7 @@
           <option value="all">each proofed email</option>
           <%= options_from_collection_for_select(blast.proofed_emails.schedulable_emails, :id, :display_name) %>
         </select>
-        <br/>
-        <span class="connector">To</span> 
+        to
         <div class='radio-container'>
           <label class="radio-label">
             <input type="radio" name="member_count_select" value="<%= Blast::ALL_MEMBERS %>" checked="checked">
@@ -34,10 +33,9 @@
           At
           <input class="run_at" type="text" name="run_at" class"radio-option-input">
           <%= select_tag :run_at_hour, '', {:class => 'hide run_at_time'} %>
-          For <%= @movement.time_zone_name %> Timezone
         </label>
       </div>
-      <!--<div id="timezone-options">
+      <div id="timezone-options">
         <span class="connector">Using</span> 
         <div class="radio-container">
           <label class="radio-label">
@@ -48,7 +46,7 @@
             <input type="radio" name="timezone_option" value="relative">
             Recipients' Timezones
           </label>
-        </div>-->
+        </div>
         <% if @movement.time_zone_name == Movement::DEFAULT_TIMEZONE %> 
           <label class='utc_notice'>
             <%= link_to "Click here for help with UTC", 

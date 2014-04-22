@@ -17,6 +17,7 @@
 #
 
 class Movement < ActiveRecord::Base
+  DEFAULT_TIMEZONE = 'Etc/UTC'
   extend FriendlyId
   acts_as_user_stampable
 
@@ -54,7 +55,8 @@ class Movement < ActiveRecord::Base
   after_initialize :defaults, :ensure_homepage_exists
   after_create { MemberCountCalculator.init(self) }
 
-  validates :time_zone, inclusion: { in: ActiveSupport::TimeZone::MAPPING.values, message: 'must be a valid zone' }
+  validates :time_zone, inclusion: { in: ActiveSupport::TimeZone::MAPPING.values, 
+                                     message: 'must be a valid zone' }
   validates_presence_of :homepage
   validates_length_of :name, :maximum => 20, :minimum => 3
   validates_format_of :url, :with => %r[\b(([\w-]+://)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))], :message => "must be valid"
@@ -73,6 +75,10 @@ class Movement < ActiveRecord::Base
   scope :for_role, lambda { |role| where(:user_affiliations => {:role => role}) }
 
   default_scope :include => :homepage
+
+  def time_zone_name
+    ActiveSupport::TimeZone::MAPPING.invert[self.time_zone]
+  end
 
   def iso_codes=(iso_codes)
     codes = Array.wrap(iso_codes)
@@ -157,7 +163,7 @@ class Movement < ActiveRecord::Base
   private
 
   def defaults
-    self.time_zone ||= 'Etc/UTC'
+    self[:time_zone] ||= DEFAULT_TIMEZONE
   end
 
   def default_candidate(language_id)
