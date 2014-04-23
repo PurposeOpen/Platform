@@ -8,6 +8,7 @@
 #  updated_at                   :datetime         not null
 #  blast_id                     :integer
 #  saved_intermediate_result_id :integer
+#  deleted_at                   :datetime
 #
 
 FactoryGirl.define do

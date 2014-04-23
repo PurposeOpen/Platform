@@ -12,6 +12,7 @@
 #  updated_at     :datetime         not null
 #  from           :string(255)
 #  reply_to       :string(255)
+#  deleted_at     :datetime
 #
 
 require 'spec_helper'

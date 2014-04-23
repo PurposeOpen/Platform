@@ -13,6 +13,7 @@
 #  password_digest           :string(255)
 #  slug                      :string(255)
 #  crowdring_url             :string(255)
+#  time_zone                 :string(255)
 #
 
 require "spec_helper"

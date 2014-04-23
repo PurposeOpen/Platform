@@ -38,10 +38,14 @@
 #  source                   :string(255)
 #  permanently_unsubscribed :boolean
 #  state                    :string(64)
+#  lat                      :string(255)
+#  lng                      :string(255)
+#  time_zone                :string(255)
 #
 
 class User < ActiveRecord::Base
   include CacheableModel
+  include CountryHelper
   acts_as_paranoid
   acts_as_user_stampable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable
@@ -68,7 +72,8 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email, :scope => :movement_id
 
   before_save :downcase_email
-  before_save :set_geolocation
+  before_save :set_geolocation, :set_timezone, if: :address_changed?
+  geocoded_by :address, latitude: :lat, longitude: :lng
   after_create :assign_random_value
 
   scope :for_movement, lambda { |movement| where(:movement_id => movement.try(:id)) }
@@ -144,6 +149,18 @@ class User < ActiveRecord::Base
 
   def postcode_number
     self.postcode
+  end
+  
+  def address_fields
+    [:street_address, :suburb, :postcode, :country_iso]
+  end
+
+  def address
+    [street_address, suburb, postcode, country_full_name].compact.join(', ')
+  end
+
+  def address_changed?
+    address_fields.any? {|address_field| self.send("#{address_field}_changed?")}
   end
 
   def take_action_on!(page, action_info = {}, new_attributes = self.attributes)
@@ -253,6 +270,10 @@ class User < ActiveRecord::Base
     country_iso.try(:upcase)
   end
 
+  def country_full_name
+    country_name(country_iso, 'en')
+  end
+
   private
 
   def assign_random_value
@@ -278,14 +299,20 @@ class User < ActiveRecord::Base
   end
 
   def set_geolocation
+    return unless self.address.present?
     if self.postcode.present? && self.country_iso.present?
       if geodata = GeoData.find_by_country_iso_and_postcode(self.country_iso, self.postcode)
         self.lat, self.lng = geodata.lat, geodata.lng
       else
-        self.lat = nil
-        self.lng = nil
         Rails.logger.warn("Postcode \"#{self.postcode}\" for \"#{self.country_iso}\" not found.")
       end
     end
+    geocode if self.lat.nil? || self.lng.nil?
+  end
+
+  def set_timezone
+    return unless self.lat && self.lng
+    timezone = Timezone::Zone.new latlon: [self.lat, self.lng]
+    self.time_zone = timezone.zone 
   end
 end

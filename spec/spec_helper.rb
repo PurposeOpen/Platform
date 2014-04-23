@@ -91,6 +91,10 @@ RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.backtrace_clean_patterns = []
 
+  config.run_all_when_everything_filtered = true
+  config.filter_run focus: true
+  config.alias_example_to :fit, focus: true
+  config.treat_symbols_as_metadata_keys_with_true_values = true
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
@@ -104,6 +108,12 @@ RSpec.configure do |config|
   end
   config.include SunspotMatchers
   config.before(:each) { GeoData.stub(:find_by_zip_and_country).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
+  config.before do
+    unless example.metadata[:geolocate]
+      User.any_instance.stub(:set_geolocation)
+      User.any_instance.stub(:set_timeout)
+    end
+  end
 end
 
 def read_fixture(name)

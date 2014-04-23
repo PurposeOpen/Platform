@@ -10,19 +10,10 @@
 #  frequency              :string(32)       not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  card_type              :string(32)
-#  card_expiry_month      :integer
-#  card_expiry_year       :integer
-#  card_last_four_digits  :string(4)
-#  name_on_card           :string(255)
 #  active                 :boolean          default(TRUE)
 #  last_donated_at        :datetime
 #  page_id                :integer          not null
 #  email_id               :integer
-#  cheque_number          :string(128)
-#  cheque_name            :string(255)
-#  cheque_bank            :string(255)
-#  cheque_branch          :string(255)
 #  recurring_trigger_id   :string(255)
 #  last_tried_at          :datetime
 #  identifier             :string(255)

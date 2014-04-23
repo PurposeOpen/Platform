@@ -26,7 +26,9 @@ gem 'devise'
 gem 'cancan'
 gem 'friendly_id'
 gem 'nokogiri'
-gem 'geokit-rails3', :git => 'git://github.com/leonardoborges/geokit-rails3.git'
+gem 'geocoder'
+gem 'timezone'
+#gem 'geokit-rails3', :git => 'git://github.com/leonardoborges/geokit-rails3.git'
 gem 'app_constants'
 gem 'escape_utils' # Has to do with this http://stackoverflow.com/questions/3622394/ruby-1-9-2-strange-warning-when-running-cucumber-specs
 gem 'gritter'
@@ -112,4 +114,6 @@ group :development, :test do
   gem 'quiet_assets'
   gem 'subcontractor'
   gem 'byebug'
+  gem 'vcr'
+  gem 'webmock'
 end

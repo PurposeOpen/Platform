@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: email_recipient_details
+#
+#  id                :integer          not null, primary key
+#  email_id          :integer
+#  recipients_count  :integer
+#  sent_to_users_ids :text
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+
 require "spec_helper"
 
 describe EmailRecipientDetail do

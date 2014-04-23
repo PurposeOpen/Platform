@@ -1,0 +1,40 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://api.geonames.org/timezoneJSON?lat=12&lng=10&username=jonsgreen
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 23 Apr 2014 04:19:02 GMT
+      Server:
+      - Apache/2.2.17 (Linux/SUSE)
+      Cache-Control:
+      - no-cache
+      Access-Control-Allow-Origin:
+      - '*'
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/json;charset=UTF-8
+    body:
+      encoding: UTF-8
+      string: '{"time":"2014-04-23 05:19","countryName":"Nigeria","sunset":"2014-04-23
+        18:32","rawOffset":1,"dstOffset":1,"countryCode":"NG","gmtOffset":1,"lng":10,"sunrise":"2014-04-23
+        06:04","timezoneId":"Africa/Lagos","lat":12}'
+    http_version: 
+  recorded_at: Wed, 23 Apr 2014 04:19:01 GMT
+recorded_with: VCR 2.9.0

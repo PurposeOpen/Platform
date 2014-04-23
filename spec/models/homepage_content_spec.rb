@@ -7,8 +7,8 @@
 #  banner_text   :string(255)
 #  updated_at    :datetime
 #  updated_by    :string(255)
-#  join_headline :string(255)
-#  join_message  :string(255)
+#  join_headline :text
+#  join_message  :text
 #  follow_links  :text
 #  header_navbar :text
 #  footer_navbar :text

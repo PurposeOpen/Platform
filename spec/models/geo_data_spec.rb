@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: geo_data
+#
+#  id          :integer          not null, primary key
+#  country_iso :string(255)
+#  postcode    :string(255)      not null
+#  city        :string(255)
+#  lat         :string(255)      not null
+#  lng         :string(255)      not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 require 'spec_helper'
 
 describe GeoData do

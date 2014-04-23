@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140416075135) do
+ActiveRecord::Schema.define(:version => 20140422021215) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -662,6 +662,7 @@ ActiveRecord::Schema.define(:version => 20140416075135) do
     t.string   "state",                    :limit => 64
     t.string   "lat"
     t.string   "lng"
+    t.string   "time_zone"
   end
 
   add_index "users", ["created_at"], :name => "created_at_idx"
