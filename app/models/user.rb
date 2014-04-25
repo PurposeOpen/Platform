@@ -72,7 +72,9 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email, :scope => :movement_id
 
   before_save :downcase_email
-  before_save :set_geolocation, :set_timezone, if: :address_changed?
+  before_save :set_geolocation, if: :address_changed?
+  before_save :set_timezone, if: :address_changed?, 
+              unless: Proc.new { |a| AppConstants.geomaps_username.blank? }
   geocoded_by :address, latitude: :lat, longitude: :lng
   after_create :assign_random_value
 
@@ -160,7 +162,7 @@ class User < ActiveRecord::Base
   end
 
   def address_changed?
-    address_fields.any? {|address_field| self.send("#{address_field}_changed?")}
+    address_fields.any? { |address_field| self.send("#{address_field}_changed?") }
   end
 
   def take_action_on!(page, action_info = {}, new_attributes = self.attributes)
@@ -314,5 +316,7 @@ class User < ActiveRecord::Base
     return unless self.lat && self.lng
     timezone = Timezone::Zone.new latlon: [self.lat, self.lng]
     self.time_zone = timezone.zone 
+  rescue  Timezone::Error::NilZone => e
+    self.time_zone = nil
   end
 end

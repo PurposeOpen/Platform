@@ -14,6 +14,7 @@ development: &default
   google_api_key: <%= ENV["GOOGLE_API_KEY"] %>
   google_maps_js_url: <%= ENV["GOOGLE_MAPS_JS_URL"] || "https://maps.google.com/maps/api/js?sensor=false" %>
   keyed_google_maps_js_url: <%= ENV["KEYED_GOOGLE_MAPS_JS_URL"] || "https://maps.googleapis.com/maps/api/js?key=#{ENV["GOOGLE_API_KEY"]}&sensor=false" %>
+  geomaps_username: <%= ENV["GEOMAPS_USERNAME"] || 'purpose_platform' %>
 
 production:
   <<: *default

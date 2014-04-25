@@ -694,13 +694,14 @@ describe User do
         user.send(:set_timezone)
         expect(user.time_zone).to eq('Twilight Zone')
       end
+
     end
 
     describe 'geolocation callback api integration', :vcr do
       context 'when user has only entered their country' do
         let(:user) { FactoryGirl.create(:user, country_iso: 'us') }
 
-        it 'sets general latitude and longitude using geocoding', :vcr do
+        it 'sets general latitude and longitude using geocoding' do
           expect([user.lat, user.lng]).to eq(['38.0', '-97.0'])
         end
 
@@ -721,20 +722,32 @@ describe User do
           expect([user.lat, user.lng]).to eq(["35.6179", "-82.32123"])
         end
 
-        it "sets user's timezone based on lat and lng", :vcr do
+        it "sets user's timezone based on lat and lng" do
           expect(user.time_zone).to eq('America/New_York')
         end
       end
 
-      context "when physical address has not changed" do
-        it 'does not set geolocation' do
-          user = FactoryGirl.create(:user, postcode: "123456", country_iso: "br", 
-                                    lat: '12', lng: '10')
-          user.should_not_receive(:set_geolocation)
-          user.should_not_receive(:set_timezone)
-          user.email = 'email@changed.com'
-          user.save
-        end
+      it 'does not set geolocation when address has not changed' do
+        user = FactoryGirl.create(:user, postcode: "123456", country_iso: "br", 
+                                  lat: '12', lng: '10')
+        user.should_not_receive(:set_geolocation)
+        user.should_not_receive(:set_timezone)
+        user.email = 'email@changed.com'
+        user.save
+      end
+
+      it 'leaves timezone blank if there is an error' do
+        Timezone::Configure.stub(:username).and_return('false-username')
+        user = FactoryGirl.build(:user, country_iso: 'us')
+        user.save
+        expect(user.time_zone).to eq(nil)
+      end
+
+      it 'does not set timezone when username is not set' do
+        AppConstants.stub(:geomaps_username).and_return(nil)
+        user = FactoryGirl.build(:user, country_iso: 'us')
+        user.should_not_receive(:set_timezone)
+        user.save
       end
     end
   end

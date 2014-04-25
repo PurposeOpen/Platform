@@ -24,4 +24,6 @@ vendor/bundle
 .tags*
 tags
 zeus.json
+<<<<<<< HEAD
 /env.local
+spec/cassettes
