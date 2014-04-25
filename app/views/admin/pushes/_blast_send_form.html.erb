@@ -1,37 +1,61 @@
 <%= form_tag deliver_admin_movement_blast_path(@movement, blast), :class => 'deliver_blast' do |f| %>
     <div class="send-actions">
       <div class='deliver-email-members-count'>
-        <span class="connector">Deliver</span> <select class="send-options" name="email_id">
-        <option value="all">each proofed email</option>
-        <%= options_from_collection_for_select(blast.proofed_emails.schedulable_emails, :id, :display_name) %>
-      </select>
-        to
-        <label class="all-members">
-          <input type="radio" name="member_count_select" value="<%= Blast::ALL_MEMBERS %>" checked="checked">
-          all unsent members
-        </label>
-        or
-        <div class="some-members disabled tooltip" data-tip="push-deliver-to-some-members-tip">
-          <input type="radio" name="member_count_select" value="<%= Blast::LIMIT_MEMBERS %>">
-          limit to
-          <input class="send-number" type="number" value="" name="limit" placeholder="500" disabled="disabled">
-          members
+        <span class="connector">Deliver</span> 
+        <select class="send-options" name="email_id">
+          <option value="all">each proofed email</option>
+          <%= options_from_collection_for_select(blast.proofed_emails.schedulable_emails, :id, :display_name) %>
+        </select>
+        <br/>
+        <span class="connector">To</span> 
+        <div class='radio-container'>
+          <label class="radio-label">
+            <input type="radio" name="member_count_select" value="<%= Blast::ALL_MEMBERS %>" checked="checked">
+            all unsent members
+          </label>
+          or
+          <label class="radio-label disabled tooltip" data-tip="push-deliver-to-some-members-tip">
+            <input type="radio" name="member_count_select" value="<%= Blast::LIMIT_MEMBERS %>">
+            limit to
+            <input class="send-number radio-option-input" type="number" value="" name="limit" placeholder="500" disabled="disabled">
+            members
+          </label>
         </div>
       </div>
-      <div class='run_at_container'>
-        <label for='run_at_utc' class='left'>Send at</label>
-        <input class="run_at_utc" type="text" name="run_at_utc">
-        <%= select_tag :run_at_hour, '', {:class => 'hide run_at_time'} %>
-        <div class="timezone-options">
-          <input type="radio" name="timezone_option" value="specified" checked>
-          specified timezone (UTC) or
-          <input type="radio" name="timezone_option" value="relative">
-          relative to recipient timezone
-        </div>
-        <label class='utc_notice'>
-          All times are in UTC.
-          <%= link_to "Click here for help with UTC", "http://www.worldtimeserver.com/current_time_in_UTC.aspx", :target => "_blank" %>
+      <span class="connector">Send</span> 
+      <div class='radio-container'>
+        <label class="radio-label">
+          <input type="radio" name="run_now" value="true" checked>
+          Now 
         </label>
+        or
+        <label class="radio-label disabled">
+          <input type="radio" name="run_now" value="false">
+          At
+          <input class="run_at" type="text" name="run_at" class"radio-option-input">
+          <%= select_tag :run_at_hour, '', {:class => 'hide run_at_time'} %>
+          For <%= @movement.time_zone_name %> Timezone
+        </label>
+      </div>
+      <!--<div id="timezone-options">
+        <span class="connector">Using</span> 
+        <div class="radio-container">
+          <label class="radio-label">
+            <input type="radio" name="timezone_option" value="default" checked>
+            Default Timezone (<%= @movement.time_zone_name %>)
+          </label> or
+          <label class="radio-label disabled">
+            <input type="radio" name="timezone_option" value="relative">
+            Recipients' Timezones
+          </label>
+        </div>-->
+        <% if @movement.time_zone_name == Movement::DEFAULT_TIMEZONE %> 
+          <label class='utc_notice'>
+            <%= link_to "Click here for help with UTC", 
+              "http://www.worldtimeserver.com/current_time_in_UTC.aspx",
+              target: "_blank" %>
+          </label>
+        <% end %>
       </div>
       <div>
         <input class="send-submit" type="submit" value="Send">
