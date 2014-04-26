@@ -108,12 +108,6 @@ RSpec.configure do |config|
   end
   config.include SunspotMatchers
   config.before(:each) { GeoData.stub(:find_by_zip_and_country).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
-  config.before do
-    unless example.metadata[:geolocate]
-      User.any_instance.stub(:set_geolocation)
-      User.any_instance.stub(:set_timeout)
-    end
-  end
 end
 
 def read_fixture(name)

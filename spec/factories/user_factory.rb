@@ -43,6 +43,7 @@
 #  time_zone                :string(255)
 #
 
+require Rails.root.join('spec', 'support', 'test_geolocation_service')
 FactoryGirl.define do
   factory :user do
     email           { FactoryGirl.generate(:email) }
@@ -51,6 +52,7 @@ FactoryGirl.define do
     association     :language
     association     :movement
     source          :movement
+    geolocation_service { |user| TestGeolocationService.new(user) }
   end
 
   factory :leo, :parent => :user do

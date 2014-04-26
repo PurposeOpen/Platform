@@ -44,13 +44,13 @@
 #
 
 class User < ActiveRecord::Base
+  include GeolocationService::User
   include CacheableModel
-  include CountryHelper
   acts_as_paranoid
   acts_as_user_stampable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable
 
-  attr_accessor :required_user_details
+  attr_accessor :required_user_details, :geolocation_service
   cattr_accessor :current_user
 
   belongs_to :movement
@@ -71,11 +71,9 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => VALID_EMAIL_REGEX
   validates_uniqueness_of :email, :scope => :movement_id
 
+  after_initialize :defaults
   before_save :downcase_email
-  before_save :set_geolocation, if: :address_changed?
-  before_save :set_timezone, if: :address_changed?, 
-              unless: Proc.new { |a| AppConstants.geomaps_username.blank? }
-  geocoded_by :address, latitude: :lat, longitude: :lng
+  before_save { geolocation_service.lookup if address_changed? }
   after_create :assign_random_value
 
   scope :for_movement, lambda { |movement| where(:movement_id => movement.try(:id)) }
@@ -155,10 +153,6 @@ class User < ActiveRecord::Base
   
   def address_fields
     [:street_address, :suburb, :postcode, :country_iso]
-  end
-
-  def address
-    [street_address, suburb, postcode, country_full_name].compact.join(', ')
   end
 
   def address_changed?
@@ -272,11 +266,11 @@ class User < ActiveRecord::Base
     country_iso.try(:upcase)
   end
 
-  def country_full_name
-    country_name(country_iso, 'en')
-  end
-
   private
+
+  def defaults
+    @geolocation_service ||= GeolocationService.new(self)
+  end
 
   def assign_random_value
     self.connection.execute("update users set random = rand() where id = #{self.id} and movement_id = #{self.movement_id}")
@@ -300,23 +294,23 @@ class User < ActiveRecord::Base
     self.source = :movement if self.source.nil?
   end
 
-  def set_geolocation
-    return unless self.address.present?
-    if self.postcode.present? && self.country_iso.present?
-      if geodata = GeoData.find_by_country_iso_and_postcode(self.country_iso, self.postcode)
-        self.lat, self.lng = geodata.lat, geodata.lng
-      else
-        Rails.logger.warn("Postcode \"#{self.postcode}\" for \"#{self.country_iso}\" not found.")
-      end
-    end
-    geocode if self.lat.nil? || self.lng.nil?
-  end
+  #def set_geolocation
+    #return unless self.address.present?
+    #if self.postcode.present? && self.country_iso.present?
+      #if geodata = GeoData.find_by_country_iso_and_postcode(self.country_iso, self.postcode)
+        #self.lat, self.lng = geodata.lat, geodata.lng
+      #else
+        #Rails.logger.warn("Postcode \"#{self.postcode}\" for \"#{self.country_iso}\" not found.")
+      #end
+    #end
+    #geocode if self.lat.nil? || self.lng.nil?
+  #end
 
-  def set_timezone
-    return unless self.lat && self.lng
-    timezone = Timezone::Zone.new latlon: [self.lat, self.lng]
-    self.time_zone = timezone.zone 
-  rescue  Timezone::Error::NilZone => e
-    self.time_zone = nil
-  end
+  #def set_timezone
+    #return unless self.lat && self.lng
+    #timezone = Timezone::Zone.new latlon: [self.lat, self.lng]
+    #self.time_zone = timezone.zone 
+  #rescue  Timezone::Error::NilZone => e
+    #self.time_zone = nil
+  #end
 end

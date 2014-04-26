@@ -29,6 +29,7 @@ describe Api::ExternalActivityEventsController do
 
     @user_params = @user_attributes.except(:movement_id, :language_id, :source)
     ExternalAction.stub(:find_or_create_by_unique_action_slug).and_return(external_action)
+    GeolocationService.any_instance.stub(:lookup)
   end
 
   context 'new user taking action:' do

@@ -630,125 +630,21 @@ describe User do
     end
   end
 
-  describe 'geolocation', :geolocate do 
-    describe "#set_geolocation" do
-      context 'no purchased GeoData information' do
-        it 'uses geocoder service to find lat and lng' do
-          user = FactoryGirl.build(:user, street_address: 'Wherever')
-          user.should_receive(:geocode)
-          user.send(:set_geolocation)
-        end
+
+  describe 'callbacks' do
+    describe 'geolocation lookup' do
+      it  'lookups geolocation when creating a new address' do
+        user = FactoryGirl.build(:user, postcode: "123456", country_iso: "br")
+        user.geolocation_service.should_receive(:lookup)
+        user.save
       end
-
-      context 'purchased GeoData information exists' do
-        let(:postcode) { stub_model(GeoData, lat: "45.0", lng: "45.0") }
-        before { GeoData.stub(:find_by_country_iso_and_postcode).with("br", "123456").and_return(postcode) }
-
-        context "when the user has a postcode and country_iso" do
-          it "should set latitude and longitude using GeoData" do
-            user = FactoryGirl.build(:user, postcode: "123456", country_iso: "br")
-            user.send(:set_geolocation)
-            user.lat.should be_== "45.0"
-            user.lng.should be_== "45.0"
-          end
-
-          context "when there is no corresponding postcode" do
-            before do
-              GeoData.stub(:find_by_country_iso_and_postcode)
-                     .with("br", "123456").and_return(nil)
-              User.any_instance.stub(:geocode)
-            end
-
-            it "it should log the missing postcode/country" do
-              user = FactoryGirl.build(:user, postcode: "123456", country_iso: "br")
-              Rails.logger.should_receive(:warn).with("Postcode \"123456\" for \"br\" not found.")
-              user.send(:set_geolocation)
-            end
-
-            it "defers to geocoding" do
-              user = FactoryGirl.build(:user, postcode: "123456", country_iso: "br")
-              user.should_receive(:geocode).once
-              user.send(:set_geolocation)
-            end
-          end
-        end
-
-        context "when the user doesn't have an address" do
-          it "should not set latitude and longitude" do
-            user = FactoryGirl.build(:user, postcode: nil, street_address: nil, 
-                                     country_iso: nil, suburb: nil) 
-            user.send(:set_geolocation)
-            user.lat.should be_nil
-            user.lng.should be_nil
-          end
-        end
-
-      end
-    end
-
-    describe "#set_timezone" do 
-      it "sets user's timezone based on lat and lng" do
-        zone = double(:zone, zone: 'Twilight Zone')
-        user = FactoryGirl.build(:user, lat: '12', lng: '24')
-        Timezone::Zone.should_receive(:new).with(latlon: ['12', '24']).and_return(zone)
-        user.send(:set_timezone)
-        expect(user.time_zone).to eq('Twilight Zone')
-      end
-
-    end
-
-    describe 'geolocation callback api integration', :vcr do
-      context 'when user has only entered their country' do
-        let(:user) { FactoryGirl.create(:user, country_iso: 'us') }
-
-        it 'sets general latitude and longitude using geocoding' do
-          expect([user.lat, user.lng]).to eq(['38.0', '-97.0'])
-        end
-
-        it 'sets reasonable timezone for country' do
-          expect(user.time_zone).to include('America')
-        end
-      end
-
-      context 'when complete address is given' do 
-        let(:user) do
-          FactoryGirl.create(:user, street_address: '8 Another Way', 
-                                    suburb: 'Black Mountain', 
-                                    country_iso: 'us', 
-                                    postcode: '28711')
-        end
-
-        it 'sets precise lat and lng for user' do
-          expect([user.lat, user.lng]).to eq(["35.6179", "-82.32123"])
-        end
-
-        it "sets user's timezone based on lat and lng" do
-          expect(user.time_zone).to eq('America/New_York')
-        end
-      end
-
-      it 'does not set geolocation when address has not changed' do
-        user = FactoryGirl.create(:user, postcode: "123456", country_iso: "br", 
-                                  lat: '12', lng: '10')
-        user.should_not_receive(:set_geolocation)
-        user.should_not_receive(:set_timezone)
+      it 'does not lookup geolocation when address has not changed' do
+        user = FactoryGirl.create(:user, postcode: "123456", country_iso: "br")
         user.email = 'email@changed.com'
-        user.save
-      end
-
-      it 'leaves timezone blank if there is an error' do
-        Timezone::Configure.stub(:username).and_return('false-username')
-        user = FactoryGirl.build(:user, country_iso: 'us')
-        user.save
-        expect(user.time_zone).to eq(nil)
-      end
-
-      it 'does not set timezone when username is not set' do
-        AppConstants.stub(:geomaps_username).and_return(nil)
-        user = FactoryGirl.build(:user, country_iso: 'us')
-        user.should_not_receive(:set_timezone)
+        user.geolocation_service.should_not_receive(:lookup)
         user.save
       end
     end
   end
+  
 end
