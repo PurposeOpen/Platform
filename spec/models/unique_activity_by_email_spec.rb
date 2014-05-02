@@ -87,20 +87,6 @@ describe UniqueActivityByEmail do
       UniqueActivityByEmail.where(:email_id => email.id, :activity => 'email_viewed').sum(:total_count).should == 1
     end
 
-    it "should only process unique activities that happened after the last processing time" do
-      UniqueActivityByEmail.delete_all
-
-      Push.activity_class_for(:email_viewed).create(:movement_id => @email1.movement.id, :user_id => @user1.id, :push_id => @email1.push.id, :email_id => @email1.id, :created_at => 1.hours.ago)
-
-      UniqueActivityByEmail.update!
-      UniqueActivityByEmail.where(:activity => 'email_viewed').sum(:total_count).should == 1
-
-      Push.activity_class_for(:email_viewed).create(:movement_id => @email1.movement.id, :user_id => @user2.id, :push_id => @email1.push.id, :email_id => @email1.id, :created_at => 2.hours.ago)
-
-      UniqueActivityByEmail.update!
-      UniqueActivityByEmail.where(:activity => 'email_viewed').sum(:total_count).should == 1
-    end
-
     it "should refresh the updated_at field of an existing stat" do
       UniqueActivityByEmail.create!(:email_id => @email1.id, :activity=>"action_taken", :total_count => 1, :updated_at => 1.hour.ago)
 
@@ -112,5 +98,23 @@ describe UniqueActivityByEmail do
 
       existing_stat.reload.updated_at.should > last_updated_at
     end
+
+    it 'does not count an email event twice if it comes in while report is running' do
+      time = Time.now.utc
+      just_came_in_at = time + 1
+      FactoryGirl.create :activity, user: @user1, activity: 'action_taken', 
+                                    email: @email1, created_at: just_came_in_at
+                 
+      Push.activity_class_for(:email_viewed).create(movement_id: @email1.movement.id, 
+                                                    user_id: @user1.id, 
+                                                    push_id: @email1.push.id, 
+                                                    email_id: @email1.id,
+                                                    created_at: just_came_in_at)
+      UniqueActivityByEmail.update!
+      UniqueActivityByEmail.update!
+      expect(UniqueActivityByEmail.where(activity: 'action_taken').first.total_count).to eq(1)
+      expect(UniqueActivityByEmail.where(activity: 'email_viewed').first.total_count).to eq(1)
+    end
+
   end
 end
