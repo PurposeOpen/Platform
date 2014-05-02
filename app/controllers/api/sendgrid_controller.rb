@@ -1,26 +1,18 @@
 class Api::SendgridController < Api::BaseController
 
   def event_handler
-    member = User.find_by_movement_id_and_email(@movement.id, params[:email])
-    head :ok and return if !member
-    member.permanently_unsubscribe! if should_unsubscribe?
+    begin
+      movement_id = params['movement_id']
+      events = params['_json']
 
-    if spam?
-      email = Email.find(params[:email_id])
-      UserActivityEvent.email_spammed!(member, email)
+      events.each do |event|
+        Delayed::Job.enqueue SendgridEventJob.new(movement_id, event)
+      end
+    rescue => e
+      NewRelic::Agent.notice_error(e)
     end
+
     head :ok
   end
 
-  def should_unsubscribe?
-    hard_bounce? || spam?
-  end
-
-  def hard_bounce?
-    params[:event] == 'bounce'
-  end
-
-  def spam?
-    params[:event] == 'spamreport'
-  end
 end

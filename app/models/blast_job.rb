@@ -18,4 +18,3 @@ class BlastJob
   end
 
 end
-

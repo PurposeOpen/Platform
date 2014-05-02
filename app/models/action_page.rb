@@ -251,6 +251,6 @@ class ActionPage < Page
     additional_tokens = user_response.respond_to?(:autofire_tokens) ? user_response.autofire_tokens : nil
     SendgridMailer.user_email(email, member, additional_tokens)
   end
-  handle_asynchronously(:deliver_autofire_email_to) unless Rails.env == "test"
+  handle_asynchronously(:deliver_autofire_email_to) unless Rails.env.test?
 
 end
