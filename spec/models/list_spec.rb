@@ -48,7 +48,7 @@ describe List do
     list.add_rule(:email_domain_rule, :domain => "@borges.com")
 
     users = list.filter_by_rules_excluding_users_from_push(email, :no_jobs => 1)
-    users.should =~ [ activity.user.id ]
+    users.should == [ activity.user.id ]
   end
 
   it "should return brazilian users" do
@@ -92,7 +92,7 @@ describe List do
     list.add_rule(:campaign_rule, :campaigns => [action_taken_activity.campaign.id])
 
     users = list.filter_by_rules_excluding_users_from_push(email, :no_jobs => 1)
-    users.should =~ [ user.id ]
+    users.should == [ user.id ]
   end
 
   it "should return users that took action" do
@@ -270,7 +270,7 @@ describe List do
       create(:subscribed_activity, :user => users[2])
 
       user_ids = list.filter_by_rules_excluding_users_from_push(email)
-      user_ids.should =~ [users[1].id, users[2].id]
+      user_ids.should match_array([users[1].id, users[2].id])
     end
     
     context "limit" do

@@ -23,7 +23,7 @@ describe FeaturedContentCollection do
     FactoryGirl.create(:featured_content_module, :language => spanish, :featured_content_collection => featured_content_collection)
 
     french_module = featured_content_collection.modules_for_language(french)
-    french_module.should =~ [fr_featured_content_module, fr_featured_content_module2]
+    french_module.should match_array([fr_featured_content_module, fr_featured_content_module2])
   end
 
   it 'should return only valid featured content modules for a given language' do
@@ -34,7 +34,7 @@ describe FeaturedContentCollection do
     fr_featured_content_module2.save!(:validate => false)
 
     french_modules = carousel.valid_modules_for_language(french)
-    french_modules.should =~ [fr_featured_content_module]
+    french_modules.should match_array([fr_featured_content_module])
   end
 
   it 'should tell that all modules are valid when so they are' do

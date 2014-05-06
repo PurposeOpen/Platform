@@ -341,10 +341,10 @@ describe DonationModule do
 
       json = ask.as_json
 
-      json["options"]["suggested_amounts"].keys.should =~ ["brl", "usd"]
+      json["options"]["suggested_amounts"].keys.should match_array(["brl", "usd"])
       json["options"]["suggested_amounts"]["brl"].should eql "15,30"
       json["options"]["suggested_amounts"]["usd"].should eql "10,20"
-      json["options"]["recurring_suggested_amounts"].keys.should =~ ["eur", "gbp"]
+      json["options"]["recurring_suggested_amounts"].keys.should match_array(["eur", "gbp"])
       json["options"]["recurring_suggested_amounts"]["eur"].should eql "1"
       json["options"]["recurring_suggested_amounts"]["gbp"].should eql "2"
     end

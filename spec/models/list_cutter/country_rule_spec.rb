@@ -31,13 +31,13 @@ describe ListCutter::CountryRule do
     it 'should return users based on commonwealth' do
       rule = ListCutter::CountryRule.new(:selected_by => 'commonwealth', :values => ['true'], :not => false, :movement => @action_page.movement)
       Country.should_receive(:iso_codes_with).with('commonwealth', ['true']).and_return(['EE', 'US'])
-      rule.to_relation.all.should =~ [ @user3, @user4 ]
+      rule.to_relation.all.should match_array([ @user3, @user4 ])
     end
 
     it 'should return users based on region' do
       rule = ListCutter::CountryRule.new(:selected_by => 'region_id', :values => ['2', '8'], :not => false, :movement => @action_page.movement)
       Country.should_receive(:iso_codes_with).with('region_id', ['2', '8']).and_return(['BR', 'AR'])
-      rule.to_relation.all.should =~ [ @user1, @user2 ]
+      rule.to_relation.all.should match_array([ @user1, @user2 ])
     end
   end
 

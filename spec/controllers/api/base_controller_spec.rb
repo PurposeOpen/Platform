@@ -1,19 +1,20 @@
 require 'spec_helper'
 
 describe Api::BaseController do
-  class Api::BaseController
+
+  controller(Api::BaseController) do
     def create; render :text => ""; end
     def index; render :text => "gotten"; end
   end
 
+
   def perform_request
-    with_routing do |map|
-      map.draw do 
-        post 'api/movements/(:movement_id)/members(.:format)' => 'api/base#create'
-        get 'api/movements/(:movement_id)' => 'api/base#index'
-      end
-      yield
+    routes.draw do 
+      post 'api/movements/(:movement_id)/members(.:format)' => 'anonymous#create'
+      get 'api/movements/(:movement_id)' => 'anonymous#index'
     end
+
+    yield
   end
 
   before do 

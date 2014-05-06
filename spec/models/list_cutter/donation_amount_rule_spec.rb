@@ -11,7 +11,7 @@ describe ListCutter::DonationAmountRule do
     donation_monthly_1 = FactoryGirl.create(:donation, {:frequency => "monthly", :amount_in_cents => 10, :subscription_amount => 10, :subscription_id => "24768374264"})
     donation_monthly_2 = FactoryGirl.create(:donation, {:frequency => "monthly", :amount_in_cents => 1, :subscription_amount => 1, :subscription_id => "98798789789"})
 
-    @rule.to_relation.all.should =~ [donation_one_off_1.user, donation_monthly_1.user]
+    @rule.to_relation.all.should match_array([donation_one_off_1.user, donation_monthly_1.user])
   end
 
   it "should filter donations smaller than the specified amount" do
@@ -23,7 +23,7 @@ describe ListCutter::DonationAmountRule do
     donation_monthly_1 = FactoryGirl.create(:donation, {:frequency => "monthly", :amount_in_cents => 20, :subscription_amount => 20, :subscription_id => "24768374264"})
     donation_monthly_2 = FactoryGirl.create(:donation, {:frequency => "monthly", :amount_in_cents => 100, :subscription_amount => 1, :subscription_id => "98798789789"})
 
-    @rule.to_relation.all.should =~ [donation_one_off_2.user, donation_monthly_2.user]
+    @rule.to_relation.all.should match_array([donation_one_off_2.user, donation_monthly_2.user])
   end
 
   describe "amount_in_dollars" do

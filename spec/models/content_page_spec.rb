@@ -34,7 +34,7 @@ describe ContentPage do
     portuguese = FactoryGirl.create(:portuguese)
     content_page.movement.languages << portuguese
 
-    content_page.possible_languages.should =~ [english, portuguese]
+    content_page.possible_languages.should match_array([english, portuguese])
   end
 
   describe "converted to json format" do

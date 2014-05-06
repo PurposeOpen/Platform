@@ -7,7 +7,7 @@ describe ListCutter::EmailDomainRule do
     user_same_domain = create(:user, :email => "best@example.com", :movement => movement)
     user_diff_domain = create(:user, :email => "rest@gmail.com", :movement => movement)
     rule = ListCutter::EmailDomainRule.new(:domain => "test@example.com", :movement => movement)
-    rule.to_relation.all.should =~ [ user_basic, user_same_domain ]
+    rule.to_relation.all.should match_array([ user_basic, user_same_domain ])
   end
 
   it "should validate itself" do

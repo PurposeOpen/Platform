@@ -16,17 +16,17 @@ describe ListCutter::JoinDateRule do
 
   it "should check subscription date before" do
     rule = ListCutter::JoinDateRule.new(:join_date => @recently, :operator => "before", :movement => @movement)
-    rule.to_relation.all.should =~ [ @joined_less_recently ]
+    rule.to_relation.all.should == [ @joined_less_recently ]
   end
 
   it "should check subscription date on" do
     rule = ListCutter::JoinDateRule.new(:join_date => @recently, :operator => "on", :movement => @movement)
-    rule.to_relation.all.should =~ [ @joined_recently ]
+    rule.to_relation.all.should == [ @joined_recently ]
   end
 
   it "should check subscription date after" do
     rule = ListCutter::JoinDateRule.new(:join_date => @less_recently, :operator => "after", :movement => @movement)
-    rule.to_relation.all.should =~ [ @joined_recently ]
+    rule.to_relation.all.should == [ @joined_recently ]
   end
 
   it "should validate itself" do

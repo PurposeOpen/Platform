@@ -684,7 +684,7 @@ describe ActionPage do
       spanish_taf_module_link = create(:taf_module_link, page: action_page)
       spanish_taf_module_link.content_module.update_attributes(language: spanish)
 
-      action_page.tafs_for_locale(portuguese).should =~ [portuguese_taf_module_link.content_module]
+      action_page.tafs_for_locale(portuguese).should match_array([portuguese_taf_module_link.content_module])
     end
   end
 
@@ -716,7 +716,7 @@ describe ActionPage do
     let!(:taf_page) { create(:action_page) }
 
     it "should return the newly linked content modules" do
-      petition_page.link_existing_modules_to(taf_page, ContentModule::HEADER).should =~ [image_html_module, text_html_module]
+      petition_page.link_existing_modules_to(taf_page, ContentModule::HEADER).should match_array([image_html_module, text_html_module])
     end
 
     it "should link all of the source page container's content modules that are not yet linked to the target page's container" do
@@ -727,7 +727,7 @@ describe ActionPage do
 
       petition_page.link_existing_modules_to taf_page, ContentModule::HEADER
       taf_page.reload
-      taf_page.content_modules.should =~ [already_shared_html_module, image_html_module, text_html_module]
+      taf_page.content_modules.should match_array([already_shared_html_module, image_html_module, text_html_module])
     end
 
   end
@@ -739,9 +739,9 @@ describe ActionPage do
       donation_page = create(:action_page, action_sequence: action_sequence)
       taf_page = create(:action_page, action_sequence: action_sequence)
 
-      taf_page.sibling_pages.should =~ [petition_page, donation_page]
-      petition_page.sibling_pages.should =~ [taf_page, donation_page]
-      donation_page.sibling_pages.should =~ [taf_page, petition_page]
+      taf_page.sibling_pages.should match_array([petition_page, donation_page])
+      petition_page.sibling_pages.should match_array([taf_page, donation_page])
+      donation_page.sibling_pages.should match_array([taf_page, petition_page])
     end
   end
 

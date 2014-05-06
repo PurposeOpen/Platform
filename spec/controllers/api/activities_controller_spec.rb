@@ -78,7 +78,7 @@ describe Api::ActivitiesController do
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should == 2
           user_activity_event_ids = json.collect { |uae| uae["id"] }
-          user_activity_event_ids.should =~ [@first_activity_event.id, @another_activity_event.id]
+          user_activity_event_ids.should == [@first_activity_event.id, @another_activity_event.id]
         end
       end
 
@@ -118,7 +118,7 @@ describe Api::ActivitiesController do
           json = ActiveSupport::JSON.decode(response.body)
           json.count.should eql 2
           ids = json.collect { |uae| uae["id"] }
-          ids.should =~ [@first_activity_event.id, @another_activity_event.id]
+          ids.should == [@first_activity_event.id, @another_activity_event.id]
         end
       end
     end
@@ -161,7 +161,7 @@ describe Api::ActivitiesController do
             json = ActiveSupport::JSON.decode(response.body)
             json.count.should == 2
             user_activity_event_ids = json.collect { |uae| uae["id"] }
-            user_activity_event_ids.should =~ [subscribed_event_from_hp.id, action_taken_event.id]
+            user_activity_event_ids.should match_array([subscribed_event_from_hp.id, action_taken_event.id])
           end
 
           it "should not filter out actions with profane comments if comment parameter is not present" do
@@ -191,7 +191,7 @@ describe Api::ActivitiesController do
             json = ActiveSupport::JSON.decode(response.body)
             json.count.should == 2
             user_activity_event_ids = json.collect { |uae| uae["id"] }
-            user_activity_event_ids.should =~ [subscribed_event.id, another_user_subscribed_event.id]
+            user_activity_event_ids.should == [subscribed_event.id, another_user_subscribed_event.id]
           end
         end
 

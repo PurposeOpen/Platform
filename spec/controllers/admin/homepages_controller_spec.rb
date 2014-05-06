@@ -22,8 +22,8 @@ describe Admin::HomepagesController do
       FactoryGirl.create(:homepage_content, :language => fr, :homepage => movement.homepage)
 
       get :edit, :movement_id => movement.id
-      assigns(:homepage_contents).map(&:language).map(&:iso_code).should =~ ["fr", "pt"]
-      assigns(:homepage_contents).map(&:new_record?).should =~ [ true, false ]
+      assigns(:homepage_contents).map(&:language).map(&:iso_code).should match_array(["fr", "pt"])
+      assigns(:homepage_contents).map(&:new_record?).should match_array([ true, false ])
     end
   end
 

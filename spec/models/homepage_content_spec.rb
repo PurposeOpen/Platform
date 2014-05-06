@@ -47,7 +47,7 @@ describe HomepageContent do
     homepage = movement.homepage
     homepage_content_en = FactoryGirl.create(:homepage_content, :homepage => homepage, :language => english)
 
-    homepage.build_content_for_all_languages.map { |c| c.language }.should =~ [english, spanish, portuguese]
+    homepage.build_content_for_all_languages.map { |c| c.language }.should match_array([english, spanish, portuguese])
   end
 
   describe "Logically validate completeness of content" do

@@ -18,7 +18,7 @@ describe ListCutter::ZoneRule do
     user4 = FactoryGirl.create(:user, :movement => action_page.movement, :country_iso => "AW")
 
     rule = ListCutter::ZoneRule.new(:zone_code => 1, :movement => action_page.movement)
-    rule.to_relation.all.should =~ [user1, user3]
+    rule.to_relation.all.should match_array([user1, user3])
   end
 
   it "should return human readable form of conditions" do

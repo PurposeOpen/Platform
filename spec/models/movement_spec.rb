@@ -58,7 +58,7 @@ describe Movement do
 
     describe 'when members come from different sources to the same movement' do
       before {[:movement, :allout_v3, :import].each {|source| FactoryGirl.create(:user, :source => source, :movement => allout) } }
-      it { should =~ [[:movement, 'movement'], [:allout_v3, 'allout_v3'], [:import,'import']] }
+      it { should match_array([[:movement, 'movement'], [:allout_v3, 'allout_v3'], [:import,'import']]) }
     end
 
     describe 'when members come from different sources to different movements' do
@@ -94,7 +94,7 @@ describe Movement do
     movement.update_attributes :default_iso_code => "ru"
 
     movement.default_language.iso_code.should == "ru"
-    movement.non_default_languages.map(&:iso_code).should =~ %w{ja es}
+    movement.non_default_languages.map(&:iso_code).should match_array(%w{ja es})
   end
 
   it "should raise exception if trying to set default language that doesn't exist in movement" do
@@ -146,7 +146,7 @@ describe Movement do
       push_2 = create(:push, :campaign => campaign, :created_at => 1.day.ago)
       push_3 = create(:push, :campaign => campaign, :created_at => 2.days.ago)
 
-      movement.pushes.should =~ [push_1, push_2, push_3]
+      movement.pushes.should match_array([push_1, push_2, push_3])
     end
   end
 

@@ -20,7 +20,7 @@ describe ListCutter::DistanceFromPostcodeRule do
     GeoData.should_receive(:find_by_country_iso_and_postcode).with(@params[:country_iso], @params[:postcode].to_s).and_return(mock_geo_datum)
     rule = ListCutter::DistanceFromPostcodeRule.new(@params)
 
-    rule.to_relation.all.should =~ [bob, sally]
+    rule.to_relation.all.should match_array([bob, sally])
   end
 
   context 'postcode does not exist in geo_data table' do

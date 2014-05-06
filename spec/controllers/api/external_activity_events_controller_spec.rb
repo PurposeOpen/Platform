@@ -367,12 +367,12 @@ describe Api::ExternalActivityEventsController do
 
       it 'should return unprocessable entity status' do
         post :create, movement_id: movement.slug, user: {}
-        response.status.should be_== 422
+        response.status.should == 422
       end
       
       it 'should return the external action errors' do
         post :create, movement_id: movement.slug, user: {}
-        response.body.should be_== "this is the external action errors".to_json
+        response.body.should == "this is the external action errors".to_json
       end
     end
   end

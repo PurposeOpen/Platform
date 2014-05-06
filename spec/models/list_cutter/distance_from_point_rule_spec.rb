@@ -18,7 +18,7 @@ describe ListCutter::DistanceFromPointRule do
 
     rule = ListCutter::DistanceFromPointRule.new(@params)
 
-    rule.to_relation.all.should =~ [bob, sally]
+    rule.to_relation.all.should match_array([bob, sally])
   end
 
   describe "#to_human_sql" do

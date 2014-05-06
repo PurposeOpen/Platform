@@ -13,7 +13,7 @@ describe ListCutter::ExternalTagRule do
   context "when somebody taken an action for the tag" do
     let(:external_action) { FactoryGirl.create :external_action, external_tags: [external_tag]}
     before                { FactoryGirl.create :external_activity_event, external_action: external_action, user: user1 }
-    its(:to_relation)     { should be_== [user1] }
+    its(:to_relation)     { should == [user1] }
 
     context "when somebody taken an action for the tag and somebody else don't" do
       let(:external_action) { FactoryGirl.create :external_action, external_tags: [external_tag]}

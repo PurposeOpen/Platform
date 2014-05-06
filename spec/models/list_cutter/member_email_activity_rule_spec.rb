@@ -94,7 +94,7 @@ describe ListCutter::MemberEmailActivityRule do
           movement: @movement
         ).to_relation.all
 
-        actual_users.should =~ [@user_with_0_events, user]
+        actual_users.should match_array([@user_with_0_events, user])
       end
     end
 

@@ -22,7 +22,7 @@ describe ListCutter::EmailActionRule do
 
     it "should return the users who received the given emails" do
       rule = ListCutter::EmailActionRule.new(:email_ids => [@email1.id, @email2.id], :action => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :movement => @movement)
-      rule.to_relation.all.should =~ [@user, @user1]
+      rule.to_relation.all.should match_array([@user, @user1])
     end
   end
 

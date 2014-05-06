@@ -29,7 +29,7 @@ describe ListCutter::CampaignRule do
     FactoryGirl.create(:subscribed_activity, :user => user3, :page => action_page1, :campaign => campaign1, :movement => movement)
 
     rule = ListCutter::CampaignRule.new(:campaigns => [campaign2.id], :movement => movement)
-    rule.to_relation.all.should =~ [user1]
+    rule.to_relation.all.should == [user1]
   end
 
   it "should return human readable form of conditions" do

@@ -37,7 +37,7 @@ describe ListCutter::OriginatingActionRule do
       ListCutter::OriginatingActionRule.new(
         page_ids: [@content1.page.id.to_s, @content2.page.id.to_s], 
         movement_id: @movement.id
-      ).to_relation.all.should =~ [@user1, @user2, @user3]
+      ).to_relation.all.should match_array([@user1, @user2, @user3])
     end
   end
 

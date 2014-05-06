@@ -5,7 +5,7 @@ describe Api::SendgridController do
   let(:user)     { FactoryGirl.create(:user, email: 'member@movement.com', movement: movement) }
 
   def expect_user_to_be_permanently_unsubscribed(&block)
-    UserActivityEvent.should_receive(:unsubscribed!).with(user, nil)
+    expect(UserActivityEvent).to receive(:unsubscribed!).with(user, nil)
 
     yield
 
@@ -17,7 +17,7 @@ describe Api::SendgridController do
   describe '#event_handler' do
 
     it 'should return 200 in order to prevent sendgrid from retrying' do
-      Delayed::Job.should_receive(:enqueue) { raise "some error" }
+      expect(Delayed::Job).to receive(:enqueue) { raise "some error" }
 
       post :event_handler, movement_id: movement.id, '_json' => [{}]
 
@@ -36,7 +36,7 @@ describe Api::SendgridController do
       context 'Unsubscribed Address' do
 
         it 'should unsubscribe the user' do
-          UserActivityEvent.should_receive(:unsubscribed!).with(user, nil)
+          expect(UserActivityEvent).to receive(:unsubscribed!).with(user, nil)
 
           post :event_handler, movement_id: movement.id, '_json' => dropped_event_params(user.email, 'Unsubscribed Address')
 
@@ -96,7 +96,7 @@ describe Api::SendgridController do
 
       it 'should unsubscribe the user and associate the event with an email' do
         email = create(:email)
-        UserActivityEvent.should_receive(:unsubscribed!).with(user, email)
+        expect(UserActivityEvent).to receive(:unsubscribed!).with(user, email)
 
         post :event_handler, movement_id: movement.id, '_json' => [{'email' =>  user.email,
                                                                     'event' =>  'unsubscribe',
@@ -114,8 +114,8 @@ describe Api::SendgridController do
 
       it 'should permanently unsubscribe the member, record a spam event, and associate both events with an email' do
         email = create(:email)
-        UserActivityEvent.should_receive(:email_spammed!).with(user, email)
-        UserActivityEvent.should_receive(:unsubscribed!).with(user, email)
+        expect(UserActivityEvent).to receive(:email_spammed!).with(user, email)
+        expect(UserActivityEvent).to receive(:unsubscribed!).with(user, email)
 
         post :event_handler, movement_id: movement.id, '_json' => [{'email' =>  user.email,
                                                                     'event' =>  'spamreport',

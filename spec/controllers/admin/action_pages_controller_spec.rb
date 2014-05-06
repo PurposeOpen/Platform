@@ -203,8 +203,8 @@ describe Admin::ActionPagesController do
         :id => @action_page.id
       }
 
-      assigns(:action_page).content_modules.should =~ [ html_module_head, html_module_sidebar ]
-      assigns(:action_page).modules_for_container_and_language(ContentModule::SIDEBAR, language).should =~ [ html_module_sidebar ]
+      assigns(:action_page).content_modules.should match_array([ html_module_head, html_module_sidebar ])
+      assigns(:action_page).modules_for_container_and_language(ContentModule::SIDEBAR, language).should match_array([ html_module_sidebar ])
     end
 
     it "should render blank modules for a new language" do

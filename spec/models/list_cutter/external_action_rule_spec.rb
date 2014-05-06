@@ -42,7 +42,7 @@ describe ListCutter::ExternalActionRule do
                                                                       external_action_4.unique_action_slug],
                                                 activity: @action_taken, since: @yesterday, movement: @movement)
 
-      rule.to_relation.all.should =~ [@john, @sally, @jenny]
+      rule.to_relation.all.should match_array([@john, @sally, @jenny])
     end
 
     describe 'action_created' do
@@ -61,7 +61,7 @@ describe ListCutter::ExternalActionRule do
 
       it "should return users that have created external actions for the specified sources" do
         rule = ListCutter::ExternalActionRule.new(@rule_parameters)
-        rule.to_relation.all.should =~ [@bob, @john, @sally]
+        rule.to_relation.all.should match_array([@bob, @john, @sally])
       end
 
       it "should return users that have created external actions within a timeframe" do
@@ -69,7 +69,7 @@ describe ListCutter::ExternalActionRule do
 
         rule = ListCutter::ExternalActionRule.new(@rule_parameters)
 
-        rule.to_relation.all.should =~ [@john, @sally]
+        rule.to_relation.all.should match_array([@john, @sally])
       end
 
     end
