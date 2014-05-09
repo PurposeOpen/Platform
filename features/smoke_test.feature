@@ -6,7 +6,6 @@ Feature: Smoke test to quickly check that main features are working
     And a default Email
     And I am logged into the platform as a platform admin
 
-  @javascript
   Scenario: Create a new movement and add a new campaign to it with a blast
     When I visit the "Forestry" campaign page
     And I create a Blast Campaign Automation campaign
@@ -28,7 +27,6 @@ Feature: Smoke test to quickly check that main features are working
     And I save count and go to blast
     Then I should see "Automation Blast (1 member)"
 
-    @javascript
     Scenario: Navigation through all pages on the platform side
      Then I check if I am logged into the platform
      When I navigate to the Dummy Movement movement
@@ -47,7 +45,6 @@ Feature: Smoke test to quickly check that main features are working
      Then I check for the statistics table
      And I check for TAF statistics table
 
-  @javascript
   Scenario: Create a campaign, add Petition, add a TAF and an unsubscribe module and finally publish the campaign
     When I visit the "Forestry" campaign page
     And I add a Test Sequence Automation action sequence

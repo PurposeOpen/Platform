@@ -20,7 +20,6 @@ Feature: Creating a push for a campaign
     And I press "Create blast"
     Then I should be on the admin push page for "Test Push"
 
-  @javascript
   Scenario: Renaming a push
     Given there is a push "Push for Renaming" in the "Forestry" campaign
     When I visit the "Forestry" campaign page
@@ -39,7 +38,6 @@ Feature: Creating a push for a campaign
     Then I should be on the admin push page for "Climate action"
     And I should see "Save the polar bears" within "#blasts-list"
 
-  @javascript
   Scenario: Add an email to a blast
     When I visit the "Forestry" campaign page
     And I follow "Dummy Push"
@@ -72,7 +70,6 @@ Feature: Creating a push for a campaign
     And I should see "Save the polar bears (10 members)"
 
   @wip
-  @javascript
   Scenario: Blast can be sent once proof is sent
     Given there is a push "Climate action" for the "Forestry" campaign
     And there is a blast "Do something about it" for the "Climate action" push
@@ -87,7 +84,7 @@ Feature: Creating a push for a campaign
     And I should see "Deliver" within "#blasts-list"
 
   @wip
-  @javascript @delayed-jobs
+  @delayed-jobs
 Scenario: Delivery in progress message is shown
   Given there are 10 members in the system
   And there is a push "Climate action" for the "Forestry" campaign
@@ -106,8 +103,7 @@ Scenario: Delivery in progress message is shown
   And There should be ".in-progress" only once inside "#blasts-list"
   And I should see "This blast can't be sent right now - check that the other blasts have finished first"
 
-@wip
-@javascript
+  @wip
   Scenario: Delivered emails are shown against blast
     Given there are 10 members in the system
     And there is a push "Climate action" for the "Forestry" campaign
@@ -120,7 +116,7 @@ Scenario: Delivery in progress message is shown
     Then I should see "Sent to 5 members at last count"
 
   @wip
-  @javascript @delayed-jobs
+  @delayed-jobs
 Scenario: A delivery can be canceled
   Given there is a push "Climate action" for the "Forestry" campaign
   And there is a blast "Do something about it" for the "Climate action" push
@@ -136,7 +132,7 @@ Scenario: A delivery can be canceled
   And I should see "Delivery canceled"
 
 @wip
-@javascript @delayed-jobs
+@delayed-jobs
 Scenario: Email that is being delivered has a warning message on edit page
   Given there is a push "Climate action" for the "Forestry" campaign
   And there is a blast "Do something about it" for the "Climate action" push

@@ -19,7 +19,6 @@ Feature: Managing homepages
     Then I should see "English"
     And I should see "Spanish"
 
-  @javascript
   Scenario: Creating a new homepage
     When I visit the "Save the Wholphins" homepage for "Spanish"
     And I fill in the "es" homepage form with:
@@ -28,7 +27,6 @@ Feature: Managing homepages
     And I save my changes
     Then I should see "Success"
 
-  @javascript
   Scenario: Editing follow the movement links
     When I visit the "Save the Wholphins" homepage for "Spanish"
     And I fill in the "es" homepage form with:

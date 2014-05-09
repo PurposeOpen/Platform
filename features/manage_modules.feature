@@ -9,7 +9,6 @@ Background:
   Given I am logged into the platform as a platform admin
   And I visit the admin "Landing Page for Blank Slate" page
 
-@javascript
 Scenario: Adding an HTML module to the main content
   When I follow "+ HTML" inside the container "MAIN CONTENT"
   And I wait 5 seconds
@@ -18,7 +17,6 @@ Scenario: Adding an HTML module to the main content
   And I press "Save page"
   Then I should see "Success"
 
-@javascript
 Scenario: Adding an HTML module to the header section
   When I follow "+ HTML" inside the container "HEADER CONTENT"
   And I wait 5 seconds
@@ -27,7 +25,7 @@ Scenario: Adding an HTML module to the header section
   And I press "Save page"
   Then I should see "Success"
 
-@wip @javascript
+@wip
 Scenario: Removing an HTML Module
   When I follow "Add HTML"
   When I fill in "Content" with "Down with this sort of thing!"
@@ -38,7 +36,7 @@ Scenario: Removing an HTML Module
   When I follow "Remove module" for the module "Down with this sort of thing!" and click "OK"
   Then I should not see "Save the kittens!"
 
-@wip @javascript
+@wip
 Scenario: Moving a module between containers
   When I follow "Add HTML" inside the container "MAIN CONTENT"
   When I fill in "Content" with "Careful now."
@@ -50,7 +48,7 @@ Scenario: Moving a module between containers
   Then I visit the admin "Landing Page for Blank Slate" page
   Then I should see "Careful now." inside the container "SIDEBAR"
 
-@wip @javascript
+@wip
 Scenario: Moving module between containers and saving
   When I follow "Add accordion" within the container "SIDEBAR"
   Then I follow "Add HTML" within the container "MAIN CONTENT"
@@ -64,7 +62,7 @@ Scenario: Moving module between containers and saving
   Then I visit the admin "Landing Page for Blank Slate" page
 
 
-@wip @javascript
+@wip
 Scenario: Adding a petition
   When I follow "Add a petition"
   And I fill in "Title" with "petition contre Sarkozy"
@@ -81,7 +79,7 @@ Scenario: Adding a petition
   And the "Show progress at" field should contain "50"
   And the "Button text" field should contain "Virez le!"
 
-@wip @javascript
+@wip
 Scenario: Adding a donation
   When I follow "Add a donation"
   And I fill in "Title" with "Give us money for catfood"
@@ -98,7 +96,7 @@ Scenario: Adding a donation
   And the "Show progress at" field should contain "10"
   And the "Receipt frequency" field should contain "quarterly"
 
-@wip @javascript
+@wip
 Scenario: Validation failures
   When I follow "Add a petition"
   Then I should see "Petition Module"

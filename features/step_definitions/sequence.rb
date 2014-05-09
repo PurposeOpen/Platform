@@ -1,4 +1,5 @@
 When /^I add a (.+) action sequence$/ do|sequence_name|
+  sleep 1
   click_link("Add an action sequence")
   fill_in("action_sequence_name",:with =>sequence_name)
   click_button("Create action sequence")

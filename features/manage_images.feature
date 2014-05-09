@@ -1,4 +1,4 @@
-@group4 @search @javascript
+@group4 @search
 Feature: Manage images
   In order to manage online content
   As a campaigner

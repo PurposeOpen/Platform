@@ -23,7 +23,6 @@ Feature: Managing pages and action sequence
     Then I should be on the admin action sequence page for "Pulp Mill Woes"
     And I should see "Pulp Mill Woes"
 
-  @javascript
   Scenario: Duplicate an action sequence
     When I visit the "Forestry" campaign page
     And I follow "Duplicate" for "Gunns Petition" action sequence
@@ -34,7 +33,6 @@ Feature: Managing pages and action sequence
     Then I should see "Landing Page for Gunns Petition"
     And I should see "Thankyou Page for Gunns Petition"
 
-  @javascript
   Scenario: Duplicate of a duplicate action sequence
     When I visit the "Forestry" campaign page
     And I follow "Duplicate" for "Gunns Petition" action sequence
@@ -42,7 +40,6 @@ Feature: Managing pages and action sequence
     And I follow "Duplicate" for "Gunns Petition(1)" action sequence
     Then I should see "Gunns Petition(2)"
 
-  @javascript
   Scenario: Duplicating a page when an unrenamed duplicate exists
     When I visit the "Forestry" campaign page
     And I follow "Duplicate" for "Gunns Petition" action sequence
@@ -50,7 +47,6 @@ Feature: Managing pages and action sequence
     And I follow "Duplicate" for "Gunns Petition" action sequence
     Then I should see "Gunns Petition(2)"
 
-  @javascript
   Scenario: Deleting an action sequence
     When I visit the "Forestry" campaign page
     And I follow "Gunns Petition"
@@ -60,7 +56,6 @@ Feature: Managing pages and action sequence
     Then I should see "'Gunns Petition' has been deleted"
     And "Gunns Petition" should no longer be listed as a action sequence
 
-  @javascript
   Scenario: Add pages to a sequence
     When I visit the "Gunns Petition" action sequence page
     And I follow "Add a page"
@@ -69,7 +64,6 @@ Feature: Managing pages and action sequence
     Then I should be on the admin action sequence page for "Gunns Petition"
     And I should see "'Petition page for Gunns' has been created."
 
-  @javascript
   Scenario: Deleting a Page
     When I visit the "Forestry" campaign page
     And I follow "Gunns Petition"
@@ -80,7 +74,6 @@ Feature: Managing pages and action sequence
     Then I should see "'Landing Page for Gunns Petition' has been deleted"
     And I should not see "Landing Page for Gunns Petition" within "#pages_list"
 
-  @javascript
   Scenario: Create a petition page and preview it
     When I visit the "Forestry" campaign page
     And I add a Test Sequence Automation action sequence

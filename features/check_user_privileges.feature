@@ -10,7 +10,6 @@ Feature: Ensure users have the correct access to parts of the application
       | mike@example.com          | member     |
       | eviluser@evil.example.com |            |
 
-  @javascript
   Scenario Outline: Roles with access to admin section
     Given I am logged in as "<Email>"
     When I go to the home page
@@ -26,7 +25,6 @@ Feature: Ensure users have the correct access to parts of the application
     | mike@example.com          | ""                          | "/platform_users/sign_in" | "Forgot your password?"  |
     | eviluser@evil.example.com | ""                          | "/platform_users/sign_in" | "Forgot your password?"  |
 
-  @javascript
   Scenario Outline: Viewing left navigation menu links
     Given I have a movement named "Rainforests" with campaign "Save the rainforests"
     And I am logged in as <Role> with "<Email>" on movement "Rainforests"

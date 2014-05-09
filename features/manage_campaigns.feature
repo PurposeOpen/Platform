@@ -12,7 +12,6 @@ Feature: Managing campaigns
       | Conservation | admin |
     And I am on the "Conservation" movement page
 
-  @javascript
   Scenario: Creating a Campaign
     And I navigate to "Campaigns"
     And I follow "Create new campaign"
@@ -22,7 +21,6 @@ Feature: Managing campaigns
     Then I should see "'Save the kittens!' has been created."
     And I should be on the "Conservation" movement page
 
-  @javascript
   Scenario: Deleting an existing campaign
     And I navigate to "Campaigns"
     And I follow "Narwhal conservation"

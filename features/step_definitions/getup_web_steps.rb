@@ -3,7 +3,7 @@ require 'uri'
 # Testing modal window
 When /^I click "([^"]*)" after following "([^"]*)"$/ do |action, link|
   prepare_dialog_box(action)
-  trigger_click(find_link(link))
+  find_link(link).trigger('click')
 end
 
 When /^I click "([^"]*)" after pressing "([^"]*)"$/ do |action, link|
@@ -68,13 +68,5 @@ Then /^There should be "([^"]*)" only once inside (.*[^:])$/ do |elem, selector|
     else
       assert page.has_css?(elem, :count => 1)
     end
-  end
-end
-
-def trigger_click(link)
-  if Capybara.javascript_driver == :poltergeist
-    link.trigger('click')
-  else
-    link.click
   end
 end

@@ -77,8 +77,8 @@ Then /^I check for the movement (.+) and select it$/ do|movement_name|
   movement_link.click
 end
 Then /^I check if I am logged into the platform$/ do
+ sleep 1
  assert_equal(find(:xpath,"//a[text()='Log Out']").present?,true)
- sleep 2
 end
 Then /^I check if I am on the movement home page for (.+)$/ do|movement_name|
   breadcrumbs=page.find(:xpath,"//div[@class='breadcrumbs']").text

@@ -25,7 +25,6 @@ Feature: Breadcrumbs
     When I follow "Carousel"
     Then the breadcrumbs should match "Dummy Movement » Featured Contents » Carousel"
 
-  @javascript
   Scenario: Viewing breadcrumbs under campaigns
     When I visit the "Dummy movement" movement page
     Then the breadcrumbs should match "Dummy Movement, Home"

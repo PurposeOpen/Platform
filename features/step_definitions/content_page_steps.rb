@@ -40,6 +40,7 @@ Then /^I should see that the "([^\"]*)" collection has a page called "([^\"]*)"$
 end
 
 Then /^I should see that the "([^\"]*)" collection does not have a page called "([^\"]*)"$/ do |collection_name, content_page_name|
+  sleep 1
   visit_content_pages collection_name
   with_scope("\"[data-name='#{collection_name}']\"") do
     page.should_not have_content content_page_name

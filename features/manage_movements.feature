@@ -1,4 +1,4 @@
-@group4 @admin @javascript
+@group4 @admin
 Feature: Manage Movements
   As a platform admin
   I want to be able to manage movements

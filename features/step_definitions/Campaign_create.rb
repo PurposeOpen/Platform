@@ -1,4 +1,5 @@
 When /^I create a (.+) campaign$/ do |campaign_name|
+  sleep 1
   within("#navbar") do
     click_link("Campaigns")
   end
