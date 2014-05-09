@@ -1,4 +1,4 @@
-@group2
+@group2 @javascript
 Feature: Cut list based on different options
 
   Background:

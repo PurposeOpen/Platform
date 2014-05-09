@@ -10,8 +10,7 @@ When /^I add a (.+) blast$/ do |blast_name|
   sleep 2
 end
 When /^I add new email (.+) to the blast$/ do|email_name|
-  page.execute_script('$("ul.actions li ul li a")[0].click()')
-  sleep 2
+  step 'I expand Add an Email to click New Email'
   fill_in("email_name",:with=>email_name)
 end
 
@@ -42,7 +41,8 @@ When /^I enter the new name as (.+) for the same push$/ do |push_name|
 end
 
 When /I expand Add an Email to click New Email/ do
-  page.execute_script('$("ul.actions li ul li a")[0].click()')
+  find('span.button').hover
+  find('#new-email').click
   sleep 2
 end
 

@@ -51,6 +51,7 @@ Then /^I should see the following statistics for the email "([^"]*)":$/ do |emai
     th = ths[position].text
     td = tds[position].text
 
+    value = value.gsub(' ', '') if page.driver.class == Capybara::RackTest::Driver
     [th, td].should == [header, value]
   end
 end

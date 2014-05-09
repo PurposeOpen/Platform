@@ -85,6 +85,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'guard-rspec'
   gem 'selenium-webdriver'
+  gem 'poltergeist'
   gem 'capybara'
   gem 'database_cleaner'
   gem 'cucumber-rails', :require => false

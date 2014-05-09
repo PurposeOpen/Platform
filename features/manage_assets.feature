@@ -1,4 +1,4 @@
-@group3 @search
+@group3 @search @javascript
 Feature: Manage assets
   In order to manage online content
   As a campaigner

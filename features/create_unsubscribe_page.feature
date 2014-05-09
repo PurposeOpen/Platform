@@ -1,4 +1,4 @@
-@group1
+@group1 @javascript
 Feature: Add an unsubscribe action sequence in a campaign so that the user can stop receiving emails.
 
   Background:

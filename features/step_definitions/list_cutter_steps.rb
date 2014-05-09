@@ -6,7 +6,7 @@ When /^I select "([^\"]*)" as the "(\d*).{2}" filter type$/ do |value, position|
   find(:xpath, "//fieldset/ul/li[#{position}]/span/select").select(value)
 end
 When /^I select recipients$/ do
-  find(:css,"ul.actions li a").click
+  click_link('Recipients')
 end
 When /^I select Country by (.+)$/ do|selected_by|
   filter = find(:css, "div.list-filter")
@@ -37,6 +37,7 @@ When /^I check if the count is (.+)$/ do|count|
 end
 When /^I save count and go to blast$/ do
   click_button("Save List")
+  sleep 1
   click_link("Back")
 end
 When /^I select the Member Activity (.+) (.+) than (.+)$/ do|option1,option2,count|

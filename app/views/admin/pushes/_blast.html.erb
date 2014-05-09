@@ -11,7 +11,7 @@
     <li>
       <span class='button'>Add an Email... ▼</span>
       <ul>
-        <li><%= link_to "New Email", new_admin_movement_email_path(:movement_id => @movement.id, :blast_id => blast.id)%></li>
+        <li><%= link_to "New Email", new_admin_movement_email_path(:movement_id => @movement.id, :blast_id => blast.id), :id => 'new-email'%></li>
         <li><%= link_to "Clone Existing", '#', :id => "clone_email_button", :class => 'clone_email_button', :blast_id => blast.id %></li>
       </ul>
   </ul>

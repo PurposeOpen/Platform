@@ -42,7 +42,17 @@ end
 
 =end
 
-Capybara.default_driver = :selenium
+if ENV['SELENIUM']
+  Capybara.default_driver = :selenium
+else
+  require 'capybara/poltergeist'
+  options = { }
+  options[:inspector] = true if ENV['DEBUG']
+  Capybara.register_driver :poltergeist do |app|
+    Capybara::Poltergeist::Driver.new(app, options)
+  end
+  Capybara.javascript_driver = :poltergeist
+end
 ActionController::Base.asset_host = Capybara.app_host
 
 
