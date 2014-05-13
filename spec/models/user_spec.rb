@@ -29,7 +29,6 @@
 #  created_by               :string(255)
 #  updated_by               :string(255)
 #  is_volunteer             :boolean          default(FALSE)
-#  random                   :float
 #  movement_id              :integer          not null
 #  language_id              :integer
 #  postcode                 :string(255)
@@ -540,29 +539,6 @@ describe User do
 
       user.unsubscribe!(email)
       user.is_member?.should be_false
-    end
-  end
-
-  describe "After creation" do
-    it "should update its random column" do
-      u = FactoryGirl.create(:user)
-      u.random.should_not be_nil
-    end
-  end
-
-  describe "#update_random_values" do
-    it "should update all users' random values" do
-      u = FactoryGirl.create(:user)
-      u1 = FactoryGirl.create(:user)
-      r = u.random
-      r1 = u.random
-
-      User.update_random_values
-
-      u.reload
-      u1.reload
-      u.random.should_not eql r
-      u1.random.should_not eql r1
     end
   end
 

@@ -56,11 +56,9 @@ class List < ActiveRecord::Base
     relation = self.list_relation
     relation = filter_users_by_language(relation, email)
 
-    if options[:limit].is_a? Fixnum
-      relation = relation.order(:random).limit(options[:limit])
-    end
+    results = execute_query :select_values, relation, self.rules, &block
 
-    execute_query :select_values, relation, self.rules, &block
+    options[:limit].is_a?(Fixnum) ? results.sample(options[:limit]) : results
   end
 
   def count_by_language_relation

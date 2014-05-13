@@ -29,7 +29,6 @@
 #  created_by               :string(255)
 #  updated_by               :string(255)
 #  is_volunteer             :boolean          default(FALSE)
-#  random                   :float
 #  movement_id              :integer          not null
 #  language_id              :integer
 #  postcode                 :string(255)
@@ -74,7 +73,6 @@ class User < ActiveRecord::Base
   after_initialize :defaults
   before_save :downcase_email
   before_save { geolocation_service.lookup if address_changed? }
-  after_create :assign_random_value
 
   scope :for_movement, lambda { |movement| where(movement_id: movement.try(:id)) }
   scope :subscribed, where(is_member: true)
@@ -92,10 +90,6 @@ class User < ActiveRecord::Base
   handle_asynchronously :solr_index
 
   class << self
-    def update_random_values
-      self.connection.execute("update users set random = rand()")
-    end
-
     def find_by_email(address)
       User.where(["email = ?", address.downcase]).first unless address.nil?
     end
@@ -270,11 +264,6 @@ class User < ActiveRecord::Base
 
   def defaults
     @geolocation_service ||= GeolocationService.new(self)
-  end
-
-  def assign_random_value
-    self.connection.execute("update users set random = rand() where id = #{self.id} and movement_id = #{self.movement_id}")
-    self.reload
   end
 
   def downcase_email

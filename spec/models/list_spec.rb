@@ -274,6 +274,7 @@ describe List do
     end
     
     context "limit" do
+
       before do
         @english = create(:language)
 
@@ -283,51 +284,44 @@ describe List do
         @push = create(:push, campaign: @campaign)
         @blast = create(:blast, push: @push)
         @email = create(:email, language: @english, blast: @blast)
+
+        @user1 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
+        @user2 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
+        @user3 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
+        @user4 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
+        @user5 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
+        @users = [@user1, @user2, @user3, @user4, @user5]
+
+        @list = List.create!(blast: @blast)
+        @list.add_rule(:country_rule, selected_by: 'name', values: ['UNITED STATES'])
       end
 
       it "should correctly split the users on limited lists" do
-        user1 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
-        user2 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
-        user3 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
-        user4 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
-        user5 = create(:user, movement: @movement, is_member: true, country_iso: 'US', language: @english)
-        users = [user1, user2, user3, user4, user5]
-
-        list = List.create!(blast: @blast)
-        list.add_rule(:country_rule, selected_by: 'name', values: ['UNITED STATES'])
-
-        us_users_for_1st_deliver = list.filter_by_rules_excluding_users_from_push(@email, no_jobs: 1, current_job_id: 0, limit: 2)
-        Push.log_activity!(:email_sent, users.find {|u| u.id == us_users_for_1st_deliver[0] }, @email)
-        Push.log_activity!(:email_sent, users.find {|u| u.id == us_users_for_1st_deliver[1] }, @email)
-        us_users_for_2nd_deliver = list.filter_by_rules_excluding_users_from_push(@email, no_jobs: 1, current_job_id: 0, limit: 2)
-        Push.log_activity!(:email_sent, users.find {|u| u.id == us_users_for_2nd_deliver[0] }, @email)
-        Push.log_activity!(:email_sent, users.find {|u| u.id == us_users_for_2nd_deliver[1] }, @email)
-        us_users_for_3rd_deliver = list.filter_by_rules_excluding_users_from_push(@email, no_jobs: 1, current_job_id: 0, limit: 2)
+        us_users_for_1st_deliver = @list.filter_by_rules_excluding_users_from_push(@email, no_jobs: 1, current_job_id: 0, limit: 2)
+        Push.log_activity!(:email_sent, @users.find {|u| u.id == us_users_for_1st_deliver[0] }, @email)
+        Push.log_activity!(:email_sent, @users.find {|u| u.id == us_users_for_1st_deliver[1] }, @email)
+        us_users_for_2nd_deliver = @list.filter_by_rules_excluding_users_from_push(@email, no_jobs: 1, current_job_id: 0, limit: 2)
+        Push.log_activity!(:email_sent, @users.find {|u| u.id == us_users_for_2nd_deliver[0] }, @email)
+        Push.log_activity!(:email_sent, @users.find {|u| u.id == us_users_for_2nd_deliver[1] }, @email)
+        us_users_for_3rd_deliver = @list.filter_by_rules_excluding_users_from_push(@email, no_jobs: 1, current_job_id: 0, limit: 2)
 
         us_users_for_1st_deliver.count.should == 2
         us_users_for_2nd_deliver.count.should == 2
         us_users_for_3rd_deliver.count.should == 1
       end
 
-      it "should allow a limit to be added to the final query sorting by the user's random column" do
-        random = 4
-        users = ['user1@gmail.com', 'user2@gmail.com', 'user3@gmail.com', 'user4@gmail.com'].inject([]) do |acc, email|
-          user = create(:user, email: email, country_iso: 'AU', movement: movement, language: movement.default_language)
-          user.random = random
-          user.save
-          random -= 1
-          acc << user
-          acc
-        end
+      it "should use a different random order of users each time the list is cut" do
+        chronologically_ordered_users = @users.collect {|user| user.id}
 
-        email = create(:email, language: users[0].language, blast: blast)
-        Push.log_activity!(:email_sent, users[0], email)
+        results_a = @list.filter_by_rules_excluding_users_from_push(@email, no_jobs: 1, current_job_id: 0, limit: 5)
+        results_b = @list.filter_by_rules_excluding_users_from_push(@email, no_jobs: 1, current_job_id: 0, limit: 5)
 
-        list.filter_by_rules_excluding_users_from_push(email).size.should == 3
-        result = list.filter_by_rules_excluding_users_from_push(email, limit: 2)
-        result.size.should == 2
-        result.should == [users[3].id, users[2].id]
+        expect(results_a).to match_array chronologically_ordered_users
+        expect(results_a).to_not eq      chronologically_ordered_users
+        expect(results_a).to match_array results_b
+        expect(results_a).to_not eq      results_b
       end
+
     end
 
     it "should not persist the excluded users rule" do
@@ -338,6 +332,7 @@ describe List do
       list.should have(1).rules
       list.rules.first.should be_instance_of ListCutter::CountryRule
     end
+
   end
 
   describe 'build' do

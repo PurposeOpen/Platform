@@ -24,11 +24,10 @@
 
 require "spec_helper"
 
-def create_users_with_descending_randomicity(movement, emails)
+def create_users(movement, emails)
   random = 5
   users = emails.inject([]) do |acc, email|
     user = create(:user, first_name: email.split('@')[0], email: email, country_iso: "AU", postcode: random.to_s.rjust(4, "0"))
-    user.random = random
     user.movement = movement
     user.save!
     random -= 1
@@ -176,11 +175,10 @@ describe Email do
 
       english = create(:english)
       walkfree = create(:movement, name: "WalkFree", url: "http://walkfree.org", languages: [english])
-      users = create_users_with_descending_randomicity(walkfree, ['another_recipient@gmail.com', 'james@metallica.com', 'dave@megadeth.com', 'scott@anthrax.com', 'slash@slash.com'])
+      users = create_users(walkfree, ['another_recipient@gmail.com', 'james@metallica.com', 'dave@megadeth.com', 'scott@anthrax.com', 'slash@slash.com'])
       email = build_email(language: english, body: "Hello {NAME|Friend}! Pls click <a href=\"http://somewhere.com\">here</a>. Oh and you probably live near {POSTCODE|Nowhere}")
       email.movement = walkfree
       slash_hash, scott_hash, dave_hash = tracking_hash_for(email, users[4], users[3], users[2])
-
       expected_sendgrid_header = {
         to: ['dave@megadeth.com', 'scott@anthrax.com', 'slash@slash.com'],
         category: [
