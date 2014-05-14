@@ -1,15 +1,15 @@
 module Admin
   class MovementsController < AdminController
-    layout 'movements', :except => [:new]
+    layout 'movements', except: [:new]
     self.nav_category = :home
 
     PAGE_SIZE = 5
 
-    crud_actions_for Movement, :redirects => {
-        :update => lambda { admin_movement_path(@movement) },
+    crud_actions_for Movement, redirects: {
+        update: lambda { admin_movement_path(@movement) },
     }
 
-    authorize_resource :movement, :only => [:show]
+    authorize_resource :movement, only: [:show]
 
     def new
       authorize! :new, Movement
@@ -25,10 +25,10 @@ module Admin
 
       if @movement.save
         @movement.default_language = default_language if default_language
-        redirect_to admin_movement_path(@movement), :notice => "'#{@movement.name}' has been created."
+        redirect_to admin_movement_path(@movement), notice: "'#{@movement.name}' has been created."
       else
         flash[:error] = 'Your changes have NOT BEEN SAVED YET. Please fix the errors below.'
-        render :action => 'new'
+        render action: 'new'
       end
     end
 
@@ -44,10 +44,10 @@ module Admin
       @movement.languages = languages if languages
       authorize! :update, model
       if @movement.update_attributes(params[model_name])
-        redirect_to admin_movement_path(@movement), :notice => "'#{@movement.name}' has been updated."
+        redirect_to admin_movement_path(@movement), notice: "'#{@movement.name}' has been updated."
       else
         flash[:error] = 'Your changes have NOT BEEN SAVED YET. Please fix the errors below.'
-        render :action => 'edit'
+        render action: 'edit'
       end
     end
 
@@ -59,10 +59,10 @@ module Admin
     end
 
     def show
-      options = {:per_page => PAGE_SIZE,
-                 :page => params[:page],
-                 :order => 'created_at DESC',
-                 :conditions => {:movement_id => @movement.id}}
+      options = {per_page: PAGE_SIZE,
+                 page: params[:page],
+                 order: 'created_at DESC',
+                 conditions: {movement_id: @movement.id}}
       @campaigns = Campaign.paginate(options)
     end
 

@@ -5,15 +5,15 @@ module Admin
 
     PAGE_SIZE = 20
     skip_authorize_resource
-    load_and_authorize_resource :platform_user, :instance_name => :user, :parent => false
-    before_filter :cannot_update_yourself, :only => [:create, :update]
+    load_and_authorize_resource :platform_user, instance_name: :user, parent: false
+    before_filter :cannot_update_yourself, only: [:create, :update]
 
     def index
       # authorize! :manage, PlatformUser
       search = PlatformUser.search {
         keywords params[:query]
         with :is_admin, 1 unless params[:admins_only].nil?
-        paginate :per_page => PAGE_SIZE, :page => params[:page]
+        paginate per_page: PAGE_SIZE, page: params[:page]
         order_by :updated_at, :asc
       }
       @users = search.results
@@ -25,11 +25,11 @@ module Admin
 
       @user = PlatformUser.new(params[:user])
 
-      if @user.save && @user.update_attributes(:user_affiliations_attributes => ua)
-        redirect_to admin_movement_users_path(@movement), :notice => 'PlatformUser has been created.'
+      if @user.save && @user.update_attributes(user_affiliations_attributes: ua)
+        redirect_to admin_movement_users_path(@movement), notice: 'PlatformUser has been created.'
       else
         flash[:error] = 'Your changes have NOT BEEN SAVED YET. Please fix the errors below.'
-        render :action => 'new'
+        render action: 'new'
       end
     end
 
@@ -44,10 +44,10 @@ module Admin
       authorize! :toggle_platform_admin_role, @user if @user.is_admin_changed?
 
       if @user.save
-        redirect_to admin_movement_users_path(@movement), :notice => "'#{@user.name}' has been updated."
+        redirect_to admin_movement_users_path(@movement), notice: "'#{@user.name}' has been updated."
       else
         flash[:error] = 'Your changes have NOT BEEN SAVED YET. Please fix the errors below.'
-        render :action => 'edit'
+        render action: 'edit'
       end
     end
 
@@ -70,7 +70,7 @@ module Admin
     def destroy
       @user = PlatformUser.find(params[:id])
       @user.destroy
-      redirect_to admin_movement_users_path(@movement), :notice => "'#{@user.name}' has been deleted."
+      redirect_to admin_movement_users_path(@movement), notice: "'#{@user.name}' has been deleted."
     end
 
     def cannot_update_yourself

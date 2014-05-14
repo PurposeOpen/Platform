@@ -19,7 +19,7 @@ module Admin
         stats.collect do |k,v|
           concat(content_tag(:p, class: 'desc') do
             concat(content_tag(:span, class: 'number') do
-              "#{number_with_delimiter(v, :locale => I18n.locale)}"
+              "#{number_with_delimiter(v, locale: I18n.locale)}"
             end)
             concat("#{ k.is_a?(String) ? k : k.to_s.titleize}")
           end)
@@ -30,7 +30,7 @@ module Admin
     private
 
     def prepare_misc_stats
-      actions_in_the_last_week = UserActivityEvent.actions_taken.where(:movement_id => @movement.id).where("created_at > ?", 1.week.ago).count
+      actions_in_the_last_week = UserActivityEvent.actions_taken.where(movement_id: @movement.id).where("created_at > ?", 1.week.ago).count
       languages_count = @movement.languages.count
 
       {'Actions in the Last Week' => actions_in_the_last_week,

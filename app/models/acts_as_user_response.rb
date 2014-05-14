@@ -1,6 +1,6 @@
 module ActsAsUserResponse
   def self.included(klass)
-    klass.belongs_to :action_page, :foreign_key => :page_id
+    klass.belongs_to :action_page, foreign_key: :page_id
     klass.belongs_to :content_module
     klass.belongs_to :user
     klass.belongs_to :email

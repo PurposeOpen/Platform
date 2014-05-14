@@ -51,11 +51,11 @@ When /^(?:|I )follow "([^"]*)"(?: for the page "([^"]*)")? and click "([^"]*)"$/
 end
 
 Given /^a campaign page entitled "([^"]*)" with required (.*)$/ do |page_name, user_detail|
-  FactoryGirl.create(:action_page, :name => page_name, :required_user_details => {user_detail => :required})
+  FactoryGirl.create(:action_page, name: page_name, required_user_details: {user_detail => :required})
 end
 
 Given /^a campaign page entitled "([^"]*)"$/ do |page_name|
-  FactoryGirl.create(:action_page, :name => page_name)
+  FactoryGirl.create(:action_page, name: page_name)
 end
 
 When /^I navigate back to the Action Sequence "([^"]*)"$/ do |action_sequence_name|
@@ -101,6 +101,6 @@ When /^I preview the petition page for (.+) page$/ do|module_name|
 end
 
 When /^I create a new unsubscribe page named "([^"]*)"$/ do |page_name|
-  fill_in "action_page_name", :with => page_name
+  fill_in "action_page_name", with: page_name
   click_link("Add a page")
 end

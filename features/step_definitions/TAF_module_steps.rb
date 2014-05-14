@@ -1,12 +1,12 @@
 When /^I enter details required for creating the TAF page (.+)$/ do|module_name|
   text_element=page.all(:css,"div.module_body textarea")
-  fill_in('Share Landing Page URL', :with => "www.testurl.com")
-  fill_in('Headline', :with => "test headline")
-  fill_in('Image URL', :with => "image url")
-  fill_in('Subject', :with => "email subject")
-  fill_in('Message', :with => "Test Message")
-  fill_in('Tweet', :with => "Test Tweet")
-  fill_in('Body', :with => "Email Body")
+  fill_in('Share Landing Page URL', with: "www.testurl.com")
+  fill_in('Headline', with: "test headline")
+  fill_in('Image URL', with: "image url")
+  fill_in('Subject', with: "email subject")
+  fill_in('Message', with: "Test Message")
+  fill_in('Tweet', with: "Test Tweet")
+  fill_in('Body', with: "Email Body")
   page.find(:css,"div[data-layout-type='header_content'] ul.add_module_buttons a.html_module").click
   sleep 1
   page.execute_script('$("div.modules_container span.mceEditor iframe")[0].contentDocument.documentElement.innerHTML="<html>This is header content</html>"')

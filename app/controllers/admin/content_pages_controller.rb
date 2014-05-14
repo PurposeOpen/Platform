@@ -6,8 +6,8 @@ class Admin::ContentPagesController < Admin::AdminController
   skip_authorize_resource # We have no static page model, which confuses CanCan.
   skip_authorization_check # Anyone with access to the admin interface can see the static pages index page.
 
-  crud_actions_for ContentPage, :redirects => {
-      :destroy => lambda { admin_movement_content_pages_path(@movement) }
+  crud_actions_for ContentPage, redirects: {
+      destroy: lambda { admin_movement_content_pages_path(@movement) }
   }
 
   before_filter -> {@content_page = @movement.find_page(params[:id])}, only: [:create_preview]
@@ -23,7 +23,7 @@ class Admin::ContentPagesController < Admin::AdminController
 
   def new
     content_page_collection_id = params['content_page_collection_id']
-    @content_page = ContentPage.new(:content_page_collection_id => content_page_collection_id)
+    @content_page = ContentPage.new(content_page_collection_id: content_page_collection_id)
   end
 
   def edit
@@ -31,7 +31,7 @@ class Admin::ContentPagesController < Admin::AdminController
   end
 
   def create
-    content_page_attributes = params[:content_page].merge(:content_page_collection_id => params[:content_page_collection_id])
+    content_page_attributes = params[:content_page].merge(content_page_collection_id: params[:content_page_collection_id])
     @content_page = @movement.content_pages.create(content_page_attributes)
     redirect_to edit_admin_movement_content_page_path(@movement, @content_page)
   end
@@ -59,13 +59,13 @@ class Admin::ContentPagesController < Admin::AdminController
     all_modules = @content_page.header_content_modules + @content_page.sidebar_content_modules + @content_page.main_content_modules + @content_page.footer_content_modules
     clone_content_modules_for_preview(params[:content_modules], all_modules, cloned_content_page)
     cloned_content_page.update_attributes(params[:content_page])
-    render :text => preview_admin_movement_content_page_path(@movement, cloned_content_page), :status => :ok
+    render text: preview_admin_movement_content_page_path(@movement, cloned_content_page), status: :ok
   end
 
   def preview
     @movement = Movement.find(params[:movement_id])
     @content_page = @movement.find_page_unscoped(params[:id])
-    render :layout => '_base'
+    render layout: '_base'
   end
 
   private
@@ -89,7 +89,7 @@ class Admin::ContentPagesController < Admin::AdminController
     success = true
     updated_attributes.each do |id, attrs|
       content_module = content_modules.find { |cm| cm.id == id.to_i }
-      moduleLinks = ContentModuleLink.where(:page_id => @content_page.id, :content_module_id => content_module.id)
+      moduleLinks = ContentModuleLink.where(page_id: @content_page.id, content_module_id: content_module.id)
       cloned_content_module = content_module.dup
       cloned_content_module.live_content_module_id = content_module.id
       cloned_content_module.update_attributes(attrs)

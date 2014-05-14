@@ -11,8 +11,8 @@
 #
 
 class FeaturedContentCollection < ActiveRecord::Base
-	belongs_to :featurable, :polymorphic => true
-	has_many :featured_content_modules, :order => "position", :dependent => :destroy
+	belongs_to :featurable, polymorphic: true
+	has_many :featured_content_modules, order: "position", dependent: :destroy
 
   def contantized_name
     self.name.gsub(' ', '')
@@ -24,7 +24,7 @@ class FeaturedContentCollection < ActiveRecord::Base
 
   def modules_for_language(lang)
     language = [String, Symbol].include?(lang.class) ? Language.find_by_iso_code(lang) : lang
-    featured_content_modules.where(:language_id => language.id).all
+    featured_content_modules.where(language_id: language.id).all
   end
 
   def valid_modules_for_language(lang)

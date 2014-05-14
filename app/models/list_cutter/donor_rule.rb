@@ -1,7 +1,7 @@
 module ListCutter
   class DonorRule < Rule
     fields :frequencies
-    validates_presence_of :frequencies, :message => 'Please specify a frequency'
+    validates_presence_of :frequencies, message: 'Please specify a frequency'
 
     def to_sql
       sanitize_sql <<-SQL, frequencies

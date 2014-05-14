@@ -12,21 +12,21 @@ describe EmailStatsTable do
     user_id = last_user.nil? ? 65535 : last_user.id + 65536
     100.times do
       user_id += 1
-      PushSentEmail.create :movement_id => email.movement.id, :user_id => user_id, :email_id => email.id, :push_id => email.blast.push.id
+      PushSentEmail.create movement_id: email.movement.id, user_id: user_id, email_id: email.id, push_id: email.blast.push.id
     end
 
     90.times do
       user_id += 1
-      PushViewedEmail.create :movement_id => email.movement.id, :user_id => user_id, :email_id => email.id, :push_id => email.blast.push.id
+      PushViewedEmail.create movement_id: email.movement.id, user_id: user_id, email_id: email.id, push_id: email.blast.push.id
     end
     50.times do
       user_id += 1
-      PushClickedEmail.create :movement_id => email.movement.id, :user_id => user_id, :email_id => email.id, :push_id => email.blast.push.id
+      PushClickedEmail.create movement_id: email.movement.id, user_id: user_id, email_id: email.id, push_id: email.blast.push.id
     end
 
     5.times do
       user_id += 1
-      PushSpammedEmail.create :movement_id => email.movement.id, :user_id => user_id, :email_id => email.id, :push_id => email.blast.push.id
+      PushSpammedEmail.create movement_id: email.movement.id, user_id: user_id, email_id: email.id, push_id: email.blast.push.id
     end
 
     # updates the aggregate table
@@ -50,7 +50,7 @@ describe EmailStatsTable do
     email = FactoryGirl.create(:email)
 
     values = 10.times.map do
-      PushSentEmail.create :movement_id => email.movement.id, :user_id => FactoryGirl.create(:user).id, :email_id => email.id, :push_id => email.blast.push.id
+      PushSentEmail.create movement_id: email.movement.id, user_id: FactoryGirl.create(:user).id, email_id: email.id, push_id: email.blast.push.id
     end
 
     stats_table = EmailStatsTable.new([email])
@@ -64,11 +64,11 @@ describe EmailStatsTable do
     user  = FactoryGirl.create(:user)
 
     values = 5.times.map do
-      PushViewedEmail.create :movement_id => email.movement.id, :user_id => FactoryGirl.create(:user).id, :email_id => email.id, :push_id => email.blast.push.id
+      PushViewedEmail.create movement_id: email.movement.id, user_id: FactoryGirl.create(:user).id, email_id: email.id, push_id: email.blast.push.id
     end
 
     values += 2.times.map do
-      PushViewedEmail.create :movement_id => email.movement.id, :user_id => user.id, :email_id => email.id, :push_id => email.blast.push.id
+      PushViewedEmail.create movement_id: email.movement.id, user_id: user.id, email_id: email.id, push_id: email.blast.push.id
     end
 
     # updates the aggregate table
@@ -85,8 +85,8 @@ describe EmailStatsTable do
 
     it "should return the latest date when the table has been updated" do
       latest_date = 1.hour.ago
-      UniqueActivityByEmail.create!(:email_id => email1.id, :activity => "action_taken", :total_count => 1, :updated_at => latest_date)
-      UniqueActivityByEmail.create!(:email_id => email2.id, :activity => "action_taken", :total_count => 1, :updated_at => 10.hours.ago)
+      UniqueActivityByEmail.create!(email_id: email1.id, activity: "action_taken", total_count: 1, updated_at: latest_date)
+      UniqueActivityByEmail.create!(email_id: email2.id, activity: "action_taken", total_count: 1, updated_at: 10.hours.ago)
 
       stats_table = EmailStatsTable.new([email1, email2])
       stats_table.load_stats[:last_updated_at].should.to_s == latest_date.to_s

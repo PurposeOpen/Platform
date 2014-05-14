@@ -4,7 +4,7 @@ class Admin::ImagesController < Admin::AdminController
 
   PAGE_SIZE = 30
 
-  before_filter :recent_images, :only => [:create, :index]
+  before_filter :recent_images, only: [:create, :index]
 
   def index
     @new_image = Image.new
@@ -22,11 +22,11 @@ class Admin::ImagesController < Admin::AdminController
 
     @new_image = Image.new(additional_parameters.merge(params[:image]))
     if @new_image.save
-      render(:layout => false) and return if request.xhr?
+      render(layout: false) and return if request.xhr?
       flash[:notice] = 'Image uploaded. It may take up to 60 seconds for it to show up in search results.'
       redirect_to admin_movement_image_path(@movement, @new_image)
     else
-      request.xhr? ? render(:text => @new_image.errors.full_messages, :status => :bad_request) : render(:action => 'index')
+      request.xhr? ? render(text: @new_image.errors.full_messages, status: :bad_request) : render(action: 'index')
     end
   end
 
@@ -39,12 +39,12 @@ class Admin::ImagesController < Admin::AdminController
         keywords params[:query]
         with :movement_id, movement_id
         order_by :created_at, :desc
-        paginate :per_page => PAGE_SIZE, :page => params[:page]
+        paginate per_page: PAGE_SIZE, page: params[:page]
       end
       @images = search.results
     else
-      @images = Image.where(:movement_id => movement_id).order('created_at DESC').
-          paginate(:per_page => PAGE_SIZE, :page => params[:page])
+      @images = Image.where(movement_id: movement_id).order('created_at DESC').
+          paginate(per_page: PAGE_SIZE, page: params[:page])
     end
   end
 end

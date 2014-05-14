@@ -56,29 +56,29 @@ class User < ActiveRecord::Base
   belongs_to :movement
   belongs_to :language
   has_many :user_activity_events
-  has_many :events_hosted, :class_name => "Event", :foreign_key => "host_id"
+  has_many :events_hosted, class_name: "Event", foreign_key: "host_id"
   has_many :donations
   has_many :agra_actions
 
-  has_and_belongs_to_many :events_attended, :class_name => "Event", :association_foreign_key => "event_id",
-                          :foreign_key => "attendee_id", :join_table => "events_attendees"
+  has_and_belongs_to_many :events_attended, class_name: "Event", association_foreign_key: "event_id",
+                          foreign_key: "attendee_id", join_table: "events_attendees"
   
   before_validation :profanalyze_name
   before_validation :downcase_email
   before_validation :ensure_source_is_present
 
   validates_presence_of :email, :source
-  validates_format_of :email, :with => VALID_EMAIL_REGEX
-  validates_uniqueness_of :email, :scope => :movement_id
+  validates_format_of :email, with: VALID_EMAIL_REGEX
+  validates_uniqueness_of :email, scope: :movement_id
 
   after_initialize :defaults
   before_save :downcase_email
   before_save { geolocation_service.lookup if address_changed? }
   after_create :assign_random_value
 
-  scope :for_movement, lambda { |movement| where(:movement_id => movement.try(:id)) }
-  scope :subscribed, where(:is_member => true)
-  scope :unsubscribed, where(:is_member => false)
+  scope :for_movement, lambda { |movement| where(movement_id: movement.try(:id)) }
+  scope :subscribed, where(is_member: true)
+  scope :unsubscribed, where(is_member: false)
   scope :subscribed_to, lambda { |movement| subscribed.for_movement(movement) }
 
   searchable do
@@ -101,19 +101,19 @@ class User < ActiveRecord::Base
     end
 
     def possibly_required_field(field, constraints = {})
-      must_be_present_if_required = {:presence => {:if => lambda { [:required, :refresh].include? (@required_user_details || {})[field] }}}
+      must_be_present_if_required = {presence: {if: lambda { [:required, :refresh].include? (@required_user_details || {})[field] }}}
       validates field, must_be_present_if_required.merge(constraints)
     end
   end
 
-  possibly_required_field :first_name, :length => {:maximum => 40}
-  possibly_required_field :last_name, :length => {:maximum => 40}
-  possibly_required_field :home_number, :length => {:maximum => 32}
-  possibly_required_field :mobile_number, :length => {:maximum => 32}
-  possibly_required_field :street_address, :length => {:maximum => 128}
-  possibly_required_field :suburb, :length => {:maximum => 128}
+  possibly_required_field :first_name, length: {maximum: 40}
+  possibly_required_field :last_name, length: {maximum: 40}
+  possibly_required_field :home_number, length: {maximum: 32}
+  possibly_required_field :mobile_number, length: {maximum: 32}
+  possibly_required_field :street_address, length: {maximum: 128}
+  possibly_required_field :suburb, length: {maximum: 128}
   possibly_required_field :country_iso
-  possibly_required_field :postcode_number, :length => {:maximum => 16}
+  possibly_required_field :postcode_number, length: {maximum: 16}
 
   def already_entered?(field)
     !self.new_record? && !self.send(field).blank?
@@ -251,7 +251,7 @@ class User < ActiveRecord::Base
   end
 
   def self.by_postcode postcode, country_iso
-    User.where(:postcode => postcode, :country_iso => country_iso)
+    User.where(postcode: postcode, country_iso: country_iso)
   end
 
   def member?;
@@ -282,7 +282,7 @@ class User < ActiveRecord::Base
   end
 
   def is_already_subscribed?
-    UserActivityEvent.where(:user_id => self.id, :activity => UserActivityEvent::Activity::SUBSCRIBED).any?
+    UserActivityEvent.where(user_id: self.id, activity: UserActivityEvent::Activity::SUBSCRIBED).any?
   end
 
   def profanalyze_name

@@ -15,7 +15,7 @@ describe ListCutter::ExternalActionRule do
     rule = ListCutter::ExternalActionRule.new(not: false, unique_action_slugs: ['1_controlshift_cuba'], activity: @action_taken, since: 1.day.from_now.strftime("%m/%d/%Y"))
 
     rule.valid?.should be_false
-    rule.errors.messages.should == {:since => ["can't be in the future"]}
+    rule.errors.messages.should == {since: ["can't be in the future"]}
   end
 
   describe do
@@ -30,7 +30,7 @@ describe ListCutter::ExternalActionRule do
     end
 
     it "should return users that have taken action on specific external pages" do
-      event_attributes = {:role => 'signer', activity: @action_taken}
+      event_attributes = {role: 'signer', activity: @action_taken}
       ExternalActivityEvent.create! event_attributes.merge(user_id: @bob.id,   external_action_id: external_action_1.id)
       ExternalActivityEvent.create! event_attributes.merge(user_id: @john.id,  external_action_id: external_action_2.id)
       ExternalActivityEvent.create! event_attributes.merge(user_id: @sally.id, external_action_id: external_action_3.id)

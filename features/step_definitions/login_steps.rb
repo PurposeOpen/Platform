@@ -1,7 +1,7 @@
 
 When /^I log in as (.+),(.+) to Platform$/ do |role,password|
-  fill_in("platform_user_email", :with => role )
-  fill_in("platform_user_password", :with => password )
+  fill_in("platform_user_email", with: role )
+  fill_in("platform_user_password", with: password )
   click_button "Sign in"
 end
 And /^I select the movement(.+)$/ do|movement_name|
@@ -13,7 +13,7 @@ And /^I select the movement(.+)$/ do|movement_name|
   movement_link.click
 end
 When /^I search for Campaign (.+)$/ do|campaign_name|
-  fill_in("query", :with => campaign_name )
+  fill_in("query", with: campaign_name )
   #click_button("Search")
 end
 When /^I select the Campaign (.+) from results$/ do |campaign_name|
@@ -22,7 +22,7 @@ end
 
 When /^I create a new page action with (.+) named (.+)$/ do |module_type,module_name|
   click_link("Add a page")
-  fill_in "action_page_name", :with => module_name
+  fill_in "action_page_name", with: module_name
 
  case module_type
    when "Unsubscribe"

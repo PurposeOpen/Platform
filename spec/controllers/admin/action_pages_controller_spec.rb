@@ -8,24 +8,24 @@ describe Admin::ActionPagesController do
     @language2 = FactoryGirl.create(:language)
     @language3 = FactoryGirl.create(:language)
 
-    @movement = FactoryGirl.create(:movement, :languages => [@language1, @language2, @language3])
-    @campaign = FactoryGirl.create(:campaign, :movement => @movement)
-    @action_sequence = FactoryGirl.create(:action_sequence, :campaign => @campaign)
-    @action_page = FactoryGirl.create(:action_page, :action_sequence => @action_sequence)
+    @movement = FactoryGirl.create(:movement, languages: [@language1, @language2, @language3])
+    @campaign = FactoryGirl.create(:campaign, movement: @movement)
+    @action_sequence = FactoryGirl.create(:action_sequence, campaign: @campaign)
+    @action_page = FactoryGirl.create(:action_page, action_sequence: @action_sequence)
 
     # mock up an authentication in the underlying warden library
-    request.env['warden'] = mock(Warden, :authenticate => FactoryGirl.create(:user, :is_admin => true),
-                                 :authenticate! => FactoryGirl.create(:user, :is_admin => true))
+    request.env['warden'] = mock(Warden, authenticate: FactoryGirl.create(:user, is_admin: true),
+                                 authenticate!: FactoryGirl.create(:user, is_admin: true))
   end
 
   describe "update" do
     it "with content modules" do
-      footer_content_module = create(:html_module, :content => "old content")
+      footer_content_module = create(:html_module, content: "old content")
       create(:content_module_link, content_module: footer_content_module, page: @action_page, layout_container: ContentModule::FOOTER)
-      put :update, :id => @action_page.id,
-        :movement_id => @movement.id,
-        :action_sequence_id => @action_sequence.id,
-        :content_modules => {"#{footer_content_module.id}" => {:content => "new content"}}
+      put :update, id: @action_page.id,
+        movement_id: @movement.id,
+        action_sequence_id: @action_sequence.id,
+        content_modules: {"#{footer_content_module.id}" => {content: "new content"}}
       footer_content_module.reload.content.should == "new content"
       response.should render_template "edit"
     end
@@ -33,12 +33,12 @@ describe Admin::ActionPagesController do
     context "one or more content modules are invalid" do
       it "should go back to the edit page with an appropriate message" do
         content_module = FactoryGirl.create(:accordion_module)
-        FactoryGirl.create(:content_module_link, :page => @action_page, :content_module => content_module)
+        FactoryGirl.create(:content_module_link, page: @action_page, content_module: content_module)
 
-        put :update, :id => @action_page.id,
-                     :movement_id => @movement.id,
-                     :action_sequence_id => @action_sequence.id,
-                     :content_modules => {"#{content_module.id}" => {:title => nil, :content => nil}}
+        put :update, id: @action_page.id,
+                     movement_id: @movement.id,
+                     action_sequence_id: @action_sequence.id,
+                     content_modules: {"#{content_module.id}" => {title: nil, content: nil}}
 
         response.should render_template "edit"
         flash.now[:info].should eql "The following languages were updated but still have warnings:<br><br>- #{content_module.language.name}"
@@ -48,12 +48,12 @@ describe Admin::ActionPagesController do
     context "one or more of the autofire emails are invalid" do
       it "should go back to the edit page with an appropriate message" do
         language = @movement.languages.first
-        email = FactoryGirl.create(:autofire_email, :action_page => @action_page, :language => language)
+        email = FactoryGirl.create(:autofire_email, action_page: @action_page, language: language)
 
-        put :update, :id => @action_page.id,
-                     :movement_id => @movement.id,
-                     :action_sequence_id => @action_sequence.id,
-                     :autofire_emails => {language.iso_code.to_s => {'id' => email.id, 'enabled' => true, 'subject' => nil, 'body' => nil}}
+        put :update, id: @action_page.id,
+                     movement_id: @movement.id,
+                     action_sequence_id: @action_sequence.id,
+                     autofire_emails: {language.iso_code.to_s => {'id' => email.id, 'enabled' => true, 'subject' => nil, 'body' => nil}}
 
         response.should render_template "edit"
         flash.now[:info].should eql "The following languages were updated but still have warnings:<br><br>- #{language.name}"
@@ -63,15 +63,15 @@ describe Admin::ActionPagesController do
     context "both autofire emails and content modules have errors" do
       it "should go back to the edit page with an appropriate message" do
         language = @movement.languages.first
-        email = FactoryGirl.create(:autofire_email, :action_page => @action_page, :language => language)
+        email = FactoryGirl.create(:autofire_email, action_page: @action_page, language: language)
         content_module = FactoryGirl.create(:accordion_module)
-        FactoryGirl.create(:content_module_link, :page => @action_page, :content_module => content_module)
+        FactoryGirl.create(:content_module_link, page: @action_page, content_module: content_module)
 
-        put :update, :id => @action_page.id,
-                     :movement_id => @movement.id,
-                     :action_sequence_id => @action_sequence.id,
-                     :content_modules => {"#{content_module.id}" => {:title => nil, :content => nil}},
-                     :autofire_emails => {language.iso_code.to_s => {'id' => email.id, 'enabled' => true, 'subject' => nil, 'body' => nil}}
+        put :update, id: @action_page.id,
+                     movement_id: @movement.id,
+                     action_sequence_id: @action_sequence.id,
+                     content_modules: {"#{content_module.id}" => {title: nil, content: nil}},
+                     autofire_emails: {language.iso_code.to_s => {'id' => email.id, 'enabled' => true, 'subject' => nil, 'body' => nil}}
 
         response.should render_template "edit"
         flash.now[:info].should eql "The following languages were updated but still have warnings:<br><br>- #{content_module.language.name}<br>- #{email.language.name}"
@@ -87,10 +87,10 @@ describe Admin::ActionPagesController do
       l2_autofire_email = AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, @language2.id)
       l3_autofire_email = AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, @language3.id)
 
-      put :update, :id => @action_page.id,
-                   :movement_id => @movement.id,
-                   :action_sequence_id => @action_sequence.id,
-                   :autofire_emails => {'en' => {'id' => l1_autofire_email.id,
+      put :update, id: @action_page.id,
+                   movement_id: @movement.id,
+                   action_sequence_id: @action_sequence.id,
+                   autofire_emails: {'en' => {'id' => l1_autofire_email.id,
                                                  'enabled' => true,
                                                  'subject' => 'Hi There',
                                                  'body' => 'Email is nice.',
@@ -138,7 +138,7 @@ describe Admin::ActionPagesController do
     end
 
     it "should render the new template" do
-      get :new, :movement_id => @movement.id, :action_sequence_id => @action_page.action_sequence.id
+      get :new, movement_id: @movement.id, action_sequence_id: @action_page.action_sequence.id
       response.should render_template(:new)
     end
   end
@@ -147,17 +147,17 @@ describe Admin::ActionPagesController do
     it "should unlink a module and replace it with a clone" do
       first_page = FactoryGirl.create(:action_page)
       second_page = FactoryGirl.create(:action_page)
-      petition = FactoryGirl.create(:petition_module, :signatures_goal => 1111)
-      first_link = ContentModuleLink.create!(:page => first_page, :content_module => petition, :layout_container => "sidebar")
+      petition = FactoryGirl.create(:petition_module, signatures_goal: 1111)
+      first_link = ContentModuleLink.create!(page: first_page, content_module: petition, layout_container: "sidebar")
 
-      second_page.content_module_links.create!(:content_module => FactoryGirl.create(:html_module), :layout_container => "sidebar")
-      broken_link = second_page.content_module_links.create!(:page => second_page, :content_module => petition, :layout_container => "sidebar")
-      second_page.content_module_links.create!(:page => second_page, :content_module => FactoryGirl.create(:html_module), :layout_container => "sidebar")
+      second_page.content_module_links.create!(content_module: FactoryGirl.create(:html_module), layout_container: "sidebar")
+      broken_link = second_page.content_module_links.create!(page: second_page, content_module: petition, layout_container: "sidebar")
+      second_page.content_module_links.create!(page: second_page, content_module: FactoryGirl.create(:html_module), layout_container: "sidebar")
       broken_link.position.should == 1
 
-      get :unlink_content_module, :id => second_page.id,
-          :movement_id => second_page.movement.id,
-          :content_module_id => petition.id
+      get :unlink_content_module, id: second_page.id,
+          movement_id: second_page.movement.id,
+          content_module_id: petition.id
 
       second_page.reload
       second_page.should have(3).content_module_links
@@ -182,8 +182,8 @@ describe Admin::ActionPagesController do
 
     it "should render an empty hash of modules per language if rendering the page for the first time" do
       get :edit, {
-        :movement_id => @movement.id,
-        :id => @action_page.id
+        movement_id: @movement.id,
+        id: @action_page.id
       }
 
       @action_page.possible_languages.each do |l|
@@ -193,14 +193,14 @@ describe Admin::ActionPagesController do
 
     it "should render the existing modules for the given page" do
       language = @movement.default_language
-      html_module_head = FactoryGirl.create(:html_module, :language => language)
-      html_module_sidebar = FactoryGirl.create(:html_module, :language => language)
-      @action_page.content_module_links.create!(:layout_container => ContentModule::HEADER, :content_module => html_module_head)
-      @action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => html_module_sidebar)
+      html_module_head = FactoryGirl.create(:html_module, language: language)
+      html_module_sidebar = FactoryGirl.create(:html_module, language: language)
+      @action_page.content_module_links.create!(layout_container: ContentModule::HEADER, content_module: html_module_head)
+      @action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: html_module_sidebar)
 
       get :edit, {
-        :movement_id => @movement.id,
-        :id => @action_page.id
+        movement_id: @movement.id,
+        id: @action_page.id
       }
 
       assigns(:action_page).content_modules.should match_array([ html_module_head, html_module_sidebar ])
@@ -209,19 +209,19 @@ describe Admin::ActionPagesController do
 
     it "should render blank modules for a new language" do
       language = @movement.default_language
-      html_module_head = FactoryGirl.create(:html_module, :language => language)
-      html_module_sidebar_1 = FactoryGirl.create(:html_module, :language => language)
-      html_module_sidebar_2 = FactoryGirl.create(:html_module, :language => language)
-      @action_page.content_module_links.create!(:layout_container => ContentModule::HEADER,  :content_module => html_module_head)
-      @action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => html_module_sidebar_1)
-      @action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => html_module_sidebar_2)
+      html_module_head = FactoryGirl.create(:html_module, language: language)
+      html_module_sidebar_1 = FactoryGirl.create(:html_module, language: language)
+      html_module_sidebar_2 = FactoryGirl.create(:html_module, language: language)
+      @action_page.content_module_links.create!(layout_container: ContentModule::HEADER,  content_module: html_module_head)
+      @action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: html_module_sidebar_1)
+      @action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: html_module_sidebar_2)
 
       new_language = FactoryGirl.create(:language)
-      @movement.movement_locales.create! :language => new_language, :default => false
+      @movement.movement_locales.create! language: new_language, default: false
 
       get :edit, {
-        :movement_id => @movement.id,
-        :id => @action_page.id
+        movement_id: @movement.id,
+        id: @action_page.id
       }
 
       assigns(:action_page).modules_for_container_and_language(ContentModule::HEADER, new_language).size.should == 1
@@ -233,23 +233,23 @@ describe Admin::ActionPagesController do
 
     describe "two movements have pages with the same name" do
       before do
-        @allout = FactoryGirl.create(:movement, :name => "AllOut")
-        @walkfree = FactoryGirl.create(:movement, :name => "WalkFree")
+        @allout = FactoryGirl.create(:movement, name: "AllOut")
+        @walkfree = FactoryGirl.create(:movement, name: "WalkFree")
 
-        @allout_campaign = FactoryGirl.create(:campaign, :movement => @allout)
-        @walkfree_campaign = FactoryGirl.create(:campaign, :movement => @walkfree)
+        @allout_campaign = FactoryGirl.create(:campaign, movement: @allout)
+        @walkfree_campaign = FactoryGirl.create(:campaign, movement: @walkfree)
 
-        @allout_action_sequence = FactoryGirl.create(:action_sequence, :campaign => @allout_campaign)
-        @walkfree_action_sequence = FactoryGirl.create(:action_sequence, :campaign => @walkfree_campaign)
+        @allout_action_sequence = FactoryGirl.create(:action_sequence, campaign: @allout_campaign)
+        @walkfree_action_sequence = FactoryGirl.create(:action_sequence, campaign: @walkfree_campaign)
 
-        @allout_donate_page = FactoryGirl.create(:action_page, :name => 'Donate', :action_sequence => @allout_action_sequence)
-        @walkfree_donate_page = FactoryGirl.create(:action_page, :name => 'Donate', :action_sequence => @walkfree_action_sequence)
+        @allout_donate_page = FactoryGirl.create(:action_page, name: 'Donate', action_sequence: @allout_action_sequence)
+        @walkfree_donate_page = FactoryGirl.create(:action_page, name: 'Donate', action_sequence: @walkfree_action_sequence)
       end
 
       it "should render the page that belongs to AllOut" do
         get :edit, {
-          :movement_id => @allout.friendly_id,
-          :id => @allout_donate_page.friendly_id
+          movement_id: @allout.friendly_id,
+          id: @allout_donate_page.friendly_id
         }
 
         assigns(:action_page).name.should eql 'Donate'
@@ -259,8 +259,8 @@ describe Admin::ActionPagesController do
 
       it "should render the page that belongs to WalkFree" do
         get :edit, {
-          :movement_id => @walkfree.friendly_id,
-          :id => @walkfree_donate_page.friendly_id
+          movement_id: @walkfree.friendly_id,
+          id: @walkfree_donate_page.friendly_id
         }
 
         assigns(:action_page).name.should eql 'Donate'
@@ -271,12 +271,12 @@ describe Admin::ActionPagesController do
 
     describe 'autofire emails,' do
       before do
-        FactoryGirl.create(:petition_module, :pages => [@action_page])
+        FactoryGirl.create(:petition_module, pages: [@action_page])
       end
 
       context 'action page,' do
         it "should create autofire emails for each language if they don't exist" do
-          get :edit, { :movement_id => @movement.id, :id => @action_page.id }
+          get :edit, { movement_id: @movement.id, id: @action_page.id }
 
           @action_page.possible_languages.each do |l|
             AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, l.id).should_not be_nil
@@ -286,9 +286,9 @@ describe Admin::ActionPagesController do
 
       context 'join page' do
         it "should not create autofire emails for each language if they don't exist" do
-          join_page = FactoryGirl.create(:action_page, :name => "Join", :action_sequence => @action_page.action_sequence)
-          join_module = FactoryGirl.create(:join_module, :pages => [join_page])
-          get :edit, { :movement_id => @movement.id, :id => join_page.id }
+          join_page = FactoryGirl.create(:action_page, name: "Join", action_sequence: @action_page.action_sequence)
+          join_module = FactoryGirl.create(:join_module, pages: [join_page])
+          get :edit, { movement_id: @movement.id, id: join_page.id }
 
           AutofireEmail.count.should == 0
         end
@@ -299,8 +299,8 @@ describe Admin::ActionPagesController do
   describe 'create preview' do
     it "should create duplicate action_page, content modules and autofire emails and redirect to preview" do
       content_module = FactoryGirl.create(:petition_module)
-      create(:content_module_link, :page => @action_page, :content_module => content_module)
-      another_action_page = create(:action_page, :action_sequence => @action_sequence)
+      create(:content_module_link, page: @action_page, content_module: content_module)
+      another_action_page = create(:action_page, action_sequence: @action_sequence)
       language = create(:english)
       page_count = ActionPage.unscoped.all.count
 
@@ -310,11 +310,11 @@ describe Admin::ActionPagesController do
       l1_autofire_email = AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, @language1.id)
       l2_autofire_email = AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, @language2.id)
       l3_autofire_email = AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, @language3.id)
-      put :create_preview, :id => @action_page.id,
-                            :movement_id => @movement.id,
-                            :action_page => {:name => "new name"},
-                            :content_modules => {"#{content_module.id}" => {:title => "Hello", :content => "World"}},
-                            :autofire_emails => {@language1.iso_code => {'id' => l1_autofire_email.id,
+      put :create_preview, id: @action_page.id,
+                            movement_id: @movement.id,
+                            action_page: {name: "new name"},
+                            content_modules: {"#{content_module.id}" => {title: "Hello", content: "World"}},
+                            autofire_emails: {@language1.iso_code => {'id' => l1_autofire_email.id,
                                                           'enabled' => true,
                                                           'subject' => 'Hi There',
                                                           'body' => 'Email is nice.',
@@ -344,12 +344,12 @@ describe Admin::ActionPagesController do
       @action_page.name.should_not == "new name"
       @action_page.content_modules.first.title.should_not == "Hello"
       @action_page.content_modules.first.content.should_not == "World"
-      @action_page.autofire_emails.where(:language_id => @language1.id).first.subject.should_not == "Hi There"
-      @action_page.autofire_emails.where(:language_id => @language2.id).first.subject.should_not == "pt Hi There"
-      @action_page.autofire_emails.where(:language_id => @language3.id).first.subject.should_not == "fr Hi There"
-      preview_action_page.autofire_emails.where(:language_id => @language1.id).first.subject.should == "Hi There"
-      preview_action_page.autofire_emails.where(:language_id => @language2.id).first.subject.should == "pt Hi There"
-      preview_action_page.autofire_emails.where(:language_id => @language3.id).first.subject.should == "fr Hi There"
+      @action_page.autofire_emails.where(language_id: @language1.id).first.subject.should_not == "Hi There"
+      @action_page.autofire_emails.where(language_id: @language2.id).first.subject.should_not == "pt Hi There"
+      @action_page.autofire_emails.where(language_id: @language3.id).first.subject.should_not == "fr Hi There"
+      preview_action_page.autofire_emails.where(language_id: @language1.id).first.subject.should == "Hi There"
+      preview_action_page.autofire_emails.where(language_id: @language2.id).first.subject.should == "pt Hi There"
+      preview_action_page.autofire_emails.where(language_id: @language3.id).first.subject.should == "fr Hi There"
       preview_action_page.live_page_id.should == @action_page.id
       preview_action_page.content_modules.size == @action_page.content_modules.size
       preview_action_page.autofire_emails.size == @action_page.autofire_emails.size
@@ -361,8 +361,8 @@ describe Admin::ActionPagesController do
   describe 'preview' do
     it "it should prepare preview" do
       content_module = FactoryGirl.create(:petition_module)
-      create(:content_module_link, :page => @action_page, :content_module => content_module)
-      another_action_page = create(:action_page, :action_sequence => @action_sequence)
+      create(:content_module_link, page: @action_page, content_module: content_module)
+      another_action_page = create(:action_page, action_sequence: @action_sequence)
       language = create(:english)
       page_count = ActionPage.unscoped.all.count
 
@@ -372,11 +372,11 @@ describe Admin::ActionPagesController do
       l1_autofire_email = AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, @language1.id)
       l2_autofire_email = AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, @language2.id)
       l3_autofire_email = AutofireEmail.find_by_action_page_id_and_language_id(@action_page.id, @language3.id)
-      put :create_preview, :id => @action_page.id,
-          :movement_id => @movement.id,
-          :action_page => {:name => "new name"},
-          :content_modules => {"#{content_module.id}" => {:title => "Hello", :content => "World"}},
-          :autofire_emails => {@language1.iso_code => {'id' => l1_autofire_email.id,
+      put :create_preview, id: @action_page.id,
+          movement_id: @movement.id,
+          action_page: {name: "new name"},
+          content_modules: {"#{content_module.id}" => {title: "Hello", content: "World"}},
+          autofire_emails: {@language1.iso_code => {'id' => l1_autofire_email.id,
                                                        'enabled' => true,
                                                        'subject' => 'Hi There',
                                                        'body' => 'Email is nice.',
@@ -397,7 +397,7 @@ describe Admin::ActionPagesController do
       ActionPage.unscoped.all.count.should == page_count + 1
 
       preview_action_page = ActionPage.unscoped.last
-      get :preview, :movement_id => @movement.id, :id => preview_action_page.id
+      get :preview, movement_id: @movement.id, id: preview_action_page.id
       assigns[:action_page].id.should == preview_action_page.id
       assigns[:movement].id.should == @movement.id
       response.should render_template "preview"

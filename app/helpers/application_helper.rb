@@ -12,7 +12,7 @@ module ApplicationHelper
   end
   
   def form_errors(subject)
-    render :partial => "common/form_errors", :locals => {:subject => subject}
+    render partial: "common/form_errors", locals: {subject: subject}
   end
   
   def friendly_path(page)
@@ -56,7 +56,7 @@ module ApplicationHelper
     path = opts[:path] || "#"
     is_active  = controller.active_nav?(key)
 
-    content_tag :li, :class => is_active ? "active" : "" do
+    content_tag :li, class: is_active ? "active" : "" do
       link_to(path) { content_tag(:i, "", class: "icon icon-#{opts[:icon]}") + title }
     end
   end
@@ -74,7 +74,7 @@ module ApplicationHelper
         content = content_tag :div , class:"movement-header" do name.html_safe end
         if can_create_movement
           content += content_tag :div, class:"movement-header-right" do
-            link_to( icon("plus") + "New", new_admin_movement_path,:class => "new-movement-link" )
+            link_to( icon("plus") + "New", new_admin_movement_path,class: "new-movement-link" )
           end
         end
         content
@@ -83,9 +83,9 @@ module ApplicationHelper
   end
 
   def numerical_table_value(row, column)
-    content_tag :td, :class => "numerical" do
-      content_tag(:p, row[column], :class => "value") +
-      content_tag(:p, row["#{column} Percentage"], :class => "percent")
+    content_tag :td, class: "numerical" do
+      content_tag(:p, row[column], class: "value") +
+      content_tag(:p, row["#{column} Percentage"], class: "percent")
     end
   end
 
@@ -110,7 +110,7 @@ module ApplicationHelper
 
   def search_form(path, opts={})
     placeholder = opts[:placeholder] || "Search"
-    form_tag(path, :method => :get) do
+    form_tag(path, method: :get) do
       text_field_tag(:query, params[:query], type: "search", class: "query", placeholder: placeholder) +
       button_tag(icon("search"), class: "button", type: "submit", id:"search_button")
     end

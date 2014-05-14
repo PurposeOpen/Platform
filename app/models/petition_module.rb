@@ -18,7 +18,7 @@
 # "Petition Ask" module -- requests that user signs a petition
 class PetitionModule < ContentModule
 
-  has_many :petition_signatures, :foreign_key => :content_module_id
+  has_many :petition_signatures, foreign_key: :content_module_id
   option_fields :signatures_goal, :thermometer_threshold, :button_text, :petition_statement, :custom_fields,
       :comment_label, :comment_text, :comments_enabled
 
@@ -36,24 +36,24 @@ class PetitionModule < ContentModule
 
   warnings do
     # The following two validations aren't being inherited properly.
-    validates_length_of :title, :maximum => 128, :minimum => 3, :if => :is_ask?
-    validates_length_of :public_activity_stream_template, :maximum => 1024, :minimum => 3, :if => :is_ask?
+    validates_length_of :title, maximum: 128, minimum: 3, if: :is_ask?
+    validates_length_of :public_activity_stream_template, maximum: 1024, minimum: 3, if: :is_ask?
 
     validates_presence_of :signatures_goal
-    validates_numericality_of :signatures_goal, :greater_than_or_equal_to => 0, :if => :signatures_goal
+    validates_numericality_of :signatures_goal, greater_than_or_equal_to: 0, if: :signatures_goal
     validates_presence_of :thermometer_threshold
-    validates_numericality_of :thermometer_threshold, :greater_than_or_equal_to => 0, :less_than_or_equal_to => :signatures_goal, :if => :signatures_goal
-    validates_length_of :button_text, :maximum => 64
-    validates_length_of :petition_statement, :minimum => 1
-    validates_presence_of :comment_label, :if => :comments_enabled?
-    validates_presence_of :disabled_title, :unless => :active?
-    validates_presence_of :disabled_content, :unless => :active?
+    validates_numericality_of :thermometer_threshold, greater_than_or_equal_to: 0, less_than_or_equal_to: :signatures_goal, if: :signatures_goal
+    validates_length_of :button_text, maximum: 64
+    validates_length_of :petition_statement, minimum: 1
+    validates_presence_of :comment_label, if: :comments_enabled?
+    validates_presence_of :disabled_title, unless: :active?
+    validates_presence_of :disabled_content, unless: :active?
   end
 
   placeable_in SIDEBAR
 
   def take_action(user, action_info, page)
-    return if PetitionSignature.where(:content_module_id => self.id, :user_id => user.id).count > 0
+    return if PetitionSignature.where(content_module_id: self.id, user_id: user.id).count > 0
     petition_signature = PetitionSignature.new(petition_signature_attributes_hash)
     petition_signature.user = user
     petition_signature.action_page = page
@@ -67,13 +67,13 @@ class PetitionModule < ContentModule
     page = pages.first
     return 0 unless page
     crowdring_url = page.movement.crowdring_url
-    PetitionSignature.where(:page_id => page.id).count +
+    PetitionSignature.where(page_id: page.id).count +
       (crowdring_url.present? && page.crowdring_campaign_name.present? ? crowdring_member_count(crowdring_url, page.crowdring_campaign_name).to_i : 0 )
   end
 
   def crowdring_member_count(crowdring_url, crowdring_campaign_name)
     get_count_uri = crowdring_campaign_endpoint(crowdring_url, crowdring_campaign_name)
-    Rails.cache.fetch(get_count_uri, :expires_in => 30.minutes) do
+    Rails.cache.fetch(get_count_uri, expires_in: 30.minutes) do
       fetch_count_from_crowdring(get_count_uri)
     end
   end
@@ -83,7 +83,7 @@ class PetitionModule < ContentModule
   end
 
   def as_json(opts={})
-    super(opts).merge :signatures => signatures
+    super(opts).merge signatures: signatures
   end
 
   def comments_enabled?

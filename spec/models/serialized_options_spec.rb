@@ -13,7 +13,7 @@ describe SerializedOptions do
     @content_module = TestClass::ContentModule.new
 
     @content_module.options = {
-      :accepts_cats => true,
+      accepts_cats: true,
       'accepts_dogs' => true
     }
   end
@@ -23,7 +23,7 @@ describe SerializedOptions do
       'accepts_cats' => true,
       'accepts_dogs' => true 
     }
-    @content_module.options_with_discerning_access.should == {:accepts_cats => true, 'accepts_dogs' => true}
+    @content_module.options_with_discerning_access.should == {accepts_cats: true, 'accepts_dogs' => true}
   end
 
   it "options should be a hash with indifferent access" do
@@ -50,7 +50,7 @@ describe SerializedOptions do
 
   it "should be invalid if there is a symbol and string version of the 'same' key" do
     @content_module.options = {
-      :accepts_cats => true,
+      accepts_cats: true,
       'accepts_cats' => true
     }
 

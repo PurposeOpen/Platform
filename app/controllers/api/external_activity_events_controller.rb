@@ -14,8 +14,8 @@ class Api::ExternalActivityEventsController < Api::BaseController
 
       params[:tags].each { |name| external_action.external_tags << ExternalTag.find_or_create_by_name_and_movement_id!(name, movement.id) } if params[:tags].present?
 
-      event = ExternalActivityEvent.new(event_attributes.merge(:external_action_id => external_action.id))
-      (render :json => event.errors.to_json, status: :unprocessable_entity and return) if event.invalid?
+      event = ExternalActivityEvent.new(event_attributes.merge(external_action_id: external_action.id))
+      (render json: event.errors.to_json, status: :unprocessable_entity and return) if event.invalid?
       event.save!
 
       render status: :created, nothing: true

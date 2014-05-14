@@ -1,7 +1,7 @@
 module ListCutter
   class MemberSourceRule < Rule
     fields :sources
-    validates_presence_of :sources, :message => 'Please specify at least one source'
+    validates_presence_of :sources, message: 'Please specify at least one source'
 
     def to_sql
       # User.where(["source #{operator} (?)", sources])

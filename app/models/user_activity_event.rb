@@ -33,14 +33,14 @@ class UserActivityEvent < ActiveRecord::Base
   belongs_to :push
   belongs_to :content_module
   belongs_to :movement
-  belongs_to :user_response, :polymorphic => true
+  belongs_to :user_response, polymorphic: true
 
   before_validation :profanalyze_comment
   before_save :denormalize
 
   validates_presence_of :user_id
-  validates_uniqueness_of :activity, :scope => [:user_id, :email_id],
-      :if => Proc.new { |uae| uae.activity == Activity::EMAIL_VIEWED }
+  validates_uniqueness_of :activity, scope: [:user_id, :email_id],
+      if: Proc.new { |uae| uae.activity == Activity::EMAIL_VIEWED }
 
   DEFAULT_EVENT_LIMIT = 20
   module Activity
@@ -53,16 +53,16 @@ class UserActivityEvent < ActiveRecord::Base
     EMAIL_SPAMMED = :email_spammed
   end
 
-  scope :actions_taken, where(:activity => Activity::ACTION_TAKEN)
-  scope :subscriptions, where(:activity => Activity::SUBSCRIBED)
-  scope :unsubscriptions, where(:activity => Activity::UNSUBSCRIBED)
+  scope :actions_taken, where(activity: Activity::ACTION_TAKEN)
+  scope :subscriptions, where(activity: Activity::SUBSCRIBED)
+  scope :unsubscriptions, where(activity: Activity::UNSUBSCRIBED)
 
-  scope :emails_sent, where(:activity => Activity::EMAIL_SENT)
-  scope :emails_viewed, where(:activity => Activity::EMAIL_VIEWED)
-  scope :emails_clicked, where(:activity => Activity::EMAIL_CLICKED)
-  scope :emails_spammed, where(:activity => Activity::EMAIL_SPAMMED)
+  scope :emails_sent, where(activity: Activity::EMAIL_SENT)
+  scope :emails_viewed, where(activity: Activity::EMAIL_VIEWED)
+  scope :emails_clicked, where(activity: Activity::EMAIL_CLICKED)
+  scope :emails_spammed, where(activity: Activity::EMAIL_SPAMMED)
   scope :actions_taken_for_sequence, (proc do |action_sequence|
-        actions_taken.includes([{:user => :language}, :page, :action_sequence]).where(:action_sequence_id => action_sequence.id)
+        actions_taken.includes([{user: :language}, :page, :action_sequence]).where(action_sequence_id: action_sequence.id)
       end)
 
   def activity
@@ -116,24 +116,24 @@ class UserActivityEvent < ActiveRecord::Base
 
   def self.subscribed!(user, email=nil, page=nil, content_module=nil)
     create!(
-      :activity => Activity::SUBSCRIBED,
-      :user => user,
-      :content_module => content_module,
-      :email => email,
-      :page => page
+      activity: Activity::SUBSCRIBED,
+      user: user,
+      content_module: content_module,
+      email: email,
+      page: page
     )
   end
 
   def self.action_taken!(user, page, content_module, user_response, email, comment=nil)
     create!(
-      :activity => Activity::ACTION_TAKEN,
-      :user => user,
-      :content_module => content_module,
-      :page => page,
-      :user_response => user_response,
-      :email => email,
-      :push => email.try(:blast).try(:push),
-      :comment => comment
+      activity: Activity::ACTION_TAKEN,
+      user: user,
+      content_module: content_module,
+      page: page,
+      user_response: user_response,
+      email: email,
+      push: email.try(:blast).try(:push),
+      comment: comment
     )
   end
 
@@ -152,9 +152,9 @@ class UserActivityEvent < ActiveRecord::Base
 
   def self.unsubscribed!(user, email=nil)
     create!(
-      :activity => Activity::UNSUBSCRIBED,
-      :user => user,
-      :email => email
+      activity: Activity::UNSUBSCRIBED,
+      user: user,
+      email: email
     )
   end
 
@@ -184,15 +184,15 @@ class UserActivityEvent < ActiveRecord::Base
 
   def as_json(opts = {})
     {
-      :id => id,
-      :html => public_stream_html(opts),
-      :timestamp => created_at.httpdate,
-      :timestamp_in_words => time_ago_in_words(created_at),
-      :comment => comment,
-      :first_name => user.first_name,
-      :last_name => user.last_name,
-      :country_iso => user.country_iso,
-      :country => user.country_iso ? country_name(user.country_iso, opts[:language].iso_code).titleize : ''
+      id: id,
+      html: public_stream_html(opts),
+      timestamp: created_at.httpdate,
+      timestamp_in_words: time_ago_in_words(created_at),
+      comment: comment,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      country_iso: user.country_iso,
+      country: user.country_iso ? country_name(user.country_iso, opts[:language].iso_code).titleize : ''
     }
   end
 

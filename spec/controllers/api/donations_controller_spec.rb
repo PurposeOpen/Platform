@@ -4,14 +4,14 @@ require "spec_helper"
 describe Api::DonationsController do
 	before do
 		@english = FactoryGirl.create(:english)
-		@movement = FactoryGirl.create(:movement, :name => "All Out", :languages => [@english])
-		@one_off_donation = FactoryGirl.create(:donation, :frequency => :one_off, :transaction_id => '1234567', :active => false)
-		@monthly_donation = FactoryGirl.create(:donation, :frequency => :monthly, :subscription_id => '2222222', :active => false, :amount_in_cents => 0, :currency => 'USD')
+		@movement = FactoryGirl.create(:movement, name: "All Out", languages: [@english])
+		@one_off_donation = FactoryGirl.create(:donation, frequency: :one_off, transaction_id: '1234567', active: false)
+		@monthly_donation = FactoryGirl.create(:donation, frequency: :monthly, subscription_id: '2222222', active: false, amount_in_cents: 0, currency: 'USD')
 	end
 
   describe 'show' do
     it "should return donation by subscription id in json format" do
-      get :show, :movement_id => @movement.friendly_id, :subscription_id => '2222222'
+      get :show, movement_id: @movement.friendly_id, subscription_id: '2222222'
 
       data = ActiveSupport::JSON.decode(response.body)
       data["subscription_id"].should eql @monthly_donation.subscription_id
@@ -20,21 +20,21 @@ describe Api::DonationsController do
     end
 
     it "should return 404 when donation is not found" do
-      get :show, :movement_id => @movement.friendly_id, :subscription_id => 'Inexistent Donation'
+      get :show, movement_id: @movement.friendly_id, subscription_id: 'Inexistent Donation'
       response.response_code.should eql 404
     end
   end
 
 	describe 'confirm_payment' do
 		it "should make one off donation active" do
-			post :confirm_payment, :movement_id => @movement.friendly_id, :transaction_id => '1234567'
+			post :confirm_payment, movement_id: @movement.friendly_id, transaction_id: '1234567'
 
 			response.status.should == 200
 			Donation.find(@one_off_donation.id).active.should be_true			      
 		end
 		
 		it "should return 404 if donation with transaction id is not found" do
-			post :confirm_payment, :movement_id => @movement.friendly_id, :transaction_id => '9999999'
+			post :confirm_payment, movement_id: @movement.friendly_id, transaction_id: '9999999'
 
 			response.status.should == 404
 		end
@@ -42,7 +42,7 @@ describe Api::DonationsController do
 
 	describe 'add_payment' do
 		it "should make recurring donation active on first payment" do
-			post :add_payment, :movement_id => @movement.friendly_id, :transaction_id => '111111', :subscription_id => '2222222', :order_number => '1001', :amount_in_cents => 1000
+			post :add_payment, movement_id: @movement.friendly_id, transaction_id: '111111', subscription_id: '2222222', order_number: '1001', amount_in_cents: 1000
 
 			response.status.should == 200
 			updated_donation = Donation.find(@monthly_donation.id)
@@ -51,7 +51,7 @@ describe Api::DonationsController do
 		end
 
 		it "should return 404 if donation with subscription id is not found" do
-			post :confirm_payment, :movement_id => @movement.friendly_id, :transaction_id => '8888888'
+			post :confirm_payment, movement_id: @movement.friendly_id, transaction_id: '8888888'
 
 			response.status.should == 404
 		end
@@ -94,7 +94,7 @@ describe Api::DonationsController do
       mailer.should_receive(:report_error)
       PaymentErrorMailer.should_receive(:delay).and_return(mailer)
 
-      post :handle_failed_payment, params.merge({:movement_id=>@movement.id})
+      post :handle_failed_payment, params.merge({movement_id:@movement.id})
 
       response.status.should == 200
     end

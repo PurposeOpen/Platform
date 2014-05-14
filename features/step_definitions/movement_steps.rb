@@ -1,16 +1,16 @@
 Given /^I have movements named "([^"]*)" with the languages "([^"]*)"$/ do |movement_names, language_names|
   movement_names.split(",").each { |name|
     movement = Movement.find_or_create_by_name(name)
-    movement.update_attributes(:languages => Language.where(:name => language_names.split(",")), :url => "http://#{name}.com")  
+    movement.update_attributes(languages: Language.where(name: language_names.split(",")), url: "http://#{name}.com")  
   }
 end
 
 Given /^I have a movement named "([^\"]*)" with campaign "([^\"]*)"$/ do |movement_name, campaign_name|
   @movement = Movement.find_by_name(movement_name)
-  @movement = Movement.create!(:name => movement_name, :languages => [FactoryGirl.create(:english)], :url => "http://#{movement_name}.com") if @movement.nil?
+  @movement = Movement.create!(name: movement_name, languages: [FactoryGirl.create(:english)], url: "http://#{movement_name}.com") if @movement.nil?
   MemberCountCalculator.init(@movement, 100)
   @campaign = Campaign.find_by_name(campaign_name)
-  @campaign = Campaign.create!(:name => campaign_name, :movement => @movement) if @campaign.nil?
+  @campaign = Campaign.create!(name: campaign_name, movement: @movement) if @campaign.nil?
 end
 
 When /^I add "([^"]*)" to the list of selected languages$/ do |language|
@@ -41,7 +41,7 @@ When /^I should see "([^"]*)" as options for the default language$/ do |language
 end
 
 When /^I choose "([^"]*)" as the default language$/ do |default_language_name|
-  select(default_language_name, :from => "movement_default_language")
+  select(default_language_name, from: "movement_default_language")
 end
 
 When /^the default language for "([^"]*)" is "([^"]*)"$/ do |movement_name, default_language_name|
@@ -54,14 +54,14 @@ When /^I visit the "([^"]*)" movement page$/ do |movement_name|
   visit admin_movement_path(movement)
 end
 When /^I enter the url as (.+)$/ do|url_name|
-  fill_in("movement_url",:with=>url_name)
+  fill_in("movement_url",with:url_name)
   sleep 2
 end
 
 When /^I create a (.+) movement$/ do |movement_name|
   click_link("New movement")
   sleep 2
-  fill_in("movement_name",:with=>'movement_name')
+  fill_in("movement_name",with:'movement_name')
 end
 
 When /^I add the language (.+)$/ do |language|

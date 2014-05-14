@@ -63,11 +63,11 @@ end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"$/ do |field, value|
   find_field(field)
-  fill_in(field, :with => value)
+  fill_in(field, with: value)
 end
 
 When /^(?:|I )fill in "([^"]*)" for "([^"]*)"$/ do |value, field|
-  fill_in(field, :with => value)
+  fill_in(field, with: value)
 end
 
 # Use this to fill in an entire form with data from a table. Example:
@@ -88,7 +88,7 @@ When /^(?:|I )fill in the following:$/ do |fields|
 end
 
 When /^(?:|I )select "([^"]*)" from "([^"]*)"$/ do |value, field|
-  select(value, :from => field)
+  select(value, from: field)
 end
 
 When /^(?:|I )check "([^"]*)"$/ do |field|
@@ -123,9 +123,9 @@ Then /^(?:|I )should see \/([^\/]*)\/$/ do |regexp|
   regexp = Regexp.new(regexp)
 
   if page.respond_to? :should
-    page.should have_xpath('//*', :text => regexp)
+    page.should have_xpath('//*', text: regexp)
   else
-    assert page.has_xpath?('//*', :text => regexp)
+    assert page.has_xpath?('//*', text: regexp)
   end
 end
 
@@ -141,9 +141,9 @@ Then /^(?:|I )should not see \/([^\/]*)\/$/ do |regexp|
   regexp = Regexp.new(regexp)
 
   if page.respond_to? :should
-    page.should have_no_xpath('//*', :text => regexp)
+    page.should have_no_xpath('//*', text: regexp)
   else
-    assert page.has_no_xpath?('//*', :text => regexp)
+    assert page.has_no_xpath?('//*', text: regexp)
   end
 end
 
@@ -227,7 +227,7 @@ Then /^I should see the "([^"]*)" button$/ do |name|
 end
 
 Then /^I should see a link labeled "(.+)"$/ do |label|
-  page.should have_selector(:xpath, "//a", :text => label)
+  page.should have_selector(:xpath, "//a", text: label)
 end
 
 Then /^show me the page$/ do

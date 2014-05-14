@@ -1,7 +1,7 @@
 module ListCutter
   class ZoneRule < Rule
     fields :zone_code
-    validates_presence_of :zone_code, :message => 'Please specify a zone code'
+    validates_presence_of :zone_code, message: 'Please specify a zone code'
 
     def to_sql
       sanitize_sql <<-SQL, @movement.id, Country.countries_in_zone(zone_code)

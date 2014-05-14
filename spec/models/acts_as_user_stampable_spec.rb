@@ -4,9 +4,9 @@ describe ActsAsUserStampable do
   describe ActionPage do
     before do
       PlatformUser.current_user = PlatformUser.new(
-        :first_name => 'Fred',
-        :last_name => 'Smith',
-        :email => 'fred@example.com'
+        first_name: 'Fred',
+        last_name: 'Smith',
+        email: 'fred@example.com'
       )
     end
 
@@ -19,9 +19,9 @@ describe ActsAsUserStampable do
       p = FactoryGirl.create(:action_page)
 
       PlatformUser.current_user = PlatformUser.new(
-        :first_name => 'John',
-        :last_name => 'Howard',
-        :email => 'johhnie@example.com'
+        first_name: 'John',
+        last_name: 'Howard',
+        email: 'johhnie@example.com'
       )
 
       p.name = "Blah blah blah"

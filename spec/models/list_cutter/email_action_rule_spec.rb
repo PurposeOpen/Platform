@@ -3,16 +3,16 @@ require "spec_helper"
 describe ListCutter::EmailActionRule do
   before(:each) do
     @blast = create(:blast)
-    @email1 = create(:email, :blast => @blast)
+    @email1 = create(:email, blast: @blast)
     @movement = @blast.push.campaign.movement
-    @user = create(:user, :movement => @movement)
-    @user1 = create(:user, :movement => @movement)
-    @user2 = create(:user, :movement => @movement)
-    @email2 = create(:email, :blast => @blast)
+    @user = create(:user, movement: @movement)
+    @user1 = create(:user, movement: @movement)
+    @user2 = create(:user, movement: @movement)
+    @email2 = create(:email, blast: @blast)
   end
 
   context 'to_relation' do
-    let(:list) {create(:list, :blast => @blast)}
+    let(:list) {create(:list, blast: @blast)}
 
     before(:each) do
       Push.log_activity!(UserActivityEvent::Activity::EMAIL_CLICKED, @user, @email1)
@@ -21,7 +21,7 @@ describe ListCutter::EmailActionRule do
     end
 
     it "should return the users who received the given emails" do
-      rule = ListCutter::EmailActionRule.new(:email_ids => [@email1.id, @email2.id], :action => UserActivityEvent::Activity::EMAIL_CLICKED.to_s, :movement => @movement)
+      rule = ListCutter::EmailActionRule.new(email_ids: [@email1.id, @email2.id], action: UserActivityEvent::Activity::EMAIL_CLICKED.to_s, movement: @movement)
       rule.to_relation.all.should match_array([@user, @user1])
     end
   end

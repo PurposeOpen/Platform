@@ -12,10 +12,10 @@
 
 class Language < ActiveRecord::Base
   has_many :movement_locales
-  has_many :movements, :through => :movement_locales
+  has_many :movements, through: :movement_locales
 
-  scope :default,     joins(:movement_locales).where(:movement_locales => { :default => true })
-  scope :non_default, joins(:movement_locales).where(:movement_locales => { :default => false })
+  scope :default,     joins(:movement_locales).where(movement_locales: { default: true })
+  scope :non_default, joins(:movement_locales).where(movement_locales: { default: false })
 
-  scope :by_code, lambda {|*codes| where(:iso_code => codes)}
+  scope :by_code, lambda {|*codes| where(iso_code: codes)}
 end

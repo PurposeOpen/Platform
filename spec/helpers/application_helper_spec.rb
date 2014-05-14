@@ -5,9 +5,9 @@ describe ApplicationHelper do
     it "should sum up all the transactions in the list" do
       donation = FactoryGirl.create(:donation)
 
-      transactions = [Transaction.create!(:donation => donation, :successful => true, :amount_in_cents => 113 ),
-                      Transaction.create!(:donation => donation, :successful => true, :amount_in_cents => 117 ),
-                      Transaction.create!(:donation => donation, :successful => true, :amount_in_cents => 103)]
+      transactions = [Transaction.create!(donation: donation, successful: true, amount_in_cents: 113 ),
+                      Transaction.create!(donation: donation, successful: true, amount_in_cents: 117 ),
+                      Transaction.create!(donation: donation, successful: true, amount_in_cents: 103)]
 
       helper.sum_list(transactions, :amount_in_dollars).should eql 3.33
     end
@@ -20,19 +20,19 @@ describe ApplicationHelper do
 
     context "tab is not active," do
       it "should render an HTML anchor within a List Item" do
-        html = helper.navbar_item :movements, "Movements", :path => "/movements"
-        html.should have_tag "li a", :with => { :href => "/movements" }, :text => "Movements"
+        html = helper.navbar_item :movements, "Movements", path: "/movements"
+        html.should have_tag "li a", with: { href: "/movements" }, text: "Movements"
       end
 
       it "should default path to # when not provided" do
         html = helper.navbar_item :movements, "Movements"
-        html.should have_tag "li a", :with => { :href => "#" }, :text => "Movements" 
+        html.should have_tag "li a", with: { href: "#" }, text: "Movements" 
       end
 
       it "should not have a class attribute in the LI" do
         html = helper.navbar_item :movements, "Movements"
         html.should have_tag "li:not(.active)" do
-          with_tag "a", :text => "Movements"
+          with_tag "a", text: "Movements"
         end
       end
     end
@@ -44,8 +44,8 @@ describe ApplicationHelper do
       
       it "should add an 'active' class to the LI" do
         html = helper.navbar_item :movements, "Movements"
-        html.should have_tag "li", :with => { :class => "active" } do
-          with_tag "a", :text => "Movements"
+        html.should have_tag "li", with: { class: "active" } do
+          with_tag "a", text: "Movements"
         end
       end
     end

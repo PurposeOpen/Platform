@@ -7,11 +7,11 @@ class SendgridMailer < ActionMailer::Base
     @footer = email.footer
 
     options = {
-      :to => AppConstants.no_reply_address,
-      :subject => email.subject,
-      :recipients => [user.email]
+      to: AppConstants.no_reply_address,
+      subject: email.subject,
+      recipients: [user.email]
     }
-    options.merge!({:from => email.from}) if email.respond_to?(:from)
+    options.merge!({from: email.from}) if email.respond_to?(:from)
 
     prepared_mail=prepare(email, options)
     prepared_mail.deliver
@@ -19,8 +19,8 @@ class SendgridMailer < ActionMailer::Base
   end
 
   def blast_email(email, options)
-    @body_text = { :html => email.html_body, :text => email.plain_text_body }
-    @footer = email.footer.present? ? { :html => email.footer.html_with_beacon, :text => email.footer.text } : {}
+    @body_text = { html: email.html_body, text: email.plain_text_body }
+    @footer = email.footer.present? ? { html: email.footer.html_with_beacon, text: email.footer.text } : {}
     options[:recipients] = clean_recipient_list(options[:recipients])
 
     prepare(email, options)
@@ -32,7 +32,7 @@ class SendgridMailer < ActionMailer::Base
     headers['List-Unsubscribe' ] = "<mailto:#{email.from}>"
     subject = get_subject(email, options)
 
-    mail(:to => AppConstants.no_reply_address, :from => email.from, :reply_to => (email.reply_to || email.from), :subject => subject) do |format|
+    mail(to: AppConstants.no_reply_address, from: email.from, reply_to: (email.reply_to || email.from), subject: subject) do |format|
       format.text { render 'sendgrid_mailer/text_email' }
       format.html { render 'sendgrid_mailer/html_email' }
     end.with_settings(blast_email_settings(email.movement))
@@ -51,8 +51,8 @@ class SendgridMailer < ActionMailer::Base
     }.merge(tokens || {}))
 
     {
-      :html => processed_body,
-      :text => convert_html_to_plain(processed_body)
+      html: processed_body,
+      text: convert_html_to_plain(processed_body)
     }
   end
 

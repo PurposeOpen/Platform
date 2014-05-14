@@ -4,7 +4,7 @@ class Admin::DownloadableAssetsController < Admin::AdminController
   layout 'movements'
   self.nav_category = :assets
 
-  before_filter :recent_assets, :only => [:create, :index]
+  before_filter :recent_assets, only: [:create, :index]
 
   def index
     @asset = DownloadableAsset.new
@@ -22,7 +22,7 @@ class Admin::DownloadableAssetsController < Admin::AdminController
       flash[:notice] = 'File uploaded. It may take up to 60 seconds for it to show up in search results.'
       redirect_to admin_movement_downloadable_asset_path(@movement, @asset)
     else
-      render :action => 'index'
+      render action: 'index'
     end
   end
 
@@ -35,12 +35,12 @@ class Admin::DownloadableAssetsController < Admin::AdminController
         keywords params[:query]
         with :movement_id, movement_id
         order_by :created_at, :desc
-        paginate :per_page => PAGE_SIZE, :page => params[:page]
+        paginate per_page: PAGE_SIZE, page: params[:page]
       end
       @assets = search.results
     else
-      @assets = DownloadableAsset.where(:movement_id => movement_id).order('created_at DESC').
-          paginate(:per_page => PAGE_SIZE, :page => params[:page])
+      @assets = DownloadableAsset.where(movement_id: movement_id).order('created_at DESC').
+          paginate(per_page: PAGE_SIZE, page: params[:page])
     end
   end
 end

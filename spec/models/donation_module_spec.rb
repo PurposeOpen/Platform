@@ -22,11 +22,11 @@ describe DonationModule do
   def validated_donation_module(attrs)
     default_attrs = {
       active: 'true', 
-      :default_currency => 'usd', 
-      :suggested_amounts => {'usd' => '1,2,3'}, 
-      :default_amount => {'usd' => '1'}, 
-      :donations_goal => 10, 
-      :thermometer_threshold => 0
+      default_currency: 'usd', 
+      suggested_amounts: {'usd' => '1,2,3'}, 
+      default_amount: {'usd' => '1'}, 
+      donations_goal: 10, 
+      thermometer_threshold: 0
     }
     etm = FactoryGirl.build(:donation_module, default_attrs.merge(attrs))
     etm.valid_with_warnings?
@@ -34,7 +34,7 @@ describe DonationModule do
   end
 
   it "should create sensible defaults" do
-    DonationModule::AVAILABLE_CURRENCIES = { :usd => Money::Currency.new('USD') }
+    DonationModule::AVAILABLE_CURRENCIES = { usd: Money::Currency.new('USD') }
     dm = DonationModule.create
     dm.button_text.should == 'Donate!'
     dm.suggested_amounts.should == {}
@@ -44,39 +44,39 @@ describe DonationModule do
   end
 
   it "should remove whitespace from suggested_amounts" do
-    dm = FactoryGirl.create(:donation_module, :suggested_amounts => {'usd' => '1 , 2,3'}, :default_amount => {'usd' => '1'}, :donations_goal => 10, :thermometer_threshold => 0)
+    dm = FactoryGirl.create(:donation_module, suggested_amounts: {'usd' => '1 , 2,3'}, default_amount: {'usd' => '1'}, donations_goal: 10, thermometer_threshold: 0)
     dm.suggested_amounts['usd'].should == '1,2,3'
   end
 
   it "should remove whitespace from recurring_suggested_amounts" do
-    dm = FactoryGirl.create(:donation_module, :recurring_suggested_amounts => {'monthly' => {'usd' => '1 , 2, 3 '}}, :default_amount => {'usd' => '1'}, :donations_goal => 10, :thermometer_threshold => 0)
+    dm = FactoryGirl.create(:donation_module, recurring_suggested_amounts: {'monthly' => {'usd' => '1 , 2, 3 '}}, default_amount: {'usd' => '1'}, donations_goal: 10, thermometer_threshold: 0)
     dm.recurring_suggested_amounts['monthly']['usd'].should == '1,2,3'
   end
 
   describe "validations" do
     it "should add a warning if title is not between 3 and 128 characters" do
-      validated_donation_module(:title => "Save the kittens!").should be_valid_with_warnings
-      validated_donation_module(:title => "X" * 128).should be_valid_with_warnings
-      validated_donation_module(:title => "X" * 129).errors[:title].should_not be_empty
-      validated_donation_module(:title => "AB").errors[:title].should_not be_empty
+      validated_donation_module(title: "Save the kittens!").should be_valid_with_warnings
+      validated_donation_module(title: "X" * 128).should be_valid_with_warnings
+      validated_donation_module(title: "X" * 129).errors[:title].should_not be_empty
+      validated_donation_module(title: "AB").errors[:title].should_not be_empty
     end
 
     it "should add a warning if thermometer threshold is not greater than or equal to 0" do
-      validated_donation_module(:thermometer_threshold => 1, :donations_goal => 2).should be_valid_with_warnings
-      validated_donation_module(:thermometer_threshold => 0, :donations_goal => 1).should be_valid_with_warnings
-      validated_donation_module(:thermometer_threshold => -1, :donations_goal => 1).should_not be_valid_with_warnings
+      validated_donation_module(thermometer_threshold: 1, donations_goal: 2).should be_valid_with_warnings
+      validated_donation_module(thermometer_threshold: 0, donations_goal: 1).should be_valid_with_warnings
+      validated_donation_module(thermometer_threshold: -1, donations_goal: 1).should_not be_valid_with_warnings
     end
 
     it "attribute setter should set goal to 0 if blank or nil, and it should be valid without warnings" do
-      dm = validated_donation_module(:donations_goal => nil, :thermometer_threshold => 0)
+      dm = validated_donation_module(donations_goal: nil, thermometer_threshold: 0)
       dm.donations_goal.should == 0
       dm.should be_valid_with_warnings
     end
 
     it "should add a warning if donations goal is set to a lower value than the threshold" do
-      validated_donation_module(:donations_goal => 10, :thermometer_threshold => 15).errors[:thermometer_threshold].should_not be_empty
-      validated_donation_module(:donations_goal => 10, :thermometer_threshold => 10).should be_valid_with_warnings
-      validated_donation_module(:donations_goal => 10, :thermometer_threshold => 5).should be_valid_with_warnings
+      validated_donation_module(donations_goal: 10, thermometer_threshold: 15).errors[:thermometer_threshold].should_not be_empty
+      validated_donation_module(donations_goal: 10, thermometer_threshold: 10).should be_valid_with_warnings
+      validated_donation_module(donations_goal: 10, thermometer_threshold: 5).should be_valid_with_warnings
     end
 
     it "should add warnings unless suggested_amounts and default_amount are present for at least one currency on one-off donations" do
@@ -96,41 +96,41 @@ describe DonationModule do
     end
 
     it "should add a warning unless each suggested amount is an integer greater than 0 and not blank" do
-      validated_donation_module(:default_amount => {'usd' => "30"}, :suggested_amounts => {'usd' => "10, 20, 30"}).should be_valid_with_warnings
-      validated_donation_module(:default_amount => {'usd' => "30"}, :suggested_amounts => {'usd' =>"0, 30"}).errors[:suggested_amounts].should_not be_empty
-      validated_donation_module(:default_amount => {'usd' => "30", 'aud' => "30"}, :suggested_amounts => {'usd' => "10, 20, 30, ABCDEF", 'aud' => ''}).errors[:suggested_amounts].include?("for USD must be greater than zero.").should be_true
+      validated_donation_module(default_amount: {'usd' => "30"}, suggested_amounts: {'usd' => "10, 20, 30"}).should be_valid_with_warnings
+      validated_donation_module(default_amount: {'usd' => "30"}, suggested_amounts: {'usd' =>"0, 30"}).errors[:suggested_amounts].should_not be_empty
+      validated_donation_module(default_amount: {'usd' => "30", 'aud' => "30"}, suggested_amounts: {'usd' => "10, 20, 30, ABCDEF", 'aud' => ''}).errors[:suggested_amounts].include?("for USD must be greater than zero.").should be_true
     end
 
     it "should add a warning unless default amount is one of the suggested amounts" do
-      validated_donation_module(:default_amount => {'usd' => "10"}, :suggested_amounts => {'usd' =>"10, 20, 30"}).should be_valid_with_warnings
-      validated_donation_module(:default_amount => {'usd' => "50", 'aud' => '5'}, :suggested_amounts => {'usd' => "10, 20, 30", 'aud' => '10'}).errors[:default_amount].include?("for USD, AUD must be one of the suggested amounts.").should be_true
+      validated_donation_module(default_amount: {'usd' => "10"}, suggested_amounts: {'usd' =>"10, 20, 30"}).should be_valid_with_warnings
+      validated_donation_module(default_amount: {'usd' => "50", 'aud' => '5'}, suggested_amounts: {'usd' => "10, 20, 30", 'aud' => '10'}).errors[:default_amount].include?("for USD, AUD must be one of the suggested amounts.").should be_true
     end
 
     it "should add a warning unless recurring default amount is one of the recurring suggested amounts" do
-      validated_donation_module(:recurring_default_amount => {'monthly' => {}},
-                                      :recurring_suggested_amounts => {'monthly' => {}}).should be_valid_with_warnings
+      validated_donation_module(recurring_default_amount: {'monthly' => {}},
+                                      recurring_suggested_amounts: {'monthly' => {}}).should be_valid_with_warnings
 
-      validated_donation_module(:recurring_default_amount => {'monthly' => {'usd' => "10"}},
-                                :recurring_suggested_amounts => {'monthly' => {'usd' =>"10, 20, 30"}}).should be_valid_with_warnings
+      validated_donation_module(recurring_default_amount: {'monthly' => {'usd' => "10"}},
+                                recurring_suggested_amounts: {'monthly' => {'usd' =>"10, 20, 30"}}).should be_valid_with_warnings
 
-      validated_donation_module(:recurring_default_amount => {'monthly' => {}},
-                                :recurring_suggested_amounts => {'monthly' => {'usd' =>"10, 20, 30"}}).errors[:recurring_default_amount].include?("for Monthly USD must be one of the suggested amounts.").should be_true
+      validated_donation_module(recurring_default_amount: {'monthly' => {}},
+                                recurring_suggested_amounts: {'monthly' => {'usd' =>"10, 20, 30"}}).errors[:recurring_default_amount].include?("for Monthly USD must be one of the suggested amounts.").should be_true
 
-      validated_donation_module(:recurring_default_amount => {'monthly' => {'usd' => "11"}},
-                                :recurring_suggested_amounts => {'monthly' => {'usd' =>"10, 20, 30"}}).errors[:recurring_default_amount].include?("for Monthly USD must be one of the suggested amounts.").should be_true
+      validated_donation_module(recurring_default_amount: {'monthly' => {'usd' => "11"}},
+                                recurring_suggested_amounts: {'monthly' => {'usd' =>"10, 20, 30"}}).errors[:recurring_default_amount].include?("for Monthly USD must be one of the suggested amounts.").should be_true
     end
 
     it "should add a warning if default amount for a currency is not present" do
-      dm = validated_donation_module(:default_amount => {'usd' => "20"},
-          :suggested_amounts => {'usd' => "10, 20, 30", 'aud' => '10'})
+      dm = validated_donation_module(default_amount: {'usd' => "20"},
+          suggested_amounts: {'usd' => "10, 20, 30", 'aud' => '10'})
 
       dm.errors[:default_amount].include?("for AUD must be one of the suggested amounts.").should be_true
     end
 
     it "should add a warning unless a single default frequency is selected" do
-      validated_donation_module(:frequency_options => {'one_off' => 'default', 'weekly' => 'optional'}).should be_valid_with_warnings
-      validated_donation_module(:frequency_options => {'one_off' => 'default', 'weekly' => 'default'}).errors[:frequency_options].include?("must have a single default selected.").should be_true
-      validated_donation_module(:frequency_options => {'one_off' => 'hidden', 'weekly' => 'optional'}).errors[:frequency_options].include?("must have a single default selected.").should be_true
+      validated_donation_module(frequency_options: {'one_off' => 'default', 'weekly' => 'optional'}).should be_valid_with_warnings
+      validated_donation_module(frequency_options: {'one_off' => 'default', 'weekly' => 'default'}).errors[:frequency_options].include?("must have a single default selected.").should be_true
+      validated_donation_module(frequency_options: {'one_off' => 'hidden', 'weekly' => 'optional'}).errors[:frequency_options].include?("must have a single default selected.").should be_true
     end
 
     it "frequency's default currency and suggested amounts should be set if it's default option" do
@@ -196,7 +196,7 @@ describe DonationModule do
   end
 
   it "should remove whitespace from the suggested amounts string before saving" do
-    dm = FactoryGirl.build(:donation_module, :suggested_amounts => {'usd' => '1,   2 ,   3  '}, :default_amount => {'usd' => '1'})
+    dm = FactoryGirl.build(:donation_module, suggested_amounts: {'usd' => '1,   2 ,   3  '}, default_amount: {'usd' => '1'})
     dm.save!
 
     dm.suggested_amounts.should == {"usd" => "1,2,3"}
@@ -204,19 +204,19 @@ describe DonationModule do
 
   describe "frequency options" do
     it "knows if it only allows one-off payments" do
-      dm = FactoryGirl.create(:donation_module, :frequency_options => {'one_off' => 'default', 'weekly' => 'hidden'})
+      dm = FactoryGirl.create(:donation_module, frequency_options: {'one_off' => 'default', 'weekly' => 'hidden'})
       dm.only_allow_one_off_payment?.should == true
       dm.frequency_options['weekly'] = 'optional'
       dm.only_allow_one_off_payment?.should == false
     end
 
     it "constructs a list of available frequencies suitable for use as dropdown options" do
-      dm = FactoryGirl.create(:donation_module, :frequency_options => {'one_off' => 'default', 'weekly' => 'hidden', 'monthly' => 'optional'})
+      dm = FactoryGirl.create(:donation_module, frequency_options: {'one_off' => 'default', 'weekly' => 'hidden', 'monthly' => 'optional'})
       dm.available_frequencies_for_select.should == [ ['Donate Once', 'one_off'], ['Donate Monthly', 'monthly'] ]
     end
 
     it "should set default frequency" do
-      dm = FactoryGirl.create(:donation_module, :frequency_options => {'one_off' => 'default', 'monthly' => 'optional'})
+      dm = FactoryGirl.create(:donation_module, frequency_options: {'one_off' => 'default', 'monthly' => 'optional'})
       dm.default_frequency.should == :one_off
       dm.default_frequency = :monthly
       dm.default_frequency.should == :monthly
@@ -224,7 +224,7 @@ describe DonationModule do
 
     it "should set frequency option to optional when un-defaulting" do
       available_frequencies = [["Donate Once", "one_off"], ["Donate Monthly", "monthly"]]
-      dm = FactoryGirl.create(:donation_module, :frequency_options => {'one_off' => 'default', 'monthly' => 'optional', 'weekly' => 'hidden'})
+      dm = FactoryGirl.create(:donation_module, frequency_options: {'one_off' => 'default', 'monthly' => 'optional', 'weekly' => 'hidden'})
       dm.default_frequency = :monthly
       dm.default_frequency.should == :monthly
       dm.default_frequency = :one_off
@@ -239,10 +239,10 @@ describe DonationModule do
 
     it "should make frequency optional when suggested amounts and default currency are set" do
       dm = FactoryGirl.create(:donation_module, 
-                              :frequency_options => {'one_off' => 'default', 'monthly' => 'hidden', 'weekly' => 'hidden'}, 
-                              :suggested_amounts => { 'usd' => '1,2,3', 'eur' => '1,2,3', 'brl' => '1,2,3' },
-                              :default_currency => 'usd',
-                              :default_amount => {'usd' => '1'})
+                              frequency_options: {'one_off' => 'default', 'monthly' => 'hidden', 'weekly' => 'hidden'}, 
+                              suggested_amounts: { 'usd' => '1,2,3', 'eur' => '1,2,3', 'brl' => '1,2,3' },
+                              default_currency: 'usd',
+                              default_amount: {'usd' => '1'})
 
       dm.available_frequencies_for_select.should == [["Donate Once", "one_off"]]
 
@@ -257,7 +257,7 @@ describe DonationModule do
 
   describe "taking an action" do
     before(:each) do
-      @user = FactoryGirl.create(:user, :email => 'noone@example.com')
+      @user = FactoryGirl.create(:user, email: 'noone@example.com')
       @ask = FactoryGirl.create(:donation_module)
       @page = FactoryGirl.create(:action_page)
       @email = FactoryGirl.create(:email)
@@ -268,7 +268,7 @@ describe DonationModule do
     end
 
     it "should create the donation with the correct values" do
-      action_info = { :confirmed => true, :frequency => 'one_off', :currency => 'USD', :amount => '100', :payment_method => 'credit_card', :email => @email, :order_id => '111111', :transaction_id => '222222' }
+      action_info = { confirmed: true, frequency: 'one_off', currency: 'USD', amount: '100', payment_method: 'credit_card', email: @email, order_id: '111111', transaction_id: '222222' }
       donation = @ask.take_action(@user, action_info, @page)
 
       donation.content_module.should == @ask
@@ -284,7 +284,7 @@ describe DonationModule do
     end
 
     it "should create an incomplete recurring donation" do
-      action_info = { :payment_method => 'credit_card', :subscription_id => '222222', :frequency => 'monthly', :currency => 'USD', :confirmed => false }
+      action_info = { payment_method: 'credit_card', subscription_id: '222222', frequency: 'monthly', currency: 'USD', confirmed: false }
 
       donation = @ask.take_action(@user, action_info, @page)
 
@@ -302,11 +302,11 @@ describe DonationModule do
   describe "tracking total amount raised" do
     before(:each) do
       @ask = FactoryGirl.create(:donation_module)
-      @donation_101 = FactoryGirl.create(:donation, :content_module => @ask)
-      @donation_215 = FactoryGirl.create(:donation, :content_module => @ask)
+      @donation_101 = FactoryGirl.create(:donation, content_module: @ask)
+      @donation_215 = FactoryGirl.create(:donation, content_module: @ask)
 
-      @donation_101.transactions.create!(:amount_in_cents => 101, :successful => true)
-      @donation_215.transactions.create!(:amount_in_cents => 215, :successful => true)
+      @donation_101.transactions.create!(amount_in_cents: 101, successful: true)
+      @donation_215.transactions.create!(amount_in_cents: 215, successful: true)
     end
 
     it "totals all the successful transactions" do
@@ -318,7 +318,7 @@ describe DonationModule do
     end
 
     it "ignores failed transactions" do
-      @donation_101.transactions.create!(:amount_in_cents => 1000, :successful => false)
+      @donation_101.transactions.create!(amount_in_cents: 1000, successful: false)
       @ask.amount_raised_in_cents.should == 316
     end
   end
@@ -326,10 +326,10 @@ describe DonationModule do
   describe "as json" do
     before do
       DonationModule::AVAILABLE_CURRENCIES = {
-        :brl => Money::Currency.new('BRL'),
-        :eur => Money::Currency.new('EUR'),
-        :gbp => Money::Currency.new('GBP'),
-        :usd => Money::Currency.new('USD')
+        brl: Money::Currency.new('BRL'),
+        eur: Money::Currency.new('EUR'),
+        gbp: Money::Currency.new('GBP'),
+        usd: Money::Currency.new('USD')
       }
     end
 
@@ -351,17 +351,17 @@ describe DonationModule do
 
     it "should include the number of members who have donated to that action page" do
       page = FactoryGirl.create(:action_page)
-      another_page_on_the_same_movement = FactoryGirl.create(:action_page, :action_sequence => page.action_sequence)
+      another_page_on_the_same_movement = FactoryGirl.create(:action_page, action_sequence: page.action_sequence)
 
-      donation_module = FactoryGirl.create(:donation_module, :pages => [page])
-      donation_module_on_same_page = FactoryGirl.create(:donation_module, :pages => [page])
-      donation_module_on_different_page = FactoryGirl.create(:donation_module, :pages => [another_page_on_the_same_movement])
+      donation_module = FactoryGirl.create(:donation_module, pages: [page])
+      donation_module_on_same_page = FactoryGirl.create(:donation_module, pages: [page])
+      donation_module_on_different_page = FactoryGirl.create(:donation_module, pages: [another_page_on_the_same_movement])
 
-      user = FactoryGirl.create(:user, :movement => page.movement)
-      action_info = {:payment_method => :paypal, :amount => 1000, :currency => :usd, :frequency => :one_off, :confirmed => true}
-      donation_module.take_action(user, action_info.merge(:order_id => 'order1', :transaction_id => 'transaction1'), page)
-      donation_module_on_same_page.take_action(user, action_info.merge(:order_id => 'order2', :transaction_id => 'transaction2'), page)
-      donation_module_on_different_page.take_action(user, action_info.merge(:order_id => 'order3', :transaction_id => 'transaction3'), another_page_on_the_same_movement)
+      user = FactoryGirl.create(:user, movement: page.movement)
+      action_info = {payment_method: :paypal, amount: 1000, currency: :usd, frequency: :one_off, confirmed: true}
+      donation_module.take_action(user, action_info.merge(order_id: 'order1', transaction_id: 'transaction1'), page)
+      donation_module_on_same_page.take_action(user, action_info.merge(order_id: 'order2', transaction_id: 'transaction2'), page)
+      donation_module_on_different_page.take_action(user, action_info.merge(order_id: 'order3', transaction_id: 'transaction3'), another_page_on_the_same_movement)
 
       donation_module.as_json[:donations_made].should == 2
     end

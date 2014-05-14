@@ -24,7 +24,7 @@ describe Image do
     @fixure_file = File.new(Rails.root + 'spec/fixtures/images/wikileaks.jpg')
   end
   it "validates presence of images" do
-    img = Image.new(:image => File.new(Rails.root + 'spec/fixtures/images/wikileaks.jpg'))
+    img = Image.new(image: File.new(Rails.root + 'spec/fixtures/images/wikileaks.jpg'))
     img.should be_valid
 
     img = Image.new()
@@ -33,16 +33,16 @@ describe Image do
 
   it "disallows non-image types" do
     # this reminds me of my computation theory lectures
-    img = Image.new(:image => File.new(__FILE__))
+    img = Image.new(image: File.new(__FILE__))
     img.should_not be_valid
   end
 
   describe "names" do
     before do
       @image = Image.create(
-        :id => 123,
-        :image => File.new('spec/fixtures/images/wikileaks.jpg'),
-        :movement => FactoryGirl.create(:movement)
+        id: 123,
+        image: File.new('spec/fixtures/images/wikileaks.jpg'),
+        movement: FactoryGirl.create(:movement)
       )
     end
 

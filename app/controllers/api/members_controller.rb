@@ -6,15 +6,15 @@ class Api::MembersController < Api::BaseController
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
 
     if @member
-      render :json => @member.as_json(:only => MEMBER_FIELDS), :status => :ok
+      render json: @member.as_json(only: MEMBER_FIELDS), status: :ok
     else
       status_response = params[:email].blank? ? :bad_request : :not_found
-      render :nothing => true, :status => status_response
+      render nothing: true, status: status_response
     end
   end
 
   def create
-    (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank? 
+    (render json: { errors: "Language field is required"}, status: 422 and return) if params[:member][:language].blank? 
 
     @member = movement.members.find_or_initialize_by_email(params[:member][:email])
     @member.language = Language.find_by_iso_code(params[:member][:language])
@@ -23,19 +23,19 @@ class Api::MembersController < Api::BaseController
       @member.subscribe_through_homepage!(tracked_email)
       MailSender.new.send_join_email(@member, movement)
 
-      response = @member.as_json(:only => MEMBER_FIELDS).merge({
-        :next_page_identifier => join_page_slug,
-        :member_id => @member.id
+      response = @member.as_json(only: MEMBER_FIELDS).merge({
+        next_page_identifier: join_page_slug,
+        member_id: @member.id
       })
       status_response = :created
     else
       response = {
-        :errors => @member.errors.messages
+        errors: @member.errors.messages
       }
       status_response = 422
     end
 
-    render :json => response, :status => status_response
+    render json: response, status: status_response
   end
 
   private

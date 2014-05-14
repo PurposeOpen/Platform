@@ -3,13 +3,13 @@ class PurposeMailer < ActionMailer::Base
 
   DEFAULT_FROM = AppConstants.no_reply_address
 
-  default :content_type => "text/html"
+  default content_type: "text/html"
 
   def mail_using_generic_template(options, &block)
     mail_options = {
-      :from => options[:from].present? ? options[:from] : DEFAULT_FROM,
-      :to => options[:to],
-      :subject => options[:subject]
+      from: options[:from].present? ? options[:from] : DEFAULT_FROM,
+      to: options[:to],
+      subject: options[:subject]
     }
 
     if block_given?

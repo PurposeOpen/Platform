@@ -33,14 +33,14 @@ class TellAFriendModule < ContentModule
   before_validation :trim_strings
 
   warnings do
-    validates_length_of :email_subject, :minimum => 2, :maximum => 256, :if => :email_enabled?
-    validates_length_of :email_body, :minimum => 10, :if => :email_enabled?
-    validates_length_of :tweet, :minimum => 2, :maximum => TWITTER_MAXIMUM, :if => :twitter_enabled?
-    validates_presence_of :facebook_image_url, :if => :facebook_enabled?
-    validates_length_of :share_url, :minimum => 3
+    validates_length_of :email_subject, minimum: 2, maximum: 256, if: :email_enabled?
+    validates_length_of :email_body, minimum: 10, if: :email_enabled?
+    validates_length_of :tweet, minimum: 2, maximum: TWITTER_MAXIMUM, if: :twitter_enabled?
+    validates_presence_of :facebook_image_url, if: :facebook_enabled?
+    validates_length_of :share_url, minimum: 3
     validates_presence_of :headline
     validates_presence_of :message
-    validates_presence_of :action_counter_page_id, :if => :includes_action_counter?
+    validates_presence_of :action_counter_page_id, if: :includes_action_counter?
   end
 
   placeable_in SIDEBAR
@@ -68,10 +68,10 @@ class TellAFriendModule < ContentModule
   def defaults
     if self.options.blank?
       self.options = {
-        :facebook_enabled => true,
-        :twitter_enabled => true,
-        :email_enabled => true,
-        :include_action_counter => false
+        facebook_enabled: true,
+        twitter_enabled: true,
+        email_enabled: true,
+        include_action_counter: false
       }
     end
   end

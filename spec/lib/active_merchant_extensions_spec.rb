@@ -122,26 +122,26 @@ RESPONSE
 describe ActiveMerchant::Billing::SecurePayAuGateway do
   describe "Anti-Fraud Payment" do
     it "should build the correct request XML for anti-fraud one-off payments" do
-      gateway = ActiveMerchant::Billing::SecurePayAuGateway.new(:login => "ABC0001", :password => "changeit", :test => true)
+      gateway = ActiveMerchant::Billing::SecurePayAuGateway.new(login: "ABC0001", password: "changeit", test: true)
       card ||= ActiveMerchant::Billing::CreditCard.new(
-          :type => "VISA",
-          :first_name => "James",
-          :last_name => "Hetfield",
-          :number => "4111111111111111",
-          :month => "05",
-          :year => "2013",
-          :verification_value => "123"
+          type: "VISA",
+          first_name: "James",
+          last_name: "Hetfield",
+          number: "4111111111111111",
+          month: "05",
+          year: "2013",
+          verification_value: "123"
       )
 
       options = {
-          :order_id => 37,
-          :first_name => "Leonardo",
-          :last_name => "Borges",
-          :zip_code => "2000",
-          :town => "Sydney",
-          :billing_country => "AU",
-          :email => "my@email.com",
-          :ip => "200.30.12.1",
+          order_id: 37,
+          first_name: "Leonardo",
+          last_name: "Borges",
+          zip_code: "2000",
+          town: "Sydney",
+          billing_country: "AU",
+          email: "my@email.com",
+          ip: "200.30.12.1",
       }
 
       gateway.stub(:generate_timestamp).with { "timestamp" }

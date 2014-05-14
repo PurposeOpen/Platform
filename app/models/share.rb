@@ -16,11 +16,11 @@ class Share < ActiveRecord::Base
   EMAIL = 'email'
   SHARE_TYPES = [FACEBOOK, TWITTER, EMAIL]
 
-  validates_inclusion_of :share_type, :in => SHARE_TYPES
+  validates_inclusion_of :share_type, in: SHARE_TYPES
   validates_presence_of :page_id
 
   scope :shares_for, (proc do |page_id|
-        where(:page_id => page_id)
+        where(page_id: page_id)
       end)
 
 

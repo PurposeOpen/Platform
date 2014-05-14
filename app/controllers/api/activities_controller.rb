@@ -2,20 +2,20 @@ class Api::ActivitiesController < Api::BaseController
 
   DEFAULT_ACTIVITY_FEED_REFRESH_FREQ = 30
 
-  caches_action :show, :expires_in => (ENV['ACTIVITY_FEED_REFRESH_FREQ'].try(:to_i) || DEFAULT_ACTIVITY_FEED_REFRESH_FREQ).seconds, :cache_path => lambda { |_|
+  caches_action :show, expires_in: (ENV['ACTIVITY_FEED_REFRESH_FREQ'].try(:to_i) || DEFAULT_ACTIVITY_FEED_REFRESH_FREQ).seconds, cache_path: lambda { |_|
     request.fullpath
   }
 
   def show
     if ENV["DISABLE_#{@movement.slug.upcase}_ACTIVITY_FEED"] =~ /true/i
-      render :json => [] and return
+      render json: [] and return
     end
     language = Language.find_by_iso_code(I18n.locale)
     page_id = params[:module_id].present? ? ContentModule.find(params[:module_id]).pages.first.id : nil
     feed = UserActivityEvent.load_feed(@movement, language, page_id, nil, with_comments_only?)
     response.headers['Expires'] = next_interval_timestamp_after_most_recent_timestamp(feed).httpdate
     eager_loaded_feed = UserActivityEvent.includes(:user).where(id: feed.map(&:id))
-    render :json => eager_loaded_feed.to_json(:language => language)
+    render json: eager_loaded_feed.to_json(language: language)
   end
 
   private

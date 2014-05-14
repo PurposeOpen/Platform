@@ -37,7 +37,7 @@ describe ContentModule do
     end
 
     it "saves and reloads serializable fields" do
-      dm = FactoryGirl.create(:dummy_module, :foo => 'foo_value', :bar => 'bar_value')
+      dm = FactoryGirl.create(:dummy_module, foo: 'foo_value', bar: 'bar_value')
       dm.foo.should eql('foo_value')
       dm.bar.should eql('bar_value')
 
@@ -56,13 +56,13 @@ describe ContentModule do
     it "handles attributes sensibly without saving" do
       dm = DummyModule.new
       dm.foo = "bar"
-      dm.save!(:validate => false)
+      dm.save!(validate: false)
       dm.reload
       dm.foo.should == "bar"
     end
 
     it "allows multiple calls to option_fields" do
-      mfdm = MultipleFieldDeclarationsModule.new(:the_first => 1, :the_second => 2, :the_third => 3, :language => FactoryGirl.create(:language))
+      mfdm = MultipleFieldDeclarationsModule.new(the_first: 1, the_second: 2, the_third: 3, language: FactoryGirl.create(:language))
       mfdm.save!
       mfdm = ContentModule.find(mfdm.id)
       mfdm.the_first.should == 1
@@ -78,9 +78,9 @@ describe ContentModule do
     end
 
     it "substitutes $NAME for user first name" do
-      dm = FactoryGirl.create(:dummy_module, :public_activity_stream_template => "{NAME|Someone} is AWESOME", :language => @page.movement.default_language)
+      dm = FactoryGirl.create(:dummy_module, public_activity_stream_template: "{NAME|Someone} is AWESOME", language: @page.movement.default_language)
       @page.content_modules << dm
-      user = FactoryGirl.create(:user, :first_name => "rick")
+      user = FactoryGirl.create(:user, first_name: "rick")
       dm.public_activity_stream_html(user, @page).should == "<span class=\"name\">Rick</span> is AWESOME"
       user.first_name = nil
       dm.public_activity_stream_html(user, @page).should == "<span class=\"name\">Someone</span> is AWESOME"
@@ -88,10 +88,10 @@ describe ContentModule do
 
     context 'substitute $HEADER' do
       let(:language_for_module) {create(:language)}
-      let(:dm) {create(:dummy_module, :public_activity_stream_template => "My content is {HEADER|}", :language => language_for_module, content: "I am the Header")}
-      let(:dm2) {create(:dummy_module, :public_activity_stream_template => "My content is {HEADER|}", :language => @page.movement.default_language, content: "I am the Header in the default language")}
-      let(:dm3) {create(:dummy_module, :public_activity_stream_template => "My content is {HEADER|}", :language => @page.movement.default_language, content: "I am the Header in the default language")}
-      let(:user) {create(:user, :country_iso => "fr")}
+      let(:dm) {create(:dummy_module, public_activity_stream_template: "My content is {HEADER|}", language: language_for_module, content: "I am the Header")}
+      let(:dm2) {create(:dummy_module, public_activity_stream_template: "My content is {HEADER|}", language: @page.movement.default_language, content: "I am the Header in the default language")}
+      let(:dm3) {create(:dummy_module, public_activity_stream_template: "My content is {HEADER|}", language: @page.movement.default_language, content: "I am the Header in the default language")}
+      let(:user) {create(:user, country_iso: "fr")}
 
 
       before(:each) do
@@ -117,8 +117,8 @@ describe ContentModule do
     end
 
     context 'substitute $COUNTRY' do
-      let(:dm) {create(:dummy_module, :public_activity_stream_template => "I'm {(from )COUNTRY|lost}", :language => @page.movement.default_language)}
-      let(:user) {create(:user, :country_iso => "fr")}
+      let(:dm) {create(:dummy_module, public_activity_stream_template: "I'm {(from )COUNTRY|lost}", language: @page.movement.default_language)}
+      let(:user) {create(:user, country_iso: "fr")}
 
       before(:each) do
         @page.content_modules << dm
@@ -142,7 +142,7 @@ describe ContentModule do
       first_page = FactoryGirl.create(:action_page)
       @page.action_sequence.action_pages.unshift(first_page)
 
-      dm = FactoryGirl.create(:dummy_module, :public_activity_stream_template => "This is a [link]", :language => @movement.default_language)
+      dm = FactoryGirl.create(:dummy_module, public_activity_stream_template: "This is a [link]", language: @movement.default_language)
       @page.content_modules << dm
       href = Rails.application.routes.url_helpers.page_path(@page.action_sequence.campaign.friendly_id, @page.action_sequence.friendly_id, first_page.friendly_id)
 
@@ -152,7 +152,7 @@ describe ContentModule do
 
     it "returns nil if the content module is not an ask module" do
       normal_module = Class.new(ContentModule)
-      dm = normal_module.new(:public_activity_stream_template => "Foo Bar")
+      dm = normal_module.new(public_activity_stream_template: "Foo Bar")
       dm.public_activity_stream_html(nil, nil).should be_nil
     end
 
@@ -160,8 +160,8 @@ describe ContentModule do
       page, user = FactoryGirl.create(:action_page), FactoryGirl.create(:user)
       l1, l2 = FactoryGirl.create(:language), FactoryGirl.create(:language)
 
-      m1 = FactoryGirl.build(:dummy_module, :public_activity_stream_template => "First language", :language => l1)
-      m2 = FactoryGirl.build(:dummy_module, :public_activity_stream_template => "Second language", :language => l2)
+      m1 = FactoryGirl.build(:dummy_module, public_activity_stream_template: "First language", language: l1)
+      m2 = FactoryGirl.build(:dummy_module, public_activity_stream_template: "Second language", language: l2)
 
       page.content_modules << m1
       page.content_modules << m2
@@ -175,11 +175,11 @@ describe ContentModule do
       dm = FactoryGirl.create(:dummy_module)
       dm.should_not be_linked
 
-      ContentModuleLink.create!(:content_module => dm, :page => FactoryGirl.create(:action_page))
+      ContentModuleLink.create!(content_module: dm, page: FactoryGirl.create(:action_page))
       dm.reload
       dm.should_not be_linked
 
-      ContentModuleLink.create!(:content_module => dm, :page => FactoryGirl.create(:action_page))
+      ContentModuleLink.create!(content_module: dm, page: FactoryGirl.create(:action_page))
       dm.reload
       dm.should be_linked
     end
@@ -187,12 +187,12 @@ describe ContentModule do
 
   describe "first image" do
     it "returns the uri to first image in the module" do
-      dm = FactoryGirl.create(:dummy_module, :content => '<h2>Hello</h2><div><br>something<div><img src="/images/some_header_image.png"/></div></div><table><tr><td></td></tr></table>')
+      dm = FactoryGirl.create(:dummy_module, content: '<h2>Hello</h2><div><br>something<div><img src="/images/some_header_image.png"/></div></div><table><tr><td></td></tr></table>')
       dm.first_image.should == "/images/some_header_image.png"
     end
 
     it "returns false if there is no first image" do
-      dm = FactoryGirl.create(:dummy_module, :content => '<h2>Hello</h2><div><br>something<div>no image</div></div><table><tr><td></td></tr></table>')
+      dm = FactoryGirl.create(:dummy_module, content: '<h2>Hello</h2><div><br>something<div>no image</div></div><table><tr><td></td></tr></table>')
       dm.first_image.should == false
     end
 
@@ -200,15 +200,15 @@ describe ContentModule do
 
   describe "sanitizing user-entered HTML" do
     it "tidies content" do
-      dm = FactoryGirl.create(:dummy_module, :content => "<div class=> Content")
+      dm = FactoryGirl.create(:dummy_module, content: "<div class=> Content")
       dm.content.should == "<div class=\"\"> Content</div>"
     end
   end
 
   describe "as_json" do
     it "should include type in json" do
-      petition = PetitionModule.create(:content => "Some content", :title => "Petition title")
-      taf = TellAFriendModule.create(:content => "Some content", :title => "Petition title")
+      petition = PetitionModule.create(content: "Some content", title: "Petition title")
+      taf = TellAFriendModule.create(content: "Some content", title: "Petition title")
       petition_json = JSON.parse(petition.to_json)
       taf_json = JSON.parse(taf.to_json)
 
@@ -217,7 +217,7 @@ describe ContentModule do
     end
 
     it "should run its render its content as Markdown if flagged" do
-      HtmlModule.new(:content => "This is some text", :use_markdown => true).as_json[:content].should == "<p>This is some text</p>\n"
+      HtmlModule.new(content: "This is some text", use_markdown: true).as_json[:content].should == "<p>This is some text</p>\n"
     end
   end
 

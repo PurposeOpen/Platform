@@ -5,19 +5,19 @@ describe ListCutter::ZoneRule do
     rule = ListCutter::ZoneRule.new
 
     rule.valid?.should be_false
-    rule.errors.messages == {:country_iso=>["Please specify a zone code"]}
+    rule.errors.messages == {country_iso:["Please specify a zone code"]}
   end
 
   it "should return users who are from the specified zone" do
-    Country.stub(:countries_in_zone => ["BR", "US"])
+    Country.stub(countries_in_zone: ["BR", "US"])
     action_page = FactoryGirl.create(:action_page)
 
-    user1 = FactoryGirl.create(:user, :movement => action_page.movement, :country_iso => "BR")
-    user2 = FactoryGirl.create(:user, :movement => action_page.movement, :country_iso => "AL")
-    user3 = FactoryGirl.create(:user, :movement => action_page.movement, :country_iso => "US")
-    user4 = FactoryGirl.create(:user, :movement => action_page.movement, :country_iso => "AW")
+    user1 = FactoryGirl.create(:user, movement: action_page.movement, country_iso: "BR")
+    user2 = FactoryGirl.create(:user, movement: action_page.movement, country_iso: "AL")
+    user3 = FactoryGirl.create(:user, movement: action_page.movement, country_iso: "US")
+    user4 = FactoryGirl.create(:user, movement: action_page.movement, country_iso: "AW")
 
-    rule = ListCutter::ZoneRule.new(:zone_code => 1, :movement => action_page.movement)
+    rule = ListCutter::ZoneRule.new(zone_code: 1, movement: action_page.movement)
     rule.to_relation.all.should match_array([user1, user3])
   end
 

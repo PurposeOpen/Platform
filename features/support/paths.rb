@@ -68,7 +68,7 @@ module NavigationHelpers
 
       when /the public static page "(.*)\/(.*)"/
         action_sequence_name, page_name = $1, $2
-        page                          = ActionPage.find(:last, :conditions => ['lower(name) = ?', $2.downcase])
+        page                          = ActionPage.find(:last, conditions: ['lower(name) = ?', $2.downcase])
         page.should_not be_nil
         page.action_sequence.name.downcase.should == action_sequence_name
         "/#{page.action_sequence.name.downcase}/#{page.name.downcase}"

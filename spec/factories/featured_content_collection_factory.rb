@@ -13,6 +13,6 @@
 FactoryGirl.define do
   factory :featured_content_collection do
     name          "Carousel"
-    association   :featurable, :factory => :content_page
+    association   :featurable, factory: :content_page
   end
 end

@@ -29,38 +29,38 @@ require 'spec_helper'
 describe PlatformUser do
   describe "names" do
     it "full_name should have a full name, or Unknown Username if neither first nor last names are present" do
-      create(:platform_user, :first_name => "rico").full_name.should == "Rico"
-      create(:platform_user, :last_name => "ferhandez").full_name.should == "Ferhandez"
-      create(:platform_user, :first_name => "rico", :last_name => "ferhandez").full_name.should == "Rico Ferhandez"
-      create(:platform_user, :first_name => "", :last_name => "").full_name.should == "Unknown Username"
+      create(:platform_user, first_name: "rico").full_name.should == "Rico"
+      create(:platform_user, last_name: "ferhandez").full_name.should == "Ferhandez"
+      create(:platform_user, first_name: "rico", last_name: "ferhandez").full_name.should == "Rico Ferhandez"
+      create(:platform_user, first_name: "", last_name: "").full_name.should == "Unknown Username"
     end
 
     it "name should have a full name, or Unknown Username if neither first nor last names are present" do
-      create(:platform_user, :first_name => "rico").name.should == "Rico"
-      create(:platform_user, :last_name => "ferhandez").name.should == "Ferhandez"
-      create(:platform_user, :first_name => "rico", :last_name => "ferhandez").name.should == "Rico Ferhandez"
-      create(:platform_user, :first_name => "", :last_name => "").name.should == "Unknown Username"
+      create(:platform_user, first_name: "rico").name.should == "Rico"
+      create(:platform_user, last_name: "ferhandez").name.should == "Ferhandez"
+      create(:platform_user, first_name: "rico", last_name: "ferhandez").name.should == "Rico Ferhandez"
+      create(:platform_user, first_name: "", last_name: "").name.should == "Unknown Username"
     end
   end
 
   describe "#movements_allowed" do
     before(:each) do
-      @movement_a = create(:movement, :name => "Save the walruses!",)
-      @movement_b = create(:movement, :name => "Save the wolphins!")
-      @movement_c = create(:movement, :name => "Save the ferrets!")
-      @movement_d = create(:movement, :name => "Save the monkeys!")
+      @movement_a = create(:movement, name: "Save the walruses!",)
+      @movement_b = create(:movement, name: "Save the wolphins!")
+      @movement_c = create(:movement, name: "Save the ferrets!")
+      @movement_d = create(:movement, name: "Save the monkeys!")
     end
 
     it "should return all movements if I am a platform admin" do
-      platform_admin = create(:platform_user, :is_admin => true)
+      platform_admin = create(:platform_user, is_admin: true)
       platform_admin.movements_allowed.should =~ Movement.all
     end
 
     it "should return all movements I am an admin or campaigner or senior campaigner for" do
-      user = create(:platform_user, :is_admin => false)
-      create(:user_affiliation, :movement_id => @movement_a.id, :user_id => user.id, :role => UserAffiliation::ADMIN)
-      create(:user_affiliation, :movement_id => @movement_b.id, :user_id => user.id, :role => UserAffiliation::CAMPAIGNER)
-      create(:user_affiliation, :movement_id => @movement_d.id, :user_id => user.id, :role => UserAffiliation::SENIOR_CAMPAIGNER)
+      user = create(:platform_user, is_admin: false)
+      create(:user_affiliation, movement_id: @movement_a.id, user_id: user.id, role: UserAffiliation::ADMIN)
+      create(:user_affiliation, movement_id: @movement_b.id, user_id: user.id, role: UserAffiliation::CAMPAIGNER)
+      create(:user_affiliation, movement_id: @movement_d.id, user_id: user.id, role: UserAffiliation::SENIOR_CAMPAIGNER)
       user.movements_allowed.should == [@movement_a, @movement_b, @movement_d]
     end
   end
@@ -84,7 +84,7 @@ describe PlatformUser do
       movement1 = create(:movement)
       movement2 = create(:movement)
       user = create(:platform_user)
-      user.user_affiliations = [UserAffiliation.new(:movement_id => movement1.id, :user_id => user.id, :role => UserAffiliation::ADMIN), UserAffiliation.new(:movement_id => movement2.id, :user_id => user.id, :role => UserAffiliation::CAMPAIGNER)]
+      user.user_affiliations = [UserAffiliation.new(movement_id: movement1.id, user_id: user.id, role: UserAffiliation::ADMIN), UserAffiliation.new(movement_id: movement2.id, user_id: user.id, role: UserAffiliation::CAMPAIGNER)]
 
       user.movements_administered.should == [movement1]
     end
@@ -93,8 +93,8 @@ describe PlatformUser do
       movement1 = create(:movement)
       movement2 = create(:movement)
       user = create(:platform_user)
-      user.user_affiliations = [UserAffiliation.new(:movement_id => movement1.id, :user_id => user.id, :role => UserAffiliation::CAMPAIGNER),
-                                UserAffiliation.new(:movement_id => movement2.id, :user_id => user.id, :role => UserAffiliation::SENIOR_CAMPAIGNER)]
+      user.user_affiliations = [UserAffiliation.new(movement_id: movement1.id, user_id: user.id, role: UserAffiliation::CAMPAIGNER),
+                                UserAffiliation.new(movement_id: movement2.id, user_id: user.id, role: UserAffiliation::SENIOR_CAMPAIGNER)]
       user.movements_administered.should be_empty
     end
   end

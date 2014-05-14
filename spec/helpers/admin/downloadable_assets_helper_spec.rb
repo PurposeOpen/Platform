@@ -4,9 +4,9 @@ describe Admin::DownloadableAssetsHelper do
 
   before do
     @asset = DownloadableAsset.create(
-      :id => 123, 
-      :asset => File.new(Rails.root + 'spec/fixtures/images/wikileaks.jpg'),
-      :movement => FactoryGirl.create(:movement)
+      id: 123, 
+      asset: File.new(Rails.root + 'spec/fixtures/images/wikileaks.jpg'),
+      movement: FactoryGirl.create(:movement)
     )
   end
 

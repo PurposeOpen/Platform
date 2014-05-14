@@ -19,9 +19,9 @@ describe MovementLocale do
       it "should not create a new one" do
         movement_locale = FactoryGirl.build(:movement_locale)
         movement_locale.join_email = FactoryGirl.build(:join_email,
-            :movement_locale => movement_locale,
-            :subject => "Welcome here!",
-            :body => "It's good to have you!")
+            movement_locale: movement_locale,
+            subject: "Welcome here!",
+            body: "It's good to have you!")
         
         movement_locale.save!
 
@@ -33,7 +33,7 @@ describe MovementLocale do
     context "a join email does not exist when the movement locale is created" do
 
       it "should create a new one with no defaults" do
-        movement_locale = FactoryGirl.create(:movement_locale, :join_email => nil)
+        movement_locale = FactoryGirl.create(:movement_locale, join_email: nil)
 
         movement_locale.join_email.should_not be_nil
         movement_locale.join_email.subject.should eql ""
@@ -51,7 +51,7 @@ describe MovementLocale do
 
       it "should not create a new one" do
         movement_locale = FactoryGirl.build(:movement_locale)
-        movement_locale.email_footer = FactoryGirl.build(:email_footer, :movement_locale => movement_locale)
+        movement_locale.email_footer = FactoryGirl.build(:email_footer, movement_locale: movement_locale)
         movement_locale.save!
 
         movement_locale.reload
@@ -62,7 +62,7 @@ describe MovementLocale do
     context "an email footer does not exist when the movement locale is created" do
 
       it "should create a new one" do
-        movement_locale = FactoryGirl.create(:movement_locale, :email_footer => nil)
+        movement_locale = FactoryGirl.create(:movement_locale, email_footer: nil)
         movement_locale.email_footer.should_not be_nil
       end
     end

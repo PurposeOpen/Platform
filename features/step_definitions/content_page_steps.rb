@@ -1,17 +1,17 @@
 Given /^I am an admin for the movement "(.*)"$/ do |movement_name|
-  movement = FactoryGirl.create(:movement, :name => movement_name, :languages => [FactoryGirl.create(:english), FactoryGirl.create(:portuguese)])
+  movement = FactoryGirl.create(:movement, name: movement_name, languages: [FactoryGirl.create(:english), FactoryGirl.create(:portuguese)])
   movement.default_iso_code = "pt"
   movement.save!
 end
 
 Given /^the "([^\"]*)" movement has a content page collection called "([^\"]*)"$/ do |movement_name, collection_name|
   movement = Movement.find_by_name(movement_name)
-  movement.content_page_collections << FactoryGirl.create(:content_page_collection, :name => collection_name, :movement => movement)
+  movement.content_page_collections << FactoryGirl.create(:content_page_collection, name: collection_name, movement: movement)
 end
 
 Given /^the "([^"]*)" content page collection contains a content page named "([^"]*)"$/ do |collection_name, page_name|
   collection = ContentPageCollection.find_by_name(collection_name)
-  FactoryGirl.create(:content_page, :name => page_name, :content_page_collection => collection)
+  FactoryGirl.create(:content_page, name: page_name, content_page_collection: collection)
 end
 
 When /^I edit the content page "([^\"]*)"$/ do |content_page_name|

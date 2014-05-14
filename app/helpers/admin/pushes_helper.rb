@@ -1,7 +1,7 @@
 module Admin::PushesHelper
   def link_to_create_or_update(blast, html_opts={})
     movement = blast.push.campaign.movement
-    path = blast.list ? admin_movement_list_cutter_edit_path(:movement_id => movement, :list_id => blast.list) : admin_movement_list_cutter_new_path(:movement_id => movement, :blast_id => blast)
+    path = blast.list ? admin_movement_list_cutter_edit_path(movement_id: movement, list_id: blast.list) : admin_movement_list_cutter_new_path(movement_id: movement, blast_id: blast)
     link_to "Recipients", path, html_opts
   end
 
@@ -14,7 +14,7 @@ module Admin::PushesHelper
   end
 
   def email_stat(metric, email_id)
-    UserActivityEvent.send(metric).where(:email_id => email_id).count
+    UserActivityEvent.send(metric).where(email_id: email_id).count
   end
   
   def blast_sent_count(blast)

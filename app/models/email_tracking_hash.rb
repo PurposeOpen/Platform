@@ -8,8 +8,8 @@ class EmailTrackingHash < Struct.new(:email, :user)
       hash.merge key.to_sym => value
     end
 
-    email = Email.where(:id => attrs[:emailid]).first
-    user  = User.where(:id => attrs[:userid]).first
+    email = Email.where(id: attrs[:emailid]).first
+    user  = User.where(id: attrs[:userid]).first
 
     self.new email, user
   rescue ArgumentError # "invalid base64"

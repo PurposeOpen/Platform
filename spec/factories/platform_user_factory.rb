@@ -31,7 +31,7 @@ FactoryGirl.define do
     created_at      { generate(:time) }
   end
 
-  factory :admin_platform_user, :parent => :platform_user do 
+  factory :admin_platform_user, parent: :platform_user do 
     is_admin true
   end
 end

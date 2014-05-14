@@ -19,7 +19,7 @@
 class FeaturedContentModule < ActiveRecord::Base
 	belongs_to :featured_content_collection
 	belongs_to :language
-  acts_as_list :scope => 'featured_content_collection_id=#{featured_content_collection_id} and language_id=#{language_id}'
+  acts_as_list scope: 'featured_content_collection_id=#{featured_content_collection_id} and language_id=#{language_id}'
 
   warnings do
     validates_presence_of :title, :url, :button_text

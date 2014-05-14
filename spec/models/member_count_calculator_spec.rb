@@ -18,17 +18,17 @@ describe MemberCountCalculator do
     calc = MemberCountCalculator.init(movement, 10)
     calc.current.should eql 10
 
-    subscribed = double(:count => 15)
+    subscribed = double(count: 15)
     User.stub(:subscribed_to) { subscribed }
     calc.update_count!.should eql 15
     calc.current.should eql 15
 
-    subscribed = double(:count => 15 + 2)
+    subscribed = double(count: 15 + 2)
     User.stub(:subscribed_to) { subscribed }
     calc.update_count!
     calc.current.should eql 17
 
-    subscribed = double(:count => 15 + 2 + 235)
+    subscribed = double(count: 15 + 2 + 235)
     User.stub(:subscribed_to) { subscribed }
     calc.update_count!
     calc.current.should eql 252

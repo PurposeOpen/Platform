@@ -24,31 +24,31 @@ FactoryGirl.define do
     language   { Language.find_by_iso_code("en") || create(:english) }
   end
 
-  factory :html_module, :parent => :content_module, :class => HtmlModule do
+  factory :html_module, parent: :content_module, class: HtmlModule do
     type    HtmlModule.name
     content "<p>Lorem ipsum dolor sit amet</p>" * 5
     title   "Lorem Ipsum"
   end
 
-  factory :accordion_module, :parent => :content_module, :class => AccordionModule do
+  factory :accordion_module, parent: :content_module, class: AccordionModule do
     type       AccordionModule.name
     content    "<p>Lorem ipsum dolor sit amet</p>" * 5
     title      "Lorem Ipsum"
   end
 
-  factory :html_module_with_image, :parent => :content_module, :class => HtmlModule do
+  factory :html_module_with_image, parent: :content_module, class: HtmlModule do
     type       HtmlModule.name
     content    "<p>Lorem ipsum dolor sit amet</p><img src='/whatever/module_img.png'"
     title      "Lorem Ipsum"
   end
 
-  factory :past_campaign_module, :parent => :content_module, :class => PastCampaignModule do
+  factory :past_campaign_module, parent: :content_module, class: PastCampaignModule do
     type       PastCampaignModule.name
     content    "<p>Lorem ipsum dolor sit amet</p>" * 5
     title      "Lorem Ipsum"
   end
 
-  factory :petition_module, :parent => :content_module, :class => PetitionModule do
+  factory :petition_module, parent: :content_module, class: PetitionModule do
     type                  PetitionModule.name
     signatures_goal       10_000
     thermometer_threshold 500
@@ -60,7 +60,7 @@ FactoryGirl.define do
     comment_text         "Comment text"
   end
 
-  factory :join_module, :parent => :content_module, :class => JoinModule do
+  factory :join_module, parent: :content_module, class: JoinModule do
     type                     JoinModule.name
     button_text              'Join the movement!'
     content                  "<p>Lorem ipsum dolor sit amet</p>" * 5
@@ -74,7 +74,7 @@ FactoryGirl.define do
     comment_text         "Comment text"
   end
 
-  factory :email_targets_module, :parent => :content_module, :class => EmailTargetsModule do
+  factory :email_targets_module, parent: :content_module, class: EmailTargetsModule do
     type             EmailTargetsModule.name
     default_body     "<p>Lorem ipsum dolor sit amet</p>" * 5
     default_subject  "This is the default subject line"
@@ -86,7 +86,7 @@ FactoryGirl.define do
     thermometer_threshold 10
   end
 
-  factory :donation_module, :parent => :content_module, :class => DonationModule do
+  factory :donation_module, parent: :content_module, class: DonationModule do
     type                  DonationModule.name
     content               "<p>Lorem ipsum dolor sit amet</p>" * 5
     title                 "Lorem Ipsum"
@@ -94,13 +94,13 @@ FactoryGirl.define do
     default_currency      "usd"
   end
 
-  factory :tax_deductible_donation_module, :parent => :donation_module, :class => TaxDeductibleDonationModule do
+  factory :tax_deductible_donation_module, parent: :donation_module, class: TaxDeductibleDonationModule do
   end
 
-  factory :non_tax_deductible_donation_module, :parent => :donation_module, :class => NonTaxDeductibleDonationModule do
+  factory :non_tax_deductible_donation_module, parent: :donation_module, class: NonTaxDeductibleDonationModule do
   end
 
-  factory :tell_a_friend_module, :parent => :content_module, :class => TellAFriendModule do
+  factory :tell_a_friend_module, parent: :content_module, class: TellAFriendModule do
     type          TellAFriendModule.name
     headline      'Thank you!'
     message       'Your act of sharing is much appreciated.'
@@ -111,7 +111,7 @@ FactoryGirl.define do
     facebook_image_url 'http://this.is.facebook_image_url'
   end
 
-  factory :unsubscribe_module, :parent => :content_module, :class => UnsubscribeModule do
+  factory :unsubscribe_module, parent: :content_module, class: UnsubscribeModule do
     type          UnsubscribeModule.name
     button_text   'Free me!'
   end
@@ -121,7 +121,7 @@ FactoryGirl.define do
     def take_action; true; end
   end
 
-  factory :dummy_module, :parent => :content_module, :class => DummyModule do
+  factory :dummy_module, parent: :content_module, class: DummyModule do
     type    DummyModule.name
     content "<p>Lorem ipsum dolor sit amet</p>" * 5
     title   "Lorem Ipsum"

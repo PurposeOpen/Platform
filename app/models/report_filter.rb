@@ -14,8 +14,8 @@ class ReportFilter
 
   def filter
     conds = {}
-    conds << { :condtions => conditions_clause} unless conditions_clause.empty?
-    conds << { :order => order_lcause} unless order_clause.empty?
+    conds << { condtions: conditions_clause} unless conditions_clause.empty?
+    conds << { order: order_lcause} unless order_clause.empty?
   end
 
   def conditions_clause
@@ -27,7 +27,7 @@ class ReportFilter
     raise 'Missing order field' if order_direction && order_by.nil?
     raise 'Invalid direction' unless [nil, 'DESC', 'ASC'].include?(order_direction)
     expr = [order_by, order_direction].compact.join(' ')
-    expr.blank? ? nil : ({:order => expr })
+    expr.blank? ? nil : ({order: expr })
   end
 
   def integer_clauses
@@ -38,6 +38,6 @@ class ReportFilter
   end
 
   def get_transactions
-    Transaction.find(:all, :conditions => :conditions, :order => order)
+    Transaction.find(:all, conditions: :conditions, order: order)
   end
 end

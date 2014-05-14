@@ -1,16 +1,16 @@
 class Api::MovementsController < Api::BaseController
   include InlineTokenReplacement
 
-  before_filter :homepage_content, :only => [:show]
+  before_filter :homepage_content, only: [:show]
 
   def show
     languages = movement.languages.map do |lang|
-      {:iso_code => lang.iso_code, :name => lang.name, :native_name => lang.native_name, :is_default => (lang == movement.default_language)}
+      {iso_code: lang.iso_code, name: lang.name, native_name: lang.native_name, is_default: (lang == movement.default_language)}
     end
 
     track_page_view_from_email
 
-    render :json => {
+    render json: {
         languages: languages,
         recommended_languages_to_display: languages_to_display,
         banner_text: replace_banner_text_tokens(I18n.locale),
@@ -21,7 +21,7 @@ class Api::MovementsController < Api::BaseController
   protected
 
   def homepage_content
-    homepage = params[:draft_homepage_id].blank? ? movement.homepage : movement.draft_homepages.where(:id => params[:draft_homepage_id]).first
+    homepage = params[:draft_homepage_id].blank? ? movement.homepage : movement.draft_homepages.where(id: params[:draft_homepage_id]).first
     @homepage_content ||= homepage.homepage_contents.by_iso_code(I18n.locale).first
     @featured_content_collections = {}
     homepage.featured_content_collections.each do |fcc|
@@ -62,7 +62,7 @@ class Api::MovementsController < Api::BaseController
       languages_which_can_be_shown << language if homepage_content_for_language.content_complete?
     end
     languages_which_can_be_shown = languages_which_can_be_shown.map do |lang|
-      {:iso_code => lang.iso_code, :name => lang.name, :native_name => lang.native_name, :is_default => (lang == movement.default_language)}
+      {iso_code: lang.iso_code, name: lang.name, native_name: lang.native_name, is_default: (lang == movement.default_language)}
     end
     languages_which_can_be_shown
   end

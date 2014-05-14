@@ -5,7 +5,7 @@ class PlatformUserMailer < PurposeMailer
     processed_body = pre_process(PlatformUserEmailTemplates::SUBSCRIPTION_CONFIRMATION, platform_user)
     @body_text[:html] = processed_body
     @body_text[:text] = Nokogiri::HTML::DocumentFragment.parse(processed_body).text
-    mail_using_generic_template(:to => platform_user.email, :subject => "Welcome to Your Name Movement Management Platform!")
+    mail_using_generic_template(to: platform_user.email, subject: "Welcome to Your Name Movement Management Platform!")
   end
 
   def pre_process(body, platform_user)

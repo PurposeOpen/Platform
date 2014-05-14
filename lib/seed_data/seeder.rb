@@ -33,27 +33,27 @@ module SeedData
     end
 
     def locale_id(iso_code)
-      lookup MovementLocale, :movement_id => movement_id, :language_id => language_id(iso_code)
+      lookup MovementLocale, movement_id: movement_id, language_id: language_id(iso_code)
     end
 
     def campaign_id(name)
-      lookup Campaign, :name => name, :movement_id => movement_id
+      lookup Campaign, name: name, movement_id: movement_id
     end
 
     def action_sequence_id(campaign_name, aseq_name)
-      lookup ActionSequence, :name => aseq_name, :campaign_id => campaign_id(campaign_name)
+      lookup ActionSequence, name: aseq_name, campaign_id: campaign_id(campaign_name)
     end
 
     def page_id(campaign_name, aseq_name, page_name)
-      lookup Page, :name => page_name, :action_sequence_id => action_sequence_id(campaign_name, aseq_name)
+      lookup Page, name: page_name, action_sequence_id: action_sequence_id(campaign_name, aseq_name)
     end
 
     def content_page_id(collection_name, page_name)
-      lookup Page, :content_page_collection_id => collection_id(collection_name), :type => ContentPage.name, :name => page_name
+      lookup Page, content_page_collection_id: collection_id(collection_name), type: ContentPage.name, name: page_name
     end
 
     def collection_id(name)
-      lookup ContentPageCollection, :name => name, :movement_id => movement_id
+      lookup ContentPageCollection, name: name, movement_id: movement_id
     end
 
     def html(file)
@@ -62,7 +62,7 @@ module SeedData
     end
 
     def featured_content_collection_id(name, featurable_id)
-      lookup FeaturedContentCollection, :name => name, :featurable_id => featurable_id
+      lookup FeaturedContentCollection, name: name, featurable_id: featurable_id
     end
 
     def lookup(model, attrs={})
@@ -81,7 +81,7 @@ module SeedData
 
         module_ids.map.with_index do |module_id, position|
           position += 1
-          {:content_module_id => module_id, :page_id => page_id, :layout_container => layout_container, :position => position}
+          {content_module_id: module_id, page_id: page_id, layout_container: layout_container, position: position}
         end
       end.flatten
     end

@@ -34,16 +34,16 @@ FactoryGirl.define do
     language
   end
 
-  factory :email_with_tokens, :parent => :email do
+  factory :email_with_tokens, parent: :email do
     subject "<TEST>Yes, {NAME|Friend}, we can! "
     body    %{Dear {NAME|Friend}, I told you so! You live at {POSTCODE|Nowhere} and your email is {EMAIL|}. Pls click <a href="{MOVEMENT_URL|}/?t={TRACKING_HASH|NOT_AVAILABLE}">{MOVEMENT_URL|}</a>}.html_safe
   end
 
-  factory :proofed_email, :parent => :email do
+  factory :proofed_email, parent: :email do
     test_sent_at      Time.now - 1.day
   end
   
-  factory :sent_email, :parent => :email do 
+  factory :sent_email, parent: :email do 
     sent_at Time.now - 1.day 
   end
 end

@@ -15,10 +15,10 @@ When /^I enter details for creating a join module (.+)$/ do|module_name|
 end
 When /^I sign the join as (.+)$/ do|mail_id|
   sleep 2
-  fill_in("member_info_email",:with=> mail_id)
+  fill_in("member_info_email",with: mail_id)
   sleep 2
-  fill_in("member_info_first_name",:with=>"First Name")
-  fill_in("member_info_last_name",:with=>"Last Name")
+  fill_in("member_info_first_name",with:"First Name")
+  fill_in("member_info_last_name",with:"Last Name")
   p find(:css,"a.selectBox").methods
   find(:css,"a.selectBox").click
   sleep 2
@@ -38,17 +38,17 @@ When /^I select (.+) date$/ do|date|
     when "today's"
       date_today=Date.today
       date_today=date_today.strftime('%m/%d/%Y')
-      fill_in("rules_join_date_rule_0_join_date",:with=>date_today)
+      fill_in("rules_join_date_rule_0_join_date",with:date_today)
     when "yesterday's"
       date_yesterday=Date.yesterday
       date_yesterday=date_yesterday.strftime('%m/%d/%Y')
-      fill_in("rules_join_date_rule_0_join_date",:with=>date_yesterday)
+      fill_in("rules_join_date_rule_0_join_date",with:date_yesterday)
     when "earlier"
       date_earlier= "12/01/2012"
       #date_earlier=date_today
 
       #date_earlier=date_today.strftime('%m/%d/%Y')
-      fill_in("rules_join_date_rule_0_join_date",:with=>date_earlier)
+      fill_in("rules_join_date_rule_0_join_date",with:date_earlier)
   end
 
 end

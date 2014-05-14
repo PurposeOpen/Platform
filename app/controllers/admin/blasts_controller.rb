@@ -3,10 +3,10 @@ module Admin
     layout 'movements'
     self.nav_category = :campaigns
 
-    crud_actions_for Blast, :parent => Push, :redirects => {
-      :create  => lambda { admin_movement_push_path(@movement, @push) },
-      :update  => lambda { admin_movement_push_path(@movement, @push) },
-      :destroy => lambda { admin_movement_push_path(@movement, @push) },
+    crud_actions_for Blast, parent: Push, redirects: {
+      create:  lambda { admin_movement_push_path(@movement, @push) },
+      update:  lambda { admin_movement_push_path(@movement, @push) },
+      destroy: lambda { admin_movement_push_path(@movement, @push) },
     }
 
     def deliver
@@ -18,7 +18,7 @@ module Admin
 
       email_ids = [params[:email_id]] unless params[:email_id] == 'all'
       options = {limit: @limit, email_ids: email_ids}.select{|k,v| v.present? }
-      @blast.send_proofed_emails!(options.merge(:run_at => @run_at || Time.now.utc+AppConstants.blast_job_delay))
+      @blast.send_proofed_emails!(options.merge(run_at: @run_at || Time.now.utc+AppConstants.blast_job_delay))
       Rails.logger.info @blast.push.inspect
       redirect_to admin_movement_push_path(@movement, @blast.push)
     end

@@ -63,7 +63,7 @@ class Page < ActiveRecord::Base
       generate_modules_for_new_language(language)
     end
 
-    ContentModule.all(:include => [:content_module_links, :language],
+    ContentModule.all(include: [:content_module_links, :language],
                       conditions: "languages.iso_code = '#{language.iso_code}' and
                                       content_module_links.page_id = #{self.id} and content_module_links.layout_container='#{container}'",
                       order: 'content_module_links.position')
@@ -78,7 +78,7 @@ class Page < ActiveRecord::Base
   def generate_modules_for_new_language(new_language)
     default_language_module_links.map do |old_module_link|
       old_module = old_module_link.content_module
-      new_module = old_module.class.new(:language => new_language)
+      new_module = old_module.class.new(language: new_language)
       new_module.save! validate: false
 
       new_module_link = self.content_module_links.create!(
@@ -177,7 +177,7 @@ class Page < ActiveRecord::Base
         languages: {
           iso_code: language.iso_code
         }
-    ).joins(:content_module => :language)
+    ).joins(content_module: :language)
   end
 
   def unique_slug_within_movement
@@ -189,7 +189,7 @@ class Page < ActiveRecord::Base
   end
 
   def find_modules_for_container(container)
-    content_module_links.includes(:content_module).where(:layout_container => container).order(:position).map(&:content_module)
+    content_module_links.includes(:content_module).where(layout_container: container).order(:position).map(&:content_module)
   end
 
   def modules_as_json(modules, opts)

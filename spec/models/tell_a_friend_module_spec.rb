@@ -37,22 +37,22 @@ describe TellAFriendModule do
   it "should set facebook, twitter, and email to 'enabled' by default" do
     taf = TellAFriendModule.new
 
-    taf.options.should include({:facebook_enabled => true, :twitter_enabled => true, :email_enabled => true})
+    taf.options.should include({facebook_enabled: true, twitter_enabled: true, email_enabled: true})
   end
 
   it "should set include_action_counter to false by default" do
     taf = TellAFriendModule.new
 
-    taf.options.should include({:include_action_counter => false})
+    taf.options.should include({include_action_counter: false})
   end
 
   it "should not have warnings if twitter and email share options are disabled and share data is missing" do
-    taf = build(:tell_a_friend_module, :share_url => 'share_url', :headline => 'headline', :message => 'message', :twitter_enabled => '0', :email_enabled => '0')
+    taf = build(:tell_a_friend_module, share_url: 'share_url', headline: 'headline', message: 'message', twitter_enabled: '0', email_enabled: '0')
     taf.should be_valid_with_warnings
   end
 
   it 'should have warnings if facebook_image_url is not given when facebook is enabled' do
-    taf = build(:tell_a_friend_module, :facebook_enabled => '1', :facebook_image_url => nil)
+    taf = build(:tell_a_friend_module, facebook_enabled: '1', facebook_image_url: nil)
     taf.should_not be_valid_with_warnings
   end
 
@@ -64,7 +64,7 @@ describe TellAFriendModule do
   end
 
   it "should trim whitespaces on validation" do
-    taf = TellAFriendModule.new(:share_url => ' Lorem ipsum dolor sit amet ', :headline => ' Mauris sed tellus lectus ', :message => ' Curabitur sed sapien justo ', :facebook_title => ' Integer iaculis tellus non arcu ', :facebook_description => ' Fusce vitae elit ', :tweet => ' Aliquam erat volutpat ', :email_subject => ' Donec a dolor ', :email_body => ' Nullam porta faucibus massa ')
+    taf = TellAFriendModule.new(share_url: ' Lorem ipsum dolor sit amet ', headline: ' Mauris sed tellus lectus ', message: ' Curabitur sed sapien justo ', facebook_title: ' Integer iaculis tellus non arcu ', facebook_description: ' Fusce vitae elit ', tweet: ' Aliquam erat volutpat ', email_subject: ' Donec a dolor ', email_body: ' Nullam porta faucibus massa ')
     taf.valid?
     taf.share_url.should eq 'Lorem ipsum dolor sit amet'
     taf.headline.should eq 'Mauris sed tellus lectus'

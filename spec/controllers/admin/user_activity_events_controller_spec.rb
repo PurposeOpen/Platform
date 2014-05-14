@@ -4,11 +4,11 @@ describe Admin::UserActivityEventsController do
   include Devise::TestHelpers # to give your spec access to helpers
 
   before :each do
-    @movement = FactoryGirl.create(:movement, :name => 'Test Movement', :languages => [FactoryGirl.create(:english), FactoryGirl.create(:portuguese), FactoryGirl.create(:french)])
-    @campaign = FactoryGirl.create(:campaign, :movement => @movement)
+    @movement = FactoryGirl.create(:movement, name: 'Test Movement', languages: [FactoryGirl.create(:english), FactoryGirl.create(:portuguese), FactoryGirl.create(:french)])
+    @campaign = FactoryGirl.create(:campaign, movement: @movement)
     # mock up an authentication in the underlying warden library
-    user = FactoryGirl.create(:user, :is_admin => true)
-    request.env['warden'] = mock(Warden, :authenticate => user, :authenticate! => user)
+    user = FactoryGirl.create(:user, is_admin: true)
+    request.env['warden'] = mock(Warden, authenticate: user, authenticate!: user)
   end
 
   describe "GET 'index'" do
@@ -20,7 +20,7 @@ describe Admin::UserActivityEventsController do
       activities = [activity1, activity2]
       UserActivityEvent.should_receive(:actions_taken_for_sequence).with(action_sequence).and_return(activities)
 
-      get :index, :movement_id => @movement.id, :action_sequence_id => action_sequence.id
+      get :index, movement_id: @movement.id, action_sequence_id: action_sequence.id
 
       response.should be_success
 

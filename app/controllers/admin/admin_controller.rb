@@ -14,7 +14,7 @@ module Admin
 
     rescue_from CanCan::AccessDenied do 
       if anyone_signed_in? 
-        render :text => 'Access Denied', :status => :not_found
+        render text: 'Access Denied', status: :not_found
       else
         deny_access
       end

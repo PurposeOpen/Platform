@@ -32,17 +32,17 @@ class JoinModule < ContentModule
   after_initialize :defaults
 
   warnings do
-    validates_length_of :public_activity_stream_template, :maximum => 1024, :minimum => 3, :if => :is_ask?
+    validates_length_of :public_activity_stream_template, maximum: 1024, minimum: 3, if: :is_ask?
 
-    validates_length_of :title, :maximum => 128, :minimum => 3, :if => :is_ask?
-    validates_length_of :button_text, :minimum => 1, :maximum => 64
+    validates_length_of :title, maximum: 128, minimum: 3, if: :is_ask?
+    validates_length_of :button_text, minimum: 1, maximum: 64
     validates_presence_of :join_statement
 
-    validates_length_of :post_join_title, :maximum => 128, :if => :is_ask?
-    validates_presence_of :comment_label, :if => :comments_enabled?
-    validates_length_of :post_join_button_text, :maximum => 64
-    validates_presence_of :disabled_title, :unless => :active?
-    validates_presence_of :disabled_content, :unless => :active?
+    validates_length_of :post_join_title, maximum: 128, if: :is_ask?
+    validates_presence_of :comment_label, if: :comments_enabled?
+    validates_length_of :post_join_button_text, maximum: 64
+    validates_presence_of :disabled_title, unless: :active?
+    validates_presence_of :disabled_content, unless: :active?
   end
 
   placeable_in SIDEBAR
@@ -65,7 +65,7 @@ class JoinModule < ContentModule
 
   def take_action(user, action_info, page, email=nil)
     unless user.join_email_sent
-      user.update_attributes(:join_email_sent => true)
+      user.update_attributes(join_email_sent: true)
       send_join_email(user, page.movement)
     end
 

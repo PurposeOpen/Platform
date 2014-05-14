@@ -4,17 +4,17 @@ module Admin::ActionPagesHelper
   end
 
   def render_donation_module_partial(content_module, f)
-    render :partial => 'admin/content_modules/content_module_types/donation_module',
-        :locals => { :f => f, :content_module => content_module }
+    render partial: 'admin/content_modules/content_module_types/donation_module',
+        locals: { f: f, content_module: content_module }
   end
 
   def add_content_module_link(page, module_type, container, text)
-    link_to(text, admin_movement_content_module_path(@movement, :type => module_type, :container => container, :page_id => page.id, :page_type => page.class.name), :method => :post, :remote => true, :class => "button add-module-link #{module_type.name.underscore}")
+    link_to(text, admin_movement_content_module_path(@movement, type: module_type, container: container, page_id: page.id, page_type: page.class.name), method: :post, remote: true, class: "button add-module-link #{module_type.name.underscore}")
   end
 
   def external_module_link(module_type, text)
     plural = module_type.name.pluralize.underscore
-    link_to(text, "/admin/#{plural}", :class => "add-module-link #{plural}_module", :target => "_blank")
+    link_to(text, "/admin/#{plural}", class: "add-module-link #{plural}_module", target: "_blank")
   end
 
   def disabled_class(content_module)
@@ -28,7 +28,7 @@ module Admin::ActionPagesHelper
     %{
       <div class='action_page_type'>
         #{form.radio_button :seeded_module, radio_button_value}
-        #{form.label "seeded_module_#{radio_button_value}".to_sym, label_text, :class => "radio"}
+        #{form.label "seeded_module_#{radio_button_value}".to_sym, label_text, class: "radio"}
       </div>
     }.html_safe
   end
@@ -36,7 +36,7 @@ module Admin::ActionPagesHelper
   def default_currency_options
     DonationModule::AVAILABLE_CURRENCIES.collect do |key, currency|
       [currency.name, currency.iso_code.downcase]
-    end.insert(0, ['Select Currency', nil, {:disabled => true, :selected => 'selected'} ])
+    end.insert(0, ['Select Currency', nil, {disabled: true, selected: 'selected'} ])
   end
 
   def default_amount_options(suggested_amounts)
@@ -45,7 +45,7 @@ module Admin::ActionPagesHelper
 
   def preselect_default_amount(default_amount, amount)
     is_default_amount = (default_amount == amount)
-    {:checked => is_default_amount}
+    {checked: is_default_amount}
   end
 
   def currency_summary(currency)

@@ -22,64 +22,64 @@
 #
 
 FactoryGirl.define do
-  factory :activity, :class => UserActivityEvent do
+  factory :activity, class: UserActivityEvent do
     user     { create(:leo) }
     activity "action_taken"
   end
 
-  factory :brazilian_activity, :class => UserActivityEvent do
+  factory :brazilian_activity, class: UserActivityEvent do
     user     { create(:brazilian_dude) }
     activity "action_taken"
   end
 
-  factory :leo_activity, :class => UserActivityEvent do
+  factory :leo_activity, class: UserActivityEvent do
     user     { create(:leo) }
     activity "action_taken"
   end
 
-  factory :aussie_activity, :class => UserActivityEvent do
+  factory :aussie_activity, class: UserActivityEvent do
     user     { create(:aussie) }
     activity "action_taken"
   end
 
-  factory :aussie_recurring_activity, :class => UserActivityEvent do
+  factory :aussie_recurring_activity, class: UserActivityEvent do
     user               { create(:aussie) }
     activity           "action_taken"
     donation_frequency "weekly"
   end
 
-  factory :leo_nonrecurring_activity, :class => UserActivityEvent do
+  factory :leo_nonrecurring_activity, class: UserActivityEvent do
     user               { create(:leo) }
     activity           "action_taken"
     donation_frequency "one_off"
   end
 
-  factory :brazilian_nonrecurring_activity, :class => UserActivityEvent do
+  factory :brazilian_nonrecurring_activity, class: UserActivityEvent do
     user               { create(:brazilian_dude) }
     activity           "action_taken"
     donation_frequency "one_off"
   end
 
-  factory :action_taken_activity, :class => UserActivityEvent do
+  factory :action_taken_activity, class: UserActivityEvent do
     user         { create(:aussie) }
     activity     "action_taken"
-    campaign     { create(:campaign, :movement => self.movement) }
-    page  { create(:action_page, :action_sequence => create(:action_sequence, :campaign => self.campaign)) }
+    campaign     { create(:campaign, movement: self.movement) }
+    page  { create(:action_page, action_sequence: create(:action_sequence, campaign: self.campaign)) }
     movement { create(:movement) }
   end
 
-  factory :subscribed_activity, :class => UserActivityEvent do
+  factory :subscribed_activity, class: UserActivityEvent do
     user     { FactoryGirl.create(:leo) }
     activity "subscribed"
   end
 
-  factory :email_sent_activity, :class => UserActivityEvent do
+  factory :email_sent_activity, class: UserActivityEvent do
     user     { create(:leo) }
     activity "email_sent"
     push     { create(:email).blast.push }
   end
 
-  factory :user_activity_event, :class => UserActivityEvent do
+  factory :user_activity_event, class: UserActivityEvent do
     user
   end
 end

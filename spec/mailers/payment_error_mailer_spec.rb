@@ -3,17 +3,17 @@ require "spec_helper"
 describe PaymentErrorMailer do
 	before :each do
 		@english = create(:english)
-		@movement = create(:movement, :name => "testmovement", :slug => "testmovement", :languages => [@english])
-		@campaign = create(:campaign, :movement => @movement)
-		@action_sequence = create(:published_action_sequence, :campaign => @campaign, :enabled_languages => [@english.iso_code])
-    @page = create(:action_page, :name => "Donation page", :action_sequence => @action_sequence)
+		@movement = create(:movement, name: "testmovement", slug: "testmovement", languages: [@english])
+		@campaign = create(:campaign, movement: @movement)
+		@action_sequence = create(:published_action_sequence, campaign: @campaign, enabled_languages: [@english.iso_code])
+    @page = create(:action_page, name: "Donation page", action_sequence: @action_sequence)
 
     ActionMailer::Base.delivery_method = :test
 	end
 
 	it "should not send if recipients list is empty" do
 		ENV["TESTMOVEMENT_PAYPALERROR_EMAIL_RECIPIENTS"] = ''		
-		donation_error = DonationError.new({ :movement => @movement })
+		donation_error = DonationError.new({ movement: @movement })
 
 		PaymentErrorMailer.report_error(donation_error)
 
@@ -23,17 +23,17 @@ describe PaymentErrorMailer do
 	it "should send email to single recipient" do
 		ENV["TESTMOVEMENT_PAYPALERROR_EMAIL_RECIPIENTS"] = 'test@example.com'
 		donation_error = DonationError.new({ 
-			:movement => @movement, 
-			:action_page => @page,  
-			:error_code => '9999',
-			:message => 'Error message', 
-			:donation_payment_method => 'paypal', 
-			:donation_amount_in_cents => 100, 
-			:donation_currency => 'USD', 
-			:email => 'john.smith@example.com', 
-			:first_name => 'John', 
-			:last_name => 'Smith', 
-			:country_iso => 'ar'
+			movement: @movement, 
+			action_page: @page,  
+			error_code: '9999',
+			message: 'Error message', 
+			donation_payment_method: 'paypal', 
+			donation_amount_in_cents: 100, 
+			donation_currency: 'USD', 
+			email: 'john.smith@example.com', 
+			first_name: 'John', 
+			last_name: 'Smith', 
+			country_iso: 'ar'
 		})
 
 		PaymentErrorMailer.report_error(donation_error).deliver
@@ -58,16 +58,16 @@ describe PaymentErrorMailer do
 	it "should not include Error Code field if it's empty" do
 		ENV["TESTMOVEMENT_PAYPALERROR_EMAIL_RECIPIENTS"] = 'test@example.com'
 		donation_error = DonationError.new({
-			:movement => @movement,
-			:action_page => @page,
-			:message => 'Error message',
-			:donation_payment_method => 'paypal',
-			:donation_amount_in_cents => 100, 
-			:donation_currency => 'USD', 
-			:email => 'john.smith@example.com', 
-			:first_name => 'John', 
-			:last_name => 'Smith', 
-			:country_iso => 'ar'
+			movement: @movement,
+			action_page: @page,
+			message: 'Error message',
+			donation_payment_method: 'paypal',
+			donation_amount_in_cents: 100, 
+			donation_currency: 'USD', 
+			email: 'john.smith@example.com', 
+			first_name: 'John', 
+			last_name: 'Smith', 
+			country_iso: 'ar'
 		})
 
 		PaymentErrorMailer.report_error(donation_error).deliver
@@ -85,7 +85,7 @@ describe PaymentErrorMailer do
     end
 
     it "should deliver mail to member email address with the localized subject" do
-      donation_error = DonationError.new({:movement => @movement, :action_page => @page })
+      donation_error = DonationError.new({movement: @movement, action_page: @page })
       donation_error.message = 'Error message'
       donation_error.reference = 'reference'
       donation_error.donation_payment_method = 'credit_card'
@@ -107,7 +107,7 @@ describe PaymentErrorMailer do
     end
 
     it "should include members info in the message body" do
-      donation_error = DonationError.new({:movement => @movement, :action_page => @page })
+      donation_error = DonationError.new({movement: @movement, action_page: @page })
       donation_error.message = 'Error message'
       donation_error.reference = '123456'
       donation_error.donation_payment_method = 'credit_card'
@@ -128,7 +128,7 @@ describe PaymentErrorMailer do
     end
 
     it "should include reference number and contact email in the message body" do
-      donation_error = DonationError.new({:movement => @movement, :action_page => @page })
+      donation_error = DonationError.new({movement: @movement, action_page: @page })
       donation_error.message = 'Error message'
       donation_error.reference = '123456'
       donation_error.donation_payment_method = 'credit_card'

@@ -26,15 +26,15 @@ require "spec_helper"
 
 describe UserActivityEvent do
   before(:each) do
-    @join_page = FactoryGirl.create(:action_page, :name => "Join")
-    @join_module = FactoryGirl.create(:join_module, :pages => [@join_page])
+    @join_page = FactoryGirl.create(:action_page, name: "Join")
+    @join_module = FactoryGirl.create(:join_module, pages: [@join_page])
     @join_page.content_modules << @join_module
 
-    @user = FactoryGirl.create(:user, :movement => @join_page.movement)
+    @user = FactoryGirl.create(:user, movement: @join_page.movement)
 
-    @petition_module = FactoryGirl.create(:petition_module, :public_activity_stream_template => "Someone signed!")
-    @signature = FactoryGirl.create(:petition_signature, :user => @user, :content_module => @petition_module)
-    @page = FactoryGirl.create(:action_page, :action_sequence => @join_page.action_sequence)
+    @petition_module = FactoryGirl.create(:petition_module, public_activity_stream_template: "Someone signed!")
+    @signature = FactoryGirl.create(:petition_signature, user: @user, content_module: @petition_module)
+    @page = FactoryGirl.create(:action_page, action_sequence: @join_page.action_sequence)
     @email = FactoryGirl.create(:email)
   end
 
@@ -47,11 +47,11 @@ describe UserActivityEvent do
     end
 
     it 'should return country name in the locale language' do
-      user = create(:user, :country_iso => 'fr', :movement => @join_page.movement)
+      user = create(:user, country_iso: 'fr', movement: @join_page.movement)
       portuguese = create(:portuguese)
       event = UserActivityEvent.subscribed!(user)
       I18n.locale = :pt
-      json_object = JSON.parse(event.to_json(:language => portuguese))
+      json_object = JSON.parse(event.to_json(language: portuguese))
       json_object['country'].should == 'França'
       json_object['country_iso'].should == 'fr'
     end
@@ -102,11 +102,11 @@ describe UserActivityEvent do
         UserActivityEvent.action_taken!(@user, @page, @petition_module, @signature, @email)
         UserActivityEvent.action_taken!(@user, @page, @petition_module, @signature, @email)
 
-        UserActivityEvent.where(:user_id           => @user.id,
-                                :page_id           => @page.id,
-                                :content_module_id => @petition_module.id,
-                                :user_response_id  => @signature.id,
-                                :email_id          => @email.id).count.should == 2
+        UserActivityEvent.where(user_id:           @user.id,
+                                page_id:           @page.id,
+                                content_module_id: @petition_module.id,
+                                user_response_id:  @signature.id,
+                                email_id:          @email.id).count.should == 2
       end
     end
 
@@ -158,23 +158,23 @@ describe UserActivityEvent do
 
   describe "comment filter" do
     it "should flag the comment as unsafe if it contains profanity" do
-      uae = FactoryGirl.create(:action_taken_activity, :comment => 'This is a profane comment, Mierda')
+      uae = FactoryGirl.create(:action_taken_activity, comment: 'This is a profane comment, Mierda')
       uae.comment_safe.should == false
     end
     
     it "should flag the comment as safe if it doesn't contain profanity" do
-      uae = FactoryGirl.create(:action_taken_activity, :comment => 'This is not a profane comment')
+      uae = FactoryGirl.create(:action_taken_activity, comment: 'This is not a profane comment')
       uae.comment_safe.should == true
     end
 
     it "should flag the comment as unsafe if it contains a URL" do
-      uae_http = FactoryGirl.create(:action_taken_activity, :comment => 'http://www.example.com')
+      uae_http = FactoryGirl.create(:action_taken_activity, comment: 'http://www.example.com')
       uae_http.comment_safe.should == false
 
-      uae_https = FactoryGirl.create(:action_taken_activity, :comment => 'https://www.example.com')
+      uae_https = FactoryGirl.create(:action_taken_activity, comment: 'https://www.example.com')
       uae_https.comment_safe.should == false
 
-      uae_without_scheme = FactoryGirl.create(:action_taken_activity, :comment => 'www.example.com')
+      uae_without_scheme = FactoryGirl.create(:action_taken_activity, comment: 'www.example.com')
       uae_without_scheme.comment_safe.should == false
     end
   end

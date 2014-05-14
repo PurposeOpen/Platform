@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :petition_signature do
     user
     action_page
-    content_module :factory => :petition_module
+    content_module factory: :petition_module
   end
 
   factory :user_email do
@@ -33,23 +33,23 @@ FactoryGirl.define do
     transaction_id    { generate(:transaction_ids)}
   end
 
-  factory :donation_without_validation, :parent => :donation do
+  factory :donation_without_validation, parent: :donation do
     to_create do |instance|
-      instance.save(:validate => false)
+      instance.save(validate: false)
     end
   end
   
-  factory :recurring_donation, :parent => :donation do
+  factory :recurring_donation, parent: :donation do
     frequency "weekly"
     subscription_id { generate(:subscription_ids) }
   end
 
-  factory :flagged_donation, :parent => :recurring_donation do
+  factory :flagged_donation, parent: :recurring_donation do
     flagged_since   { Time.now }
     flagged_because "Y U NO PAY US"
   end
   
-  factory :paypal_donation, :class => Donation do
+  factory :paypal_donation, class: Donation do
     user              { create(:user) }
     action_page       { create(:action_page) }
     content_module    { create(:donation_module) }
@@ -65,7 +65,7 @@ FactoryGirl.define do
     successful      true
   end
 
-  factory :failed_transaction, :class => Transaction do
+  factory :failed_transaction, class: Transaction do
     donation        { create(:donation) }
     amount_in_cents 1000
     successful      false

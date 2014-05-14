@@ -33,7 +33,7 @@ describe PetitionModule do
     end
 
     it "should not reset comments enabled if there is already a setting for this option" do
-      pm = FactoryGirl.create(:petition_module, :comments_enabled => false)
+      pm = FactoryGirl.create(:petition_module, comments_enabled: false)
       ContentModule.find(pm.id).comments_enabled.should be_false
     end
 
@@ -44,12 +44,12 @@ describe PetitionModule do
   end
 
   it "should return a url-encoded crowdring url" do
-    petition = validated_petition_module(:title => 'A very popular action!')
+    petition = validated_petition_module(title: 'A very popular action!')
     petition.send(:crowdring_campaign_endpoint, 'http://crowdring.org', 'Land India').to_s.should == "http://crowdring.org/campaign/Land%20India/campaign-member-count"
   end
 
   describe "if crowdring_url is set for movement" do
-    let(:petition) {validated_petition_module(:title => 'A very popular action!')}
+    let(:petition) {validated_petition_module(title: 'A very popular action!')}
 
     before do
       Rails.cache.clear
@@ -57,24 +57,24 @@ describe PetitionModule do
 
     context "signatures" do
       it "should not get crowdring_member_count if crowdring_campaign_name is not present" do
-        action_page = FactoryGirl.create(:action_page, :crowdring_campaign_name => "", :movement => create(:movement, :crowdring_url => "http://some-url"))
-        action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => petition)
+        action_page = FactoryGirl.create(:action_page, crowdring_campaign_name: "", movement: create(:movement, crowdring_url: "http://some-url"))
+        action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: petition)
 
         petition.should_not_receive(:crowdring_member_count)
         petition.signatures.should == 0
       end
 
       it "should not get crowdring_member_count if crowdring_url is not present" do
-        action_page = FactoryGirl.create(:action_page, :crowdring_campaign_name => "aasd", :movement => create(:movement, :crowdring_url => ""))
-        action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => petition)
+        action_page = FactoryGirl.create(:action_page, crowdring_campaign_name: "aasd", movement: create(:movement, crowdring_url: ""))
+        action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: petition)
 
         petition.should_not_receive(:crowdring_member_count)
         petition.signatures.should == 0
       end
 
       it "should fetch the crowdring_member_count from crowdring and add with petition signatures" do
-        action_page = FactoryGirl.create(:action_page, :crowdring_campaign_name => "campaign1", :movement => create(:movement, :crowdring_url => "http://some-url"))
-        action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => petition)
+        action_page = FactoryGirl.create(:action_page, crowdring_campaign_name: "campaign1", movement: create(:movement, crowdring_url: "http://some-url"))
+        action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: petition)
 
         petition.take_action(FactoryGirl.create(:user), {}, action_page)
         mock_http_response = StringIO.new('{"count" : 12}')
@@ -83,8 +83,8 @@ describe PetitionModule do
       end
 
       it "crowring count should be 0 if Net:HTTP returns a empty response" do
-        action_page = FactoryGirl.create(:action_page, :crowdring_campaign_name => "campaign2", :movement => create(:movement, :crowdring_url => "http://some-url"))
-        action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => petition)
+        action_page = FactoryGirl.create(:action_page, crowdring_campaign_name: "campaign2", movement: create(:movement, crowdring_url: "http://some-url"))
+        action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: petition)
 
         mock_http_response = ''
         petition.should_receive(:open).and_return(mock_http_response)
@@ -92,17 +92,17 @@ describe PetitionModule do
       end
 
       it "crowring count should be 0 if Net:HTTP throws error" do
-        action_page = FactoryGirl.create(:action_page, :crowdring_campaign_name => "campaign2", :movement => create(:movement, :crowdring_url => "http://some-url"))
-        action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => petition)
+        action_page = FactoryGirl.create(:action_page, crowdring_campaign_name: "campaign2", movement: create(:movement, crowdring_url: "http://some-url"))
+        action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: petition)
 
         petition.should_receive(:open).and_raise(EOFError)
         petition.signatures.should == 0
       end
 
       it "should fetch the crowdring_member_count from cache if present and add with petition signatures" do
-        action_page = FactoryGirl.create(:action_page, :crowdring_campaign_name => "campaign3", :movement => create(:movement, :crowdring_url => "http://some-url"))
+        action_page = FactoryGirl.create(:action_page, crowdring_campaign_name: "campaign3", movement: create(:movement, crowdring_url: "http://some-url"))
         Rails.cache.write(URI.parse("http://some-url/campaign/campaign3/campaign-member-count"), 11)
-        action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => petition)
+        action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: petition)
 
         petition.take_action(FactoryGirl.create(:user), {}, action_page)
         Net::HTTP.should_not_receive(:get_response)
@@ -114,9 +114,9 @@ describe PetitionModule do
 
   describe "serializing to json" do
     it "includes the current signatures count value" do
-      petition = validated_petition_module(:title => 'A very popular action!')
+      petition = validated_petition_module(title: 'A very popular action!')
       action_page = FactoryGirl.create(:action_page)
-      action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => petition)
+      action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: petition)
 
       petition.take_action(FactoryGirl.create(:user), {}, action_page)
 
@@ -124,8 +124,8 @@ describe PetitionModule do
     end
 
     it "should include comment data" do
-      petition = FactoryGirl.create(:petition_module, :comment_label => 'Comment label',
-          :comment_text => 'Comment text', :comments_enabled => true)
+      petition = FactoryGirl.create(:petition_module, comment_label: 'Comment label',
+          comment_text: 'Comment text', comments_enabled: true)
 
       json = JSON.parse(petition.to_json)
       json['options']['comment_label'].should == 'Comment label'
@@ -137,11 +137,11 @@ describe PetitionModule do
   end
 
   it "should know how many signatures have been collected" do
-    petition = validated_petition_module(:title => 'A very popular action!')
+    petition = validated_petition_module(title: 'A very popular action!')
     action_page = FactoryGirl.create(:action_page)
-    action_page.content_module_links.create!(:layout_container => ContentModule::SIDEBAR, :content_module => petition)
+    action_page.content_module_links.create!(layout_container: ContentModule::SIDEBAR, content_module: petition)
 
-    3.times { FactoryGirl.create(:petition_signature, :content_module => petition, :action_page => action_page, :user => FactoryGirl.create(:user)) }
+    3.times { FactoryGirl.create(:petition_signature, content_module: petition, action_page: action_page, user: FactoryGirl.create(:user)) }
 
     petition.signatures.should == 3
   end
@@ -154,42 +154,42 @@ describe PetitionModule do
     end
 
     it "should require a title between 3 and 128 characters" do
-      validated_petition_module(:title => "Save the kittens!").should be_valid_with_warnings
-      validated_petition_module(:title => "X" * 128).should be_valid_with_warnings
-      validated_petition_module(:title => "X" * 129).should_not be_valid_with_warnings
-      validated_petition_module(:title => "AB").should_not be_valid_with_warnings
+      validated_petition_module(title: "Save the kittens!").should be_valid_with_warnings
+      validated_petition_module(title: "X" * 128).should be_valid_with_warnings
+      validated_petition_module(title: "X" * 129).should_not be_valid_with_warnings
+      validated_petition_module(title: "AB").should_not be_valid_with_warnings
     end
 
     it "should require a button text between 1 and 64 characters" do
-      validated_petition_module(:button_text => "Save the kittens!").should be_valid_with_warnings
-      validated_petition_module(:button_text => "X" * 64).should be_valid_with_warnings
-      validated_petition_module(:button_text => "X" * 65).should_not be_valid_with_warnings
-      validated_petition_module(:button_text => "").should be_valid_with_warnings
+      validated_petition_module(button_text: "Save the kittens!").should be_valid_with_warnings
+      validated_petition_module(button_text: "X" * 64).should be_valid_with_warnings
+      validated_petition_module(button_text: "X" * 65).should_not be_valid_with_warnings
+      validated_petition_module(button_text: "").should be_valid_with_warnings
     end
 
     it "attribute setter should set target to 0 if blank or nil, and it should be valid without warnings" do
-      pm = validated_petition_module(:signatures_goal => nil, :thermometer_threshold => 0)
+      pm = validated_petition_module(signatures_goal: nil, thermometer_threshold: 0)
       pm.signatures_goal.should == 0
       pm.should be_valid_with_warnings
     end
 
     it "should require a target greater than or equal to 0" do
-       validated_petition_module(:signatures_goal => -1, :thermometer_threshold => 0).should_not be_valid_with_warnings
-       validated_petition_module(:signatures_goal => 0, :thermometer_threshold => 0).should be_valid_with_warnings
-       validated_petition_module(:signatures_goal => 1, :thermometer_threshold => 0).should be_valid_with_warnings
+       validated_petition_module(signatures_goal: -1, thermometer_threshold: 0).should_not be_valid_with_warnings
+       validated_petition_module(signatures_goal: 0, thermometer_threshold: 0).should be_valid_with_warnings
+       validated_petition_module(signatures_goal: 1, thermometer_threshold: 0).should be_valid_with_warnings
     end
 
     it "should require a thermometer threshold between 0 and the target value inclusive" do
-      validated_petition_module(:signatures_goal => 100, :thermometer_threshold => 0).should be_valid_with_warnings
-      validated_petition_module(:signatures_goal => 100, :thermometer_threshold => 50).should be_valid_with_warnings
-      validated_petition_module(:signatures_goal => 100, :thermometer_threshold => 100).should be_valid_with_warnings
-      validated_petition_module(:signatures_goal => 100, :thermometer_threshold => 110).should_not be_valid_with_warnings
+      validated_petition_module(signatures_goal: 100, thermometer_threshold: 0).should be_valid_with_warnings
+      validated_petition_module(signatures_goal: 100, thermometer_threshold: 50).should be_valid_with_warnings
+      validated_petition_module(signatures_goal: 100, thermometer_threshold: 100).should be_valid_with_warnings
+      validated_petition_module(signatures_goal: 100, thermometer_threshold: 110).should_not be_valid_with_warnings
     end
 
     it "should require a petition statement" do
-      validated_petition_module(:button_text => "Save the kittens!").should be_valid_with_warnings
-      validated_petition_module(:button_text => "X" * 64).should be_valid_with_warnings
-      validated_petition_module(:button_text => "").should be_valid_with_warnings
+      validated_petition_module(button_text: "Save the kittens!").should be_valid_with_warnings
+      validated_petition_module(button_text: "X" * 64).should be_valid_with_warnings
+      validated_petition_module(button_text: "").should be_valid_with_warnings
     end
 
     it "should required disabled title/content if disabled" do
@@ -209,11 +209,11 @@ describe PetitionModule do
       @user = FactoryGirl.create(:user)
       @pm = FactoryGirl.create(:petition_module)
       @page = FactoryGirl.create(:action_page)
-      FactoryGirl.create(:sidebar_module_link, :content_module => @pm, :page => @page)
+      FactoryGirl.create(:sidebar_module_link, content_module: @pm, page: @page)
     end
 
     it "should save a petition signature with a comment" do
-      action_info = {:comment => 'This is a comment'}
+      action_info = {comment: 'This is a comment'}
       @pm.take_action(@user, action_info, @page)
       petition_signature = PetitionSignature.find_by_user_id_and_page_id(@user.id, @page.id)
       petition_signature.comment.should == 'This is a comment'
@@ -227,11 +227,11 @@ describe PetitionModule do
     it "should create a user activity event with an email reference" do
       @email = FactoryGirl.create(:email)
       UserActivityEvent.should_receive(:action_taken!).with(@user, @page, @pm, an_instance_of(PetitionSignature), @email, nil)
-      @pm.take_action(@user, {:email => @email}, @page)
+      @pm.take_action(@user, {email: @email}, @page)
     end
 
     it "should not create a user activity event if a petition signature already exists" do
-      FactoryGirl.create(:petition_signature, :content_module_id => @pm.id, :user_id => @user.id, :page_id => @page.id)
+      FactoryGirl.create(:petition_signature, content_module_id: @pm.id, user_id: @user.id, page_id: @page.id)
 
       @pm.take_action(@user, {}, @page)
 
@@ -246,7 +246,7 @@ describe PetitionModule do
 
   describe "handling duplicates" do
     it "should do nothing if the ask/user combo has been seen before" do
-      user = FactoryGirl.create(:user, :email => 'noone@example.com')
+      user = FactoryGirl.create(:user, email: 'noone@example.com')
       ask = FactoryGirl.create(:petition_module)
       petition_signature = OpenStruct.new
       PetitionSignature.stub(:new).and_return(petition_signature)

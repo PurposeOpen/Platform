@@ -1,8 +1,8 @@
 module ListCutter
   class EmailActionRule < Rule
     fields :email_ids, :action
-    validates_presence_of :action, :message => 'Please specify the email status'
-    validates_presence_of :email_ids, :message => 'Please specify the email id'
+    validates_presence_of :action, message: 'Please specify the email status'
+    validates_presence_of :email_ids, message: 'Please specify the email id'
 
     def to_sql
       activity_table = Push.activity_class_for(action).table_name
@@ -21,7 +21,7 @@ module ListCutter
     end
 
     def to_human_sql
-      email_names = Email.where(:id => email_ids).pluck(:name).join(", ")
+      email_names = Email.where(id: email_ids).pluck(:name).join(", ")
       "Email status #{is_clause} #{action.titleize} for email any of these #{email_names}"
     end
   end

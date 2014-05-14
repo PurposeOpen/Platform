@@ -44,8 +44,8 @@ describe Admin::FeaturedContentCollectionsHelper do
     it "should return campaigns in descending order of updated_at" do
       featured_content_collection = create(:featured_content_collection)
       movement = create(:movement)
-      campaign_updated_first = create(:campaign, movement: movement, :updated_at => 10.minutes.ago)
-      campaign_updated_last = create(:campaign, movement: movement, :updated_at => 1.minute.ago)
+      campaign_updated_first = create(:campaign, movement: movement, updated_at: 10.minutes.ago)
+      campaign_updated_last = create(:campaign, movement: movement, updated_at: 1.minute.ago)
       action_pages_tree_json(movement, featured_content_collection).should == [{"data" => campaign_updated_last.name, "children" => []},
                                                                                {"data" => campaign_updated_first.name, "children" => []}].to_json
     end

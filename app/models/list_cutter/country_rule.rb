@@ -1,8 +1,8 @@
 module ListCutter
   class CountryRule < Rule
     fields :selected_by, :values
-    validates_presence_of :selected_by, :message => 'Please choose the criteria'
-    validates_presence_of :values, :message => 'Please choose values'
+    validates_presence_of :selected_by, message: 'Please choose the criteria'
+    validates_presence_of :values, message: 'Please choose values'
 
     def to_sql
       country_isos = Country.iso_codes_with(selected_by, values)

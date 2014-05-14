@@ -1,7 +1,7 @@
 module ListCutter
   class ActionTakenRule < Rule
     fields :page_ids
-    validates_presence_of :page_ids, :message => 'Please specify the page ids'
+    validates_presence_of :page_ids, message: 'Please specify the page ids'
     POSSIBLE_MODULE_TYPES = ['PetitionModule', 'DonationModule', 'EmailTargetsModule', 'JoinModule']
 
     def to_sql
@@ -22,7 +22,7 @@ module ListCutter
     end
 
     def to_human_sql
-      page_names = ActionPage.where(:id => page_ids).pluck(:name).join(", ")
+      page_names = ActionPage.where(id: page_ids).pluck(:name).join(", ")
       "Page on which action was taken #{is_clause} any of these: #{page_names}"
     end
 

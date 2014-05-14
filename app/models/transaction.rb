@@ -17,7 +17,7 @@ class Transaction < ActiveRecord::Base
   
   belongs_to :donation
   
-  scope :successful, where(:successful => true)
+  scope :successful, where(successful: true)
 
   def amount_in_dollars
     self.amount_in_cents.to_f / 100

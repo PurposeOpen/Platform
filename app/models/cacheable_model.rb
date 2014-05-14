@@ -11,7 +11,7 @@ module CacheableModel
       model = Rails.cache.read(generate_cache_key(identifier))
       if model.nil?
         model = block_given? ? (yield self, identifier) : find(identifier)
-        Rails.cache.write(model.cache_key, model, :expires_in => AppConstants.default_cache_timeout) if model
+        Rails.cache.write(model.cache_key, model, expires_in: AppConstants.default_cache_timeout) if model
       end
       model
     end

@@ -14,7 +14,7 @@ When /^I fill in the "(..)" homepage form with:$/ do |iso_code, table|
   page.click_on "homepage_#{iso_code}_link"
   table.hashes.each do |item|
     item.each do |field, value|
-      fill_in("homepage_content_#{iso_code}_#{field}", :with => value)
+      fill_in("homepage_content_#{iso_code}_#{field}", with: value)
     end
   end
 end

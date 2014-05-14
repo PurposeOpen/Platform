@@ -7,7 +7,7 @@ module SendgridTokenReplacement
 
   def get_substitutions_list(email, options)
     # we group by email in the following query to safe guard against duplicate email addresses, a legacy from v2
-    users = User.where(:email => options[:recipients], :movement_id => email.movement).order(:email).group(:email)
+    users = User.where(email: options[:recipients], movement_id: email.movement).order(:email).group(:email)
     create_temporary_user_entries_for_non_members(options[:recipients], users)
     generate_replacement_tokens(email, users, options[:test] ? options[:recipients] : nil, options[:test])
   end
@@ -15,7 +15,7 @@ module SendgridTokenReplacement
   def create_temporary_user_entries_for_non_members(recipients, users)
     return '' unless recipients
     recipients.each do |email_address|
-      users << User.new(:email => email_address) unless users.find { |user|  user.email == email_address }
+      users << User.new(email: email_address) unless users.find { |user|  user.email == email_address }
     end
   end
 

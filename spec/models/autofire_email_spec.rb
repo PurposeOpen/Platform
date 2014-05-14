@@ -31,9 +31,9 @@ describe AutofireEmail do
   context 'set defaults' do
     it "should set page's default autofire subject and body when initialized" do
       action_page = create(:action_page)
-      donation_module = create(:donation_module, :pages => [action_page])
+      donation_module = create(:donation_module, pages: [action_page])
 
-      email = AutofireEmail.new(:action_page => action_page, :language => donation_module.language)
+      email = AutofireEmail.new(action_page: action_page, language: donation_module.language)
 
       email.enabled.should be_true
       email.from.should eql donation_module.default_autofire_sender
@@ -62,8 +62,8 @@ describe AutofireEmail do
 
     it 'should set default email subject and body when initialized and its action page set' do
       action_page = create(:action_page)
-      petition_module = create(:petition_module, :pages => [action_page])
-      email = AutofireEmail.new(:action_page => action_page, :language => petition_module.language)
+      petition_module = create(:petition_module, pages: [action_page])
+      email = AutofireEmail.new(action_page: action_page, language: petition_module.language)
       email.enabled.should be_true
       email.from.should eql AutofireEmail::DEFAULT_SENDER
       email.subject.should eql "Thanks for taking action!"
@@ -74,8 +74,8 @@ describe AutofireEmail do
 	describe 'validations,' do
 		context 'two emails for the same action page and language,' do
 			it 'should fail unique by action page and language validation' do
-				email = create(:autofire_email, :enabled => false)
-				email2 = FactoryGirl.build(:autofire_email, :action_page_id => email.action_page.id, :language_id => email.language.id, :enabled => false)
+				email = create(:autofire_email, enabled: false)
+				email2 = FactoryGirl.build(:autofire_email, action_page_id: email.action_page.id, language_id: email.language.id, enabled: false)
 
 				email2.valid?.should be_false
 				email2.should have(1).errors_on(:action_page_id)
@@ -84,9 +84,9 @@ describe AutofireEmail do
 
 		context 'two emails with the same action page and different languages,' do
 			it 'should pass validations for both emails' do
-				email = create(:autofire_email, :enabled => false)
+				email = create(:autofire_email, enabled: false)
 				french = create(:french)
-				email2 = FactoryGirl.build(:autofire_email, :action_page_id => email.action_page.id, :language_id => french.id, :enabled => false)
+				email2 = FactoryGirl.build(:autofire_email, action_page_id: email.action_page.id, language_id: french.id, enabled: false)
 
 				email2.valid?.should be_true
 			end
@@ -95,8 +95,8 @@ describe AutofireEmail do
 		context 'enabled' do
 			before do
         action_page = create(:action_page)
-        petition_module = create(:petition_module, :pages => [action_page])
-        @email = AutofireEmail.new(:action_page => action_page, :language => petition_module.language)
+        petition_module = create(:petition_module, pages: [action_page])
+        @email = AutofireEmail.new(action_page: action_page, language: petition_module.language)
 			end
 
       it 'should have no validation warnings on from, subject and body if they are not blank' do
@@ -116,7 +116,7 @@ describe AutofireEmail do
 
 		context 'disabled' do
 			it 'should not have warnings on subject and body if they are blank' do
-				email = AutofireEmail.new(:enabled => false)
+				email = AutofireEmail.new(enabled: false)
 				clear_email_fields(email)
 				email.should be_valid_with_warnings
 			end

@@ -15,7 +15,7 @@ class Api::BaseController < ApplicationController
   def load_movement
     movement
   rescue ActiveRecord::RecordNotFound
-    render :status => 404, :text => "Can't find movement with ID #{params[:movement_id]}"
+    render status: 404, text: "Can't find movement with ID #{params[:movement_id]}"
   end
 
   def should_authenticate?

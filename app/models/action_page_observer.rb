@@ -38,16 +38,16 @@ class ActionPageObserver
   def self.create_plan(action_page, plan_name, plan_id, plan_interval_unit, billing_cycles, recurly_account_type)
     donation_classification = recurly_account_type == '501C3' ? TaxDeductibleDonationModule.classification : NonTaxDeductibleDonationModule.classification
     plan = Recurly::Plan.create(
-        :plan_code => plan_id,
-        :name => plan_name,
-        :unit_amount_in_cents => {'USD' => 100, 'EUR' => 100, 'CAD' => 100, 'AUD' => 100, 'GBP' => 100},
-        :setup_fee_in_cents => {'USD' => 0, 'EUR' => 0, 'CAD' => 0, 'AUD' => 0, 'GBP' => 0},
-        :plan_interval_length => 1,
-        :plan_interval_unit => plan_interval_unit,
-        :total_billing_cycles => billing_cycles,
-        :display_quantity => true,
-        :success_url => "#{action_page.movement.url}/handle_payment_callback?account_code={{account_code}}&plan_code={{plan_code}}&classification=#{donation_classification}",
-        :cancel_url => "#{action_page.movement.url}/#{action_page.slug}"
+        plan_code: plan_id,
+        name: plan_name,
+        unit_amount_in_cents: {'USD' => 100, 'EUR' => 100, 'CAD' => 100, 'AUD' => 100, 'GBP' => 100},
+        setup_fee_in_cents: {'USD' => 0, 'EUR' => 0, 'CAD' => 0, 'AUD' => 0, 'GBP' => 0},
+        plan_interval_length: 1,
+        plan_interval_unit: plan_interval_unit,
+        total_billing_cycles: billing_cycles,
+        display_quantity: true,
+        success_url: "#{action_page.movement.url}/handle_payment_callback?account_code={{account_code}}&plan_code={{plan_code}}&classification=#{donation_classification}",
+        cancel_url: "#{action_page.movement.url}/#{action_page.slug}"
     )
     if (plan.response.code != '201')
       Rails.logger.error("An error happened on plan creating: #{plan.response.inspect}")

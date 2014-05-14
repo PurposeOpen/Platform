@@ -4,15 +4,15 @@ module Admin
     self.nav_category = :campaigns
     include ActionView::Helpers::TextHelper
 
-    crud_actions_for ActionPage, :parent => ActionSequence, :redirects => {
-      :create  => lambda { admin_movement_action_sequence_path(@movement, @action_sequence) },
-      :destroy => lambda { admin_movement_action_sequence_path(@movement, @action_sequence) }
+    crud_actions_for ActionPage, parent: ActionSequence, redirects: {
+      create:  lambda { admin_movement_action_sequence_path(@movement, @action_sequence) },
+      destroy: lambda { admin_movement_action_sequence_path(@movement, @action_sequence) }
     }
 
     skip_before_filter  :find_model, only: [:preview]
     skip_before_filter  :find_parent, only: [:preview]
 
-    before_filter :find_content_modules, :except => [:new, :create, :preview]
+    before_filter :find_content_modules, except: [:new, :create, :preview]
     cache_sweeper PageSweeper
 
     def edit
@@ -28,9 +28,9 @@ module Admin
       if update_results.has_reports?
         flash.now[:notice] = update_results.success_message if update_results.has_success?
         flash.now[:info]   = update_results.failure_message if update_results.has_failures?
-        render :action => 'edit'
+        render action: 'edit'
       else
-        redirect_to admin_movement_action_sequence_path(@movement, @action_sequence), :notice => "'#{@action_page.name}' has been updated."
+        redirect_to admin_movement_action_sequence_path(@movement, @action_sequence), notice: "'#{@action_page.name}' has been updated."
       end
     end
 
@@ -41,7 +41,7 @@ module Admin
       cloned_action_page.save
       clone_content_modules_for_preview(params[:content_modules], cloned_action_page)
       clone_autofire_emails_for_preview(params[:autofire_emails], cloned_action_page)
-      render :text =>  preview_admin_movement_action_page_path(@movement, cloned_action_page)
+      render text:  preview_admin_movement_action_page_path(@movement, cloned_action_page)
     end
 
     def preview
@@ -51,15 +51,15 @@ module Admin
       @action_pages = @action_sequence.action_pages
       @live_action_page = @action_page.live_action_page
       @action_pages[@action_pages.find_index(@live_action_page)] = @action_page
-      render :layout => '_base'
+      render layout: '_base'
     end
 
     def unlink_content_module
-       link = ContentModuleLink.where(:page_id => @action_page.id, :content_module_id => params[:content_module_id]).first
+       link = ContentModuleLink.where(page_id: @action_page.id, content_module_id: params[:content_module_id]).first
        link.content_module = link.content_module.dup
        link.save!
        respond_to do |format|
-         format.js { render :content_type => 'text/html', :partial => 'content_module', :locals => {:content_module => link.content_module, :layout_container => link.layout_container} }
+         format.js { render content_type: 'text/html', partial: 'content_module', locals: {content_module: link.content_module, layout_container: link.layout_container} }
        end
     end
 
@@ -90,7 +90,7 @@ module Admin
       return unless updated_attrs
       updated_attrs.each do |id, attrs|
         content_module = ContentModule.find id
-        moduleLinks = ContentModuleLink.where(:page_id => @action_page.id, :content_module_id => id)
+        moduleLinks = ContentModuleLink.where(page_id: @action_page.id, content_module_id: id)
         cloned_content_module = content_module.dup
         cloned_content_module.live_content_module_id = content_module.id
         cloned_content_module.update_attributes(attrs)
@@ -127,8 +127,8 @@ module Admin
     end
 
     def update_autofire_email(autofire_email, hash)
-      autofire_email.update_attributes(:enabled => hash['enabled'], :subject => hash['subject'],
-                                       :body => hash['body'], :from => hash['from'], :reply_to => hash['reply_to'])
+      autofire_email.update_attributes(enabled: hash['enabled'], subject: hash['subject'],
+                                       body: hash['body'], from: hash['from'], reply_to: hash['reply_to'])
     end
   end
 

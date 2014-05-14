@@ -11,14 +11,14 @@ require 'spec_helper'
 describe Homepage do
   before do
     @homepage = create(:homepage)
-    @content1 = create(:homepage_content, :homepage => @homepage)
-    @featured_content_collection = create(:featured_content_collection, :featurable => @homepage)
-    @featured_content_modules = 2.times.collect{create(:featured_content_module, :featured_content_collection => @featured_content_collection)}
+    @content1 = create(:homepage_content, homepage: @homepage)
+    @featured_content_collection = create(:featured_content_collection, featurable: @homepage)
+    @featured_content_modules = 2.times.collect{create(:featured_content_module, featured_content_collection: @featured_content_collection)}
   end
 
   describe "duplicate_for_preview" do
     it 'should duplicate the current homepage with homepage_content attributes' do
-      clone = @homepage.duplicate_for_preview({:homepage_content =>{@content1.iso_code => {:banner_image => "A NEW IMAGE URL FOR PREVIEW"}}}.with_indifferent_access)
+      clone = @homepage.duplicate_for_preview({homepage_content:{@content1.iso_code => {banner_image: "A NEW IMAGE URL FOR PREVIEW"}}}.with_indifferent_access)
 
       clone.should be_draft
       @homepage.homepage_contents.size.should == clone.homepage_contents.size

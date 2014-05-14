@@ -52,7 +52,7 @@ When /^I select the Member Activity (.+) (.+) than (.+)$/ do|option1,option2,cou
      when/equal/
        find(:css,"div.rule-details select").("Equal to")
    end
-   fill_in("rules_member_activity_rule_4_activity_count",:with=>count)
+   fill_in("rules_member_activity_rule_4_activity_count",with:count)
 
 end
 When /^I select (.+) module$/ do|module_name|

@@ -27,12 +27,12 @@ When /^"([^"]*)" visits the "([^"]*)" page from the email "([^"]*)"$/ do |email_
   page = ActionPage.find_by_name(page_name)
   page.should_not be_nil
   t = tracking_data(email_address, email_name)
-  post "/api/movements/dummy-movement/email_tracking/email_clicked?t=#{t}", { :page_id => page.id }
+  post "/api/movements/dummy-movement/email_tracking/email_clicked?t=#{t}", { page_id: page.id }
 end
 
 When /^"([^"]*)" visits the unsubscribe me page from the email "([^"]*)"$/ do |email_address, email_name|  
   t = tracking_data(email_address, email_name)
-  visit unsubscribe_path(:t => t)
+  visit unsubscribe_path(t: t)
 end
 
 Then /^I should see the following statistics for the email "([^"]*)":$/ do |email_name, stats|

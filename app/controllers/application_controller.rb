@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   include SessionsHelper
   before_filter :set_return_to_path
 
-  rescue_from CanCan::AccessDenied, :with => :access_denied
+  rescue_from CanCan::AccessDenied, with: :access_denied
 
   ## CanCan assumes there is a method called current_user
   ## For the purpose of the members/platform users split, we need to use a different method, current_platform_user
@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
   def access_denied
     if anyone_signed_in?
       warden.custom_failure!
-      render :file => 'public/401', :status => 401
+      render file: 'public/401', status: 401
     else
       deny_access
     end

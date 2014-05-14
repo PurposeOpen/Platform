@@ -9,7 +9,7 @@ describe StatsScheduler do
       Time.zone.stub!(:now).and_return(right_now)
       6.times do |i|
         mocked_job = mock(Delayed::Backend::ActiveRecord::Job)
-        UniqueActivityByEmail.should_receive(:delay).with(:run_at => right_now + i*10.minutes).and_return(mocked_job)
+        UniqueActivityByEmail.should_receive(:delay).with(run_at: right_now + i*10.minutes).and_return(mocked_job)
         mocked_job.should_receive(:update!)
       end
       StatsScheduler.schedule_push_stats

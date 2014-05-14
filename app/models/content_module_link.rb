@@ -12,7 +12,7 @@
 class ContentModuleLink < ActiveRecord::Base
   belongs_to :page
   belongs_to :content_module
-  acts_as_list :top_of_list => 0
+  acts_as_list top_of_list: 0
 
   def move_to_container(new_container, new_position)
     remove_from_list

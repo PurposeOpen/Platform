@@ -13,7 +13,7 @@ module ListCutter
         }
 
     fields :amount
-    validates_presence_of :amount, :message => 'Please specify a amount in dollar cents'
+    validates_presence_of :amount, message: 'Please specify a amount in dollar cents'
 
     def amount_in_dollars
       amount.nil? ?  0.0 : amount / 100.0

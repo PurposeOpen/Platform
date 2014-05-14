@@ -43,7 +43,7 @@ class EmailStatsTable < ReportTable
 
       stats = init_stats_hash([:email_sent, :email_viewed, :email_clicked, :action_taken, :subscribed, :unsubscribed, :email_spammed])
 
-      stat_objects = UniqueActivityByEmail.where(:email_id => @emails.map(&:id))
+      stat_objects = UniqueActivityByEmail.where(email_id: @emails.map(&:id))
 
       latest_date = get_latest_date(stat_objects)
 
@@ -74,7 +74,7 @@ class EmailStatsTable < ReportTable
     @emails.each do |email|
       stats[email.id] = {}
       activities.each do |activity|
-        stats[email.id][activity] = {:as_value => 0, :as_percentage => "0%"}
+        stats[email.id][activity] = {as_value: 0, as_percentage: "0%"}
       end
     end
     stats
@@ -82,12 +82,12 @@ class EmailStatsTable < ReportTable
 
   def pre_calculate_totals
     @email_totals = @emails.inject({}) do |acc, email|
-      acc[email.id] = {:txn_count => 0, :amount_in_cents => 0}
+      acc[email.id] = {txn_count: 0, amount_in_cents: 0}
       acc
     end
     totals        = Donation.select('donations.email_id, COUNT(transactions.id) as txn_count, COALESCE(SUM(transactions.amount_in_cents), 0) as amount_in_cents').
         joins(:transactions).
-        where(:transactions => {:successful => true}, :donations => {:email_id => @emails.map(&:id)}).
+        where(transactions: {successful: true}, donations: {email_id: @emails.map(&:id)}).
         group('donations.email_id')
     totals.each do |total|
       @email_totals[total.email_id][:txn_count]       = total.txn_count

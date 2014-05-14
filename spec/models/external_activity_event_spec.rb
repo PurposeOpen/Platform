@@ -23,7 +23,7 @@ describe ExternalActivityEvent do
       action_created = ExternalActivityEvent::Activity::ACTION_CREATED
       action_taken = ExternalActivityEvent::Activity::ACTION_TAKEN
 
-      event = FactoryGirl.create(:external_activity_event, :activity => action_created, :role => 'creator')
+      event = FactoryGirl.create(:external_activity_event, activity: action_created, role: 'creator')
 
       action_created_events, action_taken_events = ExternalActivityEvent.all.partition { |event| event.activity == action_created }
       action_created_events.should_not be_blank

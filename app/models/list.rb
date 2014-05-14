@@ -28,7 +28,7 @@ class List < ActiveRecord::Base
   delegate :summary, :user_count, to: :saved_intermediate_result, allow_nil: true
 
   def self.build(params)
-    List.where(:id => params[:list_id]).first_or_initialize(:blast => Blast.find(params[:blast_id])).tap do |list|
+    List.where(id: params[:list_id]).first_or_initialize(blast: Blast.find(params[:blast_id])).tap do |list|
       list.rules.clear
       (params[:rules] || [] ).each do |rule_type, rules_of_the_same_type|
         rules_of_the_same_type.each do |rule_index, rule_params|
@@ -102,7 +102,7 @@ class List < ActiveRecord::Base
   end
 
   def filter_users_by_language(relation, email)
-    relation.where(:language_id => email.language_id)
+    relation.where(language_id: email.language_id)
   end
 
   def internal_rules

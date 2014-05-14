@@ -61,7 +61,7 @@ Then /^(?:I|they|"([^"]*?)") should receive (an|no|\d+) emails? with subject "([
 end
 
 Then /^(?:I|they|"([^"]*?)") should receive an email with the following body:$/ do |address, expected_body|
-  open_email(address, :with_text => expected_body)
+  open_email(address, with_text: expected_body)
 end
 
 #
@@ -74,11 +74,11 @@ When /^(?:I|they|"([^"]*?)") opens? the email$/ do |address|
 end
 
 When /^(?:I|they|"([^"]*?)") opens? the email with subject "([^"]*?)"$/ do |address, subject|
-  open_email(address, :with_subject => subject)
+  open_email(address, with_subject: subject)
 end
 
 When /^(?:I|they|"([^"]*?)") opens? the email with text "([^"]*?)"$/ do |address, text|
-  open_email(address, :with_text => text)
+  open_email(address, with_text: text)
 end
 
 #
@@ -194,15 +194,15 @@ Then /^save and open all raw emails$/ do
 end
 Given /^a default Email$/ do
   forestry = Campaign.find_by_name("Forestry")
-  push = forestry.pushes.create!(:name => "Email everyone to save the trees")
-  blast = push.blasts.create!(:name => "Only people in TAS")
+  push = forestry.pushes.create!(name: "Email everyone to save the trees")
+  blast = push.blasts.create!(name: "Only people in TAS")
   blast.emails.create!(
-    :name => "Forestry Campaign Email",
-    :from => "Your Friends <noreply@yourdomain.com>",
-    :reply_to => "Your Friends<reply@yourdomain.com",
-    :subject => "What's up?",
-    :body => "Click here! I dare you!",
-    :language_id => push.campaign.movement.default_language.id
+    name: "Forestry Campaign Email",
+    from: "Your Friends <noreply@yourdomain.com>",
+    reply_to: "Your Friends<reply@yourdomain.com",
+    subject: "What's up?",
+    body: "Click here! I dare you!",
+    language_id: push.campaign.movement.default_language.id
   )
 end
 Given /^I print date$/ do

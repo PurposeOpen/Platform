@@ -11,7 +11,7 @@ class PaymentErrorMailer < ActionMailer::Base
 		end
 
 		@donation_error = donation_error
-		mail(:to => recipient_list, :from => PurposeMailer::DEFAULT_FROM, :subject => DEFAULT_SUBJECT % donation_error.movement.name) do |format|
+		mail(to: recipient_list, from: PurposeMailer::DEFAULT_FROM, subject: DEFAULT_SUBJECT % donation_error.movement.name) do |format|
       format.text { render 'payment_error_mailer/report_error' }
     end.with_settings(blast_email_settings(donation_error.movement))
 	end
@@ -22,13 +22,13 @@ class PaymentErrorMailer < ActionMailer::Base
       return
     end
 
-    subject =  I18n.t('failed_payment_email_subject', :locale => donation_error.member_language_iso.to_sym )
+    subject =  I18n.t('failed_payment_email_subject', locale: donation_error.member_language_iso.to_sym )
 
     subject = subject.gsub("{MOVEMENT_NAME}", donation_error.movement.name)
 
     @contact_email = ENV["#{donation_error.movement.slug}_CONTACT_EMAIL".upcase]
     @donation_error = donation_error
-    mail(:to => recipient_list, :from => @contact_email, :subject => subject) do |format|
+    mail(to: recipient_list, from: @contact_email, subject: subject) do |format|
       format.text { render "payment_error_mailer/report_error_to_member.#{donation_error.member_language_iso}" }
     end.with_settings(blast_email_settings(donation_error.movement))
   end

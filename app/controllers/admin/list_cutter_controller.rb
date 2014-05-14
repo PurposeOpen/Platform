@@ -25,12 +25,12 @@ module Admin
     def poll
       intermediate_result = ListIntermediateResult.find(params[:result_id])
       return head(:no_content) unless intermediate_result.ready?
-      render :partial => 'admin/list_cutter/poll_summary', :locals => {:summary => intermediate_result.summary}
+      render partial: 'admin/list_cutter/poll_summary', locals: {summary: intermediate_result.summary}
     end
 
     def show
       @list = List.find(params[:list_id])
-      render :layout => false
+      render layout: false
     end
 
     private
@@ -38,16 +38,16 @@ module Admin
     def build_list_and_create_bg_job(options = {})
       @list ||= List.build(params)
       new =  @list.new_record?
-      (render(:json => @list.errors.to_json, :status => :unprocessable_entity) and return) unless @list.valid?
+      (render(json: @list.errors.to_json, status: :unprocessable_entity) and return) unless @list.valid?
       @intermediate_result = ListIntermediateResult.create(list: @list, rules: @list.rules)
-      @list.update_attributes(:saved_intermediate_result => @intermediate_result) if options[:save]
-      @intermediate_result.delay(:queue => QueueConfigs::LIST_CUTTER_BLASTER_QUEUE).update_results!
+      @list.update_attributes(saved_intermediate_result: @intermediate_result) if options[:save]
+      @intermediate_result.delay(queue: QueueConfigs::LIST_CUTTER_BLASTER_QUEUE).update_results!
 
       if (!options[:save] && new)
-        @list.update_attributes(:rules => [])
+        @list.update_attributes(rules: [])
         @list = List.find(@list.id)
       end
-      render :json => {:intermediate_result_id => @intermediate_result.id, :list_id => @list.id}
+      render json: {intermediate_result_id: @intermediate_result.id, list_id: @list.id}
     end
 
   end

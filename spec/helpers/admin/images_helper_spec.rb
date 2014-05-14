@@ -4,9 +4,9 @@ describe Admin::ImagesHelper do
 
   before do
     @image = Image.create(
-      :id => 123, 
-      :image => File.new(Rails.root + 'spec/fixtures/images/wikileaks.jpg'),
-      :movement => FactoryGirl.create(:movement)
+      id: 123, 
+      image: File.new(Rails.root + 'spec/fixtures/images/wikileaks.jpg'),
+      movement: FactoryGirl.create(:movement)
     )
   end
 

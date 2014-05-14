@@ -4,7 +4,7 @@ module SecurePayAntiFraudSupport
   LIVE_ANTI_FRAUD_URL="https://www.securepay.com.au/antifraud/payment"
 
   def self.included(mod)
-    mod::TRANSACTIONS.merge!(:anti_fraud_purchase => 0)
+    mod::TRANSACTIONS.merge!(anti_fraud_purchase: 0)
   end
 
   def purchase_with_anti_fraud(money, credit_card, options = {})
@@ -47,8 +47,8 @@ module SecurePayAntiFraudSupport
     response = parse(response)
 
     ActiveMerchant::Billing::Response.new(success?(response), message_from(response), response,
-                 :test => test?,
-                 :authorization => authorization_from(response)
+                 test: test?,
+                 authorization: authorization_from(response)
     )
   end
   private :commit_anti_fraud_purchase

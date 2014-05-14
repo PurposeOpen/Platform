@@ -1,8 +1,8 @@
 module ListCutter
   class JoinDateRule < DateRule
     fields :join_date, :operator
-    validates_presence_of :join_date, :message => 'Please specify a join date'
-    validates_presence_of :operator, :message => 'Please select a filter criteria'
+    validates_presence_of :join_date, message: 'Please specify a join date'
+    validates_presence_of :operator, message: 'Please select a filter criteria'
 
     def to_sql
       date = Date.strptime(join_date, '%m/%d/%Y')

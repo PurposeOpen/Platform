@@ -21,19 +21,19 @@ class Admin::HomepagesController < Admin::AdminController
 
     if homepage.homepage_contents.all?(&:valid?)
       @homepage_contents = homepage.homepage_contents
-      redirect_to edit_admin_movement_homepages_path(@movement), :notice => 'Homepages have been updated.'
+      redirect_to edit_admin_movement_homepages_path(@movement), notice: 'Homepages have been updated.'
     else
-      render :action => 'edit'
+      render action: 'edit'
       flash[:error] = 'Problems saving homepages, please try again.'
     end
   end
 
   def create_preview
     draft = @movement.homepage.duplicate_for_preview(params)
-    render :text => preview_admin_movement_homepages_path(@movement, :draft_homepage_id => draft.id)
+    render text: preview_admin_movement_homepages_path(@movement, draft_homepage_id: draft.id)
   end
 
   def preview
-    render :layout => '_base'
+    render layout: '_base'
   end
 end

@@ -22,10 +22,10 @@ class TellAFriendAskModule < ContentModule
 
   after_initialize :defaults
 
-  validates_length_of :email_subject, :minimum => 2, :maximum => 256
-  validates_length_of :email_body, :minimum => 10
-  validates_length_of :tweet_text, :minimum => 2, :maximum => TWITTER_MAXIMUM
-  validates_length_of :title, :maximum => 128, :minimum => 3
+  validates_length_of :email_subject, minimum: 2, maximum: 256
+  validates_length_of :email_body, minimum: 10
+  validates_length_of :tweet_text, minimum: 2, maximum: TWITTER_MAXIMUM
+  validates_length_of :title, maximum: 128, minimum: 3
 
   placeable_in SIDEBAR
 

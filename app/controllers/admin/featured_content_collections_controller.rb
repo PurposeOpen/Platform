@@ -2,7 +2,7 @@ class Admin::FeaturedContentCollectionsController < Admin::AdminController
   layout 'movements'
   self.nav_category = :featured_content_collections
 
-  before_filter :load_featured_content_collection, :only => [:edit, :update]
+  before_filter :load_featured_content_collection, only: [:edit, :update]
 
   def index
     featured_content_collections = FeaturedContentCollection.includes(:featurable).select do |collection|
@@ -23,7 +23,7 @@ class Admin::FeaturedContentCollectionsController < Admin::AdminController
 
     if success
       flash[:notice] = ('Featured content updated.')
-      redirect_to :action => 'edit'
+      redirect_to action: 'edit'
     else
       flash.now[:info] = ('Error updating featured content modules. Title, Url, and Button text are required for all modules across all languages.')
       render :edit
@@ -33,6 +33,6 @@ class Admin::FeaturedContentCollectionsController < Admin::AdminController
   private
 
   def load_featured_content_collection
-    @featured_content_collection = FeaturedContentCollection.find(params[:id], :include => :featured_content_modules)
+    @featured_content_collection = FeaturedContentCollection.find(params[:id], include: :featured_content_modules)
   end
 end

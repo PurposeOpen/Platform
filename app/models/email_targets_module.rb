@@ -32,18 +32,18 @@ class EmailTargetsModule < ContentModule
   after_initialize :defaults
 
   warnings do
-    validates_length_of   :title, :maximum => 128, :minimum => 3, :if => :needs_title?
-    validates_length_of   :public_activity_stream_template, :maximum => 1024, :minimum => 3, :if => :shows_activity_stream?
-    validates_length_of   :button_text, :minimum => 1, :maximum => 64
-    validates_length_of   :default_subject, :minimum => 2, :maximum => 256
+    validates_length_of   :title, maximum: 128, minimum: 3, if: :needs_title?
+    validates_length_of   :public_activity_stream_template, maximum: 1024, minimum: 3, if: :shows_activity_stream?
+    validates_length_of   :button_text, minimum: 1, maximum: 64
+    validates_length_of   :default_subject, minimum: 2, maximum: 256
     validates_presence_of :default_body
     validates_presence_of :emails_goal
     validates_presence_of :thermometer_threshold
-    validates_numericality_of :emails_goal, :greater_than_or_equal_to => 0, :if => :emails_goal
-    validates_numericality_of :thermometer_threshold, :greater_than_or_equal_to => 0, :less_than_or_equal_to => :emails_goal, :if => :emails_goal
+    validates_numericality_of :emails_goal, greater_than_or_equal_to: 0, if: :emails_goal
+    validates_numericality_of :thermometer_threshold, greater_than_or_equal_to: 0, less_than_or_equal_to: :emails_goal, if: :emails_goal
     validate :targets_must_be_valid
-    validates_presence_of :disabled_title, :unless => :active?
-    validates_presence_of :disabled_content, :unless => :active?
+    validates_presence_of :disabled_title, unless: :active?
+    validates_presence_of :disabled_content, unless: :active?
   end
 
   placeable_in SIDEBAR
@@ -70,16 +70,16 @@ class EmailTargetsModule < ContentModule
   end
 
   def take_action(user, action_info, page)
-    raise DuplicateActionTakenError if UserEmail.where(:page_id => page, :user_id => user).count > 0
+    raise DuplicateActionTakenError if UserEmail.where(page_id: page, user_id: user).count > 0
 
-    user_email = UserEmail.new(:content_module => self,
-      :subject => default_subject,
-      :body => default_body,
-      :targets => self.targets_emails.join(", "),
-      :cc_me => action_info[:cc_me],
-      :user => user,
-      :action_page => page,
-      :email => action_info[:email])
+    user_email = UserEmail.new(content_module: self,
+      subject: default_subject,
+      body: default_body,
+      targets: self.targets_emails.join(", "),
+      cc_me: action_info[:cc_me],
+      user: user,
+      action_page: page,
+      email: action_info[:email])
 
     user_email.subject = action_info[:subject] || default_subject if allow_editing
     user_email.body = action_info[:body] || default_body if allow_editing
@@ -99,7 +99,7 @@ class EmailTargetsModule < ContentModule
   end
 
   def emails_sent
-    pages.first ? (UserEmail.where(:page_id => pages.first.id).count * targets_emails.size) : 0
+    pages.first ? (UserEmail.where(page_id: pages.first.id).count * targets_emails.size) : 0
   end
 
   def targets_must_be_valid

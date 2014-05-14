@@ -1,7 +1,7 @@
 module ListCutter
   class EmailDomainRule < Rule
     fields :domain
-    validates_presence_of :domain,  :message => 'Please specify the email server'
+    validates_presence_of :domain,  message: 'Please specify the email server'
 
     def initialize(params={})
       super

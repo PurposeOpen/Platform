@@ -15,10 +15,10 @@ require "spec_helper"
 describe Push do
   describe "validations" do
     it "should require a name between 3 and 64 characters" do
-      Push.new(:name => "Save the kittens!").should be_valid
-      Push.new(:name => "AB").should_not be_valid
-      Push.new(:name => "X" * 64).should be_valid
-      Push.new(:name => "Y" * 65).should_not be_valid
+      Push.new(name: "Save the kittens!").should be_valid
+      Push.new(name: "AB").should_not be_valid
+      Push.new(name: "X" * 64).should be_valid
+      Push.new(name: "Y" * 65).should_not be_valid
     end
   end
 
@@ -37,28 +37,28 @@ describe Push do
 
   it "should return whether or not there are blasts currently being sent" do
     push = create(:push)
-    in_progress_blast = create(:blast, :push => push)
-    blast_1 = create(:blast, :push => push)
-    create(:proofed_email, :blast => blast_1, :delayed_job_id => nil)
+    in_progress_blast = create(:blast, push: push)
+    blast_1 = create(:blast, push: push)
+    create(:proofed_email, blast: blast_1, delayed_job_id: nil)
     push.should_not have_pending_jobs
 
-    create(:proofed_email, :blast => blast_1, :delayed_job_id => 10)
+    create(:proofed_email, blast: blast_1, delayed_job_id: 10)
     push.should have_pending_jobs
   end
 
   describe 'update campaign' do
     let(:sometime_in_the_past) { Time.zone.parse '2001-01-01 01:01:01' }
-    let(:campaign) { create(:campaign, :updated_at => sometime_in_the_past) }
+    let(:campaign) { create(:campaign, updated_at: sometime_in_the_past) }
 
     it 'should touch campaign when added' do
-      @push = create(:push, :campaign => campaign)
+      @push = create(:push, campaign: campaign)
       campaign.reload.updated_at.should > sometime_in_the_past
     end
 
     it 'should touch campaign when updated' do
-      @push = create(:push, :campaign => campaign)
+      @push = create(:push, campaign: campaign)
       campaign.update_column(:updated_at, sometime_in_the_past)
-      @push.update_attributes(:name => 'A new updated push')
+      @push.update_attributes(name: 'A new updated push')
       campaign.reload.updated_at.should > sometime_in_the_past
     end
   end

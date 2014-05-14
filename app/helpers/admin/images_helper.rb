@@ -1,9 +1,9 @@
 module Admin
   module ImagesHelper
     def image_settings_div(movement, settings_for)
-      content_tag(:div, '', {:id => "image-upload-container",
-                  :style => "display:none;", :title => "Upload and Attach Image",
-                  :data => {:image_upload_url => admin_movement_images_path(movement)}.merge(movement.image_settings_for(settings_for))})
+      content_tag(:div, '', {id: "image-upload-container",
+                  style: "display:none;", title: "Upload and Attach Image",
+                  data: {image_upload_url: admin_movement_images_path(movement)}.merge(movement.image_settings_for(settings_for))})
     end
 
     def image_url(image, format = :original)

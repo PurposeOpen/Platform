@@ -30,11 +30,11 @@ class PlatformUser < ActiveRecord::Base
 
   cattr_accessor :current_user
 
-  has_many :user_affiliations, :foreign_key => "user_id"
-  has_many :movements, :through => :user_affiliations
-  accepts_nested_attributes_for :user_affiliations, :allow_destroy => true
+  has_many :user_affiliations, foreign_key: "user_id"
+  has_many :movements, through: :user_affiliations
+  accepts_nested_attributes_for :user_affiliations, allow_destroy: true
 
-  validates_format_of :email, :with => VALID_EMAIL_REGEX
+  validates_format_of :email, with: VALID_EMAIL_REGEX
   validates_uniqueness_of :email
 
   after_create :send_confirmation_email
@@ -46,7 +46,7 @@ class PlatformUser < ActiveRecord::Base
     text  :email
     boolean :is_admin
     time :updated_at
-    integer :movement_ids, :multiple => true
+    integer :movement_ids, multiple: true
   end
   handle_asynchronously :solr_index
 

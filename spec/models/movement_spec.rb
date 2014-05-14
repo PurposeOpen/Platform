@@ -29,7 +29,7 @@ describe Movement do
   end
 
   describe '#draft_homepages' do
-    let(:allout) { create(:movement, :name => 'allout') }
+    let(:allout) { create(:movement, name: 'allout') }
 
     it 'should return [] if homepage drafts are not avaiable' do
       allout.draft_homepages.should be_empty
@@ -43,7 +43,7 @@ describe Movement do
   end
 
   describe '#existing_sources' do
-    let(:allout) { FactoryGirl.create(:movement, :name => 'allout') }
+    let(:allout) { FactoryGirl.create(:movement, name: 'allout') }
 
     subject { allout.existing_sources }
 
@@ -52,21 +52,21 @@ describe Movement do
     end
 
     describe 'when members joined through a movement' do
-      before { 3.times.each { FactoryGirl.create(:user, :source => :movement, :movement => allout) } }
+      before { 3.times.each { FactoryGirl.create(:user, source: :movement, movement: allout) } }
       it { should eql [[:movement, 'movement']] }
     end
 
     describe 'when members come from different sources to the same movement' do
-      before {[:movement, :allout_v3, :import].each {|source| FactoryGirl.create(:user, :source => source, :movement => allout) } }
+      before {[:movement, :allout_v3, :import].each {|source| FactoryGirl.create(:user, source: source, movement: allout) } }
       it { should match_array([[:movement, 'movement'], [:allout_v3, 'allout_v3'], [:import,'import']]) }
     end
 
     describe 'when members come from different sources to different movements' do
-      let(:walkfree) { FactoryGirl.create(:movement, :name => 'walkfree') }
+      let(:walkfree) { FactoryGirl.create(:movement, name: 'walkfree') }
       before do
-        FactoryGirl.create(:user, :source => :movement, :movement => walkfree)
-        FactoryGirl.create(:user, :source => :import, :movement => walkfree)
-        FactoryGirl.create(:user, :source => :allout_v3, :movement => allout)
+        FactoryGirl.create(:user, source: :movement, movement: walkfree)
+        FactoryGirl.create(:user, source: :import, movement: walkfree)
+        FactoryGirl.create(:user, source: :allout_v3, movement: allout)
       end
 
       it { should eql [[:allout_v3, 'allout_v3']] }
@@ -83,15 +83,15 @@ describe Movement do
   it "should set a default language" do
     english = FactoryGirl.create(:english)
     portuguese = FactoryGirl.create(:portuguese)
-    movement = FactoryGirl.create(:movement, :languages => [english, portuguese])
+    movement = FactoryGirl.create(:movement, languages: [english, portuguese])
     movement.default_language = english.id
     movement.default_language.should eql english
   end
 
   it "should list all non-default languages" do
-    %w{ja es ru}.each {|code| FactoryGirl.create(:language, :iso_code => code)}
-    movement = FactoryGirl.create(:movement, :languages => [], :iso_codes => %w{ja es ru})
-    movement.update_attributes :default_iso_code => "ru"
+    %w{ja es ru}.each {|code| FactoryGirl.create(:language, iso_code: code)}
+    movement = FactoryGirl.create(:movement, languages: [], iso_codes: %w{ja es ru})
+    movement.update_attributes default_iso_code: "ru"
 
     movement.default_language.iso_code.should == "ru"
     movement.non_default_languages.map(&:iso_code).should match_array(%w{ja es})
@@ -100,14 +100,14 @@ describe Movement do
   it "should raise exception if trying to set default language that doesn't exist in movement" do
     english = FactoryGirl.create(:english)
     portuguese = FactoryGirl.create(:portuguese)
-    movement = FactoryGirl.create(:movement, :languages => [english])
+    movement = FactoryGirl.create(:movement, languages: [english])
     lambda { movement.default_language = portuguese.id }.should raise_exception(RuntimeError)
   end
 
   it "should allow only one default language" do
     english = FactoryGirl.create(:english)
     portuguese = FactoryGirl.create(:portuguese)
-    movement = FactoryGirl.create(:movement, :languages => [english, portuguese])
+    movement = FactoryGirl.create(:movement, languages: [english, portuguese])
     movement.default_language = english.id
     movement.default_language = portuguese.id
 
@@ -126,13 +126,13 @@ describe Movement do
     end
  
     it "should make sure URL is valid" do
-      movement.update_attributes(:url => "")
+      movement.update_attributes(url: "")
       movement.errors[:url].should_not be_empty
 
-      movement.update_attributes(:url => "zuh?")
+      movement.update_attributes(url: "zuh?")
       movement.errors[:url].should_not be_empty
 
-      movement.update_attributes(:url => "http://allout.org")
+      movement.update_attributes(url: "http://allout.org")
       movement.errors[:url].should be_empty
     end
   end
@@ -140,11 +140,11 @@ describe Movement do
   describe 'pushes,' do
     it "should return the movement's pushes" do
       movement = create(:movement)
-      campaign = create(:campaign, :movement => movement)
+      campaign = create(:campaign, movement: movement)
 
-      push_1 = create(:push, :campaign => campaign, :created_at => Time.now)
-      push_2 = create(:push, :campaign => campaign, :created_at => 1.day.ago)
-      push_3 = create(:push, :campaign => campaign, :created_at => 2.days.ago)
+      push_1 = create(:push, campaign: campaign, created_at: Time.now)
+      push_2 = create(:push, campaign: campaign, created_at: 1.day.ago)
+      push_3 = create(:push, campaign: campaign, created_at: 2.days.ago)
 
       movement.pushes.should match_array([push_1, push_2, push_3])
     end
@@ -152,31 +152,31 @@ describe Movement do
 
   describe "slugs" do
     it "should be slugged" do
-      FactoryGirl.create(:movement, :name => "Foo Bar").friendly_id.should == "foo-bar"
+      FactoryGirl.create(:movement, name: "Foo Bar").friendly_id.should == "foo-bar"
     end
 
     it "should provide custom slugs for particular movements" do
-      FactoryGirl.create(:movement, :name => "Movement One").friendly_id.should == "movement-one"
-      FactoryGirl.create(:movement, :name => "Movement Two").friendly_id.should == "movement-two"
-      FactoryGirl.create(:movement, :name => "Movement Three").friendly_id.should == "movement-three"
+      FactoryGirl.create(:movement, name: "Movement One").friendly_id.should == "movement-one"
+      FactoryGirl.create(:movement, name: "Movement Two").friendly_id.should == "movement-two"
+      FactoryGirl.create(:movement, name: "Movement Three").friendly_id.should == "movement-three"
     end
   end
 
   describe "finding pages" do
     before :each do
-      @allout = FactoryGirl.create(:movement, :name => "All Out")
-      @campaign = FactoryGirl.create(:campaign, :movement => @allout)
-      @action_sequence = FactoryGirl.create(:action_sequence, :campaign => @campaign)
-      @content_page_collection = FactoryGirl.create(:content_page_collection, :movement => @allout)
-      @action_page = FactoryGirl.create(:action_page, :action_sequence => @action_sequence, :name => "Cool Action")
-      @content_page = FactoryGirl.create(:content_page, :content_page_collection => @content_page_collection, :name => "Cool Content")
+      @allout = FactoryGirl.create(:movement, name: "All Out")
+      @campaign = FactoryGirl.create(:campaign, movement: @allout)
+      @action_sequence = FactoryGirl.create(:action_sequence, campaign: @campaign)
+      @content_page_collection = FactoryGirl.create(:content_page_collection, movement: @allout)
+      @action_page = FactoryGirl.create(:action_page, action_sequence: @action_sequence, name: "Cool Action")
+      @content_page = FactoryGirl.create(:content_page, content_page_collection: @content_page_collection, name: "Cool Content")
     end
 
     it "should find preview pages of the respective movements when using find_page_unscoped" do
-      action_page = create(:action_page, :action_sequence => @action_sequence, :live_page_id => @action_page.id, :name => "Cool Action")
-      movement2 = create(:movement, :name => "Something")
-      action_page_movement2 = FactoryGirl.create(:action_page, :movement => movement2, :name => "Cool Action")
-      action_page_movement_preview = FactoryGirl.create(:action_page, :movement => movement2, :live_page_id => action_page_movement2.id, :name => "Cool Action")
+      action_page = create(:action_page, action_sequence: @action_sequence, live_page_id: @action_page.id, name: "Cool Action")
+      movement2 = create(:movement, name: "Something")
+      action_page_movement2 = FactoryGirl.create(:action_page, movement: movement2, name: "Cool Action")
+      action_page_movement_preview = FactoryGirl.create(:action_page, movement: movement2, live_page_id: action_page_movement2.id, name: "Cool Action")
       @allout.find_page_unscoped(action_page.id).should == action_page
       @allout.find_page_unscoped(action_page.slug).should == action_page
       movement2.find_page_unscoped(action_page.slug).should ==  action_page_movement_preview
@@ -193,9 +193,9 @@ describe Movement do
     end
 
     it "should only find pages that belong to a given movement when searching by id" do
-      walkfree = FactoryGirl.create(:movement, :name => "Walk Free")
-      walkfree_collection = FactoryGirl.create(:content_page_collection, :movement => walkfree)
-      walkfree_content_page = FactoryGirl.create(:content_page, :content_page_collection => walkfree_collection, :name => "Cool Content")
+      walkfree = FactoryGirl.create(:movement, name: "Walk Free")
+      walkfree_collection = FactoryGirl.create(:content_page_collection, movement: walkfree)
+      walkfree_content_page = FactoryGirl.create(:content_page, content_page_collection: walkfree_collection, name: "Cool Content")
 
       expect { @allout.find_page(walkfree_content_page.id) }.to raise_error
     end
@@ -209,9 +209,9 @@ describe Movement do
     end
 
     it "should find pages with the same friendly id for different movements" do
-      walkfree = FactoryGirl.create(:movement, :name => "Walk Free")
-      walkfree_collection = FactoryGirl.create(:content_page_collection, :movement => walkfree)
-      walkfree_content_page = FactoryGirl.create(:content_page, :content_page_collection => walkfree_collection, :name => "Cool Content")
+      walkfree = FactoryGirl.create(:movement, name: "Walk Free")
+      walkfree_collection = FactoryGirl.create(:content_page_collection, movement: walkfree)
+      walkfree_content_page = FactoryGirl.create(:content_page, content_page_collection: walkfree_collection, name: "Cool Content")
 
       @allout.find_page("cool-content").should eql @content_page
       walkfree.find_page("cool-content").should eql walkfree_content_page
@@ -251,7 +251,7 @@ describe Movement do
     end
 
     it 'should return for different modules' do
-      settings = create(:image_settings, :movement => movement, :facebook_image_height => 132, :facebook_image_width => 98, :facebook_image_dpi => 43)
+      settings = create(:image_settings, movement: movement, facebook_image_height: 132, facebook_image_width: 98, facebook_image_dpi: 43)
       fb_image_settings = movement.image_settings_for(:facebook)
       fb_image_settings[:image_height].should == 132
       fb_image_settings[:image_width].should == 98

@@ -10,9 +10,9 @@ module MailConfigulator
 
   def email_settings(type, movement)
     movement_name = movement.name.upcase.gsub(' ', '')
-    {:user_name => ENV["#{movement_name}_#{type}_USERNAME"],
-     :password => ENV["#{movement_name}_#{type}_PASSWORD"],
-     :domain => ENV["#{movement_name}_#{type}_DOMAIN"]}
+    {user_name: ENV["#{movement_name}_#{type}_USERNAME"],
+     password: ENV["#{movement_name}_#{type}_PASSWORD"],
+     domain: ENV["#{movement_name}_#{type}_DOMAIN"]}
   end
 
 end

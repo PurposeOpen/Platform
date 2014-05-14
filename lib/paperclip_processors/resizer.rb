@@ -24,7 +24,7 @@ module Paperclip
 
         parameters = parameters.join(" ").strip.squeeze(" ")
 
-        success = Paperclip.run("convert", parameters, :source => "#{File.expand_path(src.path)}[0]", :dest => File.expand_path(dst.path))
+        success = Paperclip.run("convert", parameters, source: "#{File.expand_path(src.path)}[0]", dest: File.expand_path(dst.path))
       rescue Paperclip::CommandNotFoundError,Cocaine::ExitStatusError => e
         raise PaperclipError, "There was an error resizing #{@basename}" if @whiny
       end

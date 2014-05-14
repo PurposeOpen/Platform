@@ -5,7 +5,7 @@ describe Admin::PushesHelper do
     list = create(:list)
     blast = list.blast
 
-    expected_url = admin_movement_list_cutter_edit_path(:movement_id => blast.push.campaign.movement, :list_id => blast.list)
+    expected_url = admin_movement_list_cutter_edit_path(movement_id: blast.push.campaign.movement, list_id: blast.list)
     expected_html = %Q{<a href="#{expected_url}">Recipients</a>}
 
     helper.link_to_create_or_update(blast).should == expected_html
@@ -14,14 +14,14 @@ describe Admin::PushesHelper do
   it "should return a link to create a new list" do
     blast = create(:blast)
 
-    expected_url = admin_movement_list_cutter_new_path(:movement_id => blast.push.campaign.movement, :blast_id => blast)
+    expected_url = admin_movement_list_cutter_new_path(movement_id: blast.push.campaign.movement, blast_id: blast)
     expected_html = %Q{<a href="#{expected_url}">Recipients</a>}
 
     helper.link_to_create_or_update(blast).should == expected_html
   end
 
   it "should return a formatted member count for a list" do
-    list = create(:list, saved_intermediate_result: create(:list_intermediate_result, :data => {:number_of_selected_users => 521}))
+    list = create(:list, saved_intermediate_result: create(:list_intermediate_result, data: {number_of_selected_users: 521}))
     helper.member_count(list.blast).should == "(521 members)"
   end
   

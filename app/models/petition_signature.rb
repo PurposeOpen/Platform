@@ -19,8 +19,8 @@ class PetitionSignature < ActiveRecord::Base
 
   MAX_COMMENT_LENGTH = 200
   
-  validate :required_dynamic_attributes_are_present, :unless => "self.content_module.custom_fields.blank?"
-  validates_length_of :comment, :maximum => MAX_COMMENT_LENGTH
+  validate :required_dynamic_attributes_are_present, unless: "self.content_module.custom_fields.blank?"
+  validates_length_of :comment, maximum: MAX_COMMENT_LENGTH
   
   has_dynamic_attributes
     

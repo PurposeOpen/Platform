@@ -37,8 +37,8 @@ describe UpdateContentModuleLinkPosition do
   end
 
   def create_link(page, language, container, position)
-    content_module = FactoryGirl.create(:html_module, :language => language)
-    ContentModuleLink.create!(:position => position, :content_module => content_module, :page => page, :layout_container => container)
+    content_module = FactoryGirl.create(:html_module, language: language)
+    ContentModuleLink.create!(position: position, content_module: content_module, page: page, layout_container: container)
   end
 
   describe 'up' do

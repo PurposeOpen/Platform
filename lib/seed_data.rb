@@ -7,7 +7,7 @@ module SeedData
     seed_method = params[:seed].to_s == "always" ? :seed : :seed_once
 
     Movement.seed_once(:name, movement_params)
-    movement = Movement.where(:name => params[:name]).first
+    movement = Movement.where(name: params[:name]).first
     seeder = seeder_class.new movement
 
     seed MovementLocale, seed_method,            :language_id, :movement_id,         seeder.locales

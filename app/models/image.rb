@@ -35,31 +35,31 @@ class Image < ActiveRecord::Base
   FILE_TEMPLATE = ":movement_slug_image_:id_:style.:extension"
 
   ATTACHED_FILE_OPTS = {
-    :default_style => :full,
-    :whiny => true,
-    :whiny_thumbnails => true,
-    :styles => { 
-      :thumbnail => "120x120>", 
-      :full => { :processors => [:resizer] }
+    default_style: :full,
+    whiny: true,
+    whiny_thumbnails: true,
+    styles: { 
+      thumbnail: "120x120>", 
+      full: { processors: [:resizer] }
     }
   }
 
   def self.has_attached_file_via_s3
     has_attached_file :image, ATTACHED_FILE_OPTS.merge(
-      :storage => :s3,
-      :bucket => S3[:bucket],
-      :path => FILE_TEMPLATE,
-      :s3_credentials => {
-        :access_key_id => S3[:key],
-        :secret_access_key => S3[:secret]
+      storage: :s3,
+      bucket: S3[:bucket],
+      path: FILE_TEMPLATE,
+      s3_credentials: {
+        access_key_id: S3[:key],
+        secret_access_key: S3[:secret]
       }
     )
   end
 
   def self.has_attached_file_via_filesystem
     has_attached_file :image, ATTACHED_FILE_OPTS.merge(
-      :storage => :filesystem, 
-      :path => Rails.root.join('public', 'system', FILE_TEMPLATE).to_s
+      storage: :filesystem, 
+      path: Rails.root.join('public', 'system', FILE_TEMPLATE).to_s
     )
   end
 
@@ -70,8 +70,8 @@ class Image < ActiveRecord::Base
   end
 
   validates_attachment_presence :image
-  validates_attachment_content_type :image, :content_type => /image\/\w+/
-  validates_attachment_size :image, :less_than => 10.megabytes
+  validates_attachment_content_type :image, content_type: /image\/\w+/
+  validates_attachment_size :image, less_than: 10.megabytes
 
   before_create :measure_dimensions
 
@@ -81,8 +81,8 @@ class Image < ActiveRecord::Base
 
   searchable do
     time :created_at
-    text :image_file_name, :as => :image_file_name_text_substring
-    text :image_description, :as => :image_description_text_substring
+    text :image_file_name, as: :image_file_name_text_substring
+    text :image_description, as: :image_description_text_substring
     integer :movement_id
   end
   handle_asynchronously :solr_index

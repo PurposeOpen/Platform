@@ -22,13 +22,13 @@ class AutofireEmail < ActiveRecord::Base
 
   after_initialize :defaults
 
-  validates_uniqueness_of :action_page_id, :scope => :language_id
+  validates_uniqueness_of :action_page_id, scope: :language_id
 
   warnings do
-    validates_presence_of :subject, :if => :enabled
-    validates_presence_of :body, :if => :enabled
-    validates_presence_of :from, :if => :enabled
-    validates_presence_of :reply_to, :if => :enabled
+    validates_presence_of :subject, if: :enabled
+    validates_presence_of :body, if: :enabled
+    validates_presence_of :from, if: :enabled
+    validates_presence_of :reply_to, if: :enabled
   end
 
   DEFAULT_SENDER = AppConstants.no_reply_address

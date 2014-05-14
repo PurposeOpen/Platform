@@ -24,7 +24,7 @@ class UserEmail < ActiveRecord::Base
   
   validates_presence_of :subject
   validates_presence_of :body
-  validates_presence_of :targets, :message => "should be selected"
+  validates_presence_of :targets, message: "should be selected"
   
   def send!
     Emailer.target_email(page.movement, user.email, user.email, subject, body).deliver if cc_me

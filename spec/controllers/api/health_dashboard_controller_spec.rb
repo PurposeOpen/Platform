@@ -8,7 +8,7 @@ describe Api::HealthDashboardController do
       ActiveRecord::Base.connection.should_receive(:execute)
       Delayed::Job.should_receive(:where).and_return([mock()])
 
-      get :index, :format => 'json', :movement_id=>1
+      get :index, format: 'json', movement_id:1
 
       services = JSON.parse(response.body)['services']
       services['platform'].should eql "CRITICAL - database is down"
@@ -20,7 +20,7 @@ describe Api::HealthDashboardController do
       ActiveRecord::Base.connection.should_receive(:execute)
       Delayed::Job.should_receive(:where).and_return([mock()])
 
-      get :index, :format => 'html', :movement_id=>1
+      get :index, format: 'html', movement_id:1
 
       response.should be_success
       service_statuses = assigns(:service_statuses)
@@ -36,14 +36,14 @@ describe Api::HealthDashboardController do
     end
 
     it "should return the overall status for the platform" do
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       services = JSON.parse(response.body)['services']
       services['platform'].should eql "OK"
     end
 
     it "should return OK if the database is up and able to handle queries" do
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       services = JSON.parse(response.body)['services']
       services['platform'].should eql "OK"
@@ -53,7 +53,7 @@ describe Api::HealthDashboardController do
     it "should return OK if the mail service is up" do
       Net::HTTP.should_receive(:get_response).and_return(Net::HTTPOK.new(nil, 200, ""))
 
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       services = JSON.parse(response.body)['services']
       services['platform'].should eql "OK"
@@ -63,7 +63,7 @@ describe Api::HealthDashboardController do
     it "should return CRITICAL if the mail service can't be reached" do
       Net::HTTP.should_receive(:get_response).and_raise(SocketError)
 
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       services = JSON.parse(response.body)['services']
       services['platform'].should eql "WARNING - mail is down"
@@ -73,7 +73,7 @@ describe Api::HealthDashboardController do
     it "should return CRITICAL if the mail service returns a non-successful response" do
       Net::HTTP.should_receive(:get_response).and_return(Net::HTTPOK.new(nil, 403, ""))
 
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       services = JSON.parse(response.body)['services']
       services['platform'].should eql "WARNING - mail is down"
@@ -88,7 +88,7 @@ describe Api::HealthDashboardController do
     end
 
     it "should return the overall status for the platform" do
-      get :index, :format => 'html', :movement_id=>@movement.id
+      get :index, format: 'html', movement_id:@movement.id
 
       response.should be_success
 
@@ -97,7 +97,7 @@ describe Api::HealthDashboardController do
     end
 
     it "should return OK if the database is up and able to handle queries" do
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       response.should be_success
       service_statuses = assigns(:service_statuses)
@@ -108,7 +108,7 @@ describe Api::HealthDashboardController do
     it "should return OK if the mail service is up" do
       Net::HTTP.should_receive(:get_response).and_return(Net::HTTPOK.new(nil, 200, ""))
 
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       response.should be_success
       service_statuses = assigns(:service_statuses)
@@ -119,7 +119,7 @@ describe Api::HealthDashboardController do
     it "should return CRITICAL if the mail service can't be reached" do
       Net::HTTP.should_receive(:get_response).and_raise(SocketError)
 
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       response.should be_success
       service_statuses = assigns(:service_statuses)
@@ -130,7 +130,7 @@ describe Api::HealthDashboardController do
     it "should return CRITICAL if the mail service returns a non-successful response" do
       Net::HTTP.should_receive(:get_response).and_return(Net::HTTPOK.new(nil, 403, ""))
 
-      get :index, :format => 'json', :movement_id=>@movement.id
+      get :index, format: 'json', movement_id:@movement.id
 
       response.should be_success
       service_statuses = assigns(:service_statuses)
@@ -141,7 +141,7 @@ describe Api::HealthDashboardController do
     it "should return CRITICAL if there are dead jobs" do
       Delayed::Job.should_receive(:where).and_return([mock()])
 
-      get :index, :format => 'html', :movement_id=>@movement.id
+      get :index, format: 'html', movement_id:@movement.id
 
       response.should be_success
       service_statuses = assigns(:service_statuses)
@@ -151,7 +151,7 @@ describe Api::HealthDashboardController do
     it "should return OK if there are not dead jobs" do
       Delayed::Job.should_receive(:where).and_return([])
 
-      get :index, :format => 'html', :movement_id=>@movement.id
+      get :index, format: 'html', movement_id:@movement.id
 
       response.should be_success
       service_statuses = assigns(:service_statuses)

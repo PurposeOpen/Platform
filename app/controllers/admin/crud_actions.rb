@@ -7,7 +7,7 @@ module Admin
 
     module ClassMethods
       def crud_actions_for(model_class, options)
-        before_filter :find_model, :if => lambda { params[:id] }
+        before_filter :find_model, if: lambda { params[:id] }
         before_filter :find_parent
 
         self.model_class = model_class
@@ -51,10 +51,10 @@ module Admin
           before_save_hook.call(model)
         end
         if model.save
-          redirect_to crud_redirect(:create), :notice => "'#{model.name}' has been created."
+          redirect_to crud_redirect(:create), notice: "'#{model.name}' has been created."
         else
           flash[:error] = 'Your changes have NOT BEEN SAVED YET. Please fix the errors below.'
-          render :action => 'new'
+          render action: 'new'
         end
       end
 
@@ -63,16 +63,16 @@ module Admin
           before_save_hook.call(model)
         end
         if model.update_attributes(params[model_name])
-          redirect_to crud_redirect(:update), :notice => "'#{model.name}' has been updated."
+          redirect_to crud_redirect(:update), notice: "'#{model.name}' has been updated."
         else
           flash[:error] = 'Your changes have NOT BEEN SAVED YET. Please fix the errors below.'
-          render :action => 'edit'
+          render action: 'edit'
         end
       end
 
       def destroy
         model.destroy
-        redirect_to crud_redirect(:destroy), :notice => "'#{model.name}' has been deleted."
+        redirect_to crud_redirect(:destroy), notice: "'#{model.name}' has been deleted."
       end
 
       private

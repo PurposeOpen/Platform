@@ -7,19 +7,19 @@ describe Admin::AdminController do
     def index; head :ok end
   end
 
-  let(:walkfree) { FactoryGirl.create(:movement, :name => 'Walk Free') }
+  let(:walkfree) { FactoryGirl.create(:movement, name: 'Walk Free') }
   before do
     @controller = DummyAdminController.new
     login_as FactoryGirl.build(:admin_platform_user)
   end
 
   xit 'loads the movement based on the given movement ID' do
-    get :index, :movement_id => walkfree.id.to_s
+    get :index, movement_id: walkfree.id.to_s
     assigns(:movement).should == walkfree
   end
 
   xit 'loads the movement based on the given movement slug' do
-    get :index, :movement_id => walkfree.slug
+    get :index, movement_id: walkfree.slug
     assigns(:movement).should == walkfree
   end
 

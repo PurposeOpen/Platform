@@ -3,23 +3,23 @@ require "spec_helper"
 describe Emailer do
   describe "target email" do
     it "correctly breaks up a list with comma delimiters" do
-      email = Emailer.target_email(mock(:movement, :name => 'movement'), "bob@bobson.com,mrsanchez@gomez.com, juan@pablo.com", "", "", "")
+      email = Emailer.target_email(mock(:movement, name: 'movement'), "bob@bobson.com,mrsanchez@gomez.com, juan@pablo.com", "", "", "")
       email.should bcc_to(["bob@bobson.com", "mrsanchez@gomez.com", "juan@pablo.com"])
     end
 
     it "correctly breaks up a list with space delimiters" do
-      email = Emailer.target_email(mock(:movement, :name => 'movement'), "bob@bobson.com mrsanchez@gomez.com  juan@pablo.com", "", "", "")
+      email = Emailer.target_email(mock(:movement, name: 'movement'), "bob@bobson.com mrsanchez@gomez.com  juan@pablo.com", "", "", "")
       email.should bcc_to(["bob@bobson.com", "mrsanchez@gomez.com", "juan@pablo.com"])
     end
 
     it "correctly breaks up a list with semi-colon delimiters" do
-      email = Emailer.target_email(mock(:movement, :name => 'movement'), "bob@bobson.com;mrsanchez@gomez.com; juan@pablo.com", "", "", "")
+      email = Emailer.target_email(mock(:movement, name: 'movement'), "bob@bobson.com;mrsanchez@gomez.com; juan@pablo.com", "", "", "")
       email.should bcc_to(["bob@bobson.com", "mrsanchez@gomez.com", "juan@pablo.com"])
     end
 
     context do
       before do
-        @movement = create(:movement, :name => 'Save the turtles')
+        @movement = create(:movement, name: 'Save the turtles')
         ENV["SAVETHETURTLES_TARGET_EMAIL_USERNAME"] = "david@walkfree.org"
         ENV["SAVETHETURTLES_TARGET_EMAIL_PASSWORD"] = "password"
         ENV["SAVETHETURTLES_TARGET_EMAIL_DOMAIN"] = "walkfree.org"

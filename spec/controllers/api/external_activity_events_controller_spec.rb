@@ -50,7 +50,7 @@ describe Api::ExternalActivityEventsController do
 
       external_activity_event = ExternalActivityEvent.last
       external_activity_event.should_not be_nil
-      expected_event_attributes = @event_params.merge(:user_id => user.id)
+      expected_event_attributes = @event_params.merge(user_id: user.id)
       saved_event_attributes = external_activity_event.attributes.symbolize_keys.slice(*expected_event_attributes.keys)
       saved_event_attributes.should == expected_event_attributes
 
@@ -253,7 +253,7 @@ describe Api::ExternalActivityEventsController do
   context 'errors:' do
 
     it 'should return 500 when unable to satisfy the request' do
-      event = mock('event', :invalid? => false)
+      event = mock('event', invalid?: false)
       ExternalActivityEvent.should_receive(:new).and_return(event)
       event.should_receive(:save!).and_raise StandardError
 
@@ -300,7 +300,7 @@ describe Api::ExternalActivityEventsController do
 
   describe "external action and external tags" do
     let(:movement)  { mock_model(Movement, slug: 'movement', default_language: mock_model(Language)) }
-    let(:user)      { mock_model(User, :attributes= => true, take_external_action!: true) }
+    let(:user)      { mock_model(User, :attributes= => true, :take_external_action! => true) }
 
     before do
       movement.stub_chain(:members, :find_or_initialize_by_email).and_return(user)

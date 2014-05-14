@@ -107,7 +107,7 @@ RSpec.configure do |config|
     I18n.locale = :en
   end
   config.include SunspotMatchers
-  config.before(:each) { GeoData.stub(:find_by_zip_and_country).and_return(stub_model(GeoData, :lat => "45.0", :lng => "45.0")) }
+  config.before(:each) { GeoData.stub(:find_by_zip_and_country).and_return(stub_model(GeoData, lat: "45.0", lng: "45.0")) }
 end
 
 def read_fixture(name)
@@ -158,7 +158,7 @@ end
 
 def create_simple_email(options={})
   user = options[:user] || FactoryGirl.create(:leo)
-  email = options[:email] || FactoryGirl.create(:email, :language => user.language)
+  email = options[:email] || FactoryGirl.create(:email, language: user.language)
   email
 end
 
@@ -182,7 +182,7 @@ end
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
-  config.around(:each, :caching => true) do |example|
+  config.around(:each, caching: true) do |example|
     caching, ActionController::Base.perform_caching = ActionController::Base.perform_caching, true
     store, ActionController::Base.cache_store = ActionController::Base.cache_store, :memory_store
     silence_warnings { Object.const_set "RAILS_CACHE", ActionController::Base.cache_store }
@@ -222,5 +222,5 @@ Capybara.javascript_driver = :poltergeist
 Capybara.current_driver = :poltergeist
 
 def login_as(user)
-  request.env['warden'] = double(Warden, :authenticate => user, :authenticate! => user)
+  request.env['warden'] = double(Warden, authenticate: user, authenticate!: user)
 end

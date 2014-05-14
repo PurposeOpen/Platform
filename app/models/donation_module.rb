@@ -19,7 +19,7 @@
 require 'money'
 
 class DonationModule < ContentModule
-  has_many :donations, :foreign_key => :content_module_id
+  has_many :donations, foreign_key: :content_module_id
   option_fields :default_currency, :suggested_amounts, :default_amount,
                 :recurring_default_currency, :recurring_suggested_amounts, :recurring_default_amount,
                 :button_text, :thermometer_threshold, :donations_goal,
@@ -32,24 +32,24 @@ class DonationModule < ContentModule
               :make_all_configured_frequencies_optional
 
   warnings do
-    validates_length_of :title, :maximum => 128, :minimum => 3, :if => :needs_title?
-    validates_length_of :public_activity_stream_template, :maximum => 1024, :minimum => 3, :if => :shows_activity_stream?
-    validates_length_of :button_text, :minimum => 1, :maximum => 64
+    validates_length_of :title, maximum: 128, minimum: 3, if: :needs_title?
+    validates_length_of :public_activity_stream_template, maximum: 1024, minimum: 3, if: :shows_activity_stream?
+    validates_length_of :button_text, minimum: 1, maximum: 64
     validates_presence_of :donations_goal
-    validates_numericality_of :donations_goal, :greater_than_or_equal_to => 0, :if => :donations_goal
-    validates_numericality_of :thermometer_threshold, :greater_than_or_equal_to => 0, :less_than_or_equal_to => :donations_goal, :if => :donations_goal
+    validates_numericality_of :donations_goal, greater_than_or_equal_to: 0, if: :donations_goal
+    validates_numericality_of :thermometer_threshold, greater_than_or_equal_to: 0, less_than_or_equal_to: :donations_goal, if: :donations_goal
     validate :default_currency_set_for_at_least_a_frequency
     validates_presence_of :receipt_frequency
 
-    validate :suggested_and_default_amount_for_at_least_one_currency, :if => :one_off?
-    validate :recurring_suggested_and_default_amount_for_at_least_one_currency, :if => :recurring?
+    validate :suggested_and_default_amount_for_at_least_one_currency, if: :one_off?
+    validate :recurring_suggested_and_default_amount_for_at_least_one_currency, if: :recurring?
     validate :all_suggested_amounts_are_greater_than_zero
     validate :default_amount_is_one_of_the_suggested_amounts
     validate :recurring_default_amount_is_one_of_the_recurring_suggested_amounts
 
     validate :one_frequency_option_must_be_the_default
-    validates_presence_of :disabled_title, :unless => :active?
-    validates_presence_of :disabled_content, :unless => :active?
+    validates_presence_of :disabled_title, unless: :active?
+    validates_presence_of :disabled_content, unless: :active?
   end
 
   def donations_goal=(value)
@@ -61,20 +61,20 @@ class DonationModule < ContentModule
   end
 
   AVAILABLE_CURRENCIES = {
-    :aud => Money::Currency.new('AUD'),
-    :cad => Money::Currency.new('CAD'),
-    :eur => Money::Currency.new('EUR'),
-    :gbp => Money::Currency.new('GBP'),
-    :jpy => Money::Currency.new('JPY'),
-    :usd => Money::Currency.new('USD')
+    aud: Money::Currency.new('AUD'),
+    cad: Money::Currency.new('CAD'),
+    eur: Money::Currency.new('EUR'),
+    gbp: Money::Currency.new('GBP'),
+    jpy: Money::Currency.new('JPY'),
+    usd: Money::Currency.new('USD')
   }
 
   FREQUENCIES = [:one_off, :weekly, :monthly, :annual]
   FREQUENCY_LABELS = {
-    :one_off => "Donate Once",
-    :weekly => "Donate Weekly",
-    :monthly => "Donate Monthly",
-    :annual => "Donate Annually"
+    one_off: "Donate Once",
+    weekly: "Donate Weekly",
+    monthly: "Donate Monthly",
+    annual: "Donate Annually"
   }
 
   placeable_in SIDEBAR
@@ -97,19 +97,19 @@ class DonationModule < ContentModule
   end
 
   def take_action(user, action_info, page)
-    donation = Donation.new(:content_module => self,
-        :action_page => page,
-        :user => user,
-        :currency => action_info[:currency],
-        :amount_in_cents => action_info[:amount].to_i,
-        :payment_method => action_info[:payment_method].to_sym,
-        :email => action_info[:email],
-        :order_id => action_info[:order_id],
-        :transaction_id => action_info[:transaction_id],
-        :subscription_id => action_info[:subscription_id],
-        :subscription_amount =>action_info[:subscription_amount].to_i,
-        :active => action_info[:confirmed],
-        :frequency => action_info[:frequency].to_sym)
+    donation = Donation.new(content_module: self,
+        action_page: page,
+        user: user,
+        currency: action_info[:currency],
+        amount_in_cents: action_info[:amount].to_i,
+        payment_method: action_info[:payment_method].to_sym,
+        email: action_info[:email],
+        order_id: action_info[:order_id],
+        transaction_id: action_info[:transaction_id],
+        subscription_id: action_info[:subscription_id],
+        subscription_amount:action_info[:subscription_amount].to_i,
+        active: action_info[:confirmed],
+        frequency: action_info[:frequency].to_sym)
     donation.save!
     donation
   end
@@ -216,7 +216,7 @@ class DonationModule < ContentModule
   private
 
   def defaults
-    self.button_text = I18n.t('models.donation_module.default_donate_text', :locale => (self.language.nil? ? :en : self.language.iso_code.to_sym)) unless self.button_text
+    self.button_text = I18n.t('models.donation_module.default_donate_text', locale: (self.language.nil? ? :en : self.language.iso_code.to_sym)) unless self.button_text
     self.suggested_amounts = {} if self.suggested_amounts.blank?
     self.default_amount = {} if self.default_amount.blank?
     self.recurring_suggested_amounts = {} if self.recurring_suggested_amounts.blank?
@@ -253,7 +253,7 @@ class DonationModule < ContentModule
   end
 
   def count_donations_made
-    pages.first ? Donation.where(:page_id => pages.first.id).count : 0
+    pages.first ? Donation.where(page_id: pages.first.id).count : 0
   end
 
   def suggested_amounts_empty?

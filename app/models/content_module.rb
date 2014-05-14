@@ -28,15 +28,15 @@ class ContentModule < ActiveRecord::Base
   ALL_CONTAINERS = [ HEADER, MAIN, SIDEBAR ]
 
   has_many :content_module_links
-  has_many :pages, :through => :content_module_links
+  has_many :pages, through: :content_module_links
   has_many :user_activity_events
   belongs_to :language
 
   validates_presence_of :language_id
 
   warnings do
-    validates_length_of :title, :maximum => 128, :minimum => 3, :if => :needs_title?
-    validates_length_of :public_activity_stream_template, :maximum => 1024, :minimum => 3, :if => :shows_activity_stream?
+    validates_length_of :title, maximum: 128, minimum: 3, if: :needs_title?
+    validates_length_of :public_activity_stream_template, maximum: 1024, minimum: 3, if: :shows_activity_stream?
   end
 
   before_save :tidy_html
@@ -69,7 +69,7 @@ class ContentModule < ActiveRecord::Base
   alias_method :subscribes_user_on_action?, :is_ask?
 
   def linked?
-    @is_linked ||= ContentModuleLink.where(:content_module_id => self.id).count > 1
+    @is_linked ||= ContentModuleLink.where(content_module_id: self.id).count > 1
   end
 
   def public_activity_stream_html(user, page, language = nil)

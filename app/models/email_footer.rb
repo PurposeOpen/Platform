@@ -17,8 +17,8 @@ class EmailFooter < ActiveRecord::Base
   acts_as_user_stampable
 
   belongs_to :movement_locale
-  has_one :movement, :through => :movement_locale
-  has_one :language, :through => :movement_locale
+  has_one :movement, through: :movement_locale
+  has_one :language, through: :movement_locale
 
   validates_uniqueness_of :movement_locale_id
 

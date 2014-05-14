@@ -32,25 +32,25 @@ FactoryGirl.define do
     created_at     { generate(:time) }
   end
 
-  factory :english, :parent => :language do |f|
+  factory :english, parent: :language do |f|
     iso_code       "en"
     name           "English"
     native_name    "English"
   end
 
-  factory :portuguese, :parent => :language do |f|
+  factory :portuguese, parent: :language do |f|
     iso_code       "pt"
     name           "Portuguese"
     native_name    "Português"
   end
 
-  factory :french, :parent => :language do |f|
+  factory :french, parent: :language do |f|
     iso_code       "fr"
     name           "French"
     native_name    "Français"
   end
 
-  factory(:spanish, :parent => :language) do |f|
+  factory(:spanish, parent: :language) do |f|
     iso_code       "es"
     name           "Spanish"
     native_name    "Español"

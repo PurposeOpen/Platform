@@ -2,23 +2,23 @@ require 'spec_helper'
 
 describe Admin::QuickGoController, solr: true do
   before do
-    request.env['warden'] = mock(Warden, :authenticate => FactoryGirl.create(:user, :is_admin => true),
-                                 :authenticate! => FactoryGirl.create(:user, :is_admin => true))
+    request.env['warden'] = mock(Warden, authenticate: FactoryGirl.create(:user, is_admin: true),
+                                 authenticate!: FactoryGirl.create(:user, is_admin: true))
   end
   it 'should return results' do
     term = 'Awesome stuff'
     movement = create(:movement)
-    campaign = create(:campaign, :movement => movement, :name => term)
-    action_sequence = create(:action_sequence, :campaign => campaign, :name => term)
+    campaign = create(:campaign, movement: movement, name: term)
+    action_sequence = create(:action_sequence, campaign: campaign, name: term)
     action_sequence.index!
-    action_page = create(:action_page, :action_sequence => action_sequence, :name => term)
-    content_page = create(:content_page, :movement => movement, :name => "#{term} content page")
-    push = create(:push, :campaign => campaign, :name => term)
-    blast = create(:blast, :push => push)
-    email = create(:email, :blast => blast, :name => term)
+    action_page = create(:action_page, action_sequence: action_sequence, name: term)
+    content_page = create(:content_page, movement: movement, name: "#{term} content page")
+    push = create(:push, campaign: campaign, name: term)
+    blast = create(:blast, push: push)
+    email = create(:email, blast: blast, name: term)
     [campaign, action_sequence, action_page, content_page, push, email].each{|m| m.index!}
 
-    get :index, :movement_id => movement.id, :term => 'awe'
+    get :index, movement_id: movement.id, term: 'awe'
 
     results = JSON.parse(response.body)
     results.size.should == 6

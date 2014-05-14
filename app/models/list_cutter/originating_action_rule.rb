@@ -3,8 +3,8 @@ module ListCutter
     fields :page_ids, :movement_id
 
     POSSIBLE_MODULE_TYPES = ['PetitionModule', 'DonationModule', 'EmailTargetsModule', 'JoinModule']
-    validates_presence_of :page_ids, :message => 'Please select one or more pages'
-    validates_presence_of :movement_id, :message => 'Please specify the movement'
+    validates_presence_of :page_ids, message: 'Please select one or more pages'
+    validates_presence_of :movement_id, message: 'Please specify the movement'
 
     def active?
       !page_ids.blank?

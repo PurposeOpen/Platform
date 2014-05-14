@@ -25,9 +25,9 @@ class UserAffiliation < ActiveRecord::Base
   end
   validates_presence_of :user_id
   validates_presence_of :movement_id
-  validates_uniqueness_of :user_id, :scope => :movement_id
+  validates_uniqueness_of :user_id, scope: :movement_id
 
-  belongs_to :platform_user, :foreign_key => "user_id"
+  belongs_to :platform_user, foreign_key: "user_id"
   belongs_to :movement
 
   scope :for_user_movement_roles, lambda {|user, movement, roles| where(user_id: user.id, movement_id: movement.id, role: roles) }

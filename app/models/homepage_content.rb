@@ -24,8 +24,8 @@ class HomepageContent < ActiveRecord::Base
   
   serialize :follow_links, JSON
 
-  delegate :iso_code, :to => :language
-  delegate :name, :to => :language, :prefix => true
+  delegate :iso_code, to: :language
+  delegate :name, to: :language, prefix: true
 
   validates_presence_of :language
   validate :follow_links_must_be_a_hash
@@ -34,9 +34,9 @@ class HomepageContent < ActiveRecord::Base
 
   after_initialize :defaults
 
-  scope :by_iso_code,  lambda { |code| joins(:language).where(:languages => { :iso_code => code }) }
+  scope :by_iso_code,  lambda { |code| joins(:language).where(languages: { iso_code: code }) }
 
-  LABELS = {:banner_image => 'Logo', :join_headline => 'Headline', :join_message => 'Join Text', :banner_text => 'Counter Text'}
+  LABELS = {banner_image: 'Logo', join_headline: 'Headline', join_message: 'Join Text', banner_text: 'Counter Text'}
 
   def content_complete?
     valid = true

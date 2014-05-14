@@ -55,14 +55,14 @@ FactoryGirl.define do
     geolocation_service { |user| TestGeolocationService.new(user) }
   end
 
-  factory :leo, :parent => :user do
+  factory :leo, parent: :user do
     email       "leonardo@borges.com"
     country_iso "BR"
     postcode    "9999"
     is_member   true
   end
 
-  factory :brazilian_dude, :parent => :user do
+  factory :brazilian_dude, parent: :user do
     email         "another@dude.com"
     country_iso   "BR"
     is_member     true
@@ -71,7 +71,7 @@ FactoryGirl.define do
     last_name     "Silva"
   end
 
-  factory :brazilian_chick, :parent => :user do
+  factory :brazilian_chick, parent: :user do
     email         "another@chick.com"
     country_iso   "BR"
     is_member     true
@@ -80,7 +80,7 @@ FactoryGirl.define do
     last_name     "Tequila"
   end
 
-  factory :aussie, :parent => :user do
+  factory :aussie, parent: :user do
     email         "aussie@dude.com"
     country_iso   "AU"
     is_member     true
@@ -89,18 +89,18 @@ FactoryGirl.define do
     last_name     "Venkman"
   end
 
-  factory :aussie_in_edgewater, :parent => :user do
+  factory :aussie_in_edgewater, parent: :user do
     email         "aussie_edgewater@dude.com"
     country_iso   "AU"
     is_member     true
     postcode      "6027"
   end
 
-  factory :admin_user, :parent => :user do
+  factory :admin_user, parent: :user do
     is_admin      true
   end
 
-  factory :user_with_profane_name, :parent => :user do
+  factory :user_with_profane_name, parent: :user do
     first_name    'Mierda'
     last_name     'Jones'
   end

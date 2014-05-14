@@ -46,7 +46,7 @@ class Donation < ActiveRecord::Base
   validates_presence_of :payment_method
   validates_presence_of :currency
   validates_presence_of :frequency
-  validates_uniqueness_of :transaction_id, :allow_nil => true
+  validates_uniqueness_of :transaction_id, allow_nil: true
   validate :validate_content_module_is_a_donation_ask
   validate :validate_payment_method
   validate :validate_amounts
@@ -54,13 +54,13 @@ class Donation < ActiveRecord::Base
   validate :validate_transaction_id
 
   def self.total_in_dollar_cents_by_action_page(action_page_id)
-    result = Donation.select('COALESCE(SUM(amount_in_dollar_cents), 0) as total').where(:page_id => action_page_id).group('donations.page_id')
+    result = Donation.select('COALESCE(SUM(amount_in_dollar_cents), 0) as total').where(page_id: action_page_id).group('donations.page_id')
     result.empty? ? 0 : result[0].total
   end
 
 
   def self.stats_by_action_page(action_page_id)
-    result = Donation.select('COALESCE(COUNT(amount_in_dollar_cents), 0) as donations_count, COALESCE(SUM(amount_in_dollar_cents), 0) as total_money_collected').where(:page_id => action_page_id).group('donations.page_id')
+    result = Donation.select('COALESCE(COUNT(amount_in_dollar_cents), 0) as donations_count, COALESCE(SUM(amount_in_dollar_cents), 0) as total_money_collected').where(page_id: action_page_id).group('donations.page_id')
     result.empty? ? [0,0] : [result[0].donations_count, result[0].total_money_collected]
   end
 
@@ -81,9 +81,9 @@ class Donation < ActiveRecord::Base
     {
       'DONATION_AMOUNT' => donation_amount,
       'DONATION_DATE' => self.created_at.to_date.to_s,
-      'DONATION_TRANSACTION_ID' => "#{I18n.t('transaction_id', :locale => self.content_module.language.iso_code.to_sym)} #{self.transaction_id}",
-      'DONATION_FREQUENCY' =>  I18n.t(self.frequency, :locale => self.content_module.language.iso_code.to_sym ),
-      'DONATION_CANCELLATION' => self.is_recurrent ? I18n.t('donation_cancellation_message', :locale => self.content_module.language.iso_code.to_sym) : ' '
+      'DONATION_TRANSACTION_ID' => "#{I18n.t('transaction_id', locale: self.content_module.language.iso_code.to_sym)} #{self.transaction_id}",
+      'DONATION_FREQUENCY' =>  I18n.t(self.frequency, locale: self.content_module.language.iso_code.to_sym ),
+      'DONATION_CANCELLATION' => self.is_recurrent ? I18n.t('donation_cancellation_message', locale: self.content_module.language.iso_code.to_sym) : ' '
     }
   end
 
@@ -116,12 +116,12 @@ class Donation < ActiveRecord::Base
   private
 
   def create_transaction(external_id, invoice_id, amount_in_cents)
-    transaction = Transaction.new(:donation => self,
-        :external_id => external_id,
-        :invoice_id => invoice_id,
-        :amount_in_cents => amount_in_cents,
-        :currency => self.currency,
-        :successful => true)
+    transaction = Transaction.new(donation: self,
+        external_id: external_id,
+        invoice_id: invoice_id,
+        amount_in_cents: amount_in_cents,
+        currency: self.currency,
+        successful: true)
     transaction
   end
 

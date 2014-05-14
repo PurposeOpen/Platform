@@ -4,7 +4,7 @@ describe Admin::ListCutterHelper do
   describe "#get_rule" do
     it "should retrieve the rule specified by the given symbol" do
       list = build(:list)
-      list.add_rule(:action_taken_rule, :page_ids => [1])
+      list.add_rule(:action_taken_rule, page_ids: [1])
 
       action_taken = helper.get_rule(list, ListCutter::ActionTakenRule)
       action_taken.should be_instance_of ListCutter::ActionTakenRule
@@ -83,12 +83,12 @@ describe Admin::ListCutterHelper do
       action_taken = ExternalActivityEvent::Activity::ACTION_TAKEN
       action_created = ExternalActivityEvent::Activity::ACTION_CREATED
 
-      event1 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'russia')
-      event2 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'cuba')
-      event3 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => 'aclu', :action_slug => 'france')
-      event4 = create(:external_action, :movement => movement, :source => 'controlshift',  :partner => nil,    :action_slug => 'ecuador')
-      event5 = create(:external_action, :movement => movement, :source => 'controloption', :partner => nil,    :action_slug => 'brazil')
-      event6 = create(:external_action, :movement => movement, :source => 'controloption', :partner => 'aclu', :action_slug => 'china')
+      event1 = create(:external_action, movement: movement, source: 'controlshift',  partner: 'aclu', action_slug: 'russia')
+      event2 = create(:external_action, movement: movement, source: 'controlshift',  partner: 'aclu', action_slug: 'cuba')
+      event3 = create(:external_action, movement: movement, source: 'controlshift',  partner: 'aclu', action_slug: 'france')
+      event4 = create(:external_action, movement: movement, source: 'controlshift',  partner: nil,    action_slug: 'ecuador')
+      event5 = create(:external_action, movement: movement, source: 'controloption', partner: nil,    action_slug: 'brazil')
+      event6 = create(:external_action, movement: movement, source: 'controloption', partner: 'aclu', action_slug: 'china')
 
       helper.grouped_select_options_external_actions(movement.id, event5.unique_action_slug).gsub(/\sid=\"([^\"]*)\"/, '').should ==
       "<option value=\"#{event5.movement_id}_#{event5.source}_#{event5.action_slug}\" selected=\"selected\">CONTROLOPTION: brazil</option>"+

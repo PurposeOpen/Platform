@@ -49,7 +49,7 @@ Then /^the "([^\"]*)" field should not be disabled$/ do |label|
 end
 
 When /^I wait until I can see "([^"]*)"$/ do |selector|
-  page.has_css?("#{selector}", :visible => true)
+  page.has_css?("#{selector}", visible: true)
 end
 
 When /^I visit the URL "([^"]*)"$/ do |url|
@@ -58,15 +58,15 @@ end
 
 When /^I fill in "([^"]*)" with tomorrow$/ do |selector|
   date = Date.tomorrow.strftime "%d-%m-%Y"
-  fill_in(selector, :with => date)
+  fill_in(selector, with: date)
 end
 
 Then /^There should be "([^"]*)" only once inside (.*[^:])$/ do |elem, selector|
   with_scope(selector) do
     if page.respond_to? :should
-      page.should have_css(elem, :count => 1)
+      page.should have_css(elem, count: 1)
     else
-      assert page.has_css?(elem, :count => 1)
+      assert page.has_css?(elem, count: 1)
     end
   end
 end

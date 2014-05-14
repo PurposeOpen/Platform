@@ -96,16 +96,16 @@ describe ActionPageObserver do
       plan.response.code = '201'
 
       monthly_params = {
-          :plan_code => monthly_plan,
-          :name => action_page.name,
-          :unit_amount_in_cents => {'USD' => 100, 'EUR' => 100, 'CAD' => 100, 'AUD' => 100, 'GBP' => 100},
-          :setup_fee_in_cents => {'USD' => 0, 'EUR' => 0, 'CAD' => 0, 'AUD' => 0, 'GBP' => 0},
-          :plan_interval_length => 1,
-          :plan_interval_unit => 'months',
-          :total_billing_cycles => nil,
-          :display_quantity => true,
-          :success_url => "#{action_page.movement.url}/handle_payment_callback?account_code={{account_code}}&plan_code={{plan_code}}&classification=501(c)3",
-          :cancel_url => "#{action_page.movement.url}/#{action_page.slug}"
+          plan_code: monthly_plan,
+          name: action_page.name,
+          unit_amount_in_cents: {'USD' => 100, 'EUR' => 100, 'CAD' => 100, 'AUD' => 100, 'GBP' => 100},
+          setup_fee_in_cents: {'USD' => 0, 'EUR' => 0, 'CAD' => 0, 'AUD' => 0, 'GBP' => 0},
+          plan_interval_length: 1,
+          plan_interval_unit: 'months',
+          total_billing_cycles: nil,
+          display_quantity: true,
+          success_url: "#{action_page.movement.url}/handle_payment_callback?account_code={{account_code}}&plan_code={{plan_code}}&classification=501(c)3",
+          cancel_url: "#{action_page.movement.url}/#{action_page.slug}"
       }
 
       Recurly::Plan.should_receive(:create).with(monthly_params).and_return(plan)
@@ -126,16 +126,16 @@ describe ActionPageObserver do
       plan.response.code = '201'
 
       monthly_params = {
-          :plan_code => monthly_plan,
-          :name => action_page.name,
-          :unit_amount_in_cents => {'USD' => 100, 'EUR' => 100, 'CAD' => 100, 'AUD' => 100, 'GBP' => 100},
-          :setup_fee_in_cents => {'USD' => 0, 'EUR' => 0, 'CAD' => 0, 'AUD' => 0, 'GBP' => 0},
-          :plan_interval_length => 1,
-          :plan_interval_unit => 'months',
-          :total_billing_cycles => nil,
-          :display_quantity => true,
-          :success_url => "#{action_page.movement.url}/handle_payment_callback?account_code={{account_code}}&plan_code={{plan_code}}&classification=501(c)4",
-          :cancel_url => "#{action_page.movement.url}/#{action_page.slug}"
+          plan_code: monthly_plan,
+          name: action_page.name,
+          unit_amount_in_cents: {'USD' => 100, 'EUR' => 100, 'CAD' => 100, 'AUD' => 100, 'GBP' => 100},
+          setup_fee_in_cents: {'USD' => 0, 'EUR' => 0, 'CAD' => 0, 'AUD' => 0, 'GBP' => 0},
+          plan_interval_length: 1,
+          plan_interval_unit: 'months',
+          total_billing_cycles: nil,
+          display_quantity: true,
+          success_url: "#{action_page.movement.url}/handle_payment_callback?account_code={{account_code}}&plan_code={{plan_code}}&classification=501(c)4",
+          cancel_url: "#{action_page.movement.url}/#{action_page.slug}"
       }
 
       Recurly::Plan.should_receive(:create).with(monthly_params).and_return(plan)
@@ -146,9 +146,9 @@ describe ActionPageObserver do
     it "should use first header content module's content as plan name on creation" do
       action_page = create(:action_page)
       donation_module = create(:non_tax_deductible_donation_module)
-      action_page.content_module_links << create(:content_module_link, :page => action_page, :content_module => donation_module)
-      header_module = create(:html_module, :content => 'Donation Campaign')
-      action_page.content_module_links << create(:header_module_link, :page => action_page, :content_module => header_module)
+      action_page.content_module_links << create(:content_module_link, page: action_page, content_module: donation_module)
+      header_module = create(:html_module, content: 'Donation Campaign')
+      action_page.content_module_links << create(:header_module_link, page: action_page, content_module: header_module)
       action_page.content_modules(true) # reload association to avoid cache issues
       ENV["#{action_page.movement.slug}_501C4_RECURLY_KEY".upcase] = "some key"
       monthly_plan = "#{action_page.id}--monthly"
@@ -160,16 +160,16 @@ describe ActionPageObserver do
       plan.response.code = '201'
 
       monthly_params = {
-          :plan_code => monthly_plan,
-          :name => 'Donation Campaign',
-          :unit_amount_in_cents => {'USD' => 100, 'EUR' => 100, 'CAD' => 100, 'AUD' => 100, 'GBP' => 100},
-          :setup_fee_in_cents => {'USD' => 0, 'EUR' => 0, 'CAD' => 0, 'AUD' => 0, 'GBP' => 0},
-          :plan_interval_length => 1,
-          :plan_interval_unit => 'months',
-          :total_billing_cycles => nil,
-          :display_quantity => true,
-          :success_url => "#{action_page.movement.url}/handle_payment_callback?account_code={{account_code}}&plan_code={{plan_code}}&classification=501(c)4",
-          :cancel_url => "#{action_page.movement.url}/#{action_page.slug}"
+          plan_code: monthly_plan,
+          name: 'Donation Campaign',
+          unit_amount_in_cents: {'USD' => 100, 'EUR' => 100, 'CAD' => 100, 'AUD' => 100, 'GBP' => 100},
+          setup_fee_in_cents: {'USD' => 0, 'EUR' => 0, 'CAD' => 0, 'AUD' => 0, 'GBP' => 0},
+          plan_interval_length: 1,
+          plan_interval_unit: 'months',
+          total_billing_cycles: nil,
+          display_quantity: true,
+          success_url: "#{action_page.movement.url}/handle_payment_callback?account_code={{account_code}}&plan_code={{plan_code}}&classification=501(c)4",
+          cancel_url: "#{action_page.movement.url}/#{action_page.slug}"
       }
 
       Recurly::Plan.should_receive(:create).with(monthly_params).and_return(plan)

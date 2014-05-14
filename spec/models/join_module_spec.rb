@@ -37,7 +37,7 @@ describe JoinModule do
     end
 
     it "should not reset comments enabled if there is already a setting for this option" do
-      pm = create(:join_module, :comments_enabled => false)
+      pm = create(:join_module, comments_enabled: false)
       ContentModule.find(pm.id).comments_enabled.should be_false
     end
 
@@ -56,23 +56,23 @@ describe JoinModule do
     end
 
     it "should require a title between 3 and 128 characters" do
-      validated_join_module(:title => "Save the kittens!").should be_valid_with_warnings
-      validated_join_module(:title => "X" * 128).should be_valid_with_warnings
-      validated_join_module(:title => "X" * 129).should_not be_valid_with_warnings
-      validated_join_module(:title => "AB").should_not be_valid_with_warnings
+      validated_join_module(title: "Save the kittens!").should be_valid_with_warnings
+      validated_join_module(title: "X" * 128).should be_valid_with_warnings
+      validated_join_module(title: "X" * 129).should_not be_valid_with_warnings
+      validated_join_module(title: "AB").should_not be_valid_with_warnings
     end
 
     it "should require a button text between 1 and 64 characters" do
-      validated_join_module(:button_text => "Save the kittens!").should be_valid_with_warnings
-      validated_join_module(:button_text => "X" * 64).should be_valid_with_warnings
-      validated_join_module(:button_text => "X" * 65).should_not be_valid_with_warnings
-      validated_join_module(:button_text => "").should_not be_valid_with_warnings
+      validated_join_module(button_text: "Save the kittens!").should be_valid_with_warnings
+      validated_join_module(button_text: "X" * 64).should be_valid_with_warnings
+      validated_join_module(button_text: "X" * 65).should_not be_valid_with_warnings
+      validated_join_module(button_text: "").should_not be_valid_with_warnings
     end
 
     it "should require a join statement" do
-      validated_join_module(:button_text => "Save the kittens!").should be_valid_with_warnings
-      validated_join_module(:button_text => "X" * 64).should be_valid_with_warnings
-      validated_join_module(:button_text => "").should_not be_valid_with_warnings
+      validated_join_module(button_text: "Save the kittens!").should be_valid_with_warnings
+      validated_join_module(button_text: "X" * 64).should be_valid_with_warnings
+      validated_join_module(button_text: "").should_not be_valid_with_warnings
     end
 
     it "should required disabled title/content if disabled" do
@@ -89,13 +89,13 @@ describe JoinModule do
 
   describe "taking action" do
     it "should send out a join email if it hasn't been sent to that user yet" do
-      join_page = FactoryGirl.create(:action_page, :name => "Join")
-      join_module = FactoryGirl.create(:join_module, :pages => [join_page])
+      join_page = FactoryGirl.create(:action_page, name: "Join")
+      join_module = FactoryGirl.create(:join_module, pages: [join_page])
       movement = join_page.movement
-      FactoryGirl.create(:join_email, :subject => "Welcome to the jungle!",
-          :language => movement.languages.first, :movement => movement)
-      user = FactoryGirl.create(:user, :movement => movement, :language => movement.languages.first,
-          :join_email_sent => false)
+      FactoryGirl.create(:join_email, subject: "Welcome to the jungle!",
+          language: movement.languages.first, movement: movement)
+      user = FactoryGirl.create(:user, movement: movement, language: movement.languages.first,
+          join_email_sent: false)
 
       join_module.take_action(user, {}, join_page)
 
@@ -127,7 +127,7 @@ describe JoinModule do
       it 'should render post join content to json' do
         join_module = FactoryGirl.build(:join_module)
 
-        json = join_module.to_json(:email => 'banana@hammock.com')
+        json = join_module.to_json(email: 'banana@hammock.com')
         data = JSON.parse(json)
 
         data['title'].should == 'Post join title'
@@ -139,17 +139,17 @@ describe JoinModule do
       context 'post join content is blank' do
         it 'should render pre join content to json' do
           join_module = FactoryGirl.build(:join_module,
-              :button_text              => 'Join the movement!',
-              :content                  => "<p>Lorem ipsum dolor sit amet</p>",
-              :title                    => "Lorem Ipsum",
-              :join_statement           => "We want stuff",
-              :post_join_title          => "",
-              :post_join_join_statement => "",
-              :post_join_content        => "",
-              :post_join_button_text    => ""
+              button_text:              'Join the movement!',
+              content:                  "<p>Lorem ipsum dolor sit amet</p>",
+              title:                    "Lorem Ipsum",
+              join_statement:           "We want stuff",
+              post_join_title:          "",
+              post_join_join_statement: "",
+              post_join_content:        "",
+              post_join_button_text:    ""
           )
 
-          json = join_module.to_json(:email => 'banana@hammock.com')
+          json = join_module.to_json(email: 'banana@hammock.com')
           data = JSON.parse(json)
 
           data['title'].should == "Lorem Ipsum"
@@ -162,9 +162,9 @@ describe JoinModule do
 
     context 'email parameter not provided' do
       it "it should render 'pre join' content to json" do
-        join_module = FactoryGirl.build(:join_module, :title => 'title',
-            :content => 'content', :join_statement => 'join statement',
-            :button_text => 'button text')
+        join_module = FactoryGirl.build(:join_module, title: 'title',
+            content: 'content', join_statement: 'join statement',
+            button_text: 'button text')
 
         json = join_module.to_json
         data = JSON.parse(json)
@@ -180,7 +180,7 @@ describe JoinModule do
       it 'should render post join content to json' do
         join_module = FactoryGirl.build(:join_module)
 
-        json = join_module.to_json(:member_has_joined => 'true')
+        json = join_module.to_json(member_has_joined: 'true')
         data = JSON.parse(json)
 
         data['title'].should == 'Post join title'

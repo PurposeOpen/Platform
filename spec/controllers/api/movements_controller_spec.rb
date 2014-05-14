@@ -4,20 +4,20 @@ describe Api::MovementsController do
   before do
     @english = FactoryGirl.create :english
     @us_locale = @english
-    @follow_links = {:facebook => 'facebook_url', :twitter => 'twitter_url', :youtube => 'youtube_url'}
-    @allout = FactoryGirl.create :movement, :languages => [@us_locale]
+    @follow_links = {facebook: 'facebook_url', twitter: 'twitter_url', youtube: 'youtube_url'}
+    @allout = FactoryGirl.create :movement, languages: [@us_locale]
     @allout_homepage = @allout.homepage
     @allout_homepage_content = FactoryGirl.create(
       :homepage_content,
-      :homepage => @allout_homepage,
-      :language => @english,
-      :banner_text => "HAVE JOINED THE MOVEMENT",
-      :banner_image => "equality_everywhere.png",
-      :join_headline => "ADDING PEOPLE POWER TO THE HISTORIC FIGHT FOR LGBT EQUALITY",
-      :join_message => "The members of AllOut.org - gay and straight, bi and transgender - are building a world where we can all live freely and be embraced for who we are. Will you join the movement?",
-      :follow_links => @follow_links,
-      :footer_navbar => "<ul><li><a href=''>About</a></li></ul>",
-      :header_navbar => "<ul><li><a href=''>More about us</a></li></ul>"
+      homepage: @allout_homepage,
+      language: @english,
+      banner_text: "HAVE JOINED THE MOVEMENT",
+      banner_image: "equality_everywhere.png",
+      join_headline: "ADDING PEOPLE POWER TO THE HISTORIC FIGHT FOR LGBT EQUALITY",
+      join_message: "The members of AllOut.org - gay and straight, bi and transgender - are building a world where we can all live freely and be embraced for who we are. Will you join the movement?",
+      follow_links: @follow_links,
+      footer_navbar: "<ul><li><a href=''>About</a></li></ul>",
+      header_navbar: "<ul><li><a href=''>More about us</a></li></ul>"
     )
     @allout.default_language = @us_locale
     @movement_locale = @allout.movement_locales.first
@@ -28,36 +28,36 @@ describe Api::MovementsController do
     it "should not recommend languages which do not have complete homepage contents" do
       us_locale = @english
       spanish = create(:spanish)
-      follow_links = {:facebook => 'facebook_url', :twitter => 'twitter_url', :youtube => 'youtube_url'}
-      bowled_out = FactoryGirl.create :movement, :languages => [@us_locale, spanish]
+      follow_links = {facebook: 'facebook_url', twitter: 'twitter_url', youtube: 'youtube_url'}
+      bowled_out = FactoryGirl.create :movement, languages: [@us_locale, spanish]
       bowled_out_homepage = bowled_out.homepage
       bowled_out_homepage_content = FactoryGirl.create(
           :homepage_content,
-          :homepage => bowled_out_homepage,
-          :language => @english,
-          :banner_text => "HAVE JOINED THE MOVEMENT",
-          :banner_image => "equality_everywhere.png",
-          :join_headline => "ADDING PEOPLE POWER TO THE HISTORIC FIGHT FOR LGBT EQUALITY",
-          :join_message => "The members of AllOut.org - gay and straight, bi and transgender - are building a world where we can all live freely and be embraced for who we are. Will you join the movement?",
-          :follow_links => @follow_links,
-          :footer_navbar => "<ul><li><a href=''>About</a></li></ul>",
-          :header_navbar => "<ul><li><a href=''>More about us</a></li></ul>"
+          homepage: bowled_out_homepage,
+          language: @english,
+          banner_text: "HAVE JOINED THE MOVEMENT",
+          banner_image: "equality_everywhere.png",
+          join_headline: "ADDING PEOPLE POWER TO THE HISTORIC FIGHT FOR LGBT EQUALITY",
+          join_message: "The members of AllOut.org - gay and straight, bi and transgender - are building a world where we can all live freely and be embraced for who we are. Will you join the movement?",
+          follow_links: @follow_links,
+          footer_navbar: "<ul><li><a href=''>About</a></li></ul>",
+          header_navbar: "<ul><li><a href=''>More about us</a></li></ul>"
       )
 
       bowled_out.default_language = @us_locale
       home_page_content_incomplete = FactoryGirl.create(
           :homepage_content,
-          :homepage => bowled_out_homepage,
-          :language => spanish,
-          :banner_text => "",
-          :banner_image => "",
-          :join_headline => "ADDING PEOPLE POWER TO THE HISTORIC FIGHT FOR LGBT EQUALITY",
-          :join_message => "The members of AllOut.org - gay and straight, bi and transgender - are building a world where we can all live freely and be embraced for who we are. Will you join the movement?",
-          :follow_links => @follow_links,
-          :footer_navbar => "<ul><li><a href=''>About</a></li></ul>",
-          :header_navbar => "<ul><li><a href=''>More about us</a></li></ul>"
+          homepage: bowled_out_homepage,
+          language: spanish,
+          banner_text: "",
+          banner_image: "",
+          join_headline: "ADDING PEOPLE POWER TO THE HISTORIC FIGHT FOR LGBT EQUALITY",
+          join_message: "The members of AllOut.org - gay and straight, bi and transgender - are building a world where we can all live freely and be embraced for who we are. Will you join the movement?",
+          follow_links: @follow_links,
+          footer_navbar: "<ul><li><a href=''>About</a></li></ul>",
+          header_navbar: "<ul><li><a href=''>More about us</a></li></ul>"
       )
-      get :show, :locale => :en, :movement_id => bowled_out.id, :format => "json"
+      get :show, locale: :en, movement_id: bowled_out.id, format: "json"
       data = ActiveSupport::JSON.decode(response.body)
       data["recommended_languages_to_display"].length.should == 1
       data["languages"].length.should == 2
@@ -66,18 +66,18 @@ describe Api::MovementsController do
 
   describe 'featured content,' do
     before do
-      @movement = FactoryGirl.create :movement, :languages => [@english]
+      @movement = FactoryGirl.create :movement, languages: [@english]
     end
 
     it 'should return featured content collection and module data' do
-      carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @movement.homepage)
-      carousel_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 0)
-      carousel_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 1)
-      featured_actions = FactoryGirl.create(:featured_content_collection, :name => 'Featured Actions', :featurable => @movement.homepage)
-      featured_action_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => featured_actions, :position => 0)
-      featured_action_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => featured_actions, :position => 1)
+      carousel = FactoryGirl.create(:featured_content_collection, name: 'Carousel', featurable: @movement.homepage)
+      carousel_module = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: carousel, position: 0)
+      carousel_module_2 = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: carousel, position: 1)
+      featured_actions = FactoryGirl.create(:featured_content_collection, name: 'Featured Actions', featurable: @movement.homepage)
+      featured_action_module = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: featured_actions, position: 0)
+      featured_action_module_2 = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: featured_actions, position: 1)
 
-      get :show, :id => @english.iso_code, :locale => @english.iso_code, :movement_id => @movement.id, :format => "json"
+      get :show, id: @english.iso_code, locale: @english.iso_code, movement_id: @movement.id, format: "json"
 
       data = ActiveSupport::JSON.decode(response.body)
 
@@ -94,14 +94,14 @@ describe Api::MovementsController do
       spanish = FactoryGirl.create(:spanish)
       @allout.languages << spanish
       @allout.save!
-      carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
-      carousel_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel)
-      carousel_module_2 = FactoryGirl.create(:featured_content_module, :language => spanish, :featured_content_collection => carousel)
-      featured_actions = FactoryGirl.create(:featured_content_collection, :name => 'Featured Actions', :featurable => @allout_homepage)
-      featured_action_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => featured_actions)
-      featured_action_module_2 = FactoryGirl.create(:featured_content_module, :language => spanish, :featured_content_collection => featured_actions)
+      carousel = FactoryGirl.create(:featured_content_collection, name: 'Carousel', featurable: @allout_homepage)
+      carousel_module = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: carousel)
+      carousel_module_2 = FactoryGirl.create(:featured_content_module, language: spanish, featured_content_collection: carousel)
+      featured_actions = FactoryGirl.create(:featured_content_collection, name: 'Featured Actions', featurable: @allout_homepage)
+      featured_action_module = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: featured_actions)
+      featured_action_module_2 = FactoryGirl.create(:featured_content_module, language: spanish, featured_content_collection: featured_actions)
 
-      get :show, :id => spanish.iso_code, :locale => spanish.iso_code, :movement_id => @allout.id, :format => "json"
+      get :show, id: spanish.iso_code, locale: spanish.iso_code, movement_id: @allout.id, format: "json"
 
       data = ActiveSupport::JSON.decode(response.body)
 
@@ -113,11 +113,11 @@ describe Api::MovementsController do
     end
 
     it 'should return featured content modules sorted by position' do
-      carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
-      carousel_module = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 1)
-      carousel_module_2 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel, :position => 0)
+      carousel = FactoryGirl.create(:featured_content_collection, name: 'Carousel', featurable: @allout_homepage)
+      carousel_module = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: carousel, position: 1)
+      carousel_module_2 = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: carousel, position: 0)
 
-      get :show, :id => @movement_language.iso_code, :locale => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
+      get :show, id: @movement_language.iso_code, locale: @movement_language.iso_code, movement_id: @allout.id, format: "json"
 
       data = ActiveSupport::JSON.decode(response.body)
 
@@ -126,13 +126,13 @@ describe Api::MovementsController do
     end
 
     it 'should only return featured content modules that are valid' do
-      carousel = FactoryGirl.create(:featured_content_collection, :name => 'Carousel', :featurable => @allout_homepage)
-      carousel_module_1 = FactoryGirl.create(:featured_content_module, :language => @english, :featured_content_collection => carousel)
-      carousel_module_2 = FactoryGirl.build(:featured_content_module, :language => @english, :featured_content_collection => carousel)
+      carousel = FactoryGirl.create(:featured_content_collection, name: 'Carousel', featurable: @allout_homepage)
+      carousel_module_1 = FactoryGirl.create(:featured_content_module, language: @english, featured_content_collection: carousel)
+      carousel_module_2 = FactoryGirl.build(:featured_content_module, language: @english, featured_content_collection: carousel)
       carousel_module_2.title = nil
 
-      carousel_module_2.save!(:validate => false)
-      get :show, :id => @movement_language.iso_code, :locale => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
+      carousel_module_2.save!(validate: false)
+      get :show, id: @movement_language.iso_code, locale: @movement_language.iso_code, movement_id: @allout.id, format: "json"
 
       data = ActiveSupport::JSON.decode(response.body)
 
@@ -144,7 +144,7 @@ describe Api::MovementsController do
   end
 
   it "the returning json should contain Movement information" do
-    get :show, :locale => :en, :id => @movement_language.iso_code, :movement_id => @allout.id, :format => "json"
+    get :show, locale: :en, id: @movement_language.iso_code, movement_id: @allout.id, format: "json"
 
     data = ActiveSupport::JSON.decode(response.body)
     data["banner_text"].should == @allout_homepage_content.banner_text
@@ -160,104 +160,104 @@ describe Api::MovementsController do
   it "should replace the MEMBERCOUNT token with the current member count on the banner_text" do
     french = FactoryGirl.create(:french)
     languages = [@english, french]
-    movement = FactoryGirl.create(:movement, :languages => languages)
+    movement = FactoryGirl.create(:movement, languages: languages)
     movement.default_language = @english
     MemberCountCalculator.init(movement, 1000000)
     languages.each do |lang|
       FactoryGirl.create(:homepage_content,
-                     :homepage => movement.homepage,
-                     :language => lang,
-                     :banner_text => "OMG, {MEMBERCOUNT} members!",
+                     homepage: movement.homepage,
+                     language: lang,
+                     banner_text: "OMG, {MEMBERCOUNT} members!",
       )
     end
-    get :show, :id => @english.iso_code, :format => "json", :locale => :en, :movement_id => movement.id
+    get :show, id: @english.iso_code, format: "json", locale: :en, movement_id: movement.id
     data = ActiveSupport::JSON.decode(response.body)
     data["banner_text"].should == "OMG, <span class='member_count'>1,000,000</span> members!"
 
-    get :show, :id => french.iso_code, :format => "json", :locale => :en, :movement_id => movement.id
+    get :show, id: french.iso_code, format: "json", locale: :en, movement_id: movement.id
     data = ActiveSupport::JSON.decode(response.body)
     data["banner_text"].should == "OMG, <span class='member_count'>1 000 000</span> members!"
   end
 
   describe "click tracking" do
     before do
-      @user = FactoryGirl.create(:user, :movement => @allout)
-      @campaign = FactoryGirl.create(:campaign, :movement => @allout)
-      @push = FactoryGirl.create(:push, :campaign => @campaign)
-      blast = FactoryGirl.create(:blast, :push => @push)
-      @email = FactoryGirl.create(:email, :blast => blast)
+      @user = FactoryGirl.create(:user, movement: @allout)
+      @campaign = FactoryGirl.create(:campaign, movement: @allout)
+      @push = FactoryGirl.create(:push, campaign: @campaign)
+      blast = FactoryGirl.create(:blast, push: @push)
+      @email = FactoryGirl.create(:email, blast: blast)
     end
 
     context "registering click events on the homepage" do
       it "should record the click event" do
         tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
 
-        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-            :t => tracking_hash, :page_type => "Homepage"
+        get :show, id: @movement_language.iso_code, locale: :en, movement_id: @allout.id, format: "json",
+            t: tracking_hash, page_type: "Homepage"
 
-        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 1
+        PushClickedEmail.where(movement_id: @allout.id, user_id: @user.id, email_id: @email.id).count.should == 1
       end
 
       it "should allow the creation of duplicate records for the click event" do
         tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
-        PushClickedEmail.create(:user_id => @user.id, :push_id => @push.id, :email_id => @email.id, :movement_id => @allout.id)
+        PushClickedEmail.create(user_id: @user.id, push_id: @push.id, email_id: @email.id, movement_id: @allout.id)
 
-        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-            :t => tracking_hash, :page_type => "Homepage"
+        get :show, id: @movement_language.iso_code, locale: :en, movement_id: @allout.id, format: "json",
+            t: tracking_hash, page_type: "Homepage"
 
-        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 2
+        PushClickedEmail.where(movement_id: @allout.id, user_id: @user.id, email_id: @email.id).count.should == 2
       end
     end
 
     context "registering click events on an action page" do
       before do
-        @action_sequence = FactoryGirl.create(:action_sequence, :campaign => @campaign)
-        @page = FactoryGirl.create(:action_page, :action_sequence => @action_sequence, :name => "Pretty page")
+        @action_sequence = FactoryGirl.create(:action_sequence, campaign: @campaign)
+        @page = FactoryGirl.create(:action_page, action_sequence: @action_sequence, name: "Pretty page")
       end
 
       it "should record the click event on a link to an action page" do
         tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
 
-        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-            :t => tracking_hash, :page_type => "ActionPage", :page_id => @page.friendly_id
+        get :show, id: @movement_language.iso_code, locale: :en, movement_id: @allout.id, format: "json",
+            t: tracking_hash, page_type: "ActionPage", page_id: @page.friendly_id
 
-        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 1
+        PushClickedEmail.where(movement_id: @allout.id, user_id: @user.id, email_id: @email.id).count.should == 1
       end
 
       it "should allow the creation of duplicate records for the click event on a link to an action page" do
         tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
-        PushClickedEmail.create(:user_id => @user.id, :push_id => @push.id, :email_id => @email.id, :movement_id => @allout.id)
+        PushClickedEmail.create(user_id: @user.id, push_id: @push.id, email_id: @email.id, movement_id: @allout.id)
 
-        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-            :t => tracking_hash, :page_type => "ActionPage", :page_id => @page.friendly_id
+        get :show, id: @movement_language.iso_code, locale: :en, movement_id: @allout.id, format: "json",
+            t: tracking_hash, page_type: "ActionPage", page_id: @page.friendly_id
 
-        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 2
+        PushClickedEmail.where(movement_id: @allout.id, user_id: @user.id, email_id: @email.id).count.should == 2
       end
     end
 
     context "registering click events on a content page" do
       before do
-        @content_page_collection = FactoryGirl.create(:content_page_collection, :movement => @allout)
-        @page = FactoryGirl.create(:content_page, :content_page_collection => @content_page_collection, :name => "About")
+        @content_page_collection = FactoryGirl.create(:content_page_collection, movement: @allout)
+        @page = FactoryGirl.create(:content_page, content_page_collection: @content_page_collection, name: "About")
       end
 
       it "should record the click event on a link to a content page" do
         tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
 
-        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-            :t => tracking_hash, :page_type => "ContentPage", :page_id => @page.friendly_id
+        get :show, id: @movement_language.iso_code, locale: :en, movement_id: @allout.id, format: "json",
+            t: tracking_hash, page_type: "ContentPage", page_id: @page.friendly_id
 
-        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 1
+        PushClickedEmail.where(movement_id: @allout.id, user_id: @user.id, email_id: @email.id).count.should == 1
       end
 
       it "should allow the creation of duplicate records for the click event on a link to a content page" do
         tracking_hash = Base64.urlsafe_encode64("userid=#{@user.id},emailid=#{@email.id}")
-        PushClickedEmail.create(:user_id => @user.id, :push_id => @push.id, :email_id => @email.id, :movement_id => @allout.id)
+        PushClickedEmail.create(user_id: @user.id, push_id: @push.id, email_id: @email.id, movement_id: @allout.id)
 
-        get :show, :id => @movement_language.iso_code, :locale => :en, :movement_id => @allout.id, :format => "json",
-            :t => tracking_hash, :page_type => "ContentPage", :page_id => @page.friendly_id
+        get :show, id: @movement_language.iso_code, locale: :en, movement_id: @allout.id, format: "json",
+            t: tracking_hash, page_type: "ContentPage", page_id: @page.friendly_id
 
-        PushClickedEmail.where(:movement_id => @allout.id, :user_id => @user.id, :email_id => @email.id).count.should == 2
+        PushClickedEmail.where(movement_id: @allout.id, user_id: @user.id, email_id: @email.id).count.should == 2
       end
     end
 
@@ -265,15 +265,15 @@ describe Api::MovementsController do
 
   context 'show for preview' do
     it 'should return movement with homepage draft if draft_homepage_id is present' do
-      featured_content_collection = create(:featured_content_collection, :name => 'SomeFC', :featurable => @allout.homepage)
-      featured_content_modules = [create(:featured_content_module, :featured_content_collection => featured_content_collection)]
+      featured_content_collection = create(:featured_content_collection, name: 'SomeFC', featurable: @allout.homepage)
+      featured_content_modules = [create(:featured_content_module, featured_content_collection: featured_content_collection)]
       draft = @allout.homepage.duplicate_for_preview({
-        :homepage_content => {@allout.homepage.homepage_contents.first.iso_code => {:join_headline => 'Preview headline'}},
-        :featured_content_modules => {
-        @allout.homepage.featured_content_modules.first.id => {:title => 'Preview featured content title'}
+        homepage_content: {@allout.homepage.homepage_contents.first.iso_code => {join_headline: 'Preview headline'}},
+        featured_content_modules: {
+        @allout.homepage.featured_content_modules.first.id => {title: 'Preview featured content title'}
       }}.with_indifferent_access)
 
-      get :show, :locale => :en, :movement_id => @allout.id, :draft_homepage_id => draft.id, :format => "json"
+      get :show, locale: :en, movement_id: @allout.id, draft_homepage_id: draft.id, format: "json"
 
       data = ActiveSupport::JSON.decode(response.body).with_indifferent_access
       data[:join_headline].should ==  'Preview headline'
