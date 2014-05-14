@@ -2,6 +2,8 @@
 
 The Purpose Platform is a global open source project committed to building multilingual campaigning and organizing tools for social good.
 
+[![Build Status develop](https://travis-ci.org/PurposeOpen/Platform.svg?branch=develop)](http://travis-ci.org/PurposeOpen/Platform)
+
 #### Some of the organizations running the Purpose Platform are:  
 
 [AllOut](https://allout.org/en)  
