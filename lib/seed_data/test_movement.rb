@@ -110,7 +110,8 @@ module SeedData
 
           {id: 1134, type: PetitionModule.name, language_id: language_id("es"),
            title: "A: Alguien",
-           public_activity_stream_template: "{NAME|A member} {COUNTRY} <BR> [firmó la petición para cambiar el mundo] <BR> {TIMESTAMP}", :otions =:
+           public_activity_stream_template: "{NAME|A member} {COUNTRY} <BR> [firmó la petición para cambiar el mundo] <BR> {TIMESTAMP}", 
+           :options => {
               button_text: "FIRMANDO, ESTOY",
               signatures_goal: 75,
               thermometer_threshold: 5,
