@@ -345,17 +345,6 @@ describe User do
         end
       end
     end
-
-    context 'did not opt in:' do
-      it 'should not unsubscribe the user' do
-        user = FactoryGirl.create(:user)
-        opted_out_user = FactoryGirl.build(:user, email: user.email, is_member: false)
-
-        opted_out_user.join_through_external_action!
-
-        User.find_by_email(user.email).is_member.should be_true
-      end
-    end
   end
 
   describe "activity events" do
