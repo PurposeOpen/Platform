@@ -1,10 +1,4 @@
 class Api::MembersController < Api::BaseController
-  MEMBER_FIELDS = [:id, :first_name, :last_name, :email, :country_iso,
-                   :postcode, :home_number, :mobile_number, :street_address,
-                   :suburb]
-
-  MEMBER_FIELDS_FOR_CREATE = [:email, :opt_in_ip_address, :opt_in_url,
-                              :country_iso]
 
   def show
     @member = movement.members.find_by_email(params[:email]) unless
@@ -46,6 +40,13 @@ class Api::MembersController < Api::BaseController
   end
 
   private
+
+  MEMBER_FIELDS = [:id, :first_name, :last_name, :email, :country_iso,
+                   :postcode, :home_number, :mobile_number, :street_address,
+                   :suburb]
+
+  MEMBER_FIELDS_FOR_CREATE = [:email, :opt_in_ip_address, :opt_in_url,
+                              :country_iso]
 
   def member_params
     params[:member].slice(*MEMBER_FIELDS_FOR_CREATE)
