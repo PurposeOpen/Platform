@@ -38,6 +38,23 @@ describe Api::MembersController do
       json['member_id'].should == User.find_by_email('lemmy@kilmister.com').id
     end
 
+    it "should record the opt in ip address and url" do
+      opt_in_ip_address = '127.0.0.1'
+      opt_in_url = 'http://localhost:3000'
+
+      post :create, format: :json,
+                    member: {email: "lemmy@kilmister.com",
+                             language: 'en',
+                             opt_in_ip_address: opt_in_ip_address,
+                             opt_in_url: opt_in_url}, movement_id: @movement.id
+
+      event = UserActivityEvent.where(activity:
+                                UserActivityEvent::Activity::SUBSCRIBED).first
+
+      expect(event.opt_in_ip_address).to eq opt_in_ip_address
+      expect(event.opt_in_url).to eq opt_in_url
+    end
+
     context 'a welcome page does not exist' do
 
       it "should create a new member unless they exist, and return blank next page id" do

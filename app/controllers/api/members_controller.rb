@@ -1,9 +1,14 @@
 class Api::MembersController < Api::BaseController
-  MEMBER_FIELDS = [:id, :first_name, :last_name, :email, :country_iso, :postcode, :home_number, :mobile_number, :street_address, :suburb]
-  respond_to :json
+  MEMBER_FIELDS = [:id, :first_name, :last_name, :email, :country_iso,
+                   :postcode, :home_number, :mobile_number, :street_address,
+                   :suburb]
+
+  MEMBER_FIELDS_FOR_CREATE = [:email, :opt_in_ip_address, :opt_in_url,
+                              :country_iso]
 
   def show
-    @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
+    @member = movement.members.find_by_email(params[:email]) unless
+                                                           params[:email].blank?
 
     if @member
       render json: @member.as_json(only: MEMBER_FIELDS), status: :ok
@@ -13,11 +18,13 @@ class Api::MembersController < Api::BaseController
     end
   end
 
-  def create
+   def create
     (render json: { errors: "Language field is required"}, status: 422 and return) if params[:member][:language].blank? 
 
-    @member = movement.members.find_or_initialize_by_email(params[:member][:email])
-    @member.language = Language.find_by_iso_code(params[:member][:language])
+    @member = movement.members.where(email: params[:member][:email]).
+                               first_or_initialize(member_params)
+    @member.language = Language.where(iso_code: params[:member][:language]).first
+
     if @member.valid?
       @member.join_email_sent = true
       @member.subscribe_through_homepage!(tracked_email)
@@ -39,6 +46,10 @@ class Api::MembersController < Api::BaseController
   end
 
   private
+
+  def member_params
+    params[:member].slice(*MEMBER_FIELDS_FOR_CREATE)
+  end
 
   def join_page_slug
     movement.find_page('join').try(:slug)

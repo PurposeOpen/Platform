@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140422021215) do
+ActiveRecord::Schema.define(:version => 20140626214535) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -528,6 +528,7 @@ ActiveRecord::Schema.define(:version => 20140422021215) do
   add_index "push_viewed_emails", ["movement_id", "email_id"], :name => "idx_emails"
   add_index "push_viewed_emails", ["movement_id", "push_id"], :name => "idx_pushes"
   add_index "push_viewed_emails", ["push_id"], :name => "index_push_viewed_emails_on_push_id"
+  add_index "push_viewed_emails", ["user_id", "email_id", "created_at"], :name => "idx_unique_open", :unique => true
   add_index "push_viewed_emails", ["user_id", "movement_id", "created_at"], :name => "idx_list_cutter"
 
   create_table "pushes", :force => true do |t|
@@ -588,6 +589,8 @@ ActiveRecord::Schema.define(:version => 20140422021215) do
     t.integer  "movement_id"
     t.string   "comment"
     t.boolean  "comment_safe"
+    t.string   "opt_in_ip_address"
+    t.string   "opt_in_url"
   end
 
   add_index "user_activity_events", ["action_sequence_id"], :name => "idx_uae_action_seq_id"
@@ -651,7 +654,6 @@ ActiveRecord::Schema.define(:version => 20140422021215) do
     t.string   "created_by"
     t.string   "updated_by"
     t.boolean  "is_volunteer",                            :default => false
-    t.float    "random"
     t.integer  "movement_id",                                                            :null => false
     t.integer  "language_id"
     t.string   "postcode"
@@ -663,17 +665,21 @@ ActiveRecord::Schema.define(:version => 20140422021215) do
     t.string   "lat"
     t.string   "lng"
     t.string   "time_zone"
+    t.string   "opt_in_ip_address"
+    t.string   "opt_in_url"
   end
 
   add_index "users", ["created_at"], :name => "created_at_idx"
   add_index "users", ["deleted_at", "movement_id", "is_member"], :name => "index_users_on_deleted_at_and_movement_id_and_is_member"
+  add_index "users", ["deleted_at", "movement_id", "source"], :name => "idx_deleted_at_movement_id_source"
+  add_index "users", ["deleted_at", "movement_id", "source"], :name => "index_users_on_deleted_at_and_movement_id_and_source"
+  add_index "users", ["deleted_at"], :name => "idx_deleted_at"
   add_index "users", ["email", "movement_id"], :name => "index_users_on_email_and_movement_id", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email"
   add_index "users", ["movement_id", "language_id"], :name => "index_users_on_movement_id_and_language_id"
   add_index "users", ["movement_id", "source", "deleted_at"], :name => "index_users_on_movement_id_and_source_and_deleted_at"
   add_index "users", ["name_safe"], :name => "index_users_on_name_safe"
   add_index "users", ["postcode"], :name => "index_users_on_postcode"
-  add_index "users", ["random"], :name => "users_random_idx"
 
   add_foreign_key "content_modules", "content_modules", :name => "live_content_module_id_fk", :column => "live_content_module_id"
 

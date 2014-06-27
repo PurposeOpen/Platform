@@ -120,7 +120,9 @@ class UserActivityEvent < ActiveRecord::Base
       user: user,
       content_module: content_module,
       email: email,
-      page: page
+      page: page,
+      opt_in_ip_address: user.opt_in_ip_address,
+      opt_in_url: user.opt_in_url
     )
   end
 
@@ -133,7 +135,9 @@ class UserActivityEvent < ActiveRecord::Base
       user_response: user_response,
       email: email,
       push: email.try(:blast).try(:push),
-      comment: comment
+      comment: comment,
+      opt_in_ip_address: user.opt_in_ip_address,
+      opt_in_url: user.opt_in_url
     )
   end
 

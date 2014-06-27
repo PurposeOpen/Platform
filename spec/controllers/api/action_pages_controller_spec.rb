@@ -495,40 +495,34 @@ describe Api::ActionPagesController do
       User.find_by_email(user.email).permanently_unsubscribed.should be_nil
     end
 
-    it "should record an 'action taken' user activity event with email id" do
+    it "should record email click tracking and opt in info" do
       email = create(:email)
       user = create(:user, :movement => @movement, :language => @english)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
 
-      put :take_action, :movement_id => @movement.friendly_id, :id => @page.id, :t => tracking_hash,
-          :member_info => { :first_name => user.first_name, :last_name => user.last_name, :email => user.email },
-          :locale => @english.iso_code
+      opt_in_ip_address = '127.0.0.1'
+      opt_in_url = 'http://localhost:3000/action'
 
-      #Delayed::Worker.new.work_off
-      activity_events = UserActivityEvent.where(:movement_id => @movement.id, :page_id => @page.id,
-          :campaign_id => @campaign.id, :action_sequence_id => @action_sequence.id, :content_module_id => @petition_module.id,
-          :activity => UserActivityEvent::Activity::ACTION_TAKEN.to_s, :email_id => email.id, :push_id => email.blast.push.id,
-          :user_id => user.id).all
-          
-      activity_events.count.should == 1
-      data = ActiveSupport::JSON.decode(response.body)
-      response.status.should eql 201
-    end
+      post :take_action, movement_id: @movement.friendly_id, id: @page.id,
+                         t: tracking_hash,
+                         member_info: { first_name: user.first_name,
+                                        last_name: user.last_name,
+                                        email: user.email,
+                                        opt_in_ip_address: opt_in_ip_address,
+                                        opt_in_url: opt_in_url},
+                         locale: @english.iso_code
 
-    it "should record a 'subscribed' user activity event with email id" do
-      email = create(:email)
-      user = create(:user, :movement => @movement, :language => @english)
-      tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
+      event_types = [UserActivityEvent::Activity::ACTION_TAKEN,
+                     UserActivityEvent::Activity::SUBSCRIBED]
 
-      put :take_action, :movement_id => @movement.friendly_id, :id => @page.id, :t => tracking_hash,
-          :member_info => { :first_name => user.first_name, :last_name => user.last_name, :email => user.email },
-          :locale => @english.iso_code
-
-      activity_events = UserActivityEvent.where(:page_id => @page.id, :content_module_id => @petition_module.id,
-          :activity => UserActivityEvent::Activity::SUBSCRIBED.to_s, :email_id => email.id, :user_id => user.id).all
-      activity_events.count.should == 1
-      data = ActiveSupport::JSON.decode(response.body)
-      response.status.should eql 201
+      UserActivityEvent.all.each_with_index do |event, index|
+        expect(event.email_id).to eq email.id
+        expect(event.opt_in_ip_address).to eq opt_in_ip_address
+        expect(event.opt_in_url).to eq opt_in_url
+        expect(event_types.include?(event.activity)).to eq true
+        event_types.delete(event.activity)
+        expect(event_types.blank?).to eq true if index == 1
+      end
     end
 
     it "should allow actions to be taken when there's no action info provided" do
