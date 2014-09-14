@@ -40,12 +40,9 @@ describe ListCutter::MemberActivityRule do
         create(:activity, user: @user4, content_module: create(:email_targets_module))
         create(:email_sent_activity, user: @user5)
         create(:email_sent_activity, user: @user6)
-        create(:activity, user: @user1, content_module: create(:join_module))
         create(:activity, user: @user2, content_module: create(:donation_module))
         create(:activity, user: @user3, content_module: create(:petition_module))
-        create(:activity, user: @user4, content_module: create(:join_module))
         create(:activity, user: @user1, content_module: create(:email_targets_module))
-        create(:activity, user: @user2, content_module: create(:join_module))
 
         options = {activity_since_date: Date.yesterday.strftime("%m/%d/%Y")}
         @verifier = Proc.new do |range_operator, activity_count, expected_users, activity_module_types|
@@ -61,15 +58,16 @@ describe ListCutter::MemberActivityRule do
 
       it "should return users based on combinations of actions taken" do
         @verifier.call("equal_to", 2, [@user2], ['DonationModule', 'EmailTargetsModule'])
-        @verifier.call("more_than", 1, [@user1, @user2, @user3, @user4], ['DonationModule', 'EmailTargetsModule', 'JoinModule', 'PetitionModule'])
-        @verifier.call("equal_to", 2, [@user3, @user4], ['DonationModule', 'EmailTargetsModule', 'JoinModule', 'PetitionModule'])
-        @verifier.call("more_than", 3, [], ['DonationModule', 'EmailTargetsModule', 'JoinModule', 'PetitionModule'])
-        @verifier.call("more_than", 1, [@user1, @user2, @user3, @user4], ['DonationModule', 'EmailTargetsModule', 'JoinModule', 'PetitionModule'])
-        @verifier.call("less_than", 1, [@user5, @user6], ['DonationModule', 'EmailTargetsModule', 'JoinModule', 'PetitionModule'])
+        @verifier.call("more_than", 1, [@user1, @user2, @user3], ['DonationModule', 'EmailTargetsModule', 'PetitionModule'])
+        @verifier.call("equal_to", 2, [@user1, @user2, @user3], ['DonationModule', 'EmailTargetsModule', 'PetitionModule'])
+        @verifier.call("more_than", 3, [], ['DonationModule', 'EmailTargetsModule', 'PetitionModule'])
+        @verifier.call("more_than", 0, [@user1, @user2, @user3, @user4], ['DonationModule', 'EmailTargetsModule', 'PetitionModule'])
+        @verifier.call("less_than", 1, [@user5, @user6], ['DonationModule', 'EmailTargetsModule', 'PetitionModule'])
       end
     end
+
     describe "filter on single module type" do
-      before(:each) do
+      before do
         @movement = create(:movement)
         @user1 = create(:user, movement: @movement)
         @user2 = create(:user, movement: @movement)
@@ -84,12 +82,9 @@ describe ListCutter::MemberActivityRule do
         create(:activity, user: @user4, content_module: create(:email_targets_module))
         create(:email_sent_activity, user: @user5)
         create(:email_sent_activity, user: @user6)
-        create(:activity, user: @user1, content_module: create(:join_module))
         create(:activity, user: @user2, content_module: create(:donation_module))
         create(:activity, user: @user3, content_module: create(:petition_module))
-        create(:activity, user: @user4, content_module: create(:join_module))
         create(:activity, user: @user1, content_module: create(:email_targets_module))
-        create(:activity, user: @user2, content_module: create(:join_module))
 
         options = {activity_since_date: Date.yesterday.strftime("%m/%d/%Y")}
         @verifier = Proc.new do |range_operator, activity_count, expected_users, activity_module_types|
@@ -102,12 +97,6 @@ describe ListCutter::MemberActivityRule do
           actual_users.should be_same_array_regardless_of_order(expected_users)
         end
 
-      end
-      it "should return users filtered on the magnitude to members joined" do
-        @verifier.call("equal_to", 2, [], ['JoinModule'])
-        @verifier.call("more_than", 0, [@user1, @user4, @user2], ['JoinModule'])
-        @verifier.call("equal_to", 0, [@user3, @user5, @user6], ['JoinModule'])
-        @verifier.call("less_than", 2, [@user1, @user2, @user3, @user4, @user5, @user6], ['JoinModule'])
       end
 
       it "should return users filtered on the magnitude of number of donations made" do
@@ -134,6 +123,48 @@ describe ListCutter::MemberActivityRule do
         @verifier.call("less_than", 3, [@user1, @user3, @user4, @user5, @user6, @user2], ['EmailTargetsModule'])
       end
     end
+
+    describe "distinguish between 'subscribed' and 'action_taken' activity for members that join through: " do
+
+      before do
+        @verify = Proc.new do |content_module_type|
+          movement = create(:movement)
+          module1 = create(content_module_type.underscore.to_sym)
+          module2 = create(content_module_type.underscore.to_sym)
+          user1 = create(:user, movement: movement)
+          user2 = create(:user, movement: movement)
+
+          create(:activity, user: user1, content_module: module1, movement: movement)
+          create(:subscribed_activity, user: user1, content_module: module1, movement: movement)
+          create(:activity, user: user2, content_module: module1, movement: movement)
+          create(:activity, user: user2, content_module: module2, movement: movement)
+
+          options = {activity_since_date: Date.yesterday.strftime("%m/%d/%Y")}
+          actual_users = ListCutter::MemberActivityRule.new(options.merge(
+            activity_count_operator: 'more_than', 
+            activity_count: 1, 
+            activity_module_types: [content_module_type],
+            movement: movement
+          )).to_relation.all
+          
+          actual_users.should == [user2]
+        end
+      end
+
+      it 'petition' do
+        @verify.call('PetitionModule')
+      end
+
+      it 'donation' do
+        @verify.call('DonationModule')
+      end
+
+      it 'email targets' do
+        @verify.call('EmailTargetsModule')
+      end
+
+    end
+
   end
 
   describe "to_human_sql" do

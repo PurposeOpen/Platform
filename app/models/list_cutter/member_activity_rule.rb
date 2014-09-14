@@ -5,7 +5,6 @@ module ListCutter
       'Petition' => PetitionModule.name,
       'Donation' => DonationModule.name,
       'Email A Target' => EmailTargetsModule.name,
-      'Join' => JoinModule.name
     }
 
     fields :activity_count_operator, :activity_count, :activity_module_types, :activity_since_date
@@ -34,6 +33,7 @@ module ListCutter
         SELECT uae.user_id, COUNT(uae.user_id) AS activity_count
         FROM user_activity_events uae
         WHERE uae.content_module_type IN (?)
+        AND uae.activity = 'action_taken'
         AND uae.created_at >= ?
         AND uae.movement_id = ?
         GROUP BY uae.user_id
